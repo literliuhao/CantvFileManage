@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="@dimen/px216"
+    android:layout_height="@dimen/px308"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ImageView
+        android:id="@+id/dialog_video"
+        android:background="@drawable/bj_01"
+        android:focusable="true"
+    	android:clickable="true"               
+        android:layout_gravity="center"
+        android:layout_width="@dimen/px200"
+        android:layout_height="@dimen/px300" />
+    <ImageView
+        android:background="@drawable/popup_movie"
+        android:layout_gravity="center_horizontal"
+		android:layout_marginTop="@dimen/px65"
+        android:layout_width="@dimen/px80"
+        android:layout_height="@dimen/px80" />
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/px28"
+        android:textColor="@color/per80_white"
+        android:layout_marginTop="@dimen/px177"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/str_movie" />
+</FrameLayout>

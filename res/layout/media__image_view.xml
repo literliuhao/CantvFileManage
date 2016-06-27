@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <cn.cantv.mediacenter.filebrowser.ImageBrowser
+        android:id="@+id/media__image_view__image"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerInside" />
+
+    <LinearLayout
+        android:id="@+id/ly_imageinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/px60"
+        android:layout_marginLeft="@dimen/px100"
+        android:gravity="left"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="@dimen/px1200"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px20"
+            android:textSize="@dimen/px52" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/px20"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/txt_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/px48" />
+
+            <TextView
+                android:id="@+id/txt_solution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/px20"
+                android:textSize="@dimen/px48" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mediaimagebar"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/px200"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/px45"
+        android:gravity="bottom|center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/px3"
+            android:layout_height="@dimen/px100"
+            android:layout_marginBottom="@dimen/px25"
+            android:background="@drawable/main_list_item_bg"
+            android:focusable="false" />
+
+        <ImageView
+            android:id="@+id/media__image_view__rotation"
+            android:layout_width="@dimen/px200"
+            android:layout_height="@dimen/px200"
+            android:focusable="true"
+            android:src="@drawable/general__share__rotation" >
+        </ImageView>
+
+        <TextView
+            android:layout_width="@dimen/px3"
+            android:layout_height="@dimen/px100"
+            android:layout_marginBottom="@dimen/px25"
+            android:background="@drawable/main_list_item_bg"
+            android:focusable="false" />
+
+        <ImageView
+            android:id="@+id/media__image_view__prev"
+            android:layout_width="@dimen/px200"
+            android:layout_height="@dimen/px200"
+            android:focusable="true"
+            android:gravity="center"
+            android:src="@drawable/general__picture__prev" >
+        </ImageView>
+
+        <TextView
+            android:layout_width="@dimen/px3"
+            android:layout_height="@dimen/px100"
+            android:layout_marginBottom="@dimen/px25"
+            android:background="@drawable/main_list_item_bg"
+            android:focusable="false" />
+
+        <ImageView
+            android:id="@+id/media__image_view__next"
+            android:layout_width="@dimen/px200"
+            android:layout_height="@dimen/px200"
+            android:focusable="true"
+            android:gravity="center"
+            android:src="@drawable/media__image__next" >
+        </ImageView>
+
+        <TextView
+            android:layout_width="@dimen/px3"
+            android:layout_height="@dimen/px100"
+            android:layout_marginBottom="@dimen/px25"
+            android:background="@drawable/main_list_item_bg"
+            android:focusable="false" />
+
+        <ImageView
+            android:id="@+id/media__image_view__auto"
+            android:layout_width="@dimen/px200"
+            android:layout_height="@dimen/px200"
+            android:focusable="true"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/general__share__auto" >
+        </ImageView>
+
+        <TextView
+            android:layout_width="@dimen/px3"
+            android:layout_height="@dimen/px100"
+            android:layout_marginBottom="@dimen/px25"
+            android:background="@drawable/main_list_item_bg"
+            android:focusable="false" />
+
+        <ImageView
+            android:id="@+id/media__image_view__info"
+            android:layout_width="@dimen/px200"
+            android:layout_height="@dimen/px200"
+            android:focusable="true"
+            android:gravity="center"
+            android:src="@drawable/general__share__info" >
+        </ImageView>
+
+        <TextView
+            android:layout_width="@dimen/px3"
+            android:layout_height="@dimen/px100"
+            android:layout_marginBottom="@dimen/px25"
+            android:background="@drawable/main_list_item_bg"
+            android:focusable="false" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/px50"
+        android:layout_marginRight="@dimen/px50"
+        android:singleLine="true"
+        android:text="@string/mediatip"
+        android:layout_gravity="bottom|right"
+        android:textColor="@color/general_color"
+        android:textSize="@dimen/px60" />
+
+</FrameLayout>

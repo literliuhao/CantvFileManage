@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 弹出时动画 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <scale
+        android:duration="150"
+        android:fromXScale="40%"
+        android:fromYScale="40%"
+        android:interpolator="@android:anim/anticipate_overshoot_interpolator"
+        android:zAdjustment="top"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="100%"
+        android:toYScale="100%" />
+
+    <alpha
+        android:duration="150"
+        android:fromAlpha="0"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:toAlpha="1" />
+
+</set>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <cn.cantv.mediacenter.filebrowser.CustomGallery
+        android:id="@+id/custom_gallery"
+        android:spacing="2dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+    </cn.cantv.mediacenter.filebrowser.CustomGallery>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/playbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="mediaplay"
+            android:text="@string/playbutton" />
+
+        <Button
+            android:id="@+id/pausebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="mediaplay"
+            android:text="@string/pausebutton" />
+
+        <Button
+            android:id="@+id/resetbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="mediaplay"
+            android:text="@string/resetbutton" />
+
+        <Button
+            android:id="@+id/stopbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="mediaplay"
+            android:text="@string/stopbutton" />
+    </LinearLayout>
+
+</RelativeLayout>

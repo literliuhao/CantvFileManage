@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="@dimen/px376"
+    android:layout_height="@dimen/px264"
+    android:id="@+id/layout_external_2"
+    android:visibility="gone"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ImageView
+        android:id="@+id/imageview_external_2"
+        android:background="@drawable/bj_05"
+        android:focusable="true"
+    	android:clickable="true"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/px360"
+        android:layout_height="@dimen/px248" />
+    <ImageView
+		android:id="@+id/imageview_external_2_u"
+        android:background="@drawable/icon_nou"
+        android:layout_marginLeft="@dimen/px16"
+		android:layout_marginTop="@dimen/px54"
+        android:layout_width="@dimen/px112"
+        android:layout_height="@dimen/px112" />
+    <TextView
+        android:id="@+id/textview_external_2_lable"
+        android:layout_marginLeft="@dimen/px144"
+        android:layout_marginTop="@dimen/px74"
+        android:textSize="@dimen/px36"
+        android:textColor="@color/per80_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/str_external" />
+	<TextView
+        android:id="@+id/textview_external_2_free"
+        android:layout_marginLeft="@dimen/px144"
+        android:layout_marginTop="@dimen/px126"
+        android:gravity="center_vertical|left"
+        android:textSize="@dimen/px28"
+        android:textColor="@color/per50_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/textview_external_2_total"
+        android:layout_marginLeft="@dimen/px144"
+        android:layout_marginTop="@dimen/px162"
+        android:gravity="center_vertical|left"
+        android:textSize="@dimen/px28"
+        android:textColor="@color/per50_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</FrameLayout>

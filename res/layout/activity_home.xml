@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/home_title"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/px216"
+        android:layout_marginTop="@dimen/px135">
+        <TextView
+            android:textSize="@dimen/px56"
+            android:textColor="@color/per80_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_filemanager"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/px200"
+        android:layout_marginTop="@dimen/px300"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        
+        <!-- 上半区 -->
+        <LinearLayout
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/px376">
+
+            <include layout="@layout/layout_video"/>
+			<include layout="@layout/layout_image"/>
+			<include layout="@layout/layout_audio"/>
+			<include layout="@layout/layout_app"/>
+            
+        </LinearLayout>
+
+        <!-- 下半区 -->
+        <LinearLayout
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/px264">
+
+            <include layout="@layout/layout_external_all"/>
+			<include layout="@layout/layout_external_1"/>
+			<include layout="@layout/layout_external_2"/>
+
+			<include layout="@layout/layout_internal"/>
+			<include layout="@layout/layout_share"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

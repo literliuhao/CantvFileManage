@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/media__ctrl_view__content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/media__ctrl_view__progress"
+        android:background="#cc000000"
+        android:paddingBottom="@dimen/px5"
+        android:paddingTop="@dimen/px5" >
+
+        <LinearLayout
+            android:id="@+id/media__ctrl_view__ctrl_btns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" >
+
+            <ImageView
+                android:id="@+id/media__ctrl_view__prev"
+                android:layout_width="@dimen/px200"
+                android:layout_height="@dimen/px200"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/general__share__prev" />
+
+            <ImageView
+                android:id="@+id/media__ctrl_view__rewind"
+                android:layout_width="@dimen/px250"
+                android:layout_height="@dimen/px250"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/general__share__rewind" />
+
+            <ImageView
+                android:id="@+id/media__ctrl_view__pauseorplay"
+                android:layout_width="@dimen/px150"
+                android:layout_height="@dimen/px150"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/general__share__pause" />
+
+            <ImageView
+                android:id="@+id/media__ctrl_view__forward"
+                android:layout_width="@dimen/px250"
+                android:layout_height="@dimen/px250"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/general__share__forward" />
+
+            <ImageView
+                android:id="@+id/media__ctrl_view__next"
+                android:layout_width="@dimen/px250"
+                android:layout_height="@dimen/px250"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/general__share__next" />
+            
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/media__ctrl_view__tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+             android:paddingRight="@dimen/px20"
+            android:text="@string/mediatip"
+            android:visibility="gone"
+             android:singleLine="true"
+            android:textColor="@color/general_color"
+            android:textSize="@dimen/px60" />
+
+        <TextView
+            android:id="@+id/media__ctrl_view__name"
+            android:layout_width="@dimen/px400"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/media__ctrl_view__ctrl_btns"
+            android:focusable="false"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:scrollHorizontally="true"
+            android:focusableInTouchMode="false"
+            android:gravity="center_vertical|left"
+            android:paddingLeft="@dimen/px20"
+            android:paddingRight="@dimen/px20"
+            android:textSize="@dimen/px80" />
+    </RelativeLayout>
+
+    <cn.cantv.mediacenter.filebrowser.MediaProgressBar
+        android:id="@+id/media__ctrl_view__progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

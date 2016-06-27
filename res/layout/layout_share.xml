@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="@dimen/px376"
+    android:layout_height="@dimen/px264"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ImageView
+        android:id="@+id/imageview_share"
+        android:background="@drawable/bj_04"
+        android:focusable="true"
+    	android:clickable="true"               
+        android:layout_gravity="center"
+        android:layout_width="@dimen/px360"
+        android:layout_height="@dimen/px248" />
+    <ImageView
+        android:background="@drawable/icon_share"
+        android:layout_marginLeft="@dimen/px16"
+		android:layout_marginTop="@dimen/px54"
+        android:layout_width="@dimen/px112"
+        android:layout_height="@dimen/px112" />
+    <TextView
+        android:id="@+id/textview_share_lable"
+        android:layout_marginLeft="@dimen/px144"
+        android:layout_marginTop="@dimen/px74"
+        android:gravity="center_vertical|left"
+        android:textSize="@dimen/px36"
+        android:textColor="@color/per80_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/str_share" />
+    <TextView
+        android:id="@+id/textview_share"
+        android:layout_marginLeft="@dimen/px144"
+        android:layout_marginTop="@dimen/px126"
+        android:gravity="center_vertical|left"
+        android:textSize="@dimen/px28"
+        android:textColor="@color/per50_white"
+        android:text="@string/str_noshare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</FrameLayout>

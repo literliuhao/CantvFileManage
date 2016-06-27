@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/home_title"
+    android:clipChildren="false"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/media_header"
+	    android:layout_marginLeft="@dimen/px128"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/px188" >
+        <TextView
+            android:id="@+id/title_textview"
+            android:layout_marginTop="@dimen/px70"
+            android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:textSize="@dimen/px56"
+        	android:textColor="@color/per80_white"
+        	android:text="@string/str_local" />
+        <ImageView
+            android:id="@+id/title_image"
+            android:layout_toRightOf="@id/title_textview"
+            android:layout_marginTop="@dimen/px92"
+            android:layout_marginLeft="@dimen/px40"
+            android:layout_width="@dimen/px32"
+        	android:layout_height="@dimen/px32"
+        	android:background="@drawable/icon_menu1" /> 
+        <TextView
+            android:layout_toRightOf="@id/title_image"
+            android:layout_marginTop="@dimen/px88"
+            android:layout_marginLeft="@dimen/px20"
+            android:layout_width="wrap_content"
+        	android:layout_height="@dimen/px50"
+        	android:textSize="@dimen/px32"
+        	android:textColor="@color/per50_white"
+        	android:text="@string/str_menu" />
+
+        <TextView
+            android:id="@+id/textview_num"
+            android:layout_width="wrap_content"
+        	android:layout_height="@dimen/px32"
+        	android:textSize="@dimen/px32"
+        	android:textColor="@color/per80_white" />
+         <TextView
+            android:id="@+id/textview_totalnum"
+            android:layout_marginRight="@dimen/px128"
+            android:layout_width="wrap_content"
+        	android:layout_height="@dimen/px32"
+        	android:textSize="@dimen/px32"
+        	android:textColor="@color/per50_white" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/media_header"
+        android:layout_centerInParent="true"
+		android:clipChildren="true"
+        android:layout_marginLeft="@dimen/px128"
+        android:gravity="center" />
+</RelativeLayout>
