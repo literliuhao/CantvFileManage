@@ -12,6 +12,7 @@ import java.util.Stack;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -25,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import com.cantv.media.center.activity.GridViewActivity;
+import com.cantv.media.center.activity.VideoPlayActicity;
 import com.cantv.media.center.adapter.MediaListAdapter;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
@@ -116,7 +118,15 @@ public class MediaGridView extends CustomGridView {
 				else if (item.mType == SourceType.PICTURE) {
 					// 全屏展示
 					mMediaUtils.showMediaDetail(getContext(), mListAdapter.getData(), position);
-				} else {
+				} else if (item.mType == SourceType.MOIVE){
+					Intent intent = new Intent();
+					intent.setClass(mContext, VideoPlayActicity.class);
+					ArrayList<String> list = new ArrayList();
+					list.add(item.mUri);
+					intent.putStringArrayListExtra("data_list",list);
+					intent.putExtra("data_index", 0);
+					mContext.startActivity(intent);
+				}else {
 					// 全屏展示
 					// mMediaUtils.showMediaDetail(getContext(),
 					// mListAdapter.getData(), position);

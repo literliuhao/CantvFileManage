@@ -18,7 +18,7 @@ public class FileCategoryHelper {
 
     //设置好对应类型
     static {
-        addItem(new String[]{"mp4", "wmv", "mpeg", "m4v", "3gp", "3gpp", "3g2", "3gpp2", "asf", "rmvb", "avi"}, TYPE_MOIVE);
+        addItem(new String[]{"mp4", "wmv", "mpeg", "m4v", "3gp", "3gpp", "3g2","mkv","3gpp2", "asf", "rmvb", "avi"}, TYPE_MOIVE);
         addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp", "wbmp"}, TYPE_PICTURE);
         addItem(new String[]{"mp3", "wma", "wav"}, TYPE_MUSIC);
         addItem(new String[]{"apk"}, TYPE_APP);
