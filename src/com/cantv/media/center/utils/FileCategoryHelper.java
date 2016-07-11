@@ -1,0 +1,52 @@
+package com.cantv.media.center.utils;
+
+
+import java.util.HashMap;
+
+/**
+ * Created by yibh on 2016/7/4.
+ */
+
+public class FileCategoryHelper {
+    public static final int TYPE_MOIVE = 0;
+    public static final int TYPE_MUSIC = 1;
+    public static final int TYPE_PICTURE = 2;
+    public static final int TYPE_APP = 3;
+    public static final int TYPE_UNKNOW = -1; //未知类型,即上面4个类型之外的
+    private static HashMap<String, Integer> mfileExtToType = new HashMap<>();
+
+
+    //设置好对应类型
+    static {
+        addItem(new String[]{"mp4", "wmv", "mpeg", "m4v", "3gp", "3gpp", "3g2", "3gpp2", "asf", "rmvb", "avi"}, TYPE_MOIVE);
+        addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp", "wbmp"}, TYPE_PICTURE);
+        addItem(new String[]{"mp3", "wma", "wav"}, TYPE_MUSIC);
+        addItem(new String[]{"apk"}, TYPE_APP);
+    }
+
+
+    private static void addItem(String[] exts, int resId) {
+        if (exts != null) {
+            for (String ext : exts) {
+                mfileExtToType.put(ext.toLowerCase(), resId);
+            }
+        }
+    }
+
+    /**
+     * 根据后缀名获取对应类型
+     *
+     * @param exitName
+     * @return
+     */
+    public static int getFileType(String exitName) {
+        Integer integer = mfileExtToType.get(exitName.toLowerCase());
+        if (null == integer) {
+            return TYPE_UNKNOW;
+        } else {
+            return integer.intValue();
+        }
+
+    }
+
+}

@@ -59,4 +59,25 @@
     <string name="mediatip">按菜单键可呼出菜单</string>
     <string name="version_name">V:  </string>
     <string name="can_not_find_version_name">1.0.1 </string>
+
+    <string name="tips_no_lyric">主人，歌词出去遛弯了，\r\n一时半会回不来，就让我来陪你吧~ ~</string>
+    <string name="tips_click_menu_key">按菜单键获取更多功能</string>
+    <string name="play_in_order">顺序播放</string>
+    <string name="play_in_random_order">随机播放</string>
+    <string name="singer">歌手 ： </string>
+    <string name="unknown">未知</string>
+    <string name="total_num">共 %s 个</string>
+    <string name="menu">菜单</string>
+    <string name="deleteFailed">删除失败,请稍后再试!</string>
+    
+    <!--gridview中二级菜单项-->
+    <string name="sort">排序</string>
+	<string name="sort_date">按日期</string>
+	<string name="sort_filesize">按文件大小</string>
+	<string name="sort_name">按名称</string>
+	<string name="view">视图</string>
+	<string name="view_list">列表</string>
+	<string name="view_tile">平铺</string>
+	<string name="delete">删除</string>
+	
 </resources>

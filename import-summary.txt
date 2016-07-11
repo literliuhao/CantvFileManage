@@ -1,0 +1,385 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* .idea\
+* .idea\compiler.xml
+* .idea\copyright\
+* .idea\copyright\profiles_settings.xml
+* .idea\encodings.xml
+* .idea\misc.xml
+* .idea\workspace.xml
+* app\
+* app\build.gradle
+* app\libs\
+* app\libs\blur.jar
+* app\libs\core.jar
+* app\libs\focus.jar
+* app\src\
+* app\src\main\
+* app\src\main\AndroidManifest.xml
+* app\src\main\java\
+* app\src\main\java\com\
+* app\src\main\java\com\cantv\
+* app\src\main\java\com\cantv\liteplayer\
+* app\src\main\java\com\cantv\liteplayer\core\
+* app\src\main\java\com\cantv\liteplayer\core\LitePlayer.java
+* app\src\main\java\com\cantv\liteplayer\core\PlayerAssistant.java
+* app\src\main\java\com\cantv\liteplayer\core\PlayerStatusInfo.java
+* app\src\main\java\com\cantv\liteplayer\core\ProxyPlayer.java
+* app\src\main\java\com\cantv\liteplayer\core\audiotrack\
+* app\src\main\java\com\cantv\liteplayer\core\audiotrack\AudioTrack.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\AliasUtil.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\AssDecoder.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\AssTokenizer.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\BytesEncodingDetector.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\MicroSubDecoder.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\SmiDecoder.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\SmiTokenizer.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\SrtDecoder.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StContent.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StDecodeResult.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StDecodeThread.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StDecoder.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StDisplayCallBack.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StDisplayThread.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StTextCode.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StType.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\StUtil.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\SubDecoder.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\SubTitle.java
+* app\src\main\java\com\cantv\liteplayer\core\subtitle\SubtitleStyle.java
+* app\src\main\java\com\cantv\media\
+* app\src\main\java\com\cantv\media\center\
+* app\src\main\java\com\cantv\media\center\activity\
+* app\src\main\java\com\cantv\media\center\activity\AudioPlayerActivity.java
+* app\src\main\java\com\cantv\media\center\activity\GridViewActivity.java
+* app\src\main\java\com\cantv\media\center\activity\HomeActivity.java
+* app\src\main\java\com\cantv\media\center\activity\ImagePlayerActivity.java
+* app\src\main\java\com\cantv\media\center\activity\ListViewActivity.java
+* app\src\main\java\com\cantv\media\center\activity\MediaPlayerActivity.java
+* app\src\main\java\com\cantv\media\center\activity\PlayerActivity.java
+* app\src\main\java\com\cantv\media\center\activity\VideoPlayerActivity.java
+* app\src\main\java\com\cantv\media\center\adapter\
+* app\src\main\java\com\cantv\media\center\adapter\MediaListAdapter.java
+* app\src\main\java\com\cantv\media\center\app\
+* app\src\main\java\com\cantv\media\center\app\MyApplication.java
+* app\src\main\java\com\cantv\media\center\constants\
+* app\src\main\java\com\cantv\media\center\constants\DevicesType.java
+* app\src\main\java\com\cantv\media\center\constants\FileCategory.java
+* app\src\main\java\com\cantv\media\center\constants\MediaFormat.java
+* app\src\main\java\com\cantv\media\center\constants\NetImageInfo.java
+* app\src\main\java\com\cantv\media\center\constants\PicStretch.java
+* app\src\main\java\com\cantv\media\center\constants\SourceType.java
+* app\src\main\java\com\cantv\media\center\data\
+* app\src\main\java\com\cantv\media\center\data\Audio.java
+* app\src\main\java\com\cantv\media\center\data\Image.java
+* app\src\main\java\com\cantv\media\center\data\Media.java
+* app\src\main\java\com\cantv\media\center\data\Video.java
+* app\src\main\java\com\cantv\media\center\receiver\
+* app\src\main\java\com\cantv\media\center\receiver\MediaBroadcastReceiver.java
+* app\src\main\java\com\cantv\media\center\ui\
+* app\src\main\java\com\cantv\media\center\ui\AnimateView.java
+* app\src\main\java\com\cantv\media\center\ui\CoverFlowImageView.java
+* app\src\main\java\com\cantv\media\center\ui\CoverFlowView.java
+* app\src\main\java\com\cantv\media\center\ui\CustomGallery.java
+* app\src\main\java\com\cantv\media\center\ui\CustomGridView.java
+* app\src\main\java\com\cantv\media\center\ui\CustomListMenu.java
+* app\src\main\java\com\cantv\media\center\ui\ExternalSurfaceView.java
+* app\src\main\java\com\cantv\media\center\ui\FocusFrame.java
+* app\src\main\java\com\cantv\media\center\ui\GalleryView.java
+* app\src\main\java\com\cantv\media\center\ui\GridFocusView.java
+* app\src\main\java\com\cantv\media\center\ui\ImageBrowser.java
+* app\src\main\java\com\cantv\media\center\ui\ImageFrameView.java
+* app\src\main\java\com\cantv\media\center\ui\ImageWatchingView.java
+* app\src\main\java\com\cantv\media\center\ui\MediaControllerBar.java
+* app\src\main\java\com\cantv\media\center\ui\MediaGridView.java
+* app\src\main\java\com\cantv\media\center\ui\MediaItemView.java
+* app\src\main\java\com\cantv\media\center\ui\MediaMenuListRadiaoItem.java
+* app\src\main\java\com\cantv\media\center\ui\MediaPicView.java
+* app\src\main\java\com\cantv\media\center\ui\MediaProgressBar.java
+* app\src\main\java\com\cantv\media\center\ui\MenuItemView.java
+* app\src\main\java\com\cantv\media\center\ui\NumberDrawable.java
+* app\src\main\java\com\cantv\media\center\ui\PicView.java
+* app\src\main\java\com\cantv\media\center\ui\PicViewDecoder.java
+* app\src\main\java\com\cantv\media\center\ui\PicViewListener.java
+* app\src\main\java\com\cantv\media\center\ui\PicViewSession.java
+* app\src\main\java\com\cantv\media\center\ui\PlayerControllerBar.java
+* app\src\main\java\com\cantv\media\center\ui\RadiaoListMenu.java
+* app\src\main\java\com\cantv\media\center\utils\
+* app\src\main\java\com\cantv\media\center\utils\ImageUtils.java
+* app\src\main\java\com\cantv\media\center\utils\MediaUtils.java
+* app\src\main\res\
+* app\src\main\res\anim\
+* app\src\main\res\anim\general__shared__scale_center_in.xml
+* app\src\main\res\anim\general__shared__scale_center_out.xml
+* app\src\main\res\anim\page_push_left_in.xml
+* app\src\main\res\anim\page_push_left_out.xml
+* app\src\main\res\anim\page_push_right_in.xml
+* app\src\main\res\anim\page_push_right_out.xml
+* app\src\main\res\anim\push_left_in.xml
+* app\src\main\res\anim\push_left_out.xml
+* app\src\main\res\anim\push_right_in.xml
+* app\src\main\res\anim\push_right_out.xml
+* app\src\main\res\anim\slide_right_out.xml
+* app\src\main\res\color\
+* app\src\main\res\color\btn_selector.xml
+* app\src\main\res\color\general_color.xml
+* app\src\main\res\drawable-nodpi\
+* app\src\main\res\drawable-nodpi\aa.png
+* app\src\main\res\drawable-nodpi\app_icon.png
+* app\src\main\res\drawable-nodpi\bb.png
+* app\src\main\res\drawable-nodpi\bg.jpg
+* app\src\main\res\drawable-nodpi\bj_01.9.png
+* app\src\main\res\drawable-nodpi\bj_02.9.png
+* app\src\main\res\drawable-nodpi\bj_03.9.png
+* app\src\main\res\drawable-nodpi\bj_04.9.png
+* app\src\main\res\drawable-nodpi\bj_05.9.png
+* app\src\main\res\drawable-nodpi\bj_06.9.png
+* app\src\main\res\drawable-nodpi\bj_07.9.png
+* app\src\main\res\drawable-nodpi\bj_08.9.png
+* app\src\main\res\drawable-nodpi\cc.png
+* app\src\main\res\drawable-nodpi\dd.png
+* app\src\main\res\drawable-nodpi\desk.png
+* app\src\main\res\drawable-nodpi\f.png
+* app\src\main\res\drawable-nodpi\file.png
+* app\src\main\res\drawable-nodpi\floatbg.png
+* app\src\main\res\drawable-nodpi\focus.9.png
+* app\src\main\res\drawable-nodpi\focus_frame.png
+* app\src\main\res\drawable-nodpi\folder_movie.png
+* app\src\main\res\drawable-nodpi\folder_movies.png
+* app\src\main\res\drawable-nodpi\folder_music.png
+* app\src\main\res\drawable-nodpi\folder_other.png
+* app\src\main\res\drawable-nodpi\folder_wj.png
+* app\src\main\res\drawable-nodpi\framfocus.png
+* app\src\main\res\drawable-nodpi\general__picture__prev.xml
+* app\src\main\res\drawable-nodpi\general__progress_bar.xml
+* app\src\main\res\drawable-nodpi\general__progress_bar_bg.9.png
+* app\src\main\res\drawable-nodpi\general__progress_bar_progress.9.png
+* app\src\main\res\drawable-nodpi\general__share__auto.xml
+* app\src\main\res\drawable-nodpi\general__share__auto_focus.png
+* app\src\main\res\drawable-nodpi\general__share__auto_normal.png
+* app\src\main\res\drawable-nodpi\general__share__forward.xml
+* app\src\main\res\drawable-nodpi\general__share__forward_focus.png
+* app\src\main\res\drawable-nodpi\general__share__forward_normal.png
+* app\src\main\res\drawable-nodpi\general__share__info.xml
+* app\src\main\res\drawable-nodpi\general__share__info_focus.png
+* app\src\main\res\drawable-nodpi\general__share__info_normal.png
+* app\src\main\res\drawable-nodpi\general__share__mediapause_focus.png
+* app\src\main\res\drawable-nodpi\general__share__mediapause_normal.png
+* app\src\main\res\drawable-nodpi\general__share__next.xml
+* app\src\main\res\drawable-nodpi\general__share__next_focus.png
+* app\src\main\res\drawable-nodpi\general__share__next_normal.png
+* app\src\main\res\drawable-nodpi\general__share__pause.xml
+* app\src\main\res\drawable-nodpi\general__share__pause_focus.png
+* app\src\main\res\drawable-nodpi\general__share__pause_normal.png
+* app\src\main\res\drawable-nodpi\general__share__play.xml
+* app\src\main\res\drawable-nodpi\general__share__play_focus.png
+* app\src\main\res\drawable-nodpi\general__share__play_normal.png
+* app\src\main\res\drawable-nodpi\general__share__player_bg.png
+* app\src\main\res\drawable-nodpi\general__share__prev.xml
+* app\src\main\res\drawable-nodpi\general__share__prev_focus.png
+* app\src\main\res\drawable-nodpi\general__share__prev_normal.png
+* app\src\main\res\drawable-nodpi\general__share__rewind.xml
+* app\src\main\res\drawable-nodpi\general__share__rewind_focus.png
+* app\src\main\res\drawable-nodpi\general__share__rewind_normal.png
+* app\src\main\res\drawable-nodpi\general__share__rotation.xml
+* app\src\main\res\drawable-nodpi\general__share__rotation_focus.png
+* app\src\main\res\drawable-nodpi\general__share__rotation_normal.png
+* app\src\main\res\drawable-nodpi\general__shared__edit_bg.png
+* app\src\main\res\drawable-nodpi\grdviewbg.jpg
+* app\src\main\res\drawable-nodpi\grideviewfocus.png
+* app\src\main\res\drawable-nodpi\gridviewborder.png
+* app\src\main\res\drawable-nodpi\home_audio.png
+* app\src\main\res\drawable-nodpi\home_image.png
+* app\src\main\res\drawable-nodpi\home_title.png
+* app\src\main\res\drawable-nodpi\home_video.png
+* app\src\main\res\drawable-nodpi\icon_android.png
+* app\src\main\res\drawable-nodpi\icon_menu1.png
+* app\src\main\res\drawable-nodpi\icon_movie.png
+* app\src\main\res\drawable-nodpi\icon_music.png
+* app\src\main\res\drawable-nodpi\icon_nou.png
+* app\src\main\res\drawable-nodpi\icon_photo.png
+* app\src\main\res\drawable-nodpi\icon_share.png
+* app\src\main\res\drawable-nodpi\icon_tv.png
+* app\src\main\res\drawable-nodpi\icon_u.png
+* app\src\main\res\drawable-nodpi\image_focus.9.png
+* app\src\main\res\drawable-nodpi\img_back_nomal.png
+* app\src\main\res\drawable-nodpi\info.png
+* app\src\main\res\drawable-nodpi\jt.png
+* app\src\main\res\drawable-nodpi\jt1.png
+* app\src\main\res\drawable-nodpi\loading__view__icon.png
+* app\src\main\res\drawable-nodpi\main_list_item_bg.xml
+* app\src\main\res\drawable-nodpi\media__image__next.xml
+* app\src\main\res\drawable-nodpi\media__image__next_focus.png
+* app\src\main\res\drawable-nodpi\media__image__next_normal.png
+* app\src\main\res\drawable-nodpi\media__image__pause.xml
+* app\src\main\res\drawable-nodpi\media__image__pause_focus.png
+* app\src\main\res\drawable-nodpi\media__image__pause_normal.png
+* app\src\main\res\drawable-nodpi\media__image__prev.xml
+* app\src\main\res\drawable-nodpi\media__image__prev_focus.png
+* app\src\main\res\drawable-nodpi\media__image__prev_normal.png
+* app\src\main\res\drawable-nodpi\media__progress__cursor.png
+* app\src\main\res\drawable-nodpi\media__progress__second.png
+* app\src\main\res\drawable-nodpi\mediabg.png
+* app\src\main\res\drawable-nodpi\mediapause_focus.png
+* app\src\main\res\drawable-nodpi\mediapause_normal.png
+* app\src\main\res\drawable-nodpi\mediaplaynomal.png
+* app\src\main\res\drawable-nodpi\music.png
+* app\src\main\res\drawable-nodpi\music_kj.png
+* app\src\main\res\drawable-nodpi\music_kt.png
+* app\src\main\res\drawable-nodpi\music_play.png
+* app\src\main\res\drawable-nodpi\musicbg.png
+* app\src\main\res\drawable-nodpi\musicdefault.png
+* app\src\main\res\drawable-nodpi\nextfocus.png
+* app\src\main\res\drawable-nodpi\nextmediafocus.png
+* app\src\main\res\drawable-nodpi\nextmedianomal.png
+* app\src\main\res\drawable-nodpi\nextnomal.png
+* app\src\main\res\drawable-nodpi\numbg.png
+* app\src\main\res\drawable-nodpi\pc1.png
+* app\src\main\res\drawable-nodpi\pc2.png
+* app\src\main\res\drawable-nodpi\pc_selector.xml
+* app\src\main\res\drawable-nodpi\photo_info1.png
+* app\src\main\res\drawable-nodpi\photo_info2.png
+* app\src\main\res\drawable-nodpi\photo_info3.png
+* app\src\main\res\drawable-nodpi\photo_info4.png
+* app\src\main\res\drawable-nodpi\pic.png
+* app\src\main\res\drawable-nodpi\play.png
+* app\src\main\res\drawable-nodpi\play_kj.png
+* app\src\main\res\drawable-nodpi\play_kt.png
+* app\src\main\res\drawable-nodpi\play_play.png
+* app\src\main\res\drawable-nodpi\play_stop.png
+* app\src\main\res\drawable-nodpi\playfocus.png
+* app\src\main\res\drawable-nodpi\playimage.png
+* app\src\main\res\drawable-nodpi\playnomal.png
+* app\src\main\res\drawable-nodpi\popup_folder.png
+* app\src\main\res\drawable-nodpi\popup_movie.png
+* app\src\main\res\drawable-nodpi\popup_music.png
+* app\src\main\res\drawable-nodpi\popup_photo.png
+* app\src\main\res\drawable-nodpi\prefocus.png
+* app\src\main\res\drawable-nodpi\prefocusnomal.png
+* app\src\main\res\drawable-nodpi\premediafocus.png
+* app\src\main\res\drawable-nodpi\premedianomal.png
+* app\src\main\res\drawable-nodpi\radiaofocus.png
+* app\src\main\res\drawable-nodpi\radiaonomal.png
+* app\src\main\res\drawable-nodpi\ratationfocus.png
+* app\src\main\res\drawable-nodpi\ratationnormal.png
+* app\src\main\res\drawable-nodpi\rootbg.jpg
+* app\src\main\res\drawable-nodpi\split.png
+* app\src\main\res\drawable-nodpi\splitline.png
+* app\src\main\res\drawable-nodpi\tf1.png
+* app\src\main\res\drawable-nodpi\tf2.png
+* app\src\main\res\drawable-nodpi\tf_selector.xml
+* app\src\main\res\drawable-nodpi\u_selector.xml
+* app\src\main\res\drawable-nodpi\upan1.png
+* app\src\main\res\drawable-nodpi\upan2.png
+* app\src\main\res\drawable-nodpi\updatebg.png
+* app\src\main\res\drawable-nodpi\updatetitleicon.png
+* app\src\main\res\drawable-nodpi\video.png
+* app\src\main\res\drawable-nodpi\videoplay.png
+* app\src\main\res\drawable-nodpi\videoplaynomal.png
+* app\src\main\res\drawable\
+* app\src\main\res\drawable\dialog_style_xml_icon.xml
+* app\src\main\res\drawable\loading.xml
+* app\src\main\res\drawable\progressbar.xml
+* app\src\main\res\drawable\umeng_update_wifi_disable.png
+* app\src\main\res\layout\
+* app\src\main\res\layout\activity_bootlog.xml
+* app\src\main\res\layout\activity_gridview.xml
+* app\src\main\res\layout\activity_header.xml
+* app\src\main\res\layout\activity_home.xml
+* app\src\main\res\layout\activity_index.xml
+* app\src\main\res\layout\activity_listview.xml
+* app\src\main\res\layout\activity_media.xml
+* app\src\main\res\layout\activity_newindex.xml
+* app\src\main\res\layout\activity_playaudio.xml
+* app\src\main\res\layout\activity_readimage.xml
+* app\src\main\res\layout\activity_readinfoimage.xml
+* app\src\main\res\layout\devicesdatatip_view.xml
+* app\src\main\res\layout\dialog_audio.xml
+* app\src\main\res\layout\dialog_file.xml
+* app\src\main\res\layout\dialog_image.xml
+* app\src\main\res\layout\dialog_mounted.xml
+* app\src\main\res\layout\dialog_video.xml
+* app\src\main\res\layout\general__tab_view.xml
+* app\src\main\res\layout\gridview_empty_view.xml
+* app\src\main\res\layout\item_listview.xml
+* app\src\main\res\layout\layout_app.xml
+* app\src\main\res\layout\layout_audio.xml
+* app\src\main\res\layout\layout_external_1.xml
+* app\src\main\res\layout\layout_external_2.xml
+* app\src\main\res\layout\layout_external_all.xml
+* app\src\main\res\layout\layout_image.xml
+* app\src\main\res\layout\layout_internal.xml
+* app\src\main\res\layout\layout_share.xml
+* app\src\main\res\layout\layout_video.xml
+* app\src\main\res\layout\media__audio_view.xml
+* app\src\main\res\layout\media__ctrl_view.xml
+* app\src\main\res\layout\media__image_view.xml
+* app\src\main\res\layout\media__progress_bar.xml
+* app\src\main\res\layout\media__video_view.xml
+* app\src\main\res\layout\media_dialog_item.xml
+* app\src\main\res\layout\media_list_item.xml
+* app\src\main\res\layout\media_list_video_item.xml
+* app\src\main\res\layout\media_login.xml
+* app\src\main\res\layout\progressbar.xml
+* app\src\main\res\values\
+* app\src\main\res\values\colors.xml
+* app\src\main\res\values\dimens.xml
+* app\src\main\res\values\strings.xml
+* app\src\main\res\values\styles.xml
+* build.gradle
+* gradle\
+* gradle\wrapper\
+* gradle\wrapper\gradle-wrapper.jar
+* gradle\wrapper\gradle-wrapper.properties
+* gradlew
+* gradlew.bat
+* proguard-project.txt
+* settings.gradle
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:22.2.1
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app\src\main\AndroidManifest.xml
+* libs\blur.jar => app\libs\blur.jar
+* libs\core.jar => app\libs\core.jar
+* libs\focus.jar => app\libs\focus.jar
+* res\ => app\src\main\res\
+* src\ => app\src\main\java\
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

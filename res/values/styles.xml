@@ -31,4 +31,20 @@
         <item name="android:windowExitAnimation">@anim/general__shared__scale_center_out</item>
     </style>
 
+     <style name="dialog_menu" parent="android:Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/animRightIn</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+    
+     <style name="animRightIn" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_right_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_right_out</item>
+    </style>
+    
 </resources>

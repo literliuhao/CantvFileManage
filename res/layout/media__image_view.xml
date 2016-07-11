@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <cn.cantv.mediacenter.filebrowser.ImageBrowser
+    <com.cantv.media.center.ui.ImageBrowser
         android:id="@+id/media__image_view__image"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

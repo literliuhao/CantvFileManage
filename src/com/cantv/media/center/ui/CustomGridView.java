@@ -58,7 +58,7 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
 		mGridView.setFocusableInTouchMode(true);
 		mGridView.setVerticalScrollBarEnabled(false);
 		mGridView.setNumColumns(GridView.AUTO_FIT);
-		mGridView.setColumnWidth(300);
+//		mGridView.setColumnWidth(280);
 		mGridView.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {

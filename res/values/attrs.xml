@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CircleProgressBar">
+        <attr name="bgBarWidth" format="dimension"></attr>
+        <attr name="bgBarColor" format="color"></attr>
+        <attr name="progressBarWidth" format="dimension"></attr>
+        <attr name="progressBarColor" format="color"></attr>
+        <attr name="maxProgress" format="integer"></attr>
+    </declare-styleable>
+    <declare-styleable name="LyricView">
+        <attr name="textSize" format="dimension"></attr>
+        <attr name="textColor" format="color"></attr>
+        <attr name="textSizeFocused" format="dimension"></attr>
+        <attr name="textColorFocused" format="color"></attr>
+        <attr name="lineSpacing" format="dimension"></attr>
+        <attr name="lineFocusedPosiPercent" format="float"></attr>
+        <attr name="textAlign">
+            <enum name="LEFT" value="1"></enum>
+            <enum name="CENTER" value="2"></enum>
+            <enum name="RIGHT" value="3"></enum>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="ThumbnailView">
+        <attr name="cornerRadius" format="dimension"></attr>
+    </declare-styleable>
+    <declare-styleable name="DoubleColumnMenu">
+        <attr name="menuWidth" format="dimension">
+            <enum name="match_parent" value="1"></enum>
+            <enum name="wrap_content" value="2"></enum>
+        </attr>
+        <attr name="menuHeight" format="dimension"></attr>
+        <attr name="menuBackground" format="reference|color"></attr>
+        <attr name="menuFocusResId" format="reference|color"></attr>
+        <attr name="menuFocusMode">
+            <enum name="FOCUS_TMP" value="1"></enum>
+            <enum name="FOCUS_SELECTED" value="2"></enum>
+        </attr>
+        <attr name="subMenuWidth" format="dimension"></attr>
+        <attr name="subMenuHeight" format="dimension"></attr>
+        <attr name="subMenuBackground" format="reference|color"></attr>
+        <attr name="subMenuFocusResId" format="reference|color"></attr>
+        <attr name="subMenuFocusMode">
+            <enum name="FOCUS_TMP" value="1"></enum>
+            <enum name="FOCUS_SELECTED" value="2"></enum>
+            <enum name="FOCUS_NONE" value="3"></enum>
+        </attr>
+        <attr name="subMenuPaddingTop" format="dimension"></attr>
+        <attr name="subMenuPaddingLeft" format="dimension"></attr>
+        <attr name="subMenuPaddingRight" format="dimension"></attr>
+        <attr name="subMenuPaddingBottom" format="dimension"></attr>
+    </declare-styleable>
+    <declare-styleable name="PlayerProgressBar">
+        <attr name="barColor" format="reference|color"></attr>
+        <attr name="bordercolor" format="reference|color"></attr>
+        <attr name="textcolor" format="reference|color"></attr>
+        <attr name="textsize" format="dimension"></attr>
+        <attr name="barwidth" format="dimension"></attr>
+        <attr name="barhight" format="dimension"></attr>
+    </declare-styleable>
+
+</resources>

@@ -4,6 +4,7 @@
     <color name="transparent">#00000000</color>
     <color name="per80_white">#CCFFFFFF</color>
     <color name="per50_white">#7FFFFFFF</color>
+    <color name="per15_white">#26FFFFFF</color>
     <color name="white">#E6E6E6</color>
     <color name="blue">#1998D5</color>
     <color name="gray">#86878C</color>
@@ -15,4 +16,14 @@
     <color name="jtselectcolor">#1998d5</color>
     <color name="jtnomalcolor">#a2a2a2</color>
     <color name="textselectlcolor">#e6e6e6</color>
+
+    <color name="blue_32aefd">#32AEFD</color>
+    <color name="blue_00b7ee">#00B7EE</color>
+    <color name="per80_blue_00b7ee">#CC00B7EE</color>
+    <color name="per50_blue_00b7ee">#8000B7EE</color>
+    <color name="yellow_fdf352">#FDF352</color>
+    
+     <!-- 菜单对话框 -->
+	 <color name="menu_bg">#D90A1A25</color>
+	 <color name="submenu_bg">#E6071824</color>
 </resources>

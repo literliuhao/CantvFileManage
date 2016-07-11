@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:zby="http://schemas.android.com/apk/res/com.cantv.media"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingLeft="20dp"
+     >
+    
+    <com.cantv.media.center.ui.DoubleColumnMenu 
+        android:id="@+id/dcm"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        zby:menuBackground="@color/menu_bg"
+        zby:menuFocusMode="FOCUS_SELECTED"
+        zby:menuFocusResId="@drawable/meul_left"
+        zby:menuWidth="@dimen/dimen_298px"
+        zby:subMenuBackground="@color/submenu_bg"
+        zby:subMenuFocusMode="FOCUS_NONE"
+        zby:subMenuFocusResId="@drawable/focus"
+        zby:subMenuWidth="@dimen/dimen_400px"
+        zby:subMenuPaddingTop="@dimen/dimen_160px"
+        zby:subMenuPaddingBottom="@dimen/dimen_50px"
+        ></com.cantv.media.center.ui.DoubleColumnMenu>
+
+</LinearLayout>

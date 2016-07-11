@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    android:layout_width="@dimen/px752"
-    android:layout_height="@dimen/px264"
+    android:layout_width="@dimen/px780"
+    android:layout_height="@dimen/px248"
+    android:layout_marginTop="@dimen/px8"
     android:id="@+id/layout_external_all"
     android:visibility="visible"
+    android:focusable="true"
+   	android:clickable="true"
+    android:layout_marginLeft="@dimen/px23"
+    android:layout_marginRight="-22px"
     xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <ImageView
         android:id="@+id/imageview_external"
-        android:background="@drawable/bj_06"
-        android:focusable="true"
-    	android:clickable="true"
-    	android:layout_marginLeft="@dimen/px8"
-		android:layout_marginTop="@dimen/px8"
-        android:layout_width="@dimen/px736"
-        android:layout_height="@dimen/px248" />
+        android:layout_width="@dimen/px735"
+        android:layout_height="@dimen/px248"
+        android:layout_marginLeft="@dimen/px21"
+        android:background="@drawable/bj_06" />
+
     <ImageView
 		android:id="@+id/imageview_external_u"
         android:background="@drawable/icon_nou"

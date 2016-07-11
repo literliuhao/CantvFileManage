@@ -2,6 +2,7 @@
 <FrameLayout
     android:layout_width="@dimen/px376"
     android:layout_height="@dimen/px376"
+    android:layout_marginLeft="@dimen/px30"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <ImageView
         android:id="@+id/imageview_video"

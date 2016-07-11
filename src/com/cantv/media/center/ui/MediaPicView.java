@@ -1,12 +1,5 @@
 package com.cantv.media.center.ui;
 
-import java.io.File;
-import java.io.InputStream;
-
-import com.cantv.media.R;
-import com.cantv.media.center.constants.SourceType;
-import com.cantv.media.center.data.Media;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +7,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
+
+import com.cantv.media.R;
+import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.data.Media;
+
+import java.io.File;
+import java.io.InputStream;
 
 public class MediaPicView extends PicView implements PicViewDecoder {
 	private static final String TAG = "MediaPicView"; 
@@ -43,6 +42,18 @@ public class MediaPicView extends PicView implements PicViewDecoder {
 				setDefaultPic(R.drawable.folder_wj);
 			} else {
 				setDefaultPic(R.drawable.folder_music);
+			}
+		}else if (media.getSourceType() == SourceType.PICTURE) {
+			if (media.isCollection()) {
+				setDefaultPic(R.drawable.folder_photos);
+			} else {
+				setDefaultPic(R.drawable.folder_photo);
+			}
+		}else if (media.getSourceType() == SourceType.APP) {
+			if (media.isCollection()) {
+				setDefaultPic(R.drawable.folder_wj);
+			} else {
+				setDefaultPic(R.drawable.apk_icon);
 			}
 		}
 	}

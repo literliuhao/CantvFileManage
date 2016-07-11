@@ -23,7 +23,7 @@
     <LinearLayout
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:layout_marginLeft="@dimen/px200"
+        android:layout_marginLeft="@dimen/px160"
         android:layout_marginTop="@dimen/px300"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">

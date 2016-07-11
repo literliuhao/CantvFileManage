@@ -11,15 +11,16 @@ import java.util.Locale;
 import java.util.Stack;
 
 import com.cantv.media.R;
+import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.adapter.MediaListAdapter;
 import com.cantv.media.center.constants.SourceType;
-import com.cantv.media.center.data.Audio;
-import com.cantv.media.center.data.Image;
 import com.cantv.media.center.data.Media;
-import com.cantv.media.center.data.Video;
+import com.cantv.media.center.utils.FileComparator;
+import com.cantv.media.center.utils.FileUtil;
+import com.cantv.media.center.utils.IntentBuilder;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 
-import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,59 +36,134 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 @SuppressLint("ResourceAsColor")
 public class MediaGridView extends CustomGridView {
 	private static final String TAG = "MediaGridView";
-	private static final int UPDATE_UI = 0; 
+	private static final int UPDATE_UI = 0;
 	private MediaLoaderTask mTask;
 	private MediaUtils mMediaUtils;
 	public MediaListAdapter mListAdapter;
 	private Stack<Integer> mPosStack = new Stack<Integer>();
-	private Stack<List<Media>> mMediaStack = new Stack<List<Media>>();
+	private Stack<List<Media>> mMediaStack = new Stack<List<Media>>();// 记录上一级目录结构
 	private List<Media> mMediaes;
-	//private List<String> muries;
+	// private List<String> muries;
 	private String mPath;
 	private SourceType msSourceType;
 	private UpdateMediaDataShow mUpdateMediaDataShow;
 	public int mindex;
 	private ProgressDialog mProgressDialog;
 	private boolean misShowProcess = false;
-	private int mfirst=0;
+	private int mfirst = 0;
 	private Context mContext;
-	
+	private GridViewActivity mActivity;
+	public int mSelectItemPosition;
+	public List<Media> mCurrMediaList = new ArrayList<>(); // 记录当前的数据集合
+
 	public MediaGridView(Context context, String uri, SourceType sourceType) {
 		super(context);
+		mActivity = (GridViewActivity) context;
 		mContext = context;
 		mPath = uri;
 		mProgressDialog = new ProgressDialog(context);
-		WindowManager.LayoutParams params = mProgressDialog.getWindow().getAttributes();
+		WindowManager.LayoutParams params = mProgressDialog.getWindow()
+				.getAttributes();
 		mProgressDialog.getWindow().setGravity(Gravity.CENTER);
 		mProgressDialog.getWindow().setAttributes(params);
 		msSourceType = sourceType;
 		mMediaUtils = new MediaUtils();
-		setHorizontalSpacing((int) getResources().getDimension(R.dimen.px146));
-		setVerticalSpacing((int) getResources().getDimension(R.dimen.px86));
 		mListAdapter = new MediaListAdapter(context, new ArrayList<Media>());
 		setGridViewSelector(new ColorDrawable(Color.TRANSPARENT));
 		setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 				// 1,如果是文件夹则继续显示下级列表
 				// 2,如果是文件则全屏显示
 				Media item = (Media) mListAdapter.getItem(position);
-				if (item.isCollection()) {
+
+				if (item.isDir) {
+					if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
+						mCurrMediaList = FileUtil.getFileList(item.mUri,
+								msSourceType);
+					} else {
+						mCurrMediaList = FileUtil.getFileList(item.mUri);
+					}
 					mPosStack.push(position);
 					mMediaStack.push(mListAdapter.getData());
-					mListAdapter.bindData(item.getSubMedias());
-					MediaGridView.this.setSelection(0);
+					mListAdapter.bindData(mCurrMediaList);
+
+				}
+
+				// if ((msSourceType == SourceType.LOCAL || msSourceType ==
+				// SourceType.DEVICE)
+				// && item.isDir) {
+				//
+				// mPosStack.push(position);
+				// mMediaStack.push(mListAdapter.getData());
+				//
+				// MediaLoaderTask mediaLoaderTask = new MediaLoaderTask(
+				// item.mUri, msSourceType);
+				// mediaLoaderTask.execute();
+				//
+				// MediaGridView.this.setSelection(0);
+				//
+				// } else if ((item.isDir||item.mType==SourceType.FOLDER)
+				// && (msSourceType == SourceType.MOIVE
+				// || msSourceType == SourceType.APP
+				// || msSourceType == SourceType.PICTURE
+				// || msSourceType == SourceType.MUSIC)) {
+				// mPosStack.push(position);
+				// mMediaStack.push(mListAdapter.getData());
+				//
+				// // List<Media> fileList = FileUtil.getFileList(item.mUri);
+				//
+				// mListAdapter.bindData(item.mSubMedias);
+				// MediaGridView.this.setSelection(0);
+				// }
+				else if (item.mType == SourceType.PICTURE) {
+					// 全屏展示
+					mMediaUtils.showMediaDetail(getContext(),
+							mListAdapter.getData(), position);
 				} else {
 					// 全屏展示
-					mMediaUtils.showMediaDetail(getContext(), mListAdapter.getData(), position);
+					// mMediaUtils.showMediaDetail(getContext(),
+					// mListAdapter.getData(), position);
+					MediaUtils.openMedia(mActivity, item.mUri);
+					// IntentBuilder.viewFile(mActivity, item.mUri);
+					// FileUtil.delete(item);
+					// // mListAdapter.notifyDataSetChanged();
+					// List<Media> list = mListAdapter.getList();
+					// list.remove(position);
+					// mListAdapter.bindData(list);
+					// deleteMedia(item);
+
 				}
 			}
 		});
 
+		setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				if (view != null) {
+					mSelectItemPosition = position;
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+
+			}
+		});
+
+	}
+
+	public void setStyle(MediaOrientation orientation) {
+		mListAdapter.bindStyle(orientation);
 	}
 
 	public void asyncLoadData() {
@@ -122,7 +198,8 @@ public class MediaGridView extends CustomGridView {
 			public int compare(Media arg0, Media arg1) {
 				boolean one = arg0.isCollection();
 				boolean two = arg1.isCollection();
-				return one == two ? mCollator.compare(arg0.getName(), arg1.getName()) : (one ? 1 : -1);
+				return one == two ? mCollator.compare(arg0.getName(),
+						arg1.getName()) : (one ? 1 : -1);
 			}
 		};
 
@@ -132,25 +209,35 @@ public class MediaGridView extends CustomGridView {
 			mSourceType = sourceType;
 		}
 
-		private List<Media> fetchMediasBySource(String root, final SourceType source) {
+		private List<Media> fetchMediasBySource(String root,
+				final SourceType source) {
 			if (System.currentTimeMillis() - mTime > 5000) {
 				mTime = System.currentTimeMillis();
 				Message msg = mHandler.obtainMessage();
 				msg.what = UPDATE_UI;
 				mHandler.sendMessage(msg);
 			}
-			root = root.replace("\\040", " ");
+			root = root.replace("\\040", " "); // 不是太理解
+
 			List<Media> medias = new ArrayList<Media>();
 			if (TextUtils.isEmpty(root))
 				return medias;
 			File rootFile = new File(root);
+			// 如果文件不存在或者文件不是文件夹
+			if (!rootFile.exists() || !rootFile.isDirectory()) {
+				return medias;
+			}
+
 			if (rootFile.canRead() == false)
 				return medias;
+
 			File[] subFiles = null;
 			subFiles = rootFile.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File subFile) {
-					return subFile.isDirectory() || MediaUtils.checkMediaSource(subFile.getAbsolutePath(), source);
+					return subFile.isDirectory()
+							|| MediaUtils.checkMediaSource(
+									subFile.getAbsolutePath(), source);
 				}
 			});
 			List<Media> curMedias = new ArrayList<Media>();
@@ -158,14 +245,21 @@ public class MediaGridView extends CustomGridView {
 				return medias;
 			}
 			for (File each : subFiles) {
-				if (each.isDirectory()) {
-					medias.addAll(fetchMediasBySource(each.getAbsolutePath(), source));
-				} else {
-					curMedias.add(genMediaByUri(each.getAbsolutePath(), source));
+				String absolutePath = each.getAbsolutePath();
+				// 过滤掉隐藏文件
+				if (FileUtil.isNormalFile(absolutePath)
+						&& FileUtil.isShowFile(each)) {
+					if (each.isDirectory()) {
+						medias.addAll(fetchMediasBySource(
+								each.getAbsolutePath(), source));
+					} else {
+						curMedias.add(genMediaByUri(each.getAbsolutePath(),
+								source));
+					}
 				}
 			}
 			if (curMedias.size() > 1) {
-				Media media = new Media(source, "");
+				Media media = FileUtil.getFileInfo(rootFile, null, false);
 				media.setSubMedias(curMedias);
 				medias.add(media);
 			} else if (curMedias.size() == 1) {
@@ -176,19 +270,28 @@ public class MediaGridView extends CustomGridView {
 		}
 
 		private Media genMediaByUri(String uri, SourceType type) {
-			if (MediaUtils.isImage(uri))
-				return new Image(type, uri);
-			if (MediaUtils.isVideo(uri))
-				return new Video(type, uri);
-			if (MediaUtils.isAudio(uri))
-				return new Audio(type, uri);
-			return new Media(type, uri);
+			if (MediaUtils.isImage(uri)) {
+			}
+			// media = new Image(type, uri);
+			if (MediaUtils.isVideo(uri)) {
+			}
+			// media = new Video(type, uri);
+			if (MediaUtils.isAudio(uri)) {
+			}
+			// media = new Audio(type, uri);
+			if (MediaUtils.isApp(uri)) {
+			}
+			// media = new App(type, uri);
+
+			// media = new Media(type, uri);
+
+			return FileUtil.getFileInfo(new File(uri), null, false);
 		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			if (mfirst==0) {
+			if (mfirst == 0) {
 				if (misShowProcess) {
 					showProgressBar(null);
 				}
@@ -199,23 +302,48 @@ public class MediaGridView extends CustomGridView {
 		@Override
 		protected void onPostExecute(List<Media> result) {
 			super.onPostExecute(result);
-			if (mfirst==0) {
+			if (mfirst == 0) {
 				dismissProgressBar();
 			}
+
+			FileUtil.sortList(result, FileComparator.SORT_TYPE_DEFAULT, true);
 			mListAdapter.bindData(result);
 			setAdapter(mListAdapter);
-			mfirst=1;
+			mfirst = 1;
 		}
 
 		@Override
 		protected List<Media> doInBackground(Void... params) {
 			try {
-				mMediaes.addAll(fetchMediasBySource(mSourceUries, mSourceType));
+				if (mSourceType == SourceType.LOCAL
+						|| mSourceType == SourceType.DEVICE) {
+					mMediaes.addAll(FileUtil.getFileList(mSourceUries));
+				} else {
+					// mMediaes.addAll(fetchMediasBySource(mSourceUries,
+					// mSourceType));
+
+					// mMediaes.addAll(FileUtil.getFileList(mSourceUries,
+					// mSourceType));
+
+					List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
+                    for (int i=0;i<usbRootPaths.size();i++){
+
+
+                        File file = new File(usbRootPaths.get(i));
+                        Media fileInfo = FileUtil.getFileInfo(file, null, false);
+
+                        MediaUtils.getUSBStorage(mContext,usbRootPaths.get(i),fileInfo);
+                        MediaUtils.setMediaName(fileInfo);
+                        mMediaes.add(fileInfo);
+                    }
+
+				}
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
 			return mMediaes;
 		}
+
 	}
 
 	public boolean onBack() {
@@ -223,8 +351,8 @@ public class MediaGridView extends CustomGridView {
 		if (!mPosStack.isEmpty() && !mMediaStack.isEmpty()) {
 			mListAdapter.bindData(mMediaStack.pop());
 			MediaGridView.this.setSelection(mPosStack.pop());
-			isback=true;
-		} 
+			isback = true;
+		}
 		return isback;
 	}
 
@@ -240,7 +368,9 @@ public class MediaGridView extends CustomGridView {
 	protected void animateFoucs(View v) {
 		if (v != null && v instanceof MediaItemView) {
 			View child = ((MediaItemView) v).getFocusImage();
-			animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(), child.getHeight());
+			animateFoucs(child.getLeft() + v.getLeft(),
+					child.getTop() + v.getTop(), child.getWidth(),
+					child.getHeight());
 		} else {
 			super.animateFoucs(v);
 		}
@@ -269,7 +399,7 @@ public class MediaGridView extends CustomGridView {
 		}
 	}
 
-    private Handler mHandler = new Handler() {
+	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);

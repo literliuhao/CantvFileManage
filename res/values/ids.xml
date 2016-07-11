@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="glide_tag_id" type="id"/>
+    
+    <item name="tag_id_holder_key" type="id"></item>
+    <item name="tag_id_user" type="id"></item>
+
+</resources>

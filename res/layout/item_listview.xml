@@ -25,6 +25,6 @@
 	    android:layout_marginLeft="@dimen/px220"
 	    android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
-		android:layout_below="@+id/ItemDetail"
+		android:layout_below="@+id/ItemName"
 		android:textSize="@dimen/px28" />
 </RelativeLayout>

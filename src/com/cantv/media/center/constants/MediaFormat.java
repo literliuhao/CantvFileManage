@@ -1,8 +1,10 @@
 package com.cantv.media.center.constants;
 
 public enum MediaFormat {
-	IMAGE,
-	VIDEO,
-	AUDIO,
-	UNKNOW
+    IMAGE,
+    VIDEO,
+    AUDIO,
+    APP,
+    UNKNOW,
+    FOLDER
 }

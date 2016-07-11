@@ -14,13 +14,6 @@ import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-/**
- * ×ÖÄ»²Ëµ¥
- * 
- * @author liujun
- * 
- */
-
 @SuppressLint("NewApi")
 public class MenuItemView extends LinearLayout {
 	private Drawable mFocusDrawable;
