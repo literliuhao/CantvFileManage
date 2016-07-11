@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 /*".srt", ".smi", ".ass", ".ssa", ".sub"*/
 public class StUtil {
@@ -116,6 +117,9 @@ public class StUtil {
 
 	public synchronized static StContent get2ndSubtitleContent(int pos, int childIndex, final Map<String, List<StContent>> subtitleList) {
 		int keyIndex = 0;
+		if(subtitleList == null){
+			return null;
+		}
 		Iterator<String> keyIt = subtitleList.keySet().iterator();
 		List<StContent> contentList = null;
 		while (keyIt.hasNext()) {

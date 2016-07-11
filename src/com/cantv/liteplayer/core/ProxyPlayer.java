@@ -1,5 +1,6 @@
 package com.cantv.liteplayer.core;
 
+import java.io.IOException;
 import java.util.List;
 
 import android.annotation.TargetApi;
@@ -8,7 +9,9 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnSeekCompleteListener;
+import android.media.MediaPlayer.OnTimedTextListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
+import android.media.MediaPlayer.TrackInfo;
 import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -135,7 +138,6 @@ public class ProxyPlayer {
 					setMovieAudioTrack(mStatusInfo.mAudioTrackIndex);
 				if (mStatusInfo.mVideoSubTitleIndex >= 0)
 					setMovieSubTitle(mStatusInfo.mVideoSubTitleIndex);
-				Log.i("liujun33", "startseekTo");
 				seekTo(mStatusInfo.mCurrentPosition, new OnSeekCompleteListener() {
 					@Override
 					public void onSeekComplete(MediaPlayer arg0) {
@@ -154,6 +156,35 @@ public class ProxyPlayer {
 			mLitePlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		}
 		return mLitePlayer;
+	}
+
+	public void addText(String srtPath,OnTimedTextListener listener) {
+		Log.e("sunyanlong","srtPath="+srtPath);
+		try {
+			getLitePlayer().addTimedTextSource(srtPath, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP);
+			
+			getLitePlayer().setOnTimedTextListener(listener);
+
+			TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
+
+			if (trackInfos != null && trackInfos.length > 0) {
+				for (int i = 0; i < trackInfos.length; i++) {
+					final TrackInfo info = trackInfos[i];
+
+					Log.w("sunyanlong", "TrackInfo: " + info.getTrackType() + " " + info.getLanguage());
+
+					if (info.getTrackType() == TrackInfo.MEDIA_TRACK_TYPE_AUDIO) {
+						// mMediaPlayer.selectTrack(i);
+					} else if (info.getTrackType() == TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {
+						getLitePlayer().selectTrack(i);
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			Log.e("sunyanlong","err:"+e.toString());
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -22,9 +22,12 @@
 	<string name="str_nodata">暂无数据</string>
 	<string name="str_nodev">暂无设备</string>
 	<string name="str_noshare">暂无文件共享</string>
+	<string name="str_open">打开</string>
+	<string name="str_close">关闭</string>
 	
 	<string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="play_tips">按菜单键获取更多功能</string>
     <string name="filenoexsit">视频文件不存在</string>
     <string name="app_name">多媒体</string>
     <string name="filename">音乐文件名称</string>
@@ -48,7 +51,7 @@
     <string name="relogin_title">登录</string>
     <string name="username_null">用户名不能为空</string>
     <string name="login_error_tip">用户名或密码错误，请重新输入</string>
-      <string name="ping_error">共享网络已断开，请重新设置</string>
+    <string name="ping_error">共享网络已断开，请重新设置</string>
     <string name="password_null">密码不能为空</string>
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
@@ -59,7 +62,6 @@
     <string name="mediatip">按菜单键可呼出菜单</string>
     <string name="version_name">V:  </string>
     <string name="can_not_find_version_name">1.0.1 </string>
-
     <string name="tips_no_lyric">主人，歌词出去遛弯了，\r\n一时半会回不来，就让我来陪你吧~ ~</string>
     <string name="tips_click_menu_key">按菜单键获取更多功能</string>
     <string name="play_in_order">顺序播放</string>
@@ -69,7 +71,6 @@
     <string name="total_num">共 %s 个</string>
     <string name="menu">菜单</string>
     <string name="deleteFailed">删除失败,请稍后再试!</string>
-    
     <!--gridview中二级菜单项-->
     <string name="sort">排序</string>
 	<string name="sort_date">按日期</string>
@@ -79,5 +80,13 @@
 	<string name="view_list">列表</string>
 	<string name="view_tile">平铺</string>
 	<string name="delete">删除</string>
-	
+    <string name="play_list">播放列表</string>
+    <string name="play_mode">播放模式</string>
+    <string name="play_mode_in_order">顺序播放</string>
+    <string name="play_mode_in_random_order">随机播放</string>
+    <string name="play_mode_single_cycle">单曲循环</string>
+    <string name="load_lyric">载入歌词</string>
+    <string name="adjust_lyric">调整歌词</string>
+    <string name="forward_seconds">提前 0.2s</string>
+    <string name="delay_seconds">推迟 0.2s</string>
 </resources>

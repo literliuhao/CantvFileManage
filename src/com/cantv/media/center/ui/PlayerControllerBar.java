@@ -45,6 +45,8 @@ public class PlayerControllerBar extends FrameLayout implements MediaProgressBar
 		int getPlayerCurPosition();
 
 		boolean isPlayerPaused();
+		
+		
 	}
 
 	public interface PlayerCtrlBarListener {

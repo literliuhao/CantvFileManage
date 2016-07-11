@@ -107,13 +107,14 @@ public class SrtDecoder extends StDecoder {
 					continue;
 				}
 				subtitle = subTitleStr.substring(0, subTitleStr.length() - "<br>".length()).trim();
-
-				if (content.getSubtitleLine() != null && content.getSubtitleLine().trim().length() > 0)
-					content.setSubtitleLine(content.getSubtitleLine() + subtitle);
-				else
-					content.setSubtitleLine(subtitle);
-				if (!subTitleList.contains(content))
-					subTitleList.add(content);
+				if(content != null){
+					if (content.getSubtitleLine() != null && content.getSubtitleLine().trim().length() > 0)
+						content.setSubtitleLine(content.getSubtitleLine() + subtitle);
+					else
+						content.setSubtitleLine(subtitle);
+					if (!subTitleList.contains(content))
+						subTitleList.add(content);
+				}
 				content = null;
 				subTitleBuf.delete(0, subTitleBuf.length());
 

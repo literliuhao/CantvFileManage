@@ -91,7 +91,6 @@ public class Media {
         return (index != -1) ? fileName.substring(0, index) : fileName;
     }
 
-
     public String getmUri() {
         return mUri;
     }

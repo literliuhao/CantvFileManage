@@ -11,7 +11,7 @@
         android:layout_gravity="center" >
     </SurfaceView>
 
-    <cn.cantv.mediacenter.filebrowser.ExternalSurfaceView
+    <com.cantv.media.center.ui.ExternalSurfaceView
         android:id="@+id/media__video_view__surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/general__share__player_bg"
-        android:visibility="invisible"></ImageView>
+        android:visibility="invisible" >
+    </ImageView>
 
     <TextView
         android:id="@+id/media__video_view__subtitle"
@@ -31,9 +32,10 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/px40"
         android:gravity="center"
+        android:text="TTTTTTT"
         android:textSize="@dimen/px80" />
 
-    <cn.cantv.mediacenter.filebrowser.PlayerControllerBar
+    <com.cantv.media.center.ui.PlayerControllerBar
         android:id="@+id/media__video_view__ctrlbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

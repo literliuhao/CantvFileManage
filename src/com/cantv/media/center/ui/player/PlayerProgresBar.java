@@ -1,0 +1,247 @@
+package com.cantv.media.center.ui.player;
+
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
+import android.animation.Animator;
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
+import android.graphics.Paint.Style;
+import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
+
+import com.cantv.media.R;
+
+public class PlayerProgresBar extends View {
+
+	private Paint paint;
+	private FontMetrics fm;
+	private ValueAnimator anim;
+	// 数据
+	private long duration;// 总进度数
+	private String mCurrTime = "00:00:00";// 当前播放时间
+	private String mTotalTime = "00:00:00";// 总播放时间
+	private long mCurrProgress;// 当前进度时间
+	private long mDestProgress; 
+	private long mCurrPx;//当前进度绘制的像素宽度
+	private int mProgressColor;// 进度条颜色
+	private int mBorderColor;// 边框颜色
+	private int mTextColor;// 文字颜色
+	private int mTextSize;// 文字大小
+	private int mWidth;// 进度条宽
+	private int mHeight;// 进度条高
+
+	public PlayerProgresBar(Context context) {
+		this(context, null);
+		paint = new Paint();
+		paint.setAntiAlias(true);
+		paint.setStrokeWidth(5);
+		paint.setTextSize(mTextSize);
+	}
+
+	public PlayerProgresBar(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init(context, attrs);
+		paint = new Paint();
+		paint.setAntiAlias(true);
+		paint.setStrokeWidth(5);
+		paint.setTextSize(mTextSize);
+	}
+
+	private void init(Context context, AttributeSet attrs) {
+		TypedArray attributes = context.obtainStyledAttributes(attrs,
+				R.styleable.PlayerProgressBar);
+		mProgressColor = attributes.getColor(
+				R.styleable.PlayerProgressBar_barColor,
+				Color.parseColor("#99019dd4"));
+		mBorderColor = attributes.getColor(
+				R.styleable.PlayerProgressBar_bordercolor,
+				Color.parseColor("#77ffffff"));
+		mTextColor = attributes.getColor(
+				R.styleable.PlayerProgressBar_textcolor,
+				Color.parseColor("#aaffffff"));
+		mTextSize = (int) attributes.getDimension(
+				R.styleable.PlayerProgressBar_textsize, 50);
+		attributes.recycle();
+	}
+
+	@Override
+	protected synchronized void onMeasure(int widthMeasureSpec,
+			int heightMeasureSpec) {
+		mHeight = (int) (paint.descent() - paint.ascent() + getPaddingTop() + getPaddingBottom());
+		setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mHeight);
+	}
+
+	@SuppressLint({ "DrawAllocation", "NewApi" })
+	@Override
+	protected synchronized void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		/**
+		 * 绘制边框
+		 */
+		paint.setStyle(Style.STROKE);// 空心矩形框
+		RectF oval = new RectF(0, 0, getWidth(), getHeight());
+		paint.setColor(mBorderColor);
+		canvas.drawRoundRect(oval, 0, 0, paint);
+		/***
+		 * 绘制进度值
+		 */
+		paint.setStyle(Style.FILL);
+		paint.setColor(mProgressColor);
+		if(duration == 0){
+			mCurrPx = 0;
+		}else{
+			mCurrPx = mCurrProgress * (getWidth()) / duration;
+		}
+		oval = new RectF(0, 0, mCurrPx, getHeight());
+		canvas.drawRoundRect(oval, 0, 0, paint);
+		/***
+		 * 绘制文本(当前进度)
+		 */
+		fm = paint.getFontMetrics();
+		paint.setColor(mTextColor);
+
+		float textCenterVerticalBaselineY = getHeight() / 2 - fm.descent
+				+ (fm.descent - fm.ascent) / 2;
+
+		int mProgressBarWidth = getWidth();
+		final int currTimeTvWidth = (int) paint.measureText(this.mCurrTime);
+
+		int timeTvX = 10;
+		if (mCurrPx > currTimeTvWidth + 20) {
+			timeTvX += mCurrPx - currTimeTvWidth - 20;
+		}
+		canvas.drawText(this.mCurrTime, timeTvX, textCenterVerticalBaselineY,
+				paint);
+
+		 /***
+		 * 绘制文本(总时间)
+		 */
+		final int currTimeTvWidth1 = (int) paint.measureText(this.mTotalTime);
+		int Width = mProgressBarWidth - currTimeTvWidth - currTimeTvWidth1;
+
+		if (Width > timeTvX + 20) {
+			canvas.drawText(this.mTotalTime, mProgressBarWidth
+					- currTimeTvWidth1 - 10, textCenterVerticalBaselineY, paint);
+		}
+	}
+	
+	
+	public void initProgress() {
+		if(anim != null){
+			anim.cancel();
+		}
+		mCurrProgress = 0;
+		mCurrTime = "00:00:00";
+		mTotalTime = "00:00:00";
+		invalidate();
+	}
+
+	/**
+	 * 设置最大值
+	 * 
+	 * @param max
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public void setDuration(long duration) {
+		this.duration = duration;
+		// 转化为最大时间
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+		formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+		mTotalTime = formatter.format(duration);
+		invalidate();
+	}
+	/**
+	 * 设置进度值(秒)
+	 * 
+	 * @param progress
+	 */
+	@SuppressLint("SimpleDateFormat")
+	public void setProgress(long progress) {
+		if(progress == PlayerController.FULLPROGRESS){
+			progress = duration;
+		}
+		if (duration <= 0 || progress > duration) {
+			return;
+		}
+		if (mCurrProgress==progress) {
+			return;
+		}
+		if (anim!=null&&anim.isStarted()) {
+			mDestProgress=progress;
+		}
+		
+		// 转化为当前时间
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+		formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+		mCurrTime = formatter.format(progress);
+		if (anim!=null) {
+			anim.cancel();
+		}
+		anim = ValueAnimator.ofObject(new ProgressEvaluator(),
+				mCurrProgress, progress);
+		anim.addUpdateListener(new AnimatorUpdateListener() {
+
+			@Override
+			public void onAnimationUpdate(ValueAnimator animation) {
+				mCurrProgress = (Long) animation.getAnimatedValue();
+				invalidate();
+			}
+		});
+		anim.addListener(new AnimatorListener() {
+
+			@Override
+			public void onAnimationStart(Animator animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				if (mDestProgress != 0) {
+					setProgress(mDestProgress);
+					mDestProgress = 0;
+				}
+			}
+
+			@Override
+			public void onAnimationCancel(Animator animation) {
+			}
+		});
+		
+		anim.setInterpolator(new LinearInterpolator());// 匀速
+		anim.setDuration(500);
+		anim.start();
+	}
+
+	public class ProgressEvaluator implements TypeEvaluator<Long> {
+		@Override
+		public Long evaluate(float fraction, Long startValue, Long endValue) {
+			return (long) (startValue + (endValue - startValue) * fraction);
+		}
+	}
+	
+	public void cancelAnim(){
+		if (anim!=null) {
+			anim.cancel();
+		}
+	}
+	
+	public long getCurrProgress(){
+		return mCurrProgress;
+	}
+	
+}

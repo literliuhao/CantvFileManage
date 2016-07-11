@@ -26,6 +26,11 @@ import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 
+import com.cantv.media.R;
+import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.ui.MediaGridView;
+import com.cantv.media.center.utils.MediaUtils;
+
 public class GridViewActivity extends Activity {
     private static String TAG = "GridViewActivity";
     private RelativeLayout mContentView;

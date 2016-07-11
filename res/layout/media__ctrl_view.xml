@@ -99,7 +99,7 @@
             android:textSize="@dimen/px80" />
     </RelativeLayout>
 
-    <cn.cantv.mediacenter.filebrowser.MediaProgressBar
+    <com.cantv.media.center.ui.CoverFlowView
         android:id="@+id/media__ctrl_view__progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
