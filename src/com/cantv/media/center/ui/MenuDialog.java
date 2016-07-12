@@ -245,6 +245,8 @@ public class MenuDialog extends Dialog {
 		
 		public void updateMenuItem(View view, MenuItem data){
 			MenuViewHolder holder = (MenuViewHolder) view.getTag(R.id.tag_id_holder_key);
+			view.setEnabled(data.isEnabled());
+			view.setFocusable(data.isEnabled());
 			holder.titleTv.setText(data.getTitle());
 			int type = data.getType();
 			if (type == MenuItem.TYPE_LIST) {
@@ -262,6 +264,8 @@ public class MenuDialog extends Dialog {
 		
 		public void updateSubMenuItem(View view, MenuItem data){
 			int dataType = data.getType();
+			view.setEnabled(data.isEnabled());
+			view.setFocusable(data.isEnabled());
 			if (dataType == MenuItem.TYPE_LIST || dataType == MenuItem.TYPE_NORMAL) {
 				ListSubMenuViewHolder holder = (ListSubMenuViewHolder) view.getTag(R.id.tag_id_holder_key);
 				holder.titleTv.setText(data.getTitle());

@@ -81,7 +81,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	private Rect mNewSelectRect;
 	private int mMenuHeaderHeight;
 	private boolean isSubMenuShowing = true;
-	// private boolean intentToCloseSubMenu = true;
 
 	private OnItemClickListener mItemClickListener;
 	private OnItemFocusChangeListener mFocusChangeListener;
@@ -457,7 +456,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		if (posi > 0 && posi < childCount) {
 			mPosi = posi;
 		}
-		mMenuContainer.getChildAt(mPosi).requestFocus();
+		View child = mMenuContainer.getChildAt(mPosi);
+		if(child.isEnabled() && child.isFocusable()){
+			child.requestFocus();
+		}
 	}
 
 	public void focusMenuItem2(final int posi) {
@@ -494,7 +496,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		if (posi > 0 && posi < childCount) {
 			mPosi = posi;
 		}
-		mSubMenuContainer.getChildAt(mPosi).requestFocus();
+		View child = mSubMenuContainer.getChildAt(mPosi);
+		if(child.isEnabled() && child.isFocusable()){
+			child.requestFocus();
+		}
 	}
 
 	public void focusSubMenuItem2(final int posi) {

@@ -4,8 +4,9 @@
     <color name="transparent">#00000000</color>
     <color name="per80_white">#CCFFFFFF</color>
     <color name="per50_white">#7FFFFFFF</color>
+    <color name="per40_white">#66FFFFFF</color>
     <color name="per15_white">#26FFFFFF</color>
-    <color name="per40_white">#66000000</color>
+    <color name="per40_black">#66000000</color>
     <color name="white">#E6E6E6</color>
     <color name="blue">#1998D5</color>
     <color name="gray">#86878C</color>

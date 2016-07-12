@@ -12,8 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/fontsize_36px"
-        android:textColor="@color/per80_white"
+        android:textColor="@color/selector_bg_menu_item_txt"
         android:includeFontPadding="false"
+        android:duplicateParentState="true"
         />
     
     <TextView 
