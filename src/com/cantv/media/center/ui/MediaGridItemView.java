@@ -122,6 +122,7 @@ public class MediaGridItemView extends MediaItemView {
             case APP:
                 Drawable apkIcon = FileUtil.getApkIcon(mContext, media.mUri);
                 mBgView.setBackground(media);
+//                mBgView.setMedia(media);
                 mBgView.setDefaultPic(apkIcon);
                 break;
             case FOLDER:

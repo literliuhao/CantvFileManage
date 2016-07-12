@@ -93,6 +93,9 @@ public class MediaGridView extends CustomGridView {
 					mPosStack.push(position);
 					mMediaStack.push(mListAdapter.getData());
 					mListAdapter.bindData(mCurrMediaList);
+					if (mCurrMediaList.size()==0){
+                        showNoDataPage();
+                    }
 					MediaGridView.this.setSelection(0);
 
 				} else if ((item.mType == SourceType.MOIVE)
