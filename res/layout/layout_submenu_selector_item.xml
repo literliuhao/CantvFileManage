@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dimen_90px"
     android:clipToPadding="true"
+    android:focusable="true"
     android:paddingEnd="0dp"
     android:paddingStart="@dimen/dimen_32px" >
 
@@ -11,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:textColor="@drawable/selector_submenu_list_item_bg"
+        android:duplicateParentState="true"
+        android:textColor="@color/selector_submenu_select_item_bg"
         android:textSize="@dimen/fontsize_32px" />
 
     <ImageView
@@ -21,6 +23,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dimen_24px"
         android:layout_toEndOf="@id/tv_title"
+        android:focusable="false"
         android:scaleType="fitXY"
         android:src="@drawable/menu_ok" />
 

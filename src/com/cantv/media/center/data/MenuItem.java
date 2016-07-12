@@ -85,6 +85,13 @@ public class MenuItem {
 	public MenuItem getSelectedChild() {
 		return selectedChild;
 	}
+	
+	public int getSelectedChildIndex() {
+		if(children != null && selectedChild != null){
+			return children.indexOf(selectedChild);
+		}
+		return 0;
+	}
 
 	public MenuItem getChildAt(int index) {
 		int childrenCount = getChildrenCount();

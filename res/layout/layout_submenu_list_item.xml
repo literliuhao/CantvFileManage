@@ -5,7 +5,7 @@
     android:gravity="center_vertical"
     android:paddingEnd="0dp"
     android:paddingStart="@dimen/dimen_32px"
-    android:textColor="@drawable/selector_submenu_list_item_bg"
+    android:textColor="@color/selector_submenu_list_item_bg"
     android:textSize="@dimen/fontsize_32px"
     android:singleLine="true"
     android:ellipsize="end"

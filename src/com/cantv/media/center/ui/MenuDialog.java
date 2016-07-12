@@ -10,6 +10,7 @@ import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -82,6 +83,9 @@ public class MenuDialog extends Dialog {
 
 				@Override
 				public void onSubMenuItemFocusChanged(LinearLayout parent, View view, int position, boolean hasFocus) {
+					if(hasFocus){
+						Log.i("", "onSubMenuItemFocusChanged : " + position);
+					}
 					if (mItemFocusListener != null) {
 						mItemFocusListener.onSubMenuItemFocusChanged(parent, view, position, hasFocus);
 					}
@@ -97,17 +101,17 @@ public class MenuDialog extends Dialog {
 			mMenuView.setOnItemKeyEventListener(new OnKeyEventListener() {
 
 				@Override
-				public boolean onSubMenuItemKeyEvent(View v, int keyCode, KeyEvent event) {
+				public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
 					if (mOnKeyListener != null) {
-						return mOnKeyListener.onSubMenuItemKeyEvent(v, keyCode, event);
+						return mOnKeyListener.onSubMenuItemKeyEvent(position, v, keyCode, event);
 					}
 					return false;
 				}
 
 				@Override
-				public boolean onMenuItemKeyEvent(View v, int keyCode, KeyEvent event) {
+				public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
 					if (mOnKeyListener != null) {
-						return mOnKeyListener.onMenuItemKeyEvent(v, keyCode, event);
+						return mOnKeyListener.onMenuItemKeyEvent(position, v, keyCode, event);
 					}
 					return false;
 				}
@@ -247,6 +251,7 @@ public class MenuDialog extends Dialog {
 			MenuViewHolder holder = (MenuViewHolder) view.getTag(R.id.tag_id_holder_key);
 			view.setEnabled(data.isEnabled());
 			view.setFocusable(data.isEnabled());
+			view.setSelected(data.isSelected());
 			holder.titleTv.setText(data.getTitle());
 			int type = data.getType();
 			if (type == MenuItem.TYPE_LIST) {
@@ -266,6 +271,8 @@ public class MenuDialog extends Dialog {
 			int dataType = data.getType();
 			view.setEnabled(data.isEnabled());
 			view.setFocusable(data.isEnabled());
+			view.setSelected(data.isSelected());
+			Log.i("", "updateSubMenuItem enable = " + data.isEnabled() + ", Selected = " + data.isSelected());
 			if (dataType == MenuItem.TYPE_LIST || dataType == MenuItem.TYPE_NORMAL) {
 				ListSubMenuViewHolder holder = (ListSubMenuViewHolder) view.getTag(R.id.tag_id_holder_key);
 				holder.titleTv.setText(data.getTitle());

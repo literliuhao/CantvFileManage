@@ -1,6 +1,5 @@
 package com.cantv.media.center.activity;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.cantv.media.center.data.PlayModeMenuItem;
 import com.cantv.media.center.ui.CDView;
 import com.cantv.media.center.ui.CircleProgressBar;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.LyricView;
 import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
@@ -231,9 +231,15 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		case R.id.ib_play_pause:
 			onPlayerPlayOrPause();
 			if (isPlayerPaused()) {
+				if(mHandler != null){
+					mHandler.removeCallbacksAndMessages(null);
+				}
 				mCDView.stopRotate();
 				mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
 			} else {
+				if(mHandler != null){
+					mHandler.sendEmptyMessage(0);
+				}
 				mCDView.startRotate();
 				mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
 			}
@@ -393,6 +399,26 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 					return false;
 				}
 			});
+			mMenuDialog.setOnItemKeyEventListener(new OnKeyEventListener() {
+
+				@Override
+				public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+					// if current choice is playList, selected subMenuItem should be auto-focused after left-key
+					// down
+					if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN
+							&& mSelectedMenuPosi == 0) {
+						mMenuDialog.getMenu().openSubMenu(true, mMenuList.get(0).getSelectedChildIndex());
+						return true;
+					}
+					return false;
+				}
+
+				@Override
+				public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+					return false;
+				}
+			});
+			mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
 		}
 		mMenuDialog.show();
 	}
@@ -409,11 +435,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			MenuItem item = new MenuItem(url.substring(url.lastIndexOf("/") + 1));
 			item.setType(MenuItem.TYPE_LIST);
 			playListSubMenuItems.add(item);
-			if (i == mCurPlayIndex) {
-				item.setSelected(true);
-			}
 		}
 		playListMenuItem.setChildren(playListSubMenuItems);
+		playListMenuItem.setChildSelected(mCurPlayIndex);
 		menuList.add(playListMenuItem);
 
 		MenuItem playModeMenuItem = new MenuItem(getString(R.string.play_mode));
