@@ -364,7 +364,7 @@ public class MediaUtils {
        if (sourceType==SourceType.MOIVE){
            currClass= VideoPlayActicity.class;
        }else if (sourceType==SourceType.MUSIC){
-           currClass= MediaPlayerActivity.class;
+    	   currClass= AudioPlayerActivity.class;
        }else if (sourceType==SourceType.PICTURE){
            currClass= ImagePlayerActivity.class;
        }
