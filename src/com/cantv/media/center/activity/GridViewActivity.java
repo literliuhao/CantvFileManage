@@ -90,10 +90,6 @@ public class GridViewActivity extends Activity {
             mTitleTV.setText(R.string.str_external);
             String filePath = getIntent().getStringExtra("filePath");
             mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
-        } else if ("device2".equalsIgnoreCase(type)) {
-            mTitleTV.setText(R.string.str_external);
-            String filePath = getIntent().getStringExtra("filePath");
-            mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
         }
         mGridView.show();
         mContentView.removeAllViews();

@@ -530,9 +530,17 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 			isSubTitle = false;
 			mSubTitleView1.setText("");
 			mSubTitleView2.setText("");
+			if (list.get(4)!=null&&"字幕调整".equals(list.get(4).getTitle())) {
+				list.get(4).setEnabled(isSubTitle);
+			}
+			mMenuDialog.getMenuAdapter().notifyMenuDataSetChanged();
 			break;
 		case MenuConstant.SUBMENU_LOADINGSUBTITLE_OPEN:
 			isSubTitle = true;
+			if (list.get(4)!=null&&"字幕调整".equals(list.get(4).getTitle())) {
+				list.get(4).setEnabled(isSubTitle);
+			}
+			mMenuDialog.getMenuAdapter().notifyMenuDataSetChanged();
 			break;
 		default:
 			break;

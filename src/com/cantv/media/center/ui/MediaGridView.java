@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+
 import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.activity.VideoPlayActicity;
 import com.cantv.media.center.adapter.MediaListAdapter;
@@ -86,9 +88,12 @@ public class MediaGridView extends CustomGridView {
 					} else {
 						mCurrMediaList = FileUtil.getFileList(item.mUri);
 					}
+					FileUtil.sortList(mCurrMediaList,
+							FileComparator.SORT_TYPE_DEFAULT, true);
 					mPosStack.push(position);
 					mMediaStack.push(mListAdapter.getData());
 					mListAdapter.bindData(mCurrMediaList);
+					MediaGridView.this.setSelection(0);
 
 				} else if ((item.mType == SourceType.MOIVE)
 						|| (item.mType == SourceType.MUSIC)
@@ -273,19 +278,29 @@ public class MediaGridView extends CustomGridView {
 		@Override
 		protected List<Media> doInBackground(Void... params) {
 			try {
-				if (mSourceType == SourceType.LOCAL
-						|| mSourceType == SourceType.DEVICE) {
+				if ((mSourceType == SourceType.LOCAL)
+						|| ((mSourceType == SourceType.DEVICE) && MediaUtils
+								.getUsbRootPaths().size() < 3)) {
 					mMediaes.addAll(FileUtil.getFileList(mSourceUries));
 				} else {
 
 					List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
-					for (int i = 0; i < usbRootPaths.size(); i++) {
+					if (usbRootPaths.size() == 1) {
 
-						File file = new File(usbRootPaths.get(i));
-						Media fileInfo = FileUtil
-								.getFileInfo(file, null, false);
+						List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
+						
+						mMediaes.addAll(fileList);
+						
+					} else if (usbRootPaths.size() > 1) {
 
-						mMediaes.add(fileInfo);
+						for (int i = 0; i < usbRootPaths.size(); i++) {
+
+							File file = new File(usbRootPaths.get(i));
+							Media fileInfo = FileUtil.getFileInfo(file, null,
+									false);
+
+							mMediaes.add(fileInfo);
+						}
 					}
 
 				}

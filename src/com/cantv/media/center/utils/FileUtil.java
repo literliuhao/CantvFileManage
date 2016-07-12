@@ -16,7 +16,10 @@ import android.util.Log;
 
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.data.Audio;
+import com.cantv.media.center.data.Image;
 import com.cantv.media.center.data.Media;
+import com.cantv.media.center.data.Video;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -104,8 +107,19 @@ public class FileUtil {
 			boolean showOrHidden) {
 
 		SourceType fileType = FileUtil.getFileType(file);
+		
+		//下面分类的写法是为了显示缩略图
+		Media fileBean = null;
+		if (fileType == SourceType.MOIVE) {
+			fileBean = new Video(fileType, file.getAbsolutePath());
+		} else if (fileType == SourceType.MUSIC) {
+			fileBean = new Audio(fileType, file.getAbsolutePath());
+		} else if (fileType == SourceType.PICTURE) {
+			fileBean = new Image(fileType, file.getAbsolutePath());
+		} else {
+			fileBean = new Media(fileType, file.getAbsolutePath());
+		}
 
-		Media fileBean = new Media(fileType, file.getAbsolutePath());
 		String path = file.getPath();
 		// File file1 = new File(path);
 		fileBean.canRead = file.canRead();
@@ -171,7 +185,9 @@ public class FileUtil {
 			if (FileUtil.isShowFile(childFile)) {
 				Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
 
-				if (null != fileInfo) {
+				if (null != fileInfo
+						&& (!fileInfo.mName.equals("LOST.DIR"))
+						&& (!fileInfo.mName.equals("System Volume Information"))) {
 
 					tList.add(fileInfo);
 
@@ -364,7 +380,7 @@ public class FileUtil {
 	 * @param isFirst
 	 *            判断是否初次进入,初次进入会进行排序
 	 */
-	public static boolean sortList(List list, int mode, Boolean isFirst) {
+	public static boolean sortList(List list, int mode, boolean isFirst) {
 		if (isFirst) {
 			Collections.sort(list, new FileComparator());
 			return true;
@@ -534,23 +550,22 @@ public class FileUtil {
 		}
 		return tList;
 	}
-	
-	
-	 /**
-     * 找出与目标字符串相同的字符串在集合中的索引
-     * @param list
-     * @param oldPath
-     * @return
-     */
-    public static int getIndexFromList(ArrayList<String> list, String oldPath) {
 
-        for (int i = 0; i < list.size(); i++) {
-            if (oldPath.equals(list.get(i))) {
-                return i;
-            }
-        }
-        return 0;
-    }
-	
+	/**
+	 * 找出与目标字符串相同的字符串在集合中的索引
+	 * 
+	 * @param list
+	 * @param oldPath
+	 * @return
+	 */
+	public static int getIndexFromList(ArrayList<String> list, String oldPath) {
+
+		for (int i = 0; i < list.size(); i++) {
+			if (oldPath.equals(list.get(i))) {
+				return i;
+			}
+		}
+		return 0;
+	}
 
 }
