@@ -545,6 +545,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		MenuItem playListMenuItem = new MenuItem("播放列表");
 		playListMenuItem.setType(MenuItem.TYPE_LIST);
 		playListMenuItem.setSelected(true);
+		playListMenuItem.setChildSelected(mCurPlayIndex);
 		List<MenuItem> playListSubMenuItems = new ArrayList<MenuItem>();
 		for (int i = 0; i < mDataList.size(); i++) {
 			String url = mDataList.get(i);
