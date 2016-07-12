@@ -194,10 +194,6 @@ public class PlayerController extends RelativeLayout {
 		setCurrentTime();
 
 		handler.sendEmptyMessageDelayed(STORE_DURATION, 60*1000);
-
-		
-		initWardData();
-
 	}
 
 	@SuppressLint("SimpleDateFormat")
@@ -209,23 +205,19 @@ public class PlayerController extends RelativeLayout {
 		mTime.setText(time);
 	}
 
-	public void onKeyUp(int keyCode){
+	public void onKeyUpEvent(int  keyCode,KeyEvent event){
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			if (isLongClick()) {
-				mProgressBar.cancelAnim();
-				seekToDuration((int)mProgressBar.getCurrProgress());
-			}
-			mClickCount=0;
-			mStepSize=DEFAULT_STEP_SIZE;	
+			handler.removeMessages(CHANG_PROGRESS);
+			handler.sendEmptyMessage(CHANG_PROGRESS);
+			seekToDuration((int)mProgressBar.getCurrProgress());
 			break;
-
 		default:
 			break;
 		}
 	}
-	public void onKeyDown(int  keyCode) {
+	public void onKeyDownEvent(int  keyCode,KeyEvent event) {
 		Log.e("sunyanlong", "keyCode:" + keyCode);
 
 		switch (keyCode) {
@@ -241,15 +233,9 @@ public class PlayerController extends RelativeLayout {
 			break;
 
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-
-			calculateStepSize();
-			performBackwardEvent();
-			showController();
-			break;
-
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			calculateStepSize();
-			performForwardEvent();
+			handler.removeMessages(CHANG_PROGRESS);
+			mProgressBar.onKeyDown(keyCode, event);
 			showController();
 			break;
 		case KeyEvent.KEYCODE_DPAD_UP:
@@ -296,15 +282,10 @@ public class PlayerController extends RelativeLayout {
 	}
 
 	public void seekToDuration(int duration) {
-		handler.removeMessages(PlayerController.CHANG_PLAYIMAGE);
-		Log.e("sunyanlong","seekto:"+duration);
 		mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
 			@Override
 			public void onSeekComplete(MediaPlayer arg0) {
 				handler.sendEmptyMessage(PlayerController.CHANG_PLAYIMAGE);
-				if (isLongClick()) {
-					handler.removeMessages(PlayerController.CHANG_PLAYIMAGE);
-				}
 				handler.sendEmptyMessageDelayed(PlayerController.CHANG_PLAYIMAGE, 500);
 			}
 		});
@@ -341,89 +322,6 @@ public class PlayerController extends RelativeLayout {
 		setVisibility(VISIBLE);
 		showPause(true);
 	};
-
-
-	
-	/**长按步长*/
-	private int mStepSize;
-	/**长按事件*/
-	private static final int DELAY_MILLIS_CHECK_LONG_CLICK=150;
-	/**默认在 DELAY_MILLIS_CHECK_LONG_CLICK 秒内点击超过两次为长按事件，步长为影片时长mStepSize*/
-	private static final int CLICK_COUNT=2;
-	/**默认步长*/
-	private static int DEFAULT_STEP_SIZE;
-	
-	protected void initWardData() {
-		mStepSize=(int)Math.ceil(mDuration*0.01);
-		DEFAULT_STEP_SIZE=(int)Math.ceil(mDuration*0.01);
-	}
-	
-	
-	private void calculateStepSize(){	
-		mClickCount++;
-		postCheckLongClick();
-		if (mClickCount>=15) {
-			mClickCount=15;
-		}
-		if (mClickCount>CLICK_COUNT) {
-			mStepSize=(int)Math.ceil(mDuration*mClickCount/1000);
-		}else {
-			mStepSize=DEFAULT_STEP_SIZE;
-		}
-
-	}
-	
-	private int mClickCount=0;
-	
-	private Runnable mCheckLongClickRunnable =new Runnable() {
-		@Override
-		public void run() {
-			mClickCount=0;
-		}
-	};
-	
-	private void postCheckLongClick(){
-		handler.removeCallbacks(mCheckLongClickRunnable);
-		handler.postDelayed(mCheckLongClickRunnable,DELAY_MILLIS_CHECK_LONG_CLICK);
-	}
-	
-
-	public void performForwardEvent(){
-		if (mCtrlBarContext.isPlayerPaused()) {
-			return;
-		}
-		int seekTo1;
-		int position1 = mCtrlBarContext.getPlayerCurPosition();
-		
-		if (position1 + mStepSize < mDuration) {
-			seekTo1 = (int) (position1 +mStepSize);
-		} else {
-			seekTo1 = (int) mDuration;
-		}
-		mPlayImage.setBackgroundResource(R.drawable.play_kj);
-		seekToDuration(seekTo1);
-	} 
-	
-	public void performBackwardEvent(){
-		if (mCtrlBarContext.isPlayerPaused()) {
-			return;
-		}
-		int seekTo;
-
-		int position = mCtrlBarContext.getPlayerCurPosition();
-		if (position > mStepSize) {
-			seekTo = (int) (position - mStepSize);
-		} else {
-			seekTo = 0;
-		}
-		mPlayImage.setBackgroundResource(R.drawable.play_kt);
-		seekToDuration(seekTo);
-		
-	}
-	/**检测是长按时间*/
-	public boolean isLongClick(){
-		return mClickCount>CLICK_COUNT?true:false;
-	}
 	
 	public void setFullProgress(){
 		mProgressBar.setProgress(FULLPROGRESS);

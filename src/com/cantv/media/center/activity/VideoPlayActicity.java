@@ -229,14 +229,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		default:
 			break;
 		}
-		mCtrBar.onKeyDown(keyCode);
+		mCtrBar.onKeyDownEvent(keyCode,event);
 		
 		return super.onKeyDown(keyCode, event);
 
 	}
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		mCtrBar.onKeyUp(keyCode);
+		mCtrBar.onKeyUpEvent(keyCode,event);
 		return super.onKeyUp(keyCode, event);
 	}
 	private void getAllVideo() {

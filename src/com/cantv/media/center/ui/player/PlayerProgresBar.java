@@ -18,6 +18,7 @@ import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -41,6 +42,13 @@ public class PlayerProgresBar extends View {
 	private int mTextSize;// 文字大小
 	private int mWidth;// 进度条宽
 	private int mHeight;// 进度条高
+	
+	/**长按步长*/
+	private int mStepSize;
+	/**默认步长*/
+	private static int DEFAULT_STEP_SIZE=3000;
+	/**是否是到达最大速度*/
+	private boolean reachMaxG=false;
 
 	public PlayerProgresBar(Context context) {
 		this(context, null);
@@ -175,56 +183,11 @@ public class PlayerProgresBar extends View {
 		if (duration <= 0 || progress > duration) {
 			return;
 		}
-		if (mCurrProgress==progress) {
-			return;
-		}
-		if (anim!=null&&anim.isStarted()) {
-			mDestProgress=progress;
-		}
-		
-		// 转化为当前时间
+		mCurrProgress=progress;
+		invalidate();
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 		formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
-		mCurrTime = formatter.format(progress);
-		if (anim!=null) {
-			anim.cancel();
-		}
-		anim = ValueAnimator.ofObject(new ProgressEvaluator(),
-				mCurrProgress, progress);
-		anim.addUpdateListener(new AnimatorUpdateListener() {
-
-			@Override
-			public void onAnimationUpdate(ValueAnimator animation) {
-				mCurrProgress = (Long) animation.getAnimatedValue();
-				invalidate();
-			}
-		});
-		anim.addListener(new AnimatorListener() {
-
-			@Override
-			public void onAnimationStart(Animator animation) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animator animation) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				if (mDestProgress != 0) {
-					setProgress(mDestProgress);
-					mDestProgress = 0;
-				}
-			}
-
-			@Override
-			public void onAnimationCancel(Animator animation) {
-			}
-		});
-		
-		anim.setInterpolator(new LinearInterpolator());// 匀速
-		anim.setDuration(500);
-		anim.start();
+		mCurrTime = formatter.format(progress);		
 	}
 
 	public class ProgressEvaluator implements TypeEvaluator<Long> {
@@ -242,6 +205,40 @@ public class PlayerProgresBar extends View {
 	
 	public long getCurrProgress(){
 		return mCurrProgress;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		 obtainSeekPosition(event);
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	private void obtainSeekPosition(KeyEvent event){
+		int repeatCount=event.getRepeatCount();
+		if (repeatCount==0) {
+			mStepSize=DEFAULT_STEP_SIZE;
+			reachMaxG=false;
+		}		
+	    double ss1=Math.sin(repeatCount*5*Math.PI/180);
+	    if (!reachMaxG) {
+			if (ss1<0) {
+				reachMaxG=true;
+			}
+			mStepSize+=ss1*3000;
+		}
+	    
+	    if (KeyEvent.KEYCODE_DPAD_LEFT==event.getKeyCode()) {
+	    	mCurrProgress-=mStepSize;
+	    	if (mCurrProgress<=0) {
+				mCurrProgress=0;
+			}
+		}else if (KeyEvent.KEYCODE_DPAD_RIGHT==event.getKeyCode()) {
+			mCurrProgress+=mStepSize;
+			if (mCurrProgress>=duration) {
+				mCurrProgress=duration;
+			}
+		}
+	    setProgress(mCurrProgress);
 	}
 	
 }
