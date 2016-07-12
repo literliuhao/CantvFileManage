@@ -19,7 +19,7 @@
         zby:menuWidth="@dimen/dimen_298px"
         zby:subMenuBackground="@color/submenu_bg"
         zby:subMenuFocusMode="FOCUS_NONE"
-        zby:subMenuFocusResId="@drawable/focus"
+        zby:subMenuFocusResId="@drawable/menufocus"
         zby:subMenuWidth="@dimen/dimen_400px"
         zby:subMenuPaddingTop="@dimen/dimen_160px"
         zby:subMenuPaddingBottom="@dimen/dimen_50px"
