@@ -79,6 +79,7 @@ public class MediaListItemView extends MediaItemView {
         mImageView.setPicStretch(PicStretch.SCALE_CROP);
         LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
         imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        imageParams.setMargins(20,0,0,0);
         mImageView.setLayoutParams(imageParams);
 
         mTvName = new TextView(context);

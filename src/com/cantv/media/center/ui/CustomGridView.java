@@ -161,4 +161,13 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
 			mLastFocusPoint.set(left, top);
 		}
 	}
+	
+	/**
+	 * 展示空白页
+	 * @param
+     */
+	public void showNoDataPage(){
+		mGridView.setEmptyView(memptyView);
+	}
+	
 }

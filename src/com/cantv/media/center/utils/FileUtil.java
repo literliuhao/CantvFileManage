@@ -107,8 +107,8 @@ public class FileUtil {
 			boolean showOrHidden) {
 
 		SourceType fileType = FileUtil.getFileType(file);
-		
-		//下面分类的写法是为了显示缩略图
+
+		// 下面分类的写法是为了显示缩略图
 		Media fileBean = null;
 		if (fileType == SourceType.MOIVE) {
 			fileBean = new Video(fileType, file.getAbsolutePath());
@@ -168,32 +168,37 @@ public class FileUtil {
 	 */
 	public static List<Media> getFileList(String path) {
 		List<Media> tList = new ArrayList<>();
-
-		File file = new File(path);
-		if (!file.exists() || !file.isDirectory()) {
-			return tList;
-		}
-
-		File[] listfiles = file.listFiles();
-		if (listfiles == null) {
-			return tList;
-		}
-
-		for (File childFile : listfiles) {
-
-			// 是常见文件,并且是非隐藏文件
-			if (FileUtil.isShowFile(childFile)) {
-				Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
-
-				if (null != fileInfo
-						&& (!fileInfo.mName.equals("LOST.DIR"))
-						&& (!fileInfo.mName.equals("System Volume Information"))) {
-
-					tList.add(fileInfo);
-
-				}
+		try {
+			File file = new File(path);
+			if (!file.exists() || !file.isDirectory()) {
+				return tList;
 			}
 
+			File[] listfiles = file.listFiles();
+			if (listfiles == null) {
+				return tList;
+			}
+
+			for (File childFile : listfiles) {
+
+				// 是常见文件,并且是非隐藏文件
+				if (FileUtil.isShowFile(childFile)) {
+					Media fileInfo = FileUtil.getFileInfo(childFile, null,
+							false);
+
+					if (null != fileInfo
+							&& (!fileInfo.mName.equals("LOST.DIR"))
+							&& (!fileInfo.mName
+									.equals("System Volume Information"))) {
+
+						tList.add(fileInfo);
+
+					}
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return tList;
 	}
