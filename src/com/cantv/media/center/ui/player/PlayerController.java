@@ -236,6 +236,7 @@ public class PlayerController extends RelativeLayout {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 			handler.removeMessages(CHANG_PROGRESS);
 			mProgressBar.onKeyDown(keyCode, event);
+			toggleSeekImgvi(keyCode);
 			showController();
 			break;
 		case KeyEvent.KEYCODE_DPAD_UP:
@@ -316,6 +317,13 @@ public class PlayerController extends RelativeLayout {
 
 	};
 
+	private void toggleSeekImgvi(int keyCode){
+		if (KeyEvent.KEYCODE_DPAD_LEFT==keyCode) {
+			mPlayImage.setBackgroundResource(R.drawable.play_kt);
+		}else if (KeyEvent.KEYCODE_DPAD_RIGHT==keyCode) {
+			mPlayImage.setBackgroundResource(R.drawable.play_kj);
+		}
+	}
 	public void showController() {
 		handler.removeMessages(PlayerController.CHANG_VISIBLE);
 		handler.sendEmptyMessageDelayed(PlayerController.CHANG_VISIBLE, 5000);
