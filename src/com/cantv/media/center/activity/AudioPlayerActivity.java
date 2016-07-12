@@ -231,13 +231,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		case R.id.ib_play_pause:
 			onPlayerPlayOrPause();
 			if (isPlayerPaused()) {
-				if(mHandler != null){
+				if (mHandler != null) {
 					mHandler.removeCallbacksAndMessages(null);
 				}
 				mCDView.stopRotate();
 				mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
 			} else {
-				if(mHandler != null){
+				if (mHandler != null) {
 					mHandler.sendEmptyMessage(0);
 				}
 				mCDView.startRotate();

@@ -10,7 +10,6 @@ import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -33,12 +32,12 @@ public class MenuDialog extends Dialog {
 		super(context, R.style.dialog_menu);
 		setupLayout();
 	}
-	
-	public DoubleColumnMenu getMenu(){
+
+	public DoubleColumnMenu getMenu() {
 		return mMenuView;
 	}
-	
-	public MenuAdapter getMenuAdapter(){
+
+	public MenuAdapter getMenuAdapter() {
 		return mAdpter;
 	}
 
@@ -63,9 +62,9 @@ public class MenuDialog extends Dialog {
 			mAdpter = new MenuAdapter(getContext(), list);
 			mMenuView.setAdapter(mAdpter);
 			mMenuView.setOnItemsClickListener(new OnItemClickListener() {
-                
+
 				@Override
-				public void onSubMenuItemClick(LinearLayout parent, View view, int position) {				
+				public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
 					if (mItemClickListener != null) {
 						mItemClickListener.onSubMenuItemClick(parent, view, position);
 					}
@@ -83,9 +82,6 @@ public class MenuDialog extends Dialog {
 
 				@Override
 				public void onSubMenuItemFocusChanged(LinearLayout parent, View view, int position, boolean hasFocus) {
-					if(hasFocus){
-						Log.i("", "onSubMenuItemFocusChanged : " + position);
-					}
 					if (mItemFocusListener != null) {
 						mItemFocusListener.onSubMenuItemFocusChanged(parent, view, position, hasFocus);
 					}
@@ -135,7 +131,7 @@ public class MenuDialog extends Dialog {
 	}
 
 	public static class MenuAdapter extends DoubleColumnMenu.BaseAdapter {
-		
+
 		public static final String TAG_MENU_VIEW = "menu";
 		public static final String TAG_SUB_MENU_VIEW = "subMenu";
 
@@ -146,15 +142,15 @@ public class MenuDialog extends Dialog {
 			this.list = list;
 			mStrTemplate = context.getResources().getString(R.string.total_num);
 		}
-		
-		public List<MenuItem> getData(){
+
+		public List<MenuItem> getData() {
 			return list;
 		}
-		
-		public void setData(List<MenuItem> list){
-			if(this.list == null){
+
+		public void setData(List<MenuItem> list) {
+			if (this.list == null) {
 				this.list = list;
-			}else{
+			} else {
 				this.list.clear();
 				this.list.addAll(list);
 			}
@@ -211,7 +207,7 @@ public class MenuDialog extends Dialog {
 
 		@Override
 		public int getSubItemViewType(int position) {
-			return ((MenuItem)getSubMenuItem(position)).getType();
+			return ((MenuItem) getSubMenuItem(position)).getType();
 		}
 
 		@Override
@@ -246,8 +242,8 @@ public class MenuDialog extends Dialog {
 			view.setLayoutParams(lp);
 			return view;
 		}
-		
-		public void updateMenuItem(View view, MenuItem data){
+
+		public void updateMenuItem(View view, MenuItem data) {
 			MenuViewHolder holder = (MenuViewHolder) view.getTag(R.id.tag_id_holder_key);
 			view.setEnabled(data.isEnabled());
 			view.setFocusable(data.isEnabled());
@@ -266,13 +262,12 @@ public class MenuDialog extends Dialog {
 				holder.subTitleTv.setText("");
 			}
 		}
-		
-		public void updateSubMenuItem(View view, MenuItem data){
+
+		public void updateSubMenuItem(View view, MenuItem data) {
 			int dataType = data.getType();
 			view.setEnabled(data.isEnabled());
 			view.setFocusable(data.isEnabled());
 			view.setSelected(data.isSelected());
-			Log.i("", "updateSubMenuItem enable = " + data.isEnabled() + ", Selected = " + data.isSelected());
 			if (dataType == MenuItem.TYPE_LIST || dataType == MenuItem.TYPE_NORMAL) {
 				ListSubMenuViewHolder holder = (ListSubMenuViewHolder) view.getTag(R.id.tag_id_holder_key);
 				holder.titleTv.setText(data.getTitle());
