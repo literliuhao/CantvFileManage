@@ -22,6 +22,7 @@ import android.text.format.Formatter;
 import android.widget.Toast;
 import com.cantv.media.center.activity.AudioPlayerActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
+import com.cantv.media.center.activity.MediaPlayerActivity;
 import com.cantv.media.center.activity.VideoPlayActicity;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.constants.MediaFormat;
@@ -347,47 +348,33 @@ public class MediaUtils {
 		}
 	}
 
-	// 获得挂载的USB设备的存储空间使用情况
+	
+	/**
+     * 打开指定的媒体文件
+     * @param context
+     * @param pathList
+     * @param currIndex
+     * @param sourceType
+     */
+   public static void openMediaActivity(Context context,ArrayList<String > pathList,int currIndex,SourceType sourceType){
 
-	public static String getUSBStorage(Context context, String path, Media fileInfo) {
-		// USB Storage
 
-		// storage/udisk为USB设备在Android设备上的挂载路径.不同厂商的Android设备路径不同。
+       Intent intent = new Intent();
+       Class currClass= null;
+       if (sourceType==SourceType.MOIVE){
+           currClass= VideoPlayActicity.class;
+       }else if (sourceType==SourceType.MUSIC){
+           currClass= MediaPlayerActivity.class;
+       }else if (sourceType==SourceType.PICTURE){
+           currClass= ImagePlayerActivity.class;
+       }
 
-		// 这样写同样适合于SD卡挂载。
-		File file = new File(path);
+       intent.setClass(context, currClass);
+       intent.putStringArrayListExtra("data_list",pathList);
+       intent.putExtra("data_index", currIndex);
+       context.startActivity(intent);
 
-		StatFs stat = new StatFs(file.getPath());
-		long blockSize = stat.getBlockSize();
-		long totalBlocks = stat.getBlockCount();
-		long availableBlocks = stat.getAvailableBlocks();
-
-		fileInfo.mTotalSize = totalBlocks;
-		fileInfo.fileSize = availableBlocks;
-
-		String usedSize = Formatter.formatFileSize(context, (totalBlocks - availableBlocks) * blockSize);
-		String availableSize = Formatter.formatFileSize(context, availableBlocks * blockSize);
-		return usedSize + " / " + availableSize;// 空间:已使用/可用的
-	}
-
-	public static void setMediaName(Media fileInfo) {
-		try {
-
-			// 获得外接USB输入设备的信息
-			Process p = Runtime.getRuntime().exec("cat /proc/bus/input/devices");
-			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String line = null;
-			while ((line = in.readLine()) != null) {
-				String deviceInfo = line.trim();
-
-				// 对获取的每行的设备信息进行过滤，获得自己想要的。
-
-			}
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-	}
+   }
+	
 
 }
