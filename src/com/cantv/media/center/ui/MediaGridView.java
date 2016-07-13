@@ -58,6 +58,7 @@ public class MediaGridView extends CustomGridView {
 	private GridViewActivity mActivity;
 	public int mSelectItemPosition;
 	public List<Media> mCurrMediaList = new ArrayList<>(); // 记录当前的数据集合
+	public String mDevecesFlag=null; //用来标记是否进入外接设备列表
 
 	public MediaGridView(Context context, String uri, SourceType sourceType) {
 		super(context);
@@ -275,38 +276,70 @@ public class MediaGridView extends CustomGridView {
 			FileUtil.sortList(result, FileComparator.SORT_TYPE_DEFAULT, true);
 			mListAdapter.bindData(result);
 			setAdapter(mListAdapter);
+			if(result.size()==0){
+				showNoDataPage();
+			}
 			mfirst = 1;
 		}
 
 		@Override
 		protected List<Media> doInBackground(Void... params) {
+			
+			//下面是进入根目录的几种情况,进入更深层的内容在点击事件那里
 			try {
-				if ((mSourceType == SourceType.LOCAL)
-						|| ((mSourceType == SourceType.DEVICE) && MediaUtils
-								.getUsbRootPaths().size() < 3)) {
-					mMediaes.addAll(FileUtil.getFileList(mSourceUries));
-				} else {
+				
+				List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
+				
+				if(null!=mDevecesFlag){ //进入设备列表
+					
+					for (int i = 0; i < usbRootPaths.size(); i++) {
 
-					List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
-					if (usbRootPaths.size() == 1) {
+						File file = new File(usbRootPaths.get(i));
+						Media fileInfo = FileUtil.getFileInfo(file, null,false);
 
+						mMediaes.add(fileInfo);
+					}
+					
+				}else{
+					if (mSourceType == SourceType.LOCAL||mSourceType == SourceType.DEVICE){
+						mMediaes.addAll(FileUtil.getFileList(mSourceUries));
+					}else{
 						List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
 						
 						mMediaes.addAll(fileList);
-						
-					} else if (usbRootPaths.size() > 1) {
-
-						for (int i = 0; i < usbRootPaths.size(); i++) {
-
-							File file = new File(usbRootPaths.get(i));
-							Media fileInfo = FileUtil.getFileInfo(file, null,
-									false);
-
-							mMediaes.add(fileInfo);
-						}
 					}
-
+					
 				}
+				
+				
+				
+				
+				
+//				if ((mSourceType == SourceType.LOCAL)
+//						|| ((mSourceType == SourceType.DEVICE) && MediaUtils
+//								.getUsbRootPaths().size() < 3)) {
+//					mMediaes.addAll(FileUtil.getFileList(mSourceUries));
+//				} else {
+//
+//					if (usbRootPaths.size() == 1) {
+//
+//						List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
+//						
+//						mMediaes.addAll(fileList);
+//						
+//					} else if (usbRootPaths.size() > 1) {
+//
+//						for (int i = 0; i < usbRootPaths.size(); i++) {
+//
+//							File file = new File(usbRootPaths.get(i));
+//							Media fileInfo = FileUtil.getFileInfo(file, null,
+//									false);
+//
+//							mMediaes.add(fileInfo);
+//						}
+//					}
+//
+//				}
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
