@@ -3,6 +3,8 @@
     android:id="@+id/layout_external_all"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
     android:visibility="visible">
 
     <ImageView
@@ -12,8 +14,7 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/dimen_15px"
         android:background="@drawable/bj_06"
-        android:clickable="true"
-        android:focusable="true" />
+         />
 
     <ImageView
         android:id="@+id/imageview_external_u"

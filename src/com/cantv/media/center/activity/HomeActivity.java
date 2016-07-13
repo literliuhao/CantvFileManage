@@ -105,7 +105,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mAudioIV.setOnFocusChangeListener(this);
         mAppIV.setOnFocusChangeListener(this);
         mLocalIV.setOnFocusChangeListener(this);
-//        mExternalFL.setOnFocusChangeListener(this);
+        mExternalFL.setOnFocusChangeListener(this);
         mExternalFL1.setOnFocusChangeListener(this);
         mExternalFL2.setOnFocusChangeListener(this);
         mShareIV.setOnFocusChangeListener(this);
