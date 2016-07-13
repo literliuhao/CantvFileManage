@@ -71,6 +71,7 @@ public class HomeActivity extends Activity {
     private FocusUtils mFocusUtils;
     private FocusScaleUtils mFocusScaleUtils;
     private List<String> mUsbRootPaths = new ArrayList<>();
+    private AlertDialog alertDialog = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
@@ -278,6 +279,8 @@ public class HomeActivity extends Activity {
                 + MediaUtils.getInternalFree());
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal)
                 + MediaUtils.getInternalTotal());
+        
+        alertDialog = new AlertDialog.Builder(mContext).create();
     }
     private void initUSB() {
         mExternalFL = (FrameLayout) findViewById(R.id.layout_external_all);
@@ -410,7 +413,7 @@ public class HomeActivity extends Activity {
                 //openTimer();
                 mUsbRootPaths = MediaUtils.getUsbRootPaths();
                 sendUSBRefreshMsg(true, mUsbRootPaths.size());
-                // showMountedDialog();
+                 showMountedDialog();
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
                     || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 closeTimer();
@@ -425,7 +428,10 @@ public class HomeActivity extends Activity {
         }
     };
     private void showMountedDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+    	if(alertDialog.isShowing()){
+    		return;
+    	}
+        
         alertDialog.show();
         Window window = alertDialog.getWindow();
         window.setContentView(R.layout.dialog_mounted);
@@ -480,7 +486,8 @@ public class HomeActivity extends Activity {
             public void onClick(View v) {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
-                intent.putExtra("type", "file");
+                intent.putExtra("type", "device1");
+                intent.putExtra("filePath", mUsbRootPaths.get(0));
                 startActivity(intent);
             }
         });
