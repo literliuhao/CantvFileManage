@@ -7,13 +7,14 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/px216"
+        android:layout_marginLeft="@dimen/px175"
         android:layout_marginTop="@dimen/px135">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:textStyle="bold"
             android:text="@string/str_filemanager"
             android:textColor="@color/per80_white"
             android:textSize="@dimen/px56" />
@@ -24,7 +25,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/px160"
-        android:layout_marginTop="@dimen/px300"
+        android:layout_marginTop="@dimen/px260"
         android:orientation="vertical">
 
         <!-- 上半区 -->

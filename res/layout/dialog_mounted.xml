@@ -20,8 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/px72"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:padding="@dimen/px24">
+        android:orientation="horizontal">
 
         <include layout="@layout/dialog_image" />
 

@@ -211,8 +211,8 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         registerReceiver(mReceiver, filter);
         mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
-
-        showMountedDialog();
+        alertDialog = new AlertDialog.Builder(mContext).create();
+//        showMountedDialog();
     }
 
     private void initUSB() {
@@ -305,7 +305,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 // openTimer();
                 mUsbRootPaths = MediaUtils.getUsbRootPaths();
                 sendUSBRefreshMsg(true, mUsbRootPaths.size());
-//                showMountedDialog();
+                showMountedDialog();
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
                     || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 closeTimer();
@@ -319,11 +319,16 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         }
     };
 
+    private boolean isShow(){
+        return alertDialog.isShowing() == true ?  true : false;
+    }
+
     private void showMountedDialog() {
-        alertDialog = new AlertDialog.Builder(mContext).create();
+        if(isShow()) return;
         alertDialog.show();
         Window window = alertDialog.getWindow();
         window.setContentView(R.layout.dialog_mounted);
+        window.setBackgroundDrawableResource(R.color.transparent);
         final FocusUtils focusUtils = new FocusUtils(this, window.getDecorView(), R.drawable.focus);
         ImageView dialogImage = (ImageView) window.findViewById(R.id.dialog_image);
         dialogImage.setOnClickListener(new OnClickListener() {
@@ -383,7 +388,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.9f);
+                    focusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
@@ -394,7 +399,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.9f);
+                    focusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
@@ -405,7 +410,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.9f);
+                    focusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
@@ -416,7 +421,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.9f);
+                    focusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
