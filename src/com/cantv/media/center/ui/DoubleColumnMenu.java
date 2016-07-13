@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -40,6 +39,8 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	private final int FOCUS_MODE_NONE = 3;
 
 	private final int POSITION_NULL = -1;
+
+	private final int TIME_FOCUS_TRANSLATE_ANIM = 200;
 
 	private int mMenuWidth;
 	private int mMenuBg;
@@ -350,8 +351,8 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 			}
 		}, mOldFocusRect, new Rect(newFocusRect));
 
-		ofObject.setInterpolator(new LinearInterpolator());
-		ofObject.setDuration(300);
+		ofObject.setInterpolator(new AccelerateDecelerateInterpolator());
+		ofObject.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 		if (runnable != null) {
 			ofObject.addListener(new AnimatorListenerAdapter() {
 
@@ -391,14 +392,15 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		}, mOldSelectRect, new Rect(newSelectRect));
 
 		ofObject.setInterpolator(new AccelerateDecelerateInterpolator());
-		ofObject.setDuration(300);
+		ofObject.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 		ofObject.start();
 	}
 
 	public void openSubMenu(boolean requestFocus) {
 		if (!isSubMenuShowing) {
 			isSubMenuShowing = true;
-			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(0).setDuration(300);
+			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(0)
+					.setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 			vpa.start();
 		}
 		if (requestFocus) {
@@ -410,7 +412,8 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	public void openSubMenu(boolean requestFocus, int focusPosi) {
 		if (!isSubMenuShowing) {
 			isSubMenuShowing = true;
-			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(0).setDuration(300);
+			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(0)
+					.setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 			vpa.start();
 		}
 		mDestSubMenuFocusPos = focusPosi;
@@ -423,7 +426,8 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	public void closeSubMenu() {
 		if (isSubMenuShowing) {
 			isSubMenuShowing = false;
-			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(mSubMenu.getMeasuredWidth()).setDuration(300);
+			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(mSubMenu.getMeasuredWidth())
+					.setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 			vpa.start();
 		}
 	}
@@ -757,9 +761,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 						public void run() {
 							ScaleAnimation mZoomInAnim = new ScaleAnimation(1, 1.1f, 1, 1.1f,
 									ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-							mZoomInAnim.setInterpolator(new LinearInterpolator());
+							mZoomInAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 							mZoomInAnim.setFillAfter(true);
-							mZoomInAnim.setDuration(300);
+							mZoomInAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 							newView.clearAnimation();
 							newView.startAnimation(mZoomInAnim);
 						}
@@ -767,9 +771,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				} else {
 					ScaleAnimation mZoomOutAnim = new ScaleAnimation(1.1f, 1, 1.1f, 1, ScaleAnimation.RELATIVE_TO_SELF,
 							0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-					mZoomOutAnim.setInterpolator(new LinearInterpolator());
+					mZoomOutAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 					mZoomOutAnim.setFillAfter(true);
-					mZoomOutAnim.setDuration(300);
+					mZoomOutAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 					newView.clearAnimation();
 					newView.startAnimation(mZoomOutAnim);
 				}
