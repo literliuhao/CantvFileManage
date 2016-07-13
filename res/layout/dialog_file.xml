@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    android:layout_width="@dimen/px216"
-    android:layout_height="@dimen/px308"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
     <ImageView
         android:id="@+id/dialog_file"
-        android:background="@drawable/bj_08"
-        android:focusable="true"
-    	android:clickable="true"               
-        android:layout_gravity="center"
         android:layout_width="@dimen/px200"
-        android:layout_height="@dimen/px300" />
+        android:layout_height="@dimen/px300"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dimen_15px"
+        android:background="@drawable/bj_08"
+        android:clickable="true"
+        android:focusable="true" />
+
     <ImageView
-        android:background="@drawable/popup_folder"
-        android:layout_gravity="center_horizontal"
-		android:layout_marginTop="@dimen/px65"
         android:layout_width="@dimen/px80"
-        android:layout_height="@dimen/px80" />
-    <TextView
+        android:layout_height="@dimen/px80"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/px28"
-        android:textColor="@color/per80_white"
-        android:layout_marginTop="@dimen/px177"
+        android:layout_marginTop="@dimen/px65"
+        android:background="@drawable/popup_folder" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/str_file" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/px177"
+        android:text="@string/str_file"
+        android:textColor="@color/per80_white"
+        android:textSize="@dimen/px28" />
 </FrameLayout>
