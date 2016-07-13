@@ -76,6 +76,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private FocusUtils mFocusUtils;
     private FocusScaleUtils mFocusScaleUtils;
     private List<String> mUsbRootPaths = new ArrayList<>();
+    private AlertDialog alertDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "video");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
                 startActivity(intent);
             }
         });
@@ -123,6 +127,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "image");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
                 startActivity(intent);
             }
         });
@@ -132,6 +139,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "audio");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
                 startActivity(intent);
             }
         });
@@ -141,6 +151,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "app");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
                 startActivity(intent);
             }
         });
@@ -156,13 +169,16 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mExternalFL.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mUsbRootPaths.size() > 0) {
-                    closeTimer();
-                    Intent intent = new Intent(mContext, GridViewActivity.class);
-                    intent.putExtra("type", "device1");
-                    intent.putExtra("filePath", mUsbRootPaths.get(0));
-                    startActivity(intent);
+//                if (mUsbRootPaths.size() > 0) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
                 }
+                intent.putExtra("type", "device1");
+                startActivity(intent);
+//                }
             }
         });
         mExternalFL1.setOnClickListener(new OnClickListener() {
@@ -171,7 +187,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "device1");
-                intent.putExtra("filePath", mUsbRootPaths.get(0));
                 startActivity(intent);
             }
         });
@@ -253,6 +268,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                     mExternalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
                 } else {
                     mExternalFreeTV.setText(getString(R.string.str_total) + num + getString(R.string.str_devicenum));
+                    mExternalTotalTV.setVisibility(View.GONE);
                 }
                 mExternalIV.setOnFocusChangeListener(new OnFocusChangeListener() {
                     @Override
@@ -305,7 +321,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                //openTimer();
+                // openTimer();
                 mUsbRootPaths = MediaUtils.getUsbRootPaths();
                 sendUSBRefreshMsg(true, mUsbRootPaths.size());
                 showMountedDialog();
@@ -317,14 +333,15 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                     sendUSBRefreshMsg(true, mUsbRootPaths.size());
                 } else {
                     sendUSBRefreshMsg(false, 0);
-                    //sendFileRefreshMsg(0, 0, 0, 0);
+                    // sendFileRefreshMsg(0, 0, 0, 0);
                 }
             }
         }
     };
 
     private void showMountedDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        alertDialog = new AlertDialog.Builder(mContext).create();
+
         alertDialog.show();
         Window window = alertDialog.getWindow();
         window.setContentView(R.layout.dialog_mounted);
@@ -336,6 +353,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "image");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
                 // Uri uri = Uri.parse("data://image");
                 // Intent intent = new Intent("android.intent.action.VIEW",
                 // uri);
@@ -349,6 +369,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "video");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
                 // Uri uri = Uri.parse("data://video");
                 // Intent intent = new Intent("android.intent.action.VIEW",
                 // uri);
@@ -363,6 +386,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "audio");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
                 // Uri uri = Uri.parse("data://audio");
                 // Intent intent = new Intent("android.intent.action.VIEW",
                 // uri);
@@ -375,7 +401,10 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onClick(View v) {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
-                intent.putExtra("type", "file");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
+                intent.putExtra("type", "device1");
                 startActivity(intent);
             }
         });
@@ -560,7 +589,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     @Override
     protected void onResume() {
         super.onResume();
-        //openTimer();
+        // openTimer();
         if (MediaUtils.isExistUSB()) {
             mUsbRootPaths = MediaUtils.getUsbRootPaths();
             sendUSBRefreshMsg(true, mUsbRootPaths.size());

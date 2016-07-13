@@ -236,7 +236,7 @@ public class LyricView extends View {
 	}
 
 	public void setLyricInfo(LyricInfo lyricInfo) {
-		if(lyricInfo == null || !mLyricInfo.isLegal()){
+		if(lyricInfo == null || !lyricInfo.isLegal()){
 			mLyricInfo = null;
 			invalidate();
 			return;

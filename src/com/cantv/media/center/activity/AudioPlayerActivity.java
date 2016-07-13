@@ -1,6 +1,5 @@
 package com.cantv.media.center.activity;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.cantv.media.center.data.PlayModeMenuItem;
 import com.cantv.media.center.ui.CDView;
 import com.cantv.media.center.ui.CircleProgressBar;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.LyricView;
 import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
@@ -78,9 +78,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setupLayout();
-//		mDataList.add(new File(getFilesDir(), "test.mp3").getAbsolutePath());
-//		mDataList.add(new File(getFilesDir(), "test2.mp3").getAbsolutePath());
-//		mDataList.add(new File(getFilesDir(), "test3.mp3").getAbsolutePath());
 		holdWakeLock();
 		initData();
 		regUsbChangeReceiver();
@@ -165,12 +162,12 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	public void initHandler() {
 		mHandler = new Handler() {
 			public void handleMessage(android.os.Message msg) {
-				if(getProxyPlayer().isPlaying()){
+				if (getProxyPlayer().isPlaying()) {
 					int currentPosition = getProxyPlayer().getCurrentPosition();
 					boolean progressChanged = mProgressBar.setProgress(currentPosition);
-					if(progressChanged){
+					if (progressChanged) {
 						mCurrProgressTv.setText(formatTime(currentPosition));
-						if(showLyric){
+						if (showLyric) {
 							mLyricView.setCurrTime(currentPosition);
 						}
 					}
@@ -200,11 +197,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		unregisterReceiver(mUsbChangeReceiver);
 		releaseWakeLock();
 		mUsbChangeReceiver = null;
 		mUsbFilter = null;
+		hideMenuDialog();
+		mMenuDialog = null;
+		super.onDestroy();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -222,7 +221,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			mWakeLock = null;
 		}
 	}
-	
+
 	private void initData() {
 		mFormatBuilder = new StringBuilder();
 		mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
@@ -234,9 +233,15 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		case R.id.ib_play_pause:
 			onPlayerPlayOrPause();
 			if (isPlayerPaused()) {
+				if (mHandler != null) {
+					mHandler.removeCallbacksAndMessages(null);
+				}
 				mCDView.stopRotate();
 				mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
 			} else {
+				if (mHandler != null) {
+					mHandler.sendEmptyMessage(0);
+				}
 				mCDView.startRotate();
 				mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
 			}
@@ -269,7 +274,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			if (icon != null) {
 				mCDView.setImageBitmap(icon);
 				mContentBg.setBackground(BitmapUtils.blurBitmap(icon, this));
-				mContentBg.setImageResource(R.color.per40_white);
+				mContentBg.setImageResource(R.color.per40_black);
 			}
 			mLyricInfo = Audio.getAudioLyric(uri);
 			if (mLyricInfo == null) {
@@ -299,7 +304,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
-			showMenuDialog();
+			if(mMenuDialog == null || !mMenuDialog.isShowing()){
+				showMenuDialog();
+			}
 		}
 		return super.onKeyDown(keyCode, event);
 	}
@@ -318,59 +325,74 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 				public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
 					MenuItem menuItemData = mMenuList.get(mSelectedMenuPosi);
 					int lastSelectPosi = menuItemData.setChildSelected(position);
-					if(mSelectedMenuPosi == 0){
-						//select playList item
-						if(mCurPlayIndex == position){
+					if (mSelectedMenuPosi == 0) {
+						// select playList item
+						if (mCurPlayIndex == position) {
 							return;
 						}
 						playMedia(position);
-						
-					}else if(mSelectedMenuPosi == 1){
-						//select playMode
-						mPlayMode = ((PlayModeMenuItem)menuItemData.getChildAt(position)).getPlayMode();
+
+					} else if (mSelectedMenuPosi == 1) {
+						// select playMode
+						mPlayMode = ((PlayModeMenuItem) menuItemData.getChildAt(position)).getPlayMode();
 						mPlayModeTv.setText(menuItemData.getSelectedChild().getTitle());
-						
-					}else if(mSelectedMenuPosi == 2){
-						//select load lyric or no
-						if(position == 0 && showLyric == false && mLyricInfo != null){
+
+					} else if (mSelectedMenuPosi == 2) {
+						MenuItem adjuestLyricMenuData = mMenuList.get(3);
+						// select load lyric or no
+						if (position == 0 && showLyric == false && mLyricInfo != null) {
 							// show lyricView
 							showLyric = true;
 							showLyricView();
 							mLyricView.setLyricInfo(mLyricInfo);
 							mLyricView.setCurrTime(getProxyPlayer().getCurrentPosition());
-						}else if(position == 1 && showLyric == true){
+							// enable adjust lyric
+							adjuestLyricMenuData.setEnabled(true);
+						} else if (position == 1 && showLyric == true) {
 							// hide lyricView
 							showLyric = false;
 							showNoLyricView();
 							mLyricView.setLyricInfo(null);
+							// disable adjust lyric
+							adjuestLyricMenuData.setEnabled(false);
 						}
-						
-					}else if(mSelectedMenuPosi == 3){
-						//select adjust lyric
-						if(position == 0){
+						// change adjust lyric menuItem enable
+						View adjustLyricMenu = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 3);
+						if (adjustLyricMenu != null) {
+							mMenuDialog.getMenuAdapter().updateMenuItem(adjustLyricMenu, adjuestLyricMenuData);
+						}
+
+					} else if (mSelectedMenuPosi == 3) {
+						// select adjust lyric
+						if (position == 0) {
 							mLyricView.adjustTimeOffset(200);
-						}else if(position == 1){
+						} else if (position == 1) {
 							mLyricView.adjustTimeOffset(-200);
 						}
 					}
-					
-					View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
-					if(oldSubMenuItemView != null){
-						mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(lastSelectPosi));
+
+					View oldSubMenuItemView = mMenuDialog.getMenu()
+							.findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
+					if (oldSubMenuItemView != null) {
+						mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView,
+								menuItemData.getChildAt(lastSelectPosi));
 					}
-					View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + position);
-					if(subMenuItemView != null){
-						mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView, menuItemData.getSelectedChild());
+					View subMenuItemView = mMenuDialog.getMenu()
+							.findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + position);
+					if (subMenuItemView != null) {
+						mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView,
+								menuItemData.getSelectedChild());
 					}
-					View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
-					if(menuItemView != null){
+					View menuItemView = mMenuDialog.getMenu()
+							.findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
+					if (menuItemView != null) {
 						mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
 					}
 				}
 
 				@Override
 				public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
-					if(mSelectedMenuPosi == position){
+					if (mSelectedMenuPosi == position) {
 						return false;
 					}
 					mMenuList.get(mSelectedMenuPosi).setSelected(false);
@@ -381,8 +403,34 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 					return false;
 				}
 			});
+			mMenuDialog.setOnItemKeyEventListener(new OnKeyEventListener() {
+
+				@Override
+				public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+					// if current choice is playList, selected subMenuItem should be auto-focused after left-key
+					// down
+					if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN
+							&& mSelectedMenuPosi == 0) {
+						mMenuDialog.getMenu().openSubMenu(true, mMenuList.get(0).getSelectedChildIndex());
+						return true;
+					}
+					return false;
+				}
+
+				@Override
+				public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+					return false;
+				}
+			});
+			mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
 		}
 		mMenuDialog.show();
+	}
+	
+	public void hideMenuDialog(){
+		if(mMenuDialog != null){
+			mMenuDialog.dismiss();
+		}
 	}
 
 	private List<MenuItem> createMenuData() {
@@ -394,14 +442,12 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		List<MenuItem> playListSubMenuItems = new ArrayList<MenuItem>();
 		for (int i = 0, dataCount = mDataList.size(); i < dataCount; i++) {
 			String url = mDataList.get(i);
-			MenuItem item = new MenuItem(url.substring(url.lastIndexOf("/")+1));
+			MenuItem item = new MenuItem(url.substring(url.lastIndexOf("/") + 1));
 			item.setType(MenuItem.TYPE_LIST);
 			playListSubMenuItems.add(item);
-			if (i == mCurPlayIndex) {
-				item.setSelected(true);
-			}
 		}
 		playListMenuItem.setChildren(playListSubMenuItems);
+		playListMenuItem.setChildSelected(mCurPlayIndex);
 		menuList.add(playListMenuItem);
 
 		MenuItem playModeMenuItem = new MenuItem(getString(R.string.play_mode));
@@ -412,8 +458,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		menuItem.setParent(playModeMenuItem);
 		menuItem.setSelected(true);
 		playModeSubMenuItems.add(menuItem);
-		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_in_random_order), MenuItem.TYPE_SELECTOR, PlayMode.RANDOM_ORDER));
-		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_single_cycle), MenuItem.TYPE_SELECTOR, PlayMode.SINGLE_CYCLE));
+		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_in_random_order),
+				MenuItem.TYPE_SELECTOR, PlayMode.RANDOM_ORDER));
+		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_single_cycle),
+				MenuItem.TYPE_SELECTOR, PlayMode.SINGLE_CYCLE));
 		playModeMenuItem.setChildren(playModeSubMenuItems);
 		menuList.add(playModeMenuItem);
 

@@ -1,6 +1,5 @@
 package com.cantv.media.center.ui;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -23,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,8 +37,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	private final int FOCUS_MODE_TMP = 1;
 	private final int FOCUS_MODE_SELECTED = 2;
 	private final int FOCUS_MODE_NONE = 3;
-	
+
 	private final int POSITION_NULL = -1;
+
+	private final int TIME_FOCUS_TRANSLATE_ANIM = 200;
 
 	private int mMenuWidth;
 	private int mMenuBg;
@@ -55,7 +55,8 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	private int mSubMenuPaddingRight;
 	private int mSubMenuPaddingBottom;
 
-	private LinearLayout mMenuRoot;
+	private RelativeLayout mMenuRoot;
+	private View mMenuHeader;
 	private ScrollView mMenuScrollView;
 	private LinearLayout mMenuContainer;
 	private ImageView mMenuSelectView;
@@ -73,7 +74,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	private SparseArray<List<View>> mCacheViews;
 	private SparseArray<List<View>> mMenuItemViews;
 	private SparseArray<List<View>> mSubMenuItemViews;
-	private List<View> mMenuHeadViews;
 	private Rect mOldFocusRect;
 	private Rect mNewFocusRect;
 	private boolean focusedMenuItem;
@@ -81,7 +81,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	private Rect mNewSelectRect;
 	private int mMenuHeaderHeight;
 	private boolean isSubMenuShowing = true;
-	// private boolean intentToCloseSubMenu = true;
+	private int mDestSubMenuFocusPos = -1;
 
 	private OnItemClickListener mItemClickListener;
 	private OnItemFocusChangeListener mFocusChangeListener;
@@ -100,9 +100,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	}
 
 	public interface OnKeyEventListener {
-		public boolean onMenuItemKeyEvent(View v, int keyCode, KeyEvent event);
+		public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event);
 
-		public boolean onSubMenuItemKeyEvent(View v, int keyCode, KeyEvent event);
+		public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event);
 	}
 
 	public DoubleColumnMenu(Context context, AttributeSet attrs) {
@@ -128,14 +128,14 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		mMenuBg = styledAttrs.getResourceId(R.styleable.DoubleColumnMenu_menuBackground, android.R.color.transparent);
 		mMenuFocusBg = styledAttrs.getResourceId(R.styleable.DoubleColumnMenu_menuFocusResId,
 				android.R.color.transparent);
-		mMenuFocusMode = styledAttrs.getInt(R.styleable.DoubleColumnMenu_menuFocusMode, FOCUS_MODE_TMP);
+		mMenuFocusMode = styledAttrs.getInt(R.styleable.DoubleColumnMenu_menuFocusMode, FOCUS_MODE_SELECTED);
 
 		mSubMenuWidth = styledAttrs.getDimensionPixelSize(R.styleable.DoubleColumnMenu_subMenuWidth, 300);
 		mSubMenuBg = styledAttrs.getResourceId(R.styleable.DoubleColumnMenu_subMenuBackground,
 				android.R.color.transparent);
 		mSubMenuFocusBg = styledAttrs.getResourceId(R.styleable.DoubleColumnMenu_subMenuFocusResId,
 				android.R.color.transparent);
-		mSubMenuFocusMode = styledAttrs.getInt(R.styleable.DoubleColumnMenu_subMenuFocusMode, FOCUS_MODE_TMP);
+		mSubMenuFocusMode = styledAttrs.getInt(R.styleable.DoubleColumnMenu_subMenuFocusMode, FOCUS_MODE_NONE);
 		mSubMenuPaddingLeft = styledAttrs.getDimensionPixelSize(R.styleable.DoubleColumnMenu_subMenuPaddingLeft, 0);
 		mSubMenuPaddingTop = styledAttrs.getDimensionPixelSize(R.styleable.DoubleColumnMenu_subMenuPaddingTop, 0);
 		mSubMenuPaddingRight = styledAttrs.getDimensionPixelSize(R.styleable.DoubleColumnMenu_subMenuPaddingRight, 0);
@@ -159,8 +159,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		mSubMenuRoot.addView(mSubMenu, subMenuLp);
 
-		mMenuRoot = new LinearLayout(context);
-		mMenuRoot.setOrientation(LinearLayout.VERTICAL);
+		mMenuRoot = new RelativeLayout(context);
 		mMenuRoot.setFocusable(false);
 		mMenuRoot.setId(generateViewId());
 		mMenuRoot.setBackgroundResource(mMenuBg);
@@ -173,7 +172,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		mMenuScrollView = new ScrollView(context);
 		mMenuScrollView.setFocusable(false);
 		mMenuScrollView.setVerticalScrollBarEnabled(false);
-		LinearLayout.LayoutParams menuScrollViewLp = new LinearLayout.LayoutParams(mMenuWidth,
+		RelativeLayout.LayoutParams menuScrollViewLp = new RelativeLayout.LayoutParams(mMenuWidth,
 				FrameLayout.LayoutParams.MATCH_PARENT);
 		mMenuRoot.addView(mMenuScrollView, menuScrollViewLp);
 
@@ -195,7 +194,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 					} else if (mMenuFocusMode == FOCUS_MODE_TMP && mMenuFocusTmpPosi != POSITION_NULL
 							&& mMenuFocusTmpPosi < childCount) {
 						posi = mMenuFocusTmpPosi;
-					} else if (mMenuFocusMode == FOCUS_MODE_NONE && childCount > 0){
+					} else if (mMenuFocusMode == FOCUS_MODE_NONE && childCount > 0) {
 						posi = 0;
 					}
 					if (posi == POSITION_NULL && childCount > 0) {
@@ -241,7 +240,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				if (hasFocus) {
 					int childCount = ((LinearLayout) v).getChildCount();
 					int posi = POSITION_NULL;
-					if (mSubMenuFocusMode == FOCUS_MODE_SELECTED) {
+					if (mDestSubMenuFocusPos != -1) {
+						posi = mDestSubMenuFocusPos;
+						mDestSubMenuFocusPos = -1;
+					} else if (mSubMenuFocusMode == FOCUS_MODE_SELECTED) {
 						if (mSubMenuSelectedPosi != POSITION_NULL && mSubMenuSelectedPosi < childCount) {
 							posi = mSubMenuSelectedPosi;
 						}
@@ -249,7 +251,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 						if (mSubMenuFocusTmpPosi != POSITION_NULL) {
 							posi = mSubMenuFocusTmpPosi;
 						}
-					} else if (mMenuFocusMode == FOCUS_MODE_NONE && childCount > 0){
+					} else if (mMenuFocusMode == FOCUS_MODE_NONE && childCount > 0) {
 						posi = 0;
 					}
 					if (posi == POSITION_NULL && childCount > 0) {
@@ -272,7 +274,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		RelativeLayout.LayoutParams menuFocusViewFl = new RelativeLayout.LayoutParams(mMenuWidth, 0);
 		menuFocusViewFl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		mMenuSelectView.setLayoutParams(menuFocusViewFl);
-		addView(mMenuSelectView, 0);
+		mMenuRoot.addView(mMenuSelectView, 0);
 
 		mSubMenuFocusView = new ImageView(getContext());
 		mSubMenuFocusView.setImageResource(mSubMenuFocusBg);
@@ -285,7 +287,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 
 	private void initConfig() {
 		setFocusable(false);
-		mSubMenuRoot.setClipChildren(true);
 		mSubMenuRoot.setClipToPadding(true);
 	}
 
@@ -293,7 +294,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		mCacheViews = new SparseArray<List<View>>();
 		mMenuItemViews = new SparseArray<List<View>>();
 		mSubMenuItemViews = new SparseArray<List<View>>();
-		mMenuHeadViews = new ArrayList<View>();
 		mNewFocusRect = new Rect();
 		mNewSelectRect = new Rect();
 	}
@@ -311,16 +311,13 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		super.onLayout(changed, l, t, r, b);
 		mSubMenuFocusView.layout(mNewFocusRect.left - 15, mNewFocusRect.top - 15,
-				focusedMenuItem ? (mNewFocusRect.right + 10) : (mNewFocusRect.right + 15), mNewFocusRect.bottom + 15);
+				focusedMenuItem ? (mNewFocusRect.right + 20) : (mNewFocusRect.right + 15), mNewFocusRect.bottom + 15);
 		if (mOldSelectRect == null && mMenuContainer.getChildCount() > 0) {
 			mMenuContainer.getChildAt(0).getHitRect(mNewSelectRect);
-			resolveMenuItemRect(mNewSelectRect);
-			mMenuSelectView.layout(mNewSelectRect.left, mNewSelectRect.top, mNewSelectRect.right,
-					mNewSelectRect.bottom);
-		} else {
-			mMenuSelectView.layout(mNewSelectRect.left, mNewSelectRect.top, mNewSelectRect.right,
-					mNewSelectRect.bottom);
+			resolveMenuItemRect(mNewSelectRect, true);
 		}
+		mMenuSelectView.layout(mNewSelectRect.left, mNewSelectRect.top - 2, mNewSelectRect.right,
+				mNewSelectRect.bottom + 5);
 	}
 
 	protected void animateFocusView(View targetView, final boolean isMenuView, final Runnable runnable) {
@@ -334,7 +331,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		targetView.getHitRect(newFocusRect);
 		if (isMenuView) {
 			focusedMenuItem = true;
-			resolveMenuItemRect(newFocusRect);
+			resolveMenuItemRect(newFocusRect, false);
 		} else {
 			focusedMenuItem = false;
 			resolveSubMenuItemRect(newFocusRect);
@@ -349,13 +346,13 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				int r = (int) (startValue.right + (endValue.right - startValue.right) * fraction);
 				int b = (int) (startValue.bottom + (endValue.bottom - startValue.bottom) * fraction);
 				newFocusRect.set(l, t, r, b);
-				mSubMenuFocusView.layout(l - 15, t - 15, isMenuView ? (r + 10) : (r + 15), b + 15);
+				mSubMenuFocusView.layout(l - 15, t - 15, isMenuView ? (r + 20) : (r + 15), b + 15);
 				return null;
 			}
 		}, mOldFocusRect, new Rect(newFocusRect));
 
-		ofObject.setInterpolator(new LinearInterpolator());
-		ofObject.setDuration(300);
+		ofObject.setInterpolator(new AccelerateDecelerateInterpolator());
+		ofObject.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 		if (runnable != null) {
 			ofObject.addListener(new AnimatorListenerAdapter() {
 
@@ -378,7 +375,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 			mOldSelectRect.set(newSelectRect);
 		}
 		targetView.getHitRect(newSelectRect);
-		resolveMenuItemRect(newSelectRect);
+		resolveMenuItemRect(newSelectRect, true);
 
 		ValueAnimator ofObject = ValueAnimator.ofObject(new TypeEvaluator<Rect>() {
 
@@ -389,23 +386,38 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				int r = (int) (startValue.right + (endValue.right - startValue.right) * fraction);
 				int b = (int) (startValue.bottom + (endValue.bottom - startValue.bottom) * fraction);
 				newSelectRect.set(l, t, r, b);
-				mMenuSelectView.layout(l, t, r, b);
+				mMenuSelectView.layout(l, t - 2, r, b + 5);
 				return null;
 			}
 		}, mOldSelectRect, new Rect(newSelectRect));
 
 		ofObject.setInterpolator(new AccelerateDecelerateInterpolator());
-		ofObject.setDuration(300);
+		ofObject.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 		ofObject.start();
 	}
 
 	public void openSubMenu(boolean requestFocus) {
 		if (!isSubMenuShowing) {
 			isSubMenuShowing = true;
-			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(0).setDuration(300);
+			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(0)
+					.setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 			vpa.start();
 		}
-		if(requestFocus){
+		if (requestFocus) {
+			mSubMenuContainer.setFocusable(true);
+			mSubMenuContainer.requestFocus();
+		}
+	}
+
+	public void openSubMenu(boolean requestFocus, int focusPosi) {
+		if (!isSubMenuShowing) {
+			isSubMenuShowing = true;
+			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(0)
+					.setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(TIME_FOCUS_TRANSLATE_ANIM);
+			vpa.start();
+		}
+		mDestSubMenuFocusPos = focusPosi;
+		if (requestFocus) {
 			mSubMenuContainer.setFocusable(true);
 			mSubMenuContainer.requestFocus();
 		}
@@ -414,16 +426,19 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	public void closeSubMenu() {
 		if (isSubMenuShowing) {
 			isSubMenuShowing = false;
-			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(mSubMenu.getMeasuredWidth()).setDuration(300);
+			ViewPropertyAnimator vpa = mSubMenu.animate().translationX(mSubMenu.getMeasuredWidth())
+					.setInterpolator(new AccelerateDecelerateInterpolator()).setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 			vpa.start();
 		}
 	}
 
-	protected void resolveMenuItemRect(Rect rect) {
+	protected void resolveMenuItemRect(Rect rect, boolean relativeToSelf) {
 		rect.top = rect.top - mMenuScrollView.getScrollY() + mMenuHeaderHeight;
 		rect.bottom = rect.bottom - mMenuScrollView.getScrollY() + mMenuHeaderHeight;
-		rect.left += mSubMenu.getMeasuredWidth();
-		rect.right = rect.right + mSubMenu.getMeasuredWidth() - 10;
+		if (!relativeToSelf) {
+			rect.left += mSubMenu.getMeasuredWidth();
+			rect.right = rect.right + mSubMenu.getMeasuredWidth() - 10;
+		}
 	}
 
 	protected void resolveSubMenuItemRect(Rect rect) {
@@ -457,7 +472,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		if (posi > 0 && posi < childCount) {
 			mPosi = posi;
 		}
-		mMenuContainer.getChildAt(mPosi).requestFocus();
+		View child = mMenuContainer.getChildAt(mPosi);
+		if (child.isEnabled() && child.isFocusable()) {
+			child.requestFocus();
+		}
 	}
 
 	public void focusMenuItem2(final int posi) {
@@ -494,7 +512,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		if (posi > 0 && posi < childCount) {
 			mPosi = posi;
 		}
-		mSubMenuContainer.getChildAt(mPosi).requestFocus();
+		View child = mSubMenuContainer.getChildAt(mPosi);
+		if (child.isEnabled() && child.isFocusable()) {
+			child.requestFocus();
+		}
 	}
 
 	public void focusSubMenuItem2(final int posi) {
@@ -536,6 +557,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		for (int posi = 0; posi < menuItemCount; posi++) {
 			int viewType = mAdapter.getMenuItemViewType(posi);
 			View cacheView = pullViewFromCache(viewType);
+			if (cacheView != null) {
+				cacheView.setSelected(false);
+				cacheView.setFocusable(true);
+			}
 			View newView = mAdapter.getMenuItemView(mMenuContainer, cacheView, posi);
 			if (newView == null) {
 				throw new NullPointerException("Null of menuItemView can't be processed.");
@@ -556,6 +581,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 			int viewType = mMenuItemViews.keyAt(posi);
 			List<View> views = mMenuItemViews.get(viewType);
 			for (View view : views) {
+				view.setNextFocusUpId(NO_ID);
+				view.setNextFocusDownId(NO_ID);
+				view.clearAnimation();
 				pushViewToCache(viewType, view);
 			}
 			views.clear();
@@ -570,8 +598,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 			viewGroup.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 		}
 		newView.setId(View.generateViewId());
-		newView.setSelected(false);
-		newView.setFocusable(true);
 		newView.setNextFocusRightId(newView.getId());
 		newView.setNextFocusForwardId(newView.getId());
 		newView.setOnClickListener(new OnClickListener() {
@@ -586,6 +612,20 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				openSubMenu(false);
 			}
 		});
+		newView.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (mOnKeyListener != null && mOnKeyListener.onMenuItemKeyEvent(position, v, keyCode, event)) {
+					return true;
+				}
+				if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+					openSubMenu(true);
+					return true;
+				}
+				return false;
+			}
+		});
 		newView.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
@@ -593,7 +633,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				if (hasFocus) {
 					mMenuFocusTmpPosi = position;
 					animateFocusView(v, true, null);
-					closeSubMenu();
 				}
 				if (mFocusChangeListener != null) {
 					mFocusChangeListener.onMenuItemFocusChanged(mMenuContainer, v, position, hasFocus);
@@ -613,29 +652,19 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	}
 
 	private void setupMenuItemKeyEvent() {
-		int childCount = mMenuContainer.getChildCount();
-		for (int i = 0; i < childCount; i++) {
+		View preView = null;
+		for (int i = 0, viewCount = mMenuContainer.getChildCount(); i < viewCount; i++) {
 			View child = mMenuContainer.getChildAt(i);
-			child.setOnKeyListener(new OnKeyListener() {
-
-				@Override
-				public boolean onKey(View v, int keyCode, KeyEvent event) {
-					if (mOnKeyListener != null && mOnKeyListener.onMenuItemKeyEvent(v, keyCode, event)) {
-						return true;
-					}
-					if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-						openSubMenu(true);
-						return true;
-					}
-					return false;
+			if (preView != null) {
+				child.setNextFocusUpId(preView.getId());
+				preView.setNextFocusDownId(child.getId());
+				if (i == viewCount - 1) {
+					child.setNextFocusDownId(child.getId());
 				}
-			});
-		}
-		if (childCount > 0) {
-			View firstChild = mMenuContainer.getChildAt(0);
-			View lastChild = mMenuContainer.getChildAt(childCount - 1);
-			firstChild.setNextFocusUpId(firstChild.getId());
-			lastChild.setNextFocusDownId(lastChild.getId());
+			} else {
+				child.setNextFocusUpId(child.getId());
+			}
+			preView = child;
 		}
 	}
 
@@ -647,6 +676,10 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		for (int i = 0; i < subMenuItemCount; i++) {
 			int viewType = mAdapter.getSubItemViewType(i);
 			View cacheView = pullViewFromCache(viewType);
+			if (cacheView != null) {
+				cacheView.setSelected(false);
+				cacheView.setFocusable(true);
+			}
 			View newView = mAdapter.getSubMenuItemView(mSubMenuContainer, cacheView, i);
 			if (newView == null) {
 				throw new NullPointerException("Null of subMenuItemView can't be processed.");
@@ -667,6 +700,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 			int viewType = mSubMenuItemViews.keyAt(posi);
 			List<View> views = mSubMenuItemViews.get(viewType);
 			for (View view : views) {
+				view.setNextFocusUpId(NO_ID);
+				view.setNextFocusDownId(NO_ID);
+				view.clearAnimation();
 				pushViewToCache(viewType, view);
 			}
 			views.clear();
@@ -675,14 +711,12 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		mSubMenuContainer.removeAllViews();
 	}
 
-	private void configSubMenuItem(View newView, final int position, int totalCount) {
+	private void configSubMenuItem(final View newView, final int position, int totalCount) {
 		if (newView instanceof ViewGroup) {
 			ViewGroup viewGroup = (ViewGroup) newView;
 			viewGroup.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 		}
 		newView.setId(View.generateViewId());
-		newView.setSelected(false);
-		newView.setFocusable(true);
 		newView.setNextFocusLeftId(newView.getId());
 		newView.setNextFocusForwardId(newView.getId());
 		newView.setOnClickListener(new OnClickListener() {
@@ -695,34 +729,56 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 				}
 			}
 		});
+		newView.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (mOnKeyListener != null && mOnKeyListener.onSubMenuItemKeyEvent(position, v, keyCode, event)) {
+					return true;
+				}
+				if (event.getAction() != KeyEvent.ACTION_DOWN) {
+					return false;
+				}
+				if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+					closeSubMenu();
+					mMenuContainer.setFocusable(true);
+					mMenuContainer.requestFocus();
+					return true;
+				}
+				return false;
+			}
+		});
 		newView.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(final View v, boolean hasFocus) {
+				v.clearAnimation();
 				if (hasFocus) {
 					mSubMenuFocusTmpPosi = position;
-					animateFocusView(v, false, new Runnable() {
+					animateFocusView(newView, false, new Runnable() {
 
 						@Override
 						public void run() {
 							ScaleAnimation mZoomInAnim = new ScaleAnimation(1, 1.1f, 1, 1.1f,
 									ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-							mZoomInAnim.setInterpolator(new LinearInterpolator());
+							mZoomInAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 							mZoomInAnim.setFillAfter(true);
-							mZoomInAnim.setDuration(300);
-							v.startAnimation(mZoomInAnim);
+							mZoomInAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
+							newView.clearAnimation();
+							newView.startAnimation(mZoomInAnim);
 						}
 					});
 				} else {
 					ScaleAnimation mZoomOutAnim = new ScaleAnimation(1.1f, 1, 1.1f, 1, ScaleAnimation.RELATIVE_TO_SELF,
 							0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-					mZoomOutAnim.setInterpolator(new LinearInterpolator());
+					mZoomOutAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 					mZoomOutAnim.setFillAfter(true);
-					mZoomOutAnim.setDuration(300);
-					v.startAnimation(mZoomOutAnim);
+					mZoomOutAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
+					newView.clearAnimation();
+					newView.startAnimation(mZoomOutAnim);
 				}
 				if (mFocusChangeListener != null) {
-					mFocusChangeListener.onSubMenuItemFocusChanged(mSubMenuContainer, v, position, hasFocus);
+					mFocusChangeListener.onSubMenuItemFocusChanged(mSubMenuContainer, newView, position, hasFocus);
 				}
 			}
 		});
@@ -740,28 +796,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 
 	private void setupSubMenuItemKeyEvent() {
 		final int childCount = mSubMenuContainer.getChildCount();
-		for (int i = 0; i < childCount; i++) {
-			View child = mSubMenuContainer.getChildAt(i);
-			child.setOnKeyListener(new OnKeyListener() {
-
-				@Override
-				public boolean onKey(View v, int keyCode, KeyEvent event) {
-					if (mOnKeyListener != null && mOnKeyListener.onSubMenuItemKeyEvent(v, keyCode, event)) {
-						return true;
-					}
-					if (event.getAction() != KeyEvent.ACTION_DOWN) {
-						return false;
-					}
-					if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-						closeSubMenu();
-						mMenuContainer.setFocusable(true);
-						mMenuContainer.requestFocus();
-						return true;
-					}
-					return false;
-				}
-			});
-		}
 		if (childCount > 0) {
 			View firstChild = mSubMenuContainer.getChildAt(0);
 			View lastChild = mSubMenuContainer.getChildAt(childCount - 1);
@@ -867,15 +901,22 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 		return true;
 	}
 
-	public void addMenuHeader(View view) {
-		mMenuRoot.addView(view, 0);
-		mMenuHeadViews.add(view);
-		mMenuHeaderHeight += view.getLayoutParams().height;
+	public void setMenuHeader(View view) {
+		view.setId(generateViewId());
+		mMenuHeader = view;
+		mMenuRoot.addView(mMenuHeader, 0);
+		mMenuHeaderHeight = view.getLayoutParams().height;
+
+		RelativeLayout.LayoutParams rlp = (LayoutParams) mMenuScrollView.getLayoutParams();
+		rlp.addRule(BELOW, mMenuHeader.getId());
+		mMenuScrollView.requestLayout();
 	}
 
-	public void addMenuFooter(View view) {
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(mSubMenuWidth,
-				LinearLayout.LayoutParams.WRAP_CONTENT);
-		mSubMenu.addView(view, mSubMenu.getChildCount(), lp);
+	public void setMenuSelectPosi(int position) {
+		mMenuSelectedPosi = position;
+	}
+
+	public void setSubMenuSelectPosi(int position) {
+		mSubMenuSelectedPosi = position;
 	}
 }

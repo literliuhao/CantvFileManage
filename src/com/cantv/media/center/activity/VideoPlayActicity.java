@@ -12,6 +12,7 @@ import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.ExternalSurfaceView;
 import com.cantv.media.center.ui.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.MenuDialog;
@@ -468,6 +469,24 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 				}
 			});
 		}
+		mMenuDialog.setOnItemKeyEventListener(new OnKeyEventListener() {
+
+			@Override
+			public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN
+						&& mSelectedPosi == 0) {
+					mMenuDialog.getMenu().openSubMenu(true, list.get(0).getSelectedChildIndex());
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public boolean onSubMenuItemKeyEvent(int position, View v,
+					int keyCode, KeyEvent event) {
+				return false;
+			}
+		});
 		mMenuDialog.show();
 	}
 
@@ -530,9 +549,23 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 			isSubTitle = false;
 			mSubTitleView1.setText("");
 			mSubTitleView2.setText("");
+			if (list.get(4)!=null&&"字幕调整".equals(list.get(4).getTitle())) {
+				list.get(4).setEnabled(isSubTitle);
+				View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
+				if(oldSubMenuItemView != null){
+					mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
+				}
+			}
 			break;
 		case MenuConstant.SUBMENU_LOADINGSUBTITLE_OPEN:
 			isSubTitle = true;
+			if (list.get(4)!=null&&"字幕调整".equals(list.get(4).getTitle())) {
+				list.get(4).setEnabled(isSubTitle);
+				View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
+				if(oldSubMenuItemView != null){
+					mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
+				}
+			}
 			break;
 		default:
 			break;

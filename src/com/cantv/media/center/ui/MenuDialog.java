@@ -32,12 +32,12 @@ public class MenuDialog extends Dialog {
 		super(context, R.style.dialog_menu);
 		setupLayout();
 	}
-	
-	public DoubleColumnMenu getMenu(){
+
+	public DoubleColumnMenu getMenu() {
 		return mMenuView;
 	}
-	
-	public MenuAdapter getMenuAdapter(){
+
+	public MenuAdapter getMenuAdapter() {
 		return mAdpter;
 	}
 
@@ -49,7 +49,7 @@ public class MenuDialog extends Dialog {
 		LinearLayout.LayoutParams headerViewLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 				getContext().getResources().getDimensionPixelSize(R.dimen.dimen_160px));
 		headerView.setLayoutParams(headerViewLp);
-		mMenuView.addMenuHeader(headerView);
+		mMenuView.setMenuHeader(headerView);
 		setContentView(view);
 
 		WindowManager.LayoutParams lp = this.getWindow().getAttributes();
@@ -57,14 +57,22 @@ public class MenuDialog extends Dialog {
 		this.getWindow().setAttributes(lp);
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_MENU && isShowing()) {
+			dismiss();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 	public void setMenuList(List<MenuItem> list) {
 		if (mAdpter == null) {
 			mAdpter = new MenuAdapter(getContext(), list);
 			mMenuView.setAdapter(mAdpter);
 			mMenuView.setOnItemsClickListener(new OnItemClickListener() {
-                
+
 				@Override
-				public void onSubMenuItemClick(LinearLayout parent, View view, int position) {				
+				public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
 					if (mItemClickListener != null) {
 						mItemClickListener.onSubMenuItemClick(parent, view, position);
 					}
@@ -97,17 +105,17 @@ public class MenuDialog extends Dialog {
 			mMenuView.setOnItemKeyEventListener(new OnKeyEventListener() {
 
 				@Override
-				public boolean onSubMenuItemKeyEvent(View v, int keyCode, KeyEvent event) {
+				public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
 					if (mOnKeyListener != null) {
-						return mOnKeyListener.onSubMenuItemKeyEvent(v, keyCode, event);
+						return mOnKeyListener.onSubMenuItemKeyEvent(position, v, keyCode, event);
 					}
 					return false;
 				}
 
 				@Override
-				public boolean onMenuItemKeyEvent(View v, int keyCode, KeyEvent event) {
+				public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
 					if (mOnKeyListener != null) {
-						return mOnKeyListener.onMenuItemKeyEvent(v, keyCode, event);
+						return mOnKeyListener.onMenuItemKeyEvent(position, v, keyCode, event);
 					}
 					return false;
 				}
@@ -131,7 +139,7 @@ public class MenuDialog extends Dialog {
 	}
 
 	public static class MenuAdapter extends DoubleColumnMenu.BaseAdapter {
-		
+
 		public static final String TAG_MENU_VIEW = "menu";
 		public static final String TAG_SUB_MENU_VIEW = "subMenu";
 
@@ -142,15 +150,15 @@ public class MenuDialog extends Dialog {
 			this.list = list;
 			mStrTemplate = context.getResources().getString(R.string.total_num);
 		}
-		
-		public List<MenuItem> getData(){
+
+		public List<MenuItem> getData() {
 			return list;
 		}
-		
-		public void setData(List<MenuItem> list){
-			if(this.list == null){
+
+		public void setData(List<MenuItem> list) {
+			if (this.list == null) {
 				this.list = list;
-			}else{
+			} else {
 				this.list.clear();
 				this.list.addAll(list);
 			}
@@ -178,6 +186,7 @@ public class MenuDialog extends Dialog {
 			if (convertView == null) {
 				MenuViewHolder holder = new MenuViewHolder();
 				view = View.inflate(parent.getContext(), R.layout.layout_menu_item, null);
+				holder.arrowIv = (ImageView) view.findViewById(R.id.iv_arrow);
 				holder.titleTv = (TextView) view.findViewById(R.id.tv_title);
 				holder.subTitleTv = (TextView) view.findViewById(R.id.tv_subTitle);
 				view.setTag(R.id.tag_id_holder_key, holder);
@@ -207,7 +216,7 @@ public class MenuDialog extends Dialog {
 
 		@Override
 		public int getSubItemViewType(int position) {
-			return ((MenuItem)getSubMenuItem(position)).getType();
+			return ((MenuItem) getSubMenuItem(position)).getType();
 		}
 
 		@Override
@@ -242,9 +251,13 @@ public class MenuDialog extends Dialog {
 			view.setLayoutParams(lp);
 			return view;
 		}
-		
-		public void updateMenuItem(View view, MenuItem data){
+
+		public void updateMenuItem(View view, MenuItem data) {
 			MenuViewHolder holder = (MenuViewHolder) view.getTag(R.id.tag_id_holder_key);
+			view.setEnabled(data.isEnabled());
+			view.setFocusable(data.isEnabled());
+			view.setSelected(data.isSelected());
+			holder.arrowIv.setVisibility(data.getChildrenCount() > 0 ? View.VISIBLE : View.INVISIBLE);
 			holder.titleTv.setText(data.getTitle());
 			int type = data.getType();
 			if (type == MenuItem.TYPE_LIST) {
@@ -259,9 +272,12 @@ public class MenuDialog extends Dialog {
 				holder.subTitleTv.setText("");
 			}
 		}
-		
-		public void updateSubMenuItem(View view, MenuItem data){
+
+		public void updateSubMenuItem(View view, MenuItem data) {
 			int dataType = data.getType();
+			view.setEnabled(data.isEnabled());
+			view.setFocusable(data.isEnabled());
+			view.setSelected(data.isSelected());
 			if (dataType == MenuItem.TYPE_LIST || dataType == MenuItem.TYPE_NORMAL) {
 				ListSubMenuViewHolder holder = (ListSubMenuViewHolder) view.getTag(R.id.tag_id_holder_key);
 				holder.titleTv.setText(data.getTitle());
@@ -289,6 +305,7 @@ public class MenuDialog extends Dialog {
 		}
 
 		static class MenuViewHolder {
+			ImageView arrowIv;
 			TextView titleTv;
 			TextView subTitleTv;
 		}

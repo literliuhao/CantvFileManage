@@ -4,9 +4,11 @@ import com.cantv.media.R;
 import com.cantv.media.center.constants.PicStretch;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.utils.FileUtil;
+import com.cantv.media.center.utils.MediaUtils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
@@ -120,6 +122,7 @@ public class MediaGridItemView extends MediaItemView {
             case APP:
                 Drawable apkIcon = FileUtil.getApkIcon(mContext, media.mUri);
                 mBgView.setBackground(media);
+//                mBgView.setMedia(media);
                 mBgView.setDefaultPic(apkIcon);
                 break;
             case FOLDER:

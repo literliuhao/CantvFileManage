@@ -11,6 +11,7 @@ public class MenuItem {
 	protected String title;
 	protected int type = TYPE_NORMAL;
 	protected boolean isSelected;
+	protected boolean enabled = true;
 
 	protected MenuItem parent;
 	protected List<MenuItem> children;
@@ -24,7 +25,7 @@ public class MenuItem {
 		super();
 		this.title = title;
 	}
-	
+
 	public MenuItem(String title, int type) {
 		super();
 		this.title = title;
@@ -51,7 +52,7 @@ public class MenuItem {
 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
-		if(parent != null){
+		if (parent != null) {
 			parent.setSelectedChild(this);
 		}
 	}
@@ -67,14 +68,14 @@ public class MenuItem {
 	public List<MenuItem> getChildren() {
 		return children;
 	}
-	
-	public int getChildrenCount(){
+
+	public int getChildrenCount() {
 		return children == null ? 0 : children.size();
 	}
 
 	public void setChildren(List<MenuItem> children) {
-		if(children != null){
-			for(MenuItem item : children){
+		if (children != null) {
+			for (MenuItem item : children) {
 				item.setParent(this);
 			}
 		}
@@ -85,9 +86,16 @@ public class MenuItem {
 		return selectedChild;
 	}
 	
-	public MenuItem getChildAt(int index){
+	public int getSelectedChildIndex() {
+		if(children != null && selectedChild != null){
+			return children.indexOf(selectedChild);
+		}
+		return 0;
+	}
+
+	public MenuItem getChildAt(int index) {
 		int childrenCount = getChildrenCount();
-		if(childrenCount == 0 || index < 0 || index >= childrenCount){
+		if (childrenCount == 0 || index < 0 || index >= childrenCount) {
 			return null;
 		}
 		return children.get(index);
@@ -96,20 +104,28 @@ public class MenuItem {
 	public void setSelectedChild(MenuItem selectedChild) {
 		this.selectedChild = selectedChild;
 	}
-	
-	public int setChildSelected(int index){
+
+	public int setChildSelected(int index) {
 		int childrenCount = getChildrenCount();
-		if(childrenCount == 0 || index < 0 || index >= childrenCount){
+		if (childrenCount == 0 || index < 0 || index >= childrenCount) {
 			return 0;
 		}
 		int oldIndex = 0;
-		if(selectedChild != null){
+		if (selectedChild != null) {
 			selectedChild.setSelected(false);
 			oldIndex = children.indexOf(selectedChild);
 		}
 		selectedChild = getChildren().get(index);
 		selectedChild.setSelected(true);
 		return oldIndex;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public int getType() {
@@ -119,7 +135,7 @@ public class MenuItem {
 	public void setType(int type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "MenuItem [title=" + title + ", type=" + type + ", isSelected=" + isSelected + ", parent=" + parent
