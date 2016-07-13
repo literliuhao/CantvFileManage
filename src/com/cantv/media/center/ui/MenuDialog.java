@@ -49,12 +49,20 @@ public class MenuDialog extends Dialog {
 		LinearLayout.LayoutParams headerViewLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 				getContext().getResources().getDimensionPixelSize(R.dimen.dimen_160px));
 		headerView.setLayoutParams(headerViewLp);
-		mMenuView.addMenuHeader(headerView);
+		mMenuView.setMenuHeader(headerView);
 		setContentView(view);
 
 		WindowManager.LayoutParams lp = this.getWindow().getAttributes();
 		this.getWindow().setGravity(Gravity.TOP | Gravity.END);
 		this.getWindow().setAttributes(lp);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_MENU && isShowing()) {
+			dismiss();
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	public void setMenuList(List<MenuItem> list) {
@@ -178,6 +186,7 @@ public class MenuDialog extends Dialog {
 			if (convertView == null) {
 				MenuViewHolder holder = new MenuViewHolder();
 				view = View.inflate(parent.getContext(), R.layout.layout_menu_item, null);
+				holder.arrowIv = (ImageView) view.findViewById(R.id.iv_arrow);
 				holder.titleTv = (TextView) view.findViewById(R.id.tv_title);
 				holder.subTitleTv = (TextView) view.findViewById(R.id.tv_subTitle);
 				view.setTag(R.id.tag_id_holder_key, holder);
@@ -248,6 +257,7 @@ public class MenuDialog extends Dialog {
 			view.setEnabled(data.isEnabled());
 			view.setFocusable(data.isEnabled());
 			view.setSelected(data.isSelected());
+			holder.arrowIv.setVisibility(data.getChildrenCount() > 0 ? View.VISIBLE : View.INVISIBLE);
 			holder.titleTv.setText(data.getTitle());
 			int type = data.getType();
 			if (type == MenuItem.TYPE_LIST) {
@@ -295,6 +305,7 @@ public class MenuDialog extends Dialog {
 		}
 
 		static class MenuViewHolder {
+			ImageView arrowIv;
 			TextView titleTv;
 			TextView subTitleTv;
 		}

@@ -197,11 +197,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		unregisterReceiver(mUsbChangeReceiver);
 		releaseWakeLock();
 		mUsbChangeReceiver = null;
 		mUsbFilter = null;
+		hideMenuDialog();
+		mMenuDialog = null;
+		super.onDestroy();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -302,7 +304,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
-			showMenuDialog();
+			if(mMenuDialog == null || !mMenuDialog.isShowing()){
+				showMenuDialog();
+			}
 		}
 		return super.onKeyDown(keyCode, event);
 	}
@@ -421,6 +425,12 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
 		}
 		mMenuDialog.show();
+	}
+	
+	public void hideMenuDialog(){
+		if(mMenuDialog != null){
+			mMenuDialog.dismiss();
+		}
 	}
 
 	private List<MenuItem> createMenuData() {
