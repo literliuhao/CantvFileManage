@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -41,7 +42,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 	private final int POSITION_NULL = -1;
 
 	private final int TIME_FOCUS_TRANSLATE_ANIM = 200;
-
 	private int mMenuWidth;
 	private int mMenuBg;
 	private int mMenuFocusBg;
@@ -759,9 +759,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 
 						@Override
 						public void run() {
-							ScaleAnimation mZoomInAnim = new ScaleAnimation(1, 1.1f, 1, 1.1f,
+							ScaleAnimation mZoomInAnim = new ScaleAnimation(1, 1.125f, 1, 1.125f,
 									ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-							mZoomInAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+							mZoomInAnim.setInterpolator(new DecelerateInterpolator());
 							mZoomInAnim.setFillAfter(true);
 							mZoomInAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 							newView.clearAnimation();
@@ -769,9 +769,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 						}
 					});
 				} else {
-					ScaleAnimation mZoomOutAnim = new ScaleAnimation(1.1f, 1, 1.1f, 1, ScaleAnimation.RELATIVE_TO_SELF,
-							0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-					mZoomOutAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+					ScaleAnimation mZoomOutAnim = new ScaleAnimation(1.125f, 1, 1.125f, 1,
+							ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+					mZoomOutAnim.setInterpolator(new DecelerateInterpolator());
 					mZoomOutAnim.setFillAfter(true);
 					mZoomOutAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
 					newView.clearAnimation();

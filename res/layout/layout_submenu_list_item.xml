@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dimen_90px"
     android:gravity="center_vertical"
-    android:paddingEnd="0dp"
+    android:paddingEnd="@dimen/dimen_32px"
     android:paddingStart="@dimen/dimen_32px"
     android:textColor="@color/selector_submenu_list_item_bg"
     android:textSize="@dimen/fontsize_32px"
     android:singleLine="true"
-    android:ellipsize="end"
+    android:ellipsize="marquee"
     android:marqueeRepeatLimit="marquee_forever"
      />
