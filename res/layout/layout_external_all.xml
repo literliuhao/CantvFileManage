@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    android:layout_width="@dimen/px780"
-    android:layout_height="@dimen/px248"
-    android:layout_marginTop="@dimen/px8"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_external_all"
-    android:visibility="visible"
-    android:focusable="true"
-   	android:clickable="true"
-    android:layout_marginLeft="@dimen/px23"
-    android:layout_marginRight="-22px"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
 
     <ImageView
         android:id="@+id/imageview_external"
-        android:layout_width="@dimen/px735"
+        android:layout_width="@dimen/px742"
         android:layout_height="@dimen/px248"
-        android:layout_marginLeft="@dimen/px21"
-        android:background="@drawable/bj_06" />
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dimen_15px"
+        android:background="@drawable/bj_06"
+        android:clickable="true"
+        android:focusable="true" />
 
     <ImageView
-		android:id="@+id/imageview_external_u"
-        android:background="@drawable/icon_nou"
-        android:layout_marginLeft="@dimen/px196"
-		android:layout_marginTop="@dimen/px54"
+        android:id="@+id/imageview_external_u"
         android:layout_width="@dimen/px112"
-        android:layout_height="@dimen/px112" />
+        android:layout_height="@dimen/px112"
+        android:layout_marginLeft="@dimen/px196"
+        android:layout_marginTop="@dimen/px54"
+        android:background="@drawable/icon_nou" />
+
     <TextView
         android:id="@+id/textview_external_lable"
-        android:layout_marginLeft="@dimen/px324"
-        android:layout_marginTop="@dimen/px74"
-        android:textSize="@dimen/px36"
-        android:textColor="@color/per80_white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/str_external" />
+        android:layout_marginLeft="@dimen/px324"
+        android:layout_marginTop="@dimen/px74"
+        android:text="@string/str_external"
+        android:textColor="@color/per80_white"
+        android:textSize="@dimen/px36" />
+
     <TextView
         android:id="@+id/textview_external_free"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px324"
         android:layout_marginTop="@dimen/px126"
         android:gravity="center_vertical|left"
-        android:textSize="@dimen/px28"
         android:textColor="@color/per50_white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textSize="@dimen/px28" />
+
     <TextView
         android:id="@+id/textview_external_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px324"
         android:layout_marginTop="@dimen/px162"
         android:gravity="center_vertical|left"
-        android:textSize="@dimen/px28"
         android:textColor="@color/per50_white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textSize="@dimen/px28" />
 </FrameLayout>

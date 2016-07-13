@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    android:layout_width="@dimen/px376"
-    android:layout_height="@dimen/px376"
-    android:layout_marginLeft="@dimen/px30"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <ImageView
         android:id="@+id/imageview_video"
         android:background="@drawable/bj_01"
         android:focusable="true"
-    	android:clickable="true"               
-        android:layout_gravity="center"
+    	android:clickable="true"
+        android:layout_margin="@dimen/dimen_15px"
         android:layout_width="@dimen/px360"
         android:layout_height="@dimen/px360" />
     <ImageView
         android:background="@drawable/icon_movie"
         android:layout_gravity="center_horizontal"
-		android:layout_marginTop="@dimen/px65"
+		android:layout_marginTop="@dimen/px110"
         android:layout_width="@dimen/px112"
         android:layout_height="@dimen/px112" />
     <TextView
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/px36"
         android:textColor="@color/per80_white"
-        android:layout_marginTop="@dimen/px209"
+        android:layout_marginTop="@dimen/px260"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/str_movie" />
