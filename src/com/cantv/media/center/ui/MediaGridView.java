@@ -43,8 +43,8 @@ public class MediaGridView extends CustomGridView {
     private MediaLoaderTask mTask;
     private MediaUtils mMediaUtils;
     public MediaListAdapter mListAdapter;
-    private Stack<Integer> mPosStack = new Stack<Integer>();
-    private Stack<List<Media>> mMediaStack = new Stack<List<Media>>();// 记录上一级目录结构
+    public Stack<Integer> mPosStack = new Stack<Integer>();
+    public Stack<List<Media>> mMediaStack = new Stack<List<Media>>();// 记录上一级目录结构
     private List<Media> mMediaes;
     // private List<String> muries;
     private String mPath;
