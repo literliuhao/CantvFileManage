@@ -25,6 +25,6 @@
     <color name="yellow_fdf352">#FDF352</color>
     
      <!-- 菜单对话框 -->
-	 <color name="menu_bg">#D90A1A25</color>
-	 <color name="submenu_bg">#E6071824</color>
+	 <color name="menu_bg">#E6111111</color>
+	 <color name="submenu_bg">#CC111111</color>
 </resources>

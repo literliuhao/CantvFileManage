@@ -64,10 +64,12 @@
     <dimen name="dimen_300px">200dp</dimen>
     <dimen name="dimen_313px">205dp</dimen>
     <dimen name="dimen_330px">220dp</dimen>
+    <dimen name="dimen_340px">227dp</dimen>
     <dimen name="dimen_350px">233dp</dimen>
     <dimen name="dimen_380px">254dp</dimen>
     <dimen name="dimen_390px">260dp</dimen>
     <dimen name="dimen_400px">267dp</dimen>
+    <dimen name="dimen_410px">273dp</dimen>
     <dimen name="dimen_430px">287dp</dimen>
     <dimen name="dimen_480px">320dp</dimen>
     <dimen name="dimen_500px">334dp</dimen>
