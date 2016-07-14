@@ -1,59 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/home_title"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/home_title">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px216"
         android:layout_marginTop="@dimen/px135">
+
         <TextView
-            android:textSize="@dimen/px56"
-            android:textColor="@color/per80_white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/str_filemanager"
-            android:layout_centerVertical="true" />
+            android:textColor="@color/per80_white"
+            android:textSize="@dimen/px56" />
     </RelativeLayout>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:orientation="vertical"
         android:layout_marginLeft="@dimen/px160"
         android:layout_marginTop="@dimen/px300"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        
-        <!-- 上半区 -->
-        <LinearLayout
-            android:layout_gravity="center"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/px376">
+        android:orientation="vertical">
 
-            <include layout="@layout/layout_video"/>
-			<include layout="@layout/layout_image"/>
-			<include layout="@layout/layout_audio"/>
-			<include layout="@layout/layout_app"/>
-            
-        </LinearLayout>
+        <!-- 上半区 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <RelativeLayout
+                android:id="@+id/layout_top_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/layout_video" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_top_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-8px"
+                android:layout_toRightOf="@id/layout_top_video">
+
+                <include layout="@layout/layout_image" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_top_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-8px"
+                android:layout_toRightOf="@id/layout_top_image">
+
+                <include layout="@layout/layout_audio" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_top_app"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-8px"
+                android:layout_toRightOf="@id/layout_top_audio">
+
+                <include layout="@layout/layout_app" />
+            </RelativeLayout>
+
+        </RelativeLayout>
 
         <!-- 下半区 -->
-        <LinearLayout
-            android:layout_gravity="center"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/px264">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
-            <include layout="@layout/layout_external_all"/>
-			<include layout="@layout/layout_external_1"/>
-			<include layout="@layout/layout_external_2"/>
+            <RelativeLayout
+                android:id="@+id/layout_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-			<include layout="@layout/layout_internal"/>
-			<include layout="@layout/layout_share"/>
+                <RelativeLayout
+                    android:id="@+id/layout_bottom_external_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        </LinearLayout>
+                    <include layout="@layout/layout_external_all" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layout_bottom_external_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/layout_external_1" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layout_bottom_external_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-8px"
+                    android:layout_toRightOf="@id/layout_bottom_external_1">
+
+                    <include layout="@layout/layout_external_2" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/layout_bottom_layout_internal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-8px"
+                android:layout_toRightOf="@id/layout_bottom">
+
+                <include layout="@layout/layout_internal" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_bottom_layout_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-8px"
+                android:layout_toRightOf="@id/layout_bottom_layout_internal">
+
+                <include layout="@layout/layout_share" />
+            </RelativeLayout>
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

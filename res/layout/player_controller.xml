@@ -22,12 +22,12 @@
         android:layout_marginLeft="50dp"
         android:background="@drawable/rect_gray"
         android:gravity="center"
-        android:visibility="invisible"
+        android:paddingBottom="3dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="3dp"
-        android:paddingBottom="3dp"
-        android:textSize="33px" />
+        android:textSize="33px"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/tv_time"
@@ -37,6 +37,54 @@
         android:layout_marginRight="50dp"
         android:layout_marginTop="50dp"
         android:textSize="48px" />
+
+    <LinearLayout
+        android:id="@+id/rl_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="270dp"
+        android:visibility="invisible"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_continue_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="4"
+            android:shadowRadius="10"
+            android:textColor="#ffffff"
+            android:textSize="35sp" />
+
+        <LinearLayout
+            android:id="@+id/ll_continue_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/play_continue" 
+                android:layout_marginTop="3dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:text="按下键可以从头播放"
+                android:textColor="#eeffffff"
+                android:textSize="30sp" 
+                android:layout_marginLeft="10dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_progress"

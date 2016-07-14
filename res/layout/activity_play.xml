@@ -27,25 +27,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:orientation="vertical"
-        android:layout_gravity="bottom" >
+        android:layout_gravity="bottom" 
+        android:layout_marginBottom="50dp"
+        >
 
         <TextView
             android:id="@+id/media__video_view__subtitle1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/px10"
             android:gravity="center"
+            android:lineSpacingExtra="17dp"
             android:textSize="@dimen/px80" />
 
-        <TextView
+       <!--  <TextView
+       android:layout_marginBottom="@dimen/px10"
             android:id="@+id/media__video_view__subtitle2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/px40"
             android:gravity="center"
-            android:textSize="@dimen/px80" />
+            android:textSize="@dimen/px80" /> -->
     </LinearLayout>
 
     <com.cantv.media.center.ui.player.PlayerController

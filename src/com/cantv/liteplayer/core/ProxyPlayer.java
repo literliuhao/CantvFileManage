@@ -159,7 +159,6 @@ public class ProxyPlayer {
 	}
 
 	public void addText(String srtPath,OnTimedTextListener listener) {
-		Log.e("sunyanlong","srtPath="+srtPath);
 		try {
 			getLitePlayer().addTimedTextSource(srtPath, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP);
 			
@@ -170,9 +169,6 @@ public class ProxyPlayer {
 			if (trackInfos != null && trackInfos.length > 0) {
 				for (int i = 0; i < trackInfos.length; i++) {
 					final TrackInfo info = trackInfos[i];
-
-					Log.w("sunyanlong", "TrackInfo: " + info.getTrackType() + " " + info.getLanguage());
-
 					if (info.getTrackType() == TrackInfo.MEDIA_TRACK_TYPE_AUDIO) {
 						// mMediaPlayer.selectTrack(i);
 					} else if (info.getTrackType() == TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {
@@ -182,7 +178,6 @@ public class ProxyPlayer {
 			}
 
 		} catch (Exception e) {
-			Log.e("sunyanlong","err:"+e.toString());
 			e.printStackTrace();
 		}
 	}

@@ -19,13 +19,18 @@ import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
 import com.cantv.media.center.ui.player.BasePlayer;
 import com.cantv.media.center.ui.player.PlayerController;
+import com.cantv.media.center.ui.player.PlayerController.PlayerDialogListener;
+import com.cantv.media.center.ui.player.SrcParser;
+import com.cantv.media.center.ui.player.SrtBeans;
 import com.cantv.media.center.utils.MediaUtils;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
@@ -56,12 +61,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 	private MenuDialog mMenuDialog;
 	private List<MenuItem> list;
 	private MenuItem mSelectedMenuItem;
+	private TimeReceiver mTimeReceiver = null;
+	private IntentFilter mTimeFilter = null;
 	
 	private int curindex;
 	private int size = 0;
 	private boolean isSubTitle = true;
 	private int mMoveTime = 0;
-
 	private int mSelectedPosi;
 	
 	@Override
@@ -71,18 +77,17 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		if (mDataList == null || mDataList.size() == 0) {
 			return;
 		}
-		for (int i = 0; i < mDataList.size(); i++) {
-			Log.e("sunyanlong", "url:" + mDataList.get(i));
-		}
+		
+		
+		
 		acquireWakeLock();// 禁止屏保弹出
 		initView();
-		
-		DaoOpenHelper.getInstance(this);
+		registerTimeReceiver();
 	}
 
 	private void initView() {
 		mSubTitleView1 = (TextView) findViewById(R.id.media__video_view__subtitle1);
-		mSubTitleView2 = (TextView) findViewById(R.id.media__video_view__subtitle2);
+		//mSubTitleView2 = (TextView) findViewById(R.id.media__video_view__subtitle2);
 		mSurfaceView = (ExternalSurfaceView) findViewById(R.id.media__video_view__surface);
 		mBackgroundView = (ImageView) findViewById(R.id.media__video_view__background);
 		mCtrBar = (PlayerController) findViewById(R.id.media__video_view__ctrlbar);
@@ -163,36 +168,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		String path = mDataList.get(mCurPlayIndex);
 		mCtrBar.setPlayDuration();
 		List<VideoPlayer> list= DaoOpenHelper.getInstance(this).queryInfo(path);
+		
 		if(list.size() != 0){
 			mRecord = list.get(0);
 			final int positon = list.get(0).getPosition();
-			
-			AlertDialog.Builder dialog = new Builder(VideoPlayActicity.this);
-			dialog.setMessage("是否恢复到上次观看?");
-			dialog.setTitle("提示");
-			dialog.setPositiveButton("确定", new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					onPlaySeekTo(positon,null);
-					Log.e("sunyanlong","back="+positon);
-					mCtrBar.showController();
-					dialog.dismiss();
-				}
-			});
-			dialog.setNegativeButton("取消", new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			
-			dialog.create().show();
+			mCtrBar.showContinuePaly(positon);
 		}
 		
-		
-		addTimedText();
+		aa();
+//		addTimedText();
 		// // 添加字幕
 		// String url = mDataList.get(mCurPlayIndex);
 		// String srt = url.substring(0, url.indexOf(".")) + ".srt";
@@ -215,6 +199,28 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		// Toast.makeText(this, "没有对应的字幕文件！", 0).show();
 		// }
 
+	}
+	
+	private SrcParser parser;
+	private List<SrtBeans> srtList;
+	
+	public void aa(){
+		String url = mDataList.get(mCurPlayIndex);
+		final String srt = url.substring(0, url.indexOf(".")) + ".srt";
+		
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				long t1 = System.currentTimeMillis();
+				parser = new SrcParser();
+				parser.parseFromPath(srt);
+				srtList = parser.srtList;
+				Log.i("", "haoshi : " + (System.currentTimeMillis() - t1));
+			}
+		}).start();
+	
+		
 	}
 
 	@Override
@@ -366,10 +372,22 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		}
 	}
 	
+	public void setSrts(int time) {
+		
+		final String srtByTime = parser.getSrtByTime(time);
+		runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				mSubTitleView1.setText(srtByTime);
+			}
+		});
+	}
+	
 	@Override
 	public void onBackPressed() {
 		storeDuration();
-		super.onBackPressed();
+		mCtrBar.onBackPressed(this);
 	}
 	
 	public void storeDuration(){
@@ -392,9 +410,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 			mRecord.setPosition((int)position);
 			DaoOpenHelper.getInstance(this).update(mRecord);
 		}
-		
-		Log.e("sunyanlong","back="+position);
-		
 	}
 	
 	@Override
@@ -415,6 +430,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		if(mCtrBar!= null){
 			mCtrBar.removeAllMessage();
 		}
+		if(mTimeReceiver != null){
+			unregisterReceiver(mTimeReceiver);  
+		}
 	}
 
 	private String[] getCurVideoAudioTracks() {
@@ -423,7 +441,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		for (int i = 0; i < audioTracks.size(); i++) {
 			int num = i + 1;
 			titles[i] = "音轨 " + num;
-			Log.e("sunyanlong", "AudioTrack:" + audioTracks.get(i).getName());
 		}
 		return titles;
 	}
@@ -578,7 +595,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		MenuItem playListMenuItem = new MenuItem("播放列表");
 		playListMenuItem.setType(MenuItem.TYPE_LIST);
 		playListMenuItem.setSelected(true);
-		playListMenuItem.setChildSelected(mCurPlayIndex);
 		List<MenuItem> playListSubMenuItems = new ArrayList<MenuItem>();
 		for (int i = 0; i < mDataList.size(); i++) {
 			String url = mDataList.get(i);
@@ -588,6 +604,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		}
 		playListMenuItem.setChildren(playListSubMenuItems);
 		menuList.add(playListMenuItem);
+		playListMenuItem.setChildSelected(mCurPlayIndex);
 
 		// 音轨设置
 		MenuItem audioTrackMenuItem = new MenuItem("音轨设置");
@@ -639,5 +656,24 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
 		return menuList;
 	}
+	
+	
+	private void registerTimeReceiver() {
+		mTimeReceiver = new TimeReceiver();
+		mTimeFilter = new IntentFilter();
+		mTimeFilter.addAction(Intent.ACTION_TIME_TICK);
+		registerReceiver(mTimeReceiver, mTimeFilter);
+	}
+	
+	class TimeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+            	mCtrBar.refreshTime(); //更新时间的方法
+            }
+        }
+ }
+
 
 }

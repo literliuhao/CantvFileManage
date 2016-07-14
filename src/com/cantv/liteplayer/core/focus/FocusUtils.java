@@ -100,8 +100,8 @@ public class FocusUtils {
             float pT;
             if(clipRect == null) {
                 if(isScalable) {
-                    pL = ((float)view.getWidth() * scale - (float)view.getWidth()) / 2.0F;
-                    pT = ((float)view.getHeight() * scale - (float)view.getHeight()) / 2.0F;
+                    pL = ((float)view.getWidth() * (scale * 1.05f) - (float)view.getWidth()) / 2.0F;
+                    pT = ((float)view.getHeight() * (scale * 1.05f) - (float)view.getHeight()) / 2.0F;
                     this.focusView.focusMove((float)((int)((float)location[0] - pL + scrollerX)), (float)((int)((float)location[1] - pT + scrollerY)), (float)((int)((float)(location[0] + view.getWidth()) + pL + scrollerX)), (float)((int)((float)(location[1] + view.getHeight()) + pT + scrollerY)));
                 } else {
                     this.focusView.focusMove((float)location[0] + scrollerX, (float)location[1] + scrollerY, (float)(location[0] + view.getWidth()) + scrollerX, (float)(location[1] + view.getHeight()) + scrollerY);

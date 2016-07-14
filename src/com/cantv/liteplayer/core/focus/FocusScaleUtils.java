@@ -35,7 +35,7 @@ public class FocusScaleUtils {
     }
 
     public FocusScaleUtils(int durationLarge, int durationSmall, float scale, Interpolator interpolatorLarge, Interpolator interpolatorSmall) {
-        this.durationLarge = 300;
+        this.durationLarge = 500;
         this.durationSmall = 500;
         this.scale = 1.1F;
         this.durationLarge = durationLarge;
@@ -46,11 +46,24 @@ public class FocusScaleUtils {
     }
 
     public void scaleToLarge(View item) {
-        if(item.isFocused()) {
+        if (item.isFocused()) {
             this.animatorSet = new AnimatorSet();
             this.largeX = ObjectAnimator.ofFloat(item, "ScaleX", new float[]{1.0F, this.scale});
             ObjectAnimator largeY = ObjectAnimator.ofFloat(item, "ScaleY", new float[]{1.0F, this.scale});
-            this.animatorSet.setDuration((long)this.durationLarge);
+            this.animatorSet.setDuration((long) this.durationLarge);
+            this.animatorSet.setInterpolator(this.interpolatorLarge);
+            this.animatorSet.play(this.largeX).with(largeY);
+            this.animatorSet.start();
+            this.oldView = item;
+        }
+    }
+
+    public void scaleToLargeWH(View item, float scaleW, float scaleH) {
+        if (item.isFocused()) {
+            this.animatorSet = new AnimatorSet();
+            this.largeX = ObjectAnimator.ofFloat(item, "ScaleX", new float[]{1.0F, scaleW});
+            ObjectAnimator largeY = ObjectAnimator.ofFloat(item, "ScaleY", new float[]{1.0F, scaleH});
+            this.animatorSet.setDuration((long) this.durationLarge);
             this.animatorSet.setInterpolator(this.interpolatorLarge);
             this.animatorSet.play(this.largeX).with(largeY);
             this.animatorSet.start();
@@ -59,18 +72,18 @@ public class FocusScaleUtils {
     }
 
     public void scaleToNormal(View item) {
-        if(this.animatorSet != null && item != null) {
-            if(this.animatorSet.isRunning()) {
+        if (this.animatorSet != null && item != null) {
+            if (this.animatorSet.isRunning()) {
                 this.animatorSet.cancel();
             }
 
             ObjectAnimator oa = ObjectAnimator.ofFloat(item, "ScaleX", new float[]{1.0F});
-            oa.setDuration((long)this.durationSmall);
+            oa.setDuration((long) this.durationSmall);
             oa.setInterpolator(this.interpolatorSmall);
             oa.start();
             ObjectAnimator oa2 = ObjectAnimator.ofFloat(item, "ScaleY", new float[]{1.0F});
             oa.setInterpolator(this.interpolatorSmall);
-            oa2.setDuration((long)this.durationSmall);
+            oa2.setDuration((long) this.durationSmall);
             oa2.start();
             this.oldView = null;
         }
