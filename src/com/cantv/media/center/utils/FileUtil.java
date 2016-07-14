@@ -193,7 +193,7 @@ public class FileUtil {
 
 						//当文件是图片类型,并且大于10k,才进行显示
 						if(fileInfo.mType==SourceType.PICTURE){
-							if(fileInfo.fileSize>1024*1024){
+							if(fileInfo.fileSize>1024*6){
 								tList.add(fileInfo);
 							}
 							
@@ -253,7 +253,7 @@ public class FileUtil {
 						
 						//当文件是图片类型,并且大于10k,才进行显示
 						if(fileInfo.mType==SourceType.PICTURE){
-							if(fileInfo.fileSize>1024*1024){
+							if(fileInfo.fileSize>1024*6){
 								tList.add(fileInfo);
 							}
 							
