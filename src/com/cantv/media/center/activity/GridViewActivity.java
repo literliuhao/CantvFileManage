@@ -367,6 +367,10 @@ public class GridViewActivity extends Activity {
 		mGridView.mMediaStack.clear();
 		mGridView.mPosStack.clear();
 		mGridView.mListAdapter.bindData(mediaes);
+		if(mediaes.size()<1){
+			mGridView.showNoDataPage();
+		}
+		
 	}
 
 	@Override
