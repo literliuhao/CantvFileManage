@@ -177,7 +177,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         mCurImageIndex = index;
         int curIndex = index + 1;
-        mPosition.setText(String.valueOf(curIndex));
+        mPosition.setText(String.valueOf(mCurImageIndex + 1));
         mTotal.setText(" / "+data.size());
         mFrameView.playImage(data.get(index), onfinish);
         UiUtils.runAfterLayout(mImageBrowser, new Runnable() {
@@ -189,15 +189,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         });
         String curFileUri = getData().get(mCurImageIndex);
         if (!mAutoPlay){
-        if(index == 0 && data.size() > 1){
+        if(mCurImageIndex == 0 && data.size() > 1){
         	//显示右面
         	mArrowRight.setVisibility(View.VISIBLE);
         	mArrowLeft.setVisibility(View.GONE);
-        }else if(index == data.size() - 1 && data.size() > 1){
+        }else if(mCurImageIndex == data.size() - 1 && data.size() > 1){
         	//显示左面
         	mArrowLeft.setVisibility(View.VISIBLE);
         	mArrowRight.setVisibility(View.GONE);
-        }else if(index > 0 && data.size() > 1 && index < data.size() - 1){
+        }else if(mCurImageIndex > 0 && data.size() > 1 && mCurImageIndex < data.size() - 1){
         	mArrowLeft.setVisibility(View.VISIBLE);
         	mArrowRight.setVisibility(View.VISIBLE);
         }else{
