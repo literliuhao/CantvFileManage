@@ -282,6 +282,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             public void onClick(View v) {
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
+                int curIndex = mCurImageIndex + 1;
+            	int size = getData().size();
+            	
+            	if(curIndex == size){
+            		Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+            		return ;
+            	}
                 if (mAutoPlay) {
                     stopAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
