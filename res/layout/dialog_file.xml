@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" >
 
     <ImageView
         android:id="@+id/dialog_file"
-        android:layout_width="@dimen/px200"
-        android:layout_height="@dimen/px300"
+        android:layout_width="@dimen/px160"
+        android:layout_height="@dimen/px200"
         android:layout_gravity="center"
         android:layout_margin="@dimen/dimen_15px"
         android:background="@drawable/bj_08"
@@ -17,15 +17,16 @@
         android:layout_width="@dimen/px80"
         android:layout_height="@dimen/px80"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/px65"
+        android:layout_marginTop="@dimen/px45"
         android:background="@drawable/popup_folder" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/px177"
+        android:layout_marginTop="@dimen/px155"
         android:text="@string/str_file"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/px28" />
+        android:textSize="@dimen/px24" />
+
 </FrameLayout>

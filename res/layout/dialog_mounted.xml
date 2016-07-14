@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@drawable/home_devices_background"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/px50"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/px60"
-        android:text="@string/str_newdevice"
-        android:textColor="@color/per80_white"
-        android:textSize="@dimen/px40" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/px72"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" >
 
-        <include layout="@layout/dialog_image" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/home_devices_background" />
 
-        <include layout="@layout/dialog_video" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/px160"
+            android:text="@string/str_newdevice"
+            android:textColor="@color/per80_white"
+            android:textSize="@dimen/px35" />
 
-        <include layout="@layout/dialog_audio" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/px320"
+            android:orientation="horizontal" >
 
-        <include layout="@layout/dialog_file" />
+            <include layout="@layout/dialog_image" />
 
-    </LinearLayout>
+            <include layout="@layout/dialog_video" />
 
-</LinearLayout>
+            <include layout="@layout/dialog_audio" />
+
+            <include layout="@layout/dialog_file" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
