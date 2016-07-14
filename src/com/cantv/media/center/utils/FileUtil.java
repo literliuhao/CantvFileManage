@@ -191,7 +191,16 @@ public class FileUtil {
 							&& (!fileInfo.mName
 									.equals("System Volume Information"))) {
 
-						tList.add(fileInfo);
+						//当文件是图片类型,并且大于10k,才进行显示
+						if(fileInfo.mType==SourceType.PICTURE){
+							if(fileInfo.fileSize>1024*1024){
+								tList.add(fileInfo);
+							}
+							
+						}else{
+							tList.add(fileInfo);
+						}
+						
 
 					}
 				}
@@ -235,10 +244,24 @@ public class FileUtil {
 					// 是文件夹或这是指定类型的文件,就加入到集合中
 					SourceType sourceType = type[0];
 					if ((sourceType == fileInfo.mType)
-							|| (addFolder && fileInfo.isDir
-									&& (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName
-										.equals("System Volume Information")))) {
-						tList.add(fileInfo);
+							|| 
+							//过滤掉指定2个无卵用的文件夹
+							(addFolder && fileInfo.isDir
+							&& (!fileInfo.mName.equals("LOST.DIR"))
+							&& (!fileInfo.mName.equals("System Volume Information")))) {
+						
+						
+						//当文件是图片类型,并且大于10k,才进行显示
+						if(fileInfo.mType==SourceType.PICTURE){
+							if(fileInfo.fileSize>1024*1024){
+								tList.add(fileInfo);
+							}
+							
+						}else{
+							tList.add(fileInfo);
+						}
+						
+						
 					}
 
 				}
