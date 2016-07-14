@@ -191,7 +191,16 @@ public class FileUtil {
 							&& (!fileInfo.mName
 									.equals("System Volume Information"))) {
 
-						tList.add(fileInfo);
+						//当文件是图片类型,并且大于10k,才进行显示
+						if(fileInfo.mType==SourceType.PICTURE){
+							if(fileInfo.fileSize>1024*1024){
+								tList.add(fileInfo);
+							}
+							
+						}else{
+							tList.add(fileInfo);
+						}
+						
 
 					}
 				}
@@ -235,10 +244,24 @@ public class FileUtil {
 					// 是文件夹或这是指定类型的文件,就加入到集合中
 					SourceType sourceType = type[0];
 					if ((sourceType == fileInfo.mType)
-							|| (addFolder && fileInfo.isDir
-									&& (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName
-										.equals("System Volume Information")))) {
-						tList.add(fileInfo);
+							|| 
+							//过滤掉指定2个无卵用的文件夹
+							(addFolder && fileInfo.isDir
+							&& (!fileInfo.mName.equals("LOST.DIR"))
+							&& (!fileInfo.mName.equals("System Volume Information")))) {
+						
+						
+						//当文件是图片类型,并且大于10k,才进行显示
+						if(fileInfo.mType==SourceType.PICTURE){
+							if(fileInfo.fileSize>1024*1024){
+								tList.add(fileInfo);
+							}
+							
+						}else{
+							tList.add(fileInfo);
+						}
+						
+						
 					}
 
 				}
@@ -572,5 +595,24 @@ public class FileUtil {
 		}
 		return 0;
 	}
+	
+	
+	/**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+	
+	
 
 }

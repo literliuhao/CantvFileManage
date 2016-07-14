@@ -1,9 +1,12 @@
 package com.cantv.media.center.ui;
 
+import java.util.Date;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 
 import com.cantv.media.R;
 import com.cantv.media.center.constants.PicStretch;
+import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
@@ -78,8 +82,9 @@ public class MediaListItemView extends MediaItemView {
         mImageView = new MediaPicView(context);
         mImageView.setPicStretch(PicStretch.SCALE_CROP);
         LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
-        imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        imageParams.setMargins(20,0,0,0);
+//        imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
+//        imageParams.setMargins(20,63,0,0);
+        imageParams.setMargins(FileUtil.dip2px(mContext, 14),FileUtil.dip2px(mContext, 42),0,0);
         mImageView.setLayoutParams(imageParams);
 
         mTvName = new TextView(context);
@@ -107,8 +112,9 @@ public class MediaListItemView extends MediaItemView {
         mTvDate.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
         LayoutParams tvDateParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         tvDateParams.addRule(RelativeLayout.RIGHT_OF, mTvSize.getId());
+        tvDateParams.addRule(RelativeLayout.BELOW,mTvName.getId());
         tvDateParams.addRule(RelativeLayout.ALIGN_BASELINE, mTvSize.getId());
-        tvDateParams.setMargins(20, 0, 0, 0);
+        tvDateParams.setMargins(27, 0, 0, 0);
         mTvDate.setLayoutParams(tvDateParams);
 
         relativeLayout.addView(mFocusView);
@@ -127,12 +133,17 @@ public class MediaListItemView extends MediaItemView {
     public void setMediaItem(Media media) {
         mMedia = media;
         mTvName.setText(media.getName());
-        mTvSize.setText("大小: " + MediaUtils.fileLength(media.getFileSize()));
-        mTvDate.setText("日期: " + DateUtil.longToDate(media.getModifiedDate(), null));
+        if (mMedia.mType == SourceType.FOLDER) {
+            mTvSize.setVisibility(GONE);
+        } else {
+            mTvSize.setVisibility(VISIBLE);
+            mTvSize.setText("大小: " + MediaUtils.fileLength(media.getFileSize()));
+        }
+        mTvDate.setText("日期: " + DateUtil.onDate2String(new Date(media.modifiedDate),"yyyy.MM.dd HH:mm"));
         mNumDrawable.setNum(media.getSubMediasCount());
         switch (media.getMediaFormat()) {
             case IMAGE:
-                mBgView.setMedia(media);
+            	mImageView.setMedia(media);
                 mBgView.setBackground(media);
                 break;
             case AUDIO:
