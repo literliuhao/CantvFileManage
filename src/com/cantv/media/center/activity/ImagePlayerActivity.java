@@ -1,6 +1,7 @@
 package com.cantv.media.center.activity;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -14,11 +15,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.provider.ContactsContract.DataUsageFeedback;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
@@ -34,6 +37,7 @@ import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
 import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
 import com.cantv.media.center.ui.MediaControllerBar;
+import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
@@ -48,8 +52,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private PowerManager.WakeLock mScreenLock;
     private boolean mAutoPlay = false;
     private LinearLayout mLayout;
-    private TextView mtxtname;
-    private TextView mtxtsize;
     private TextView mtxtresolution;
     private boolean nflag = true;
     private int screenWitdh;
@@ -74,6 +76,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private ImageView mArrowRight;
 	private TextView mPosition;
 	private TextView mTotal;
+	private TextView mInfoName;
+	private TextView mInfoSize;
+	private TextView mInfoTime;
+	private TextView mInfoUrl;
 	private static final int DELAYED_TIME = 5*1000;
 	private long mNextTime;
 	private long mDurationTime;
@@ -99,9 +105,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mContext = this;
         setContentView(R.layout.media__image_view);
         mediaimagebar = (LinearLayout) findViewById(R.id.mediaimagebar);
-        mLayout = (LinearLayout) findViewById(R.id.ly_imageinfo);
-        mtxtname = (TextView) findViewById(R.id.txt_name);
-        mtxtsize = (TextView) findViewById(R.id.txt_size);
+        mLayout = (LinearLayout) findViewById(R.id.media__image_info_total);
+        mInfoName = (TextView) findViewById(R.id.media__image_info_name);
+        mInfoSize = (TextView) findViewById(R.id.media__image_info_size);
+        mInfoTime = (TextView) findViewById(R.id.media__image_info_time);
+        mInfoUrl = (TextView) findViewById(R.id.media__image_info_url);
         mArrowLeft = (ImageView) findViewById(R.id.media__image_view__left);
         mArrowRight = (ImageView) findViewById(R.id.media__image_view__right);
         mPosition = (TextView) findViewById(R.id.media__image_tv__position);
@@ -180,9 +188,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
         });
         String curFileUri = getData().get(mCurImageIndex);
-        mtxtname.setText(new File(curFileUri).getName());
-        mtxtsize.setText("文件大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
-        
         if (!mAutoPlay){
         if(index == 0 && data.size() > 1){
         	//显示右面
@@ -252,10 +257,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 Toast.makeText(getApplicationContext(), "缩放", Toast.LENGTH_SHORT).show();
                 if(mSizeType){
                 	mSizeType = false;
-                	//mImageBrowser.sets
-                	
-                	ImageView imageView = new ImageView(getApplicationContext());
-                	imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 	 
                 }
             }
@@ -315,23 +316,26 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (nflag) {
                     mLayout.setVisibility(View.VISIBLE);
                     // 初始化
-                    Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 100.0f, 0.1f);
+                    AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1.0f);
                     // 设置动画时间
-                    translateAnimation.setDuration(300);
-                    mLayout.startAnimation(translateAnimation);
+                    alphaAnimation.setDuration(500);
+                    alphaAnimation.setFillAfter(true);
+                    mLayout.startAnimation(alphaAnimation);
                     nflag = false;
                 } else {
-                    Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 0.1f, 100.0f);
+                	AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0);
                     // 设置动画时间
-                    translateAnimation.setDuration(300);
-                    mLayout.startAnimation(translateAnimation);
+                    alphaAnimation.setDuration(500);
+                    alphaAnimation.setFillAfter(true);
+                    mLayout.startAnimation(alphaAnimation);
                     mLayout.setVisibility(View.GONE);
                     nflag = true;
                 }
                 String curFileUri = getData().get(mCurImageIndex);
-                mtxtname.setText(new File(curFileUri).getName());
-                mtxtsize.setText("文件大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
-
+                mInfoName.setText("图片名称："+new File(curFileUri).getName());
+                mInfoSize.setText("图片大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
+                mInfoTime.setText("上传时间：" +DateUtil.onDate2String(new Date(new File(curFileUri).lastModified())));
+                mInfoUrl.setText("图片路径：" +curFileUri);
             }
         });
         mInfo.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -357,15 +361,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
         });
         mRotation.setFocusable(true);
-        /*mRotation.postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {*/
 				mRotation.requestFocus();
 				mFocusUtils.startMoveFocus(mRotation, true, (float) 0.9);
-		/*	}
-		}, 345);*/
-        
     }
 
     private PowerManager.WakeLock getScreenLock() {
