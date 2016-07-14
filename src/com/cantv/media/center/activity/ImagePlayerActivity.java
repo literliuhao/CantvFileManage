@@ -357,13 +357,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
         });
         mRotation.setFocusable(true);
-        mRotation.postDelayed(new Runnable() {
+        /*mRotation.postDelayed(new Runnable() {
 			
 			@Override
-			public void run() {
+			public void run() {*/
 				mRotation.requestFocus();
-			}
-		}, 345);
+				mFocusUtils.startMoveFocus(mRotation, true, (float) 0.9);
+		/*	}
+		}, 345);*/
         
     }
 
@@ -479,6 +480,17 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int offset = mCurImageIndex + 1;
                 offset = (offset >= getData().size()) ? 0 : offset;
                 showImage(offset, null);
+                return true;
+
+            }
+            
+            if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
+            	mImageBrowser.changeUpRotation();
+                return true;
+
+            }
+            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
+            	mImageBrowser.changeRotation();
                 return true;
 
             }
