@@ -177,9 +177,6 @@ public class PlayerProgresBar extends View {
 	 */
 	@SuppressLint("SimpleDateFormat")
 	public void setProgress(long progress) {
-		if(progress == PlayerController.FULLPROGRESS){
-			progress = duration;
-		}
 		if (duration <= 0 || progress > duration) {
 			return;
 		}

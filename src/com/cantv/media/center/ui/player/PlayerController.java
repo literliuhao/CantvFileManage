@@ -1,7 +1,9 @@
 package com.cantv.media.center.ui.player;
 
+import java.sql.NClob;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.cantv.media.R;
 import com.cantv.media.center.activity.VideoPlayActicity;
@@ -12,26 +14,32 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class PlayerController extends RelativeLayout {
-	
-	public static final int FULLPROGRESS = -2;
+
 	private static final int CHANG_PROGRESS = 0;
 	private static final int CHANG_PLAYIMAGE = 1;
 	private static final int CHANG_VISIBLE = 2;
 	private static final int STORE_DURATION = 3;
-
+	private static final int DIALOG_LISTENER = 4;
+	private static final int CONTINUE_PLAY = 5;
+	private static final int CHANG_SRT = 6;
 	private long mDuration;
 	private boolean isHasDefinition;
 	private boolean isFirstEnter = true;
+	private boolean isShowTip = false;
+	private int mContinuePosition;
 
 	private Context mContext;
 	private PlayerProgresBar mProgressBar;
@@ -42,19 +50,22 @@ public class PlayerController extends RelativeLayout {
 	private PlayerCtrlBarContext mCtrlBarContext;
 	private PlayerCtrlBarListener mCtrlBarListener;
 	private CoverFlowViewListener mCoverFlowViewListener;
-	private TextView mTip;
+	private PlayerDialogListener mDialogListener;
+	private TextView mTip, mContinueText;
 	private ImageView mTipImage;
+	private LinearLayout mContinuePlay;
 
 	private Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 
 			switch (msg.what) {
+			case CHANG_SRT:
+				new aa("aa", Thread.MIN_PRIORITY, mContext, mCtrlBarContext).start();
+				handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
+				break;
 			case CHANG_PROGRESS:
-				Log.e("sunyanlong","CHANG_PROGRESS:"+mCtrlBarContext.getPlayerCurPosition());
-				mProgressBar.setProgress(mCtrlBarContext.getPlayerCurPosition());
-				setCurrentTime();
-				((VideoPlayActicity) mContext).setSrt(mCtrlBarContext.getPlayerCurPosition());
-				handler.sendEmptyMessageDelayed(PlayerController.CHANG_PROGRESS, 500);
+				mProgressBar.setProgress( mCtrlBarContext.getPlayerCurPosition());
+				handler.sendEmptyMessageDelayed(PlayerController.CHANG_PROGRESS, 1000);
 				break;
 
 			case CHANG_PLAYIMAGE:
@@ -65,7 +76,6 @@ public class PlayerController extends RelativeLayout {
 				}
 				break;
 
-
 			case CHANG_VISIBLE:
 
 				if (mCtrlBarContext.isPlayerPaused()) {
@@ -74,11 +84,24 @@ public class PlayerController extends RelativeLayout {
 					setVisibility(INVISIBLE);
 				}
 				break;
-				
+
 			case STORE_DURATION:
-				
-				((VideoPlayActicity)mContext).storeDuration();
-			
+
+				((VideoPlayActicity) mContext).storeDuration();
+
+				break;
+
+			case DIALOG_LISTENER:
+
+				mDialogListener.onEndTime();
+
+				break;
+
+			case CONTINUE_PLAY:
+
+				isShowTip = false;
+				mContinuePlay.setVisibility(INVISIBLE);
+
 				break;
 
 			default:
@@ -88,6 +111,23 @@ public class PlayerController extends RelativeLayout {
 		}
 
 	};
+	
+	static class aa extends HandlerThread{
+		
+		private Context mContext;
+		private PlayerCtrlBarContext mCtrlBarContext;
+		
+		public aa(String name, int priority, Context mContext, PlayerCtrlBarContext mCtrlBarContext) {
+			super(name, priority);
+			this.mContext = mContext;
+			this.mCtrlBarContext = mCtrlBarContext;
+		}
+
+		@Override
+		public void run() {
+			((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
+		}
+	}
 
 	public interface PlayerCtrlBarContext {
 		String getPlayerTitle();
@@ -114,6 +154,10 @@ public class PlayerController extends RelativeLayout {
 
 		void onPlaySeekTo(int duration, OnSeekCompleteListener listener);
 
+	}
+
+	public interface PlayerDialogListener {
+		void onEndTime();
 	}
 
 	public interface CoverFlowViewListener {
@@ -153,7 +197,11 @@ public class PlayerController extends RelativeLayout {
 		mDefinitionTv = (TextView) findViewById(R.id.tv_definiton);
 		mTip = (TextView) findViewById(R.id.tv_menu);
 		mTipImage = (ImageView) findViewById(R.id.iv_menu);
+		mContinueText = (TextView) findViewById(R.id.tv_continue_play);
+		mContinuePlay = (LinearLayout) findViewById(R.id.rl_continue);
 
+		TextPaint tp = mContinueText.getPaint();
+		tp.setFakeBoldText(true);
 	}
 
 	public void setPlayerCtrlBarListener(PlayerCtrlBarListener listener) {
@@ -169,35 +217,52 @@ public class PlayerController extends RelativeLayout {
 	}
 
 	public void setPlayDuration() {
-		
+
 		isHasDefinition = TextUtils.isEmpty(mCtrlBarContext.getDefinition());
 		if (!isHasDefinition) {
 			mDefinitionTv.setText(mCtrlBarContext.getDefinition());
 			mDefinitionTv.setVisibility(View.VISIBLE);
+		} else {
+			mDefinitionTv.setVisibility(View.INVISIBLE);
 		}
-		
-		
-		if(isFirstEnter){
+
+		if (isFirstEnter) {
 			isFirstEnter = false;
-		}else{
+		} else {
 			mProgressBar.initProgress();
 		}
 		mDuration = mCtrlBarContext.getPlayerDuration();
 		mProgressBar.setDuration(mCtrlBarContext.getPlayerDuration());
 		handler.removeMessages(PlayerController.CHANG_PROGRESS);
 		handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);
+//		handler.sendEmptyMessage(PlayerController.CHANG_SRT);
+		handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 2000);
 		handler.sendEmptyMessage(PlayerController.CHANG_PLAYIMAGE);
 		handler.sendEmptyMessageDelayed(PlayerController.CHANG_VISIBLE, 5000);
 		mTitle.setText(mCtrlBarContext.getPlayerTitle());
 		setVisibility(VISIBLE);
 		// 设置当前时间
-		setCurrentTime();
+		refreshTime();
 
-		handler.sendEmptyMessageDelayed(STORE_DURATION, 60*1000);
+		handler.sendEmptyMessageDelayed(STORE_DURATION, 60 * 1000);
+	}
+
+	public void showContinuePaly(int position) {
+		mContinuePosition = position;
+		seekToDuration(position);
+
+		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+		formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+		String continueTime = formatter.format(position);
+
+		mContinuePlay.setVisibility(VISIBLE);
+		mContinueText.setText("从" + continueTime + "开始，继续为您播放");
+		isShowTip = true;
+		handler.sendEmptyMessageDelayed(CONTINUE_PLAY, 2000);
 	}
 
 	@SuppressLint("SimpleDateFormat")
-	private void setCurrentTime() {
+	public void refreshTime() {
 		if (format == null) {
 			format = new SimpleDateFormat("HH:mm");
 		}
@@ -205,21 +270,18 @@ public class PlayerController extends RelativeLayout {
 		mTime.setText(time);
 	}
 
-	public void onKeyUpEvent(int  keyCode,KeyEvent event){
+	public void onKeyUpEvent(int keyCode, KeyEvent event) {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			handler.removeMessages(CHANG_PROGRESS);
-			handler.sendEmptyMessage(CHANG_PROGRESS);
-			seekToDuration((int)mProgressBar.getCurrProgress());
+			seekToDuration((int) mProgressBar.getCurrProgress());
 			break;
 		default:
 			break;
 		}
 	}
-	public void onKeyDownEvent(int  keyCode,KeyEvent event) {
-		Log.e("sunyanlong", "keyCode:" + keyCode);
 
+	public void onKeyDownEvent(int keyCode, KeyEvent event) {
 		switch (keyCode) {
 
 		case KeyEvent.KEYCODE_ENTER:
@@ -240,8 +302,14 @@ public class PlayerController extends RelativeLayout {
 			showController();
 			break;
 		case KeyEvent.KEYCODE_DPAD_UP:
+			showController();
+			break;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
 			showController();
+			if (isShowTip) {
+				seekToDuration(0);
+				isShowTip = false;
+			}
 			break;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 			boolean isPre = mCoverFlowViewListener.scrollPre(new OnCompletionListener() {
@@ -283,11 +351,14 @@ public class PlayerController extends RelativeLayout {
 	}
 
 	public void seekToDuration(int duration) {
+		handler.removeMessages(PlayerController.CHANG_PROGRESS, null);
+		handler.removeMessages(PlayerController.CHANG_SRT, null);
 		mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
 			@Override
 			public void onSeekComplete(MediaPlayer arg0) {
 				handler.sendEmptyMessage(PlayerController.CHANG_PLAYIMAGE);
-				handler.sendEmptyMessageDelayed(PlayerController.CHANG_PLAYIMAGE, 500);
+				handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);
+				handler.sendEmptyMessage(PlayerController.CHANG_SRT);
 			}
 		});
 	}
@@ -302,7 +373,7 @@ public class PlayerController extends RelativeLayout {
 			mTime.setVisibility(VISIBLE);
 			mProgressBar.setVisibility(VISIBLE);
 			mTip.setVisibility(VISIBLE);
-			mTipImage.setVisibility(VISIBLE); 
+			mTipImage.setVisibility(VISIBLE);
 			if (!isHasDefinition) {
 				mDefinitionTv.setVisibility(VISIBLE);
 			}
@@ -330,9 +401,27 @@ public class PlayerController extends RelativeLayout {
 		setVisibility(VISIBLE);
 		showPause(true);
 	};
-	
-	public void setFullProgress(){
-		mProgressBar.setProgress(FULLPROGRESS);
+
+	public void setFullProgress() {
+		mProgressBar.setProgress(mDuration);
 	}
-	
+
+	public void setOnEndTimeListener(PlayerDialogListener listener) {
+		mDialogListener = listener;
+		handler.sendEmptyMessageDelayed(DIALOG_LISTENER, 5000);
+	}
+
+	public void onBackPressed(VideoPlayActicity context) {
+		if (VISIBLE == getVisibility()) {
+			if (VISIBLE == mPlayImage.getVisibility()) {
+				mPlayImage.setVisibility(INVISIBLE);
+				context.finish();
+			} else {
+				setVisibility(INVISIBLE);
+			}
+		} else {
+			context.finish();
+		}
+	}
+
 }
