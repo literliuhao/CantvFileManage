@@ -40,355 +40,357 @@ import com.cantv.media.center.ui.MediaGridView;
 import com.cantv.media.center.utils.MediaUtils;
 
 public class GridViewActivity extends Activity {
-	private static String TAG = "GridViewActivity";
-	private RelativeLayout mContentView;
-	private TextView mTitleTV;
-	private MediaGridView mGridView;
-	private MenuDialog mMenuDialog;
-	private List<MenuItem> list;
-	private MenuItem sortListMenuItem;
-	private MenuItem viewModeMenuItem;
-	private MenuItem deleteMenuItem;
-	private MenuItem sortMenuItem;
-	private MenuItem viewItem;
-	private List<MenuItem> sortListSubMenuItems;
-	private List<MenuItem> viewModeSubMenuItems;
-	private List<MenuItem> mMenuList;
-	private int mSelectedMenuPosi;
-	private int mDeleteItem;
-	public boolean isExternal; // 记录当前是否处于外接设备,true:处于外接设备(通过USB接口接入)
+    private static String TAG = "GridViewActivity";
+    private RelativeLayout mContentView;
+    private TextView mTitleTV;
+    private MediaGridView mGridView;
+    private MenuDialog mMenuDialog;
+    private List<MenuItem> list;
+    private MenuItem sortListMenuItem;
+    private MenuItem viewModeMenuItem;
+    private MenuItem deleteMenuItem;
+    private MenuItem sortMenuItem;
+    private MenuItem viewItem;
+    private List<MenuItem> sortListSubMenuItems;
+    private List<MenuItem> viewModeSubMenuItems;
+    private List<MenuItem> mMenuList;
+    private int mSelectedMenuPosi;
+    private int mDeleteItem;
+    public boolean isExternal; // 记录当前是否处于外接设备,true:处于外接设备(通过USB接口接入)
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_gridview);
-		mTitleTV = (TextView) findViewById(R.id.title_textview);
-		mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
-		Intent intent = getIntent();
-		Uri uri = intent.getData();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_gridview);
+        mTitleTV = (TextView) findViewById(R.id.title_textview);
+        mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
+        Intent intent = getIntent();
+        Uri uri = intent.getData();
 
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-		filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-		filter.addAction(Intent.ACTION_MEDIA_REMOVED);
-		filter.addDataScheme("file");
-		registerReceiver(mReceiver, filter);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+        filter.addDataScheme("file");
+        registerReceiver(mReceiver, filter);
 
-		String deviceFlag = getIntent().getStringExtra("toListFlag");
+        String deviceFlag = getIntent().getStringExtra("toListFlag");
 
-		String type = null;
-		if (uri != null) {
-			type = uri.getHost();
-		} else {
-			type = intent.getStringExtra("type");
-		}
-		if ("video".equalsIgnoreCase(type)) {
-			mTitleTV.setText(R.string.str_movie);
-			mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-					SourceType.MOIVE);
-			isExternal = true;
-		} else if ("image".equalsIgnoreCase(type)) {
-			mTitleTV.setText(R.string.str_photo);
-			mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-					SourceType.PICTURE);
-			isExternal = true;
-		} else if ("audio".equalsIgnoreCase(type)) {
-			mTitleTV.setText(R.string.str_music);
-			mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-					SourceType.MUSIC);
-			isExternal = true;
-		} else if ("app".equalsIgnoreCase(type)) {
-			mTitleTV.setText(R.string.str_app);
-			mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-					SourceType.APP);
-			isExternal = true;
-		} else if ("local".equalsIgnoreCase(type)) {
-			mTitleTV.setText(R.string.str_file);
-			mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-					SourceType.LOCAL);
-			isExternal = false;
-		} else if ("device1".equalsIgnoreCase(type)) {
-			mTitleTV.setText(R.string.str_external);
-			String filePath = "";
-			if ((null == deviceFlag) && MediaUtils.isExistUSB()) {
-				filePath = MediaUtils.getUsbRootPaths().get(0);
-			}
+        String type = null;
+        if (uri != null) {
+            type = uri.getHost();
+        } else {
+            type = intent.getStringExtra("type");
+        }
+        if ("video".equalsIgnoreCase(type)) {
+            mTitleTV.setText(R.string.str_movie);
+            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
+                    SourceType.MOIVE);
+            isExternal = true;
+        } else if ("image".equalsIgnoreCase(type)) {
+            mTitleTV.setText(R.string.str_photo);
+            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
+                    SourceType.PICTURE);
+            isExternal = true;
+        } else if ("audio".equalsIgnoreCase(type)) {
+            mTitleTV.setText(R.string.str_music);
+            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
+                    SourceType.MUSIC);
+            isExternal = true;
+        } else if ("app".equalsIgnoreCase(type)) {
+            mTitleTV.setText(R.string.str_app);
+            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
+                    SourceType.APP);
+            isExternal = true;
+        } else if ("local".equalsIgnoreCase(type)) {
+            mTitleTV.setText(R.string.str_file);
+            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
+                    SourceType.LOCAL);
+            isExternal = false;
+        } else if ("device1".equalsIgnoreCase(type)) {
+            mTitleTV.setText(R.string.str_external);
+            String filePath = "";
+            if ((null == deviceFlag) && MediaUtils.isExistUSB()) {
+                filePath = MediaUtils.getUsbRootPaths().get(0);
+            }
 
-			mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
-			isExternal = true;
-		} else if ("device2".equalsIgnoreCase(type)) {
-			mTitleTV.setText(R.string.str_external);
-			String filePath = getIntent().getStringExtra("filePath");
-			mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
-			isExternal = true;
-		}
-		if (null != deviceFlag) {
-			mGridView.mDevecesFlag = deviceFlag;
-		}
-		mGridView.show();
-		mContentView.removeAllViews();
-		switch (SharedPreferenceUtil.getGridStyle()) {
-		case 0:
-			setGridStyle(MediaOrientation.THUMBNAIL);
-			break;
-		case 1:
-			setGridStyle(MediaOrientation.LIST);
-			break;
-		}
-		mContentView.addView(mGridView);
-	}
+            mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
+            isExternal = true;
+        } else if ("device2".equalsIgnoreCase(type)) {
+            mTitleTV.setText(R.string.str_external);
+            String filePath = getIntent().getStringExtra("filePath");
+            mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
+            isExternal = true;
+        }
+        if (null != deviceFlag) {
+            mGridView.mDevecesFlag = deviceFlag;
+        }
+        mGridView.show();
+        mContentView.removeAllViews();
+        switch (SharedPreferenceUtil.getGridStyle()) {
+            case 0:
+                setGridStyle(MediaOrientation.THUMBNAIL);
+                break;
+            case 1:
+                setGridStyle(MediaOrientation.LIST);
+                break;
+        }
+        mContentView.addView(mGridView);
+    }
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (8 == keyCode || 166 == keyCode) {
-			setGridStyle(MediaOrientation.THUMBNAIL);
-			SharedPreferenceUtil.setGridStyle(0);
-		} else if (9 == keyCode || 167 == keyCode) {
-			SharedPreferenceUtil.setGridStyle(1);
-			setGridStyle(MediaOrientation.LIST);
-		} else if (keyCode == KeyEvent.KEYCODE_MENU) {
-			if(null == mMenuDialog || !mMenuDialog.isShowing()){
-				mGridView.setStyleFocus(R.drawable.unfocus);
-			}else{
-				mGridView.setDefaultStyle();
-			}
-			showMenuDialog();
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (8 == keyCode || 166 == keyCode) {
+            setGridStyle(MediaOrientation.THUMBNAIL);
+            SharedPreferenceUtil.setGridStyle(0);
+        } else if (9 == keyCode || 167 == keyCode) {
+            SharedPreferenceUtil.setGridStyle(1);
+            setGridStyle(MediaOrientation.LIST);
+        } else if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if (null == mMenuDialog || !mMenuDialog.isShowing()) {
+                mGridView.setStyleFocus(R.drawable.unfocus);
+            } else {
+                mGridView.setDefaultStyle();
+            }
+            showMenuDialog();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
-	public void setGridStyle(MediaOrientation mStyle) {
-		switch (mStyle) {
-		case LIST:
-			mGridView.setVerticalSpacing((int) getResources().getDimension(
-					R.dimen.px31));
-			mGridView.setPadding(0, 0, 0, 0);
-			mGridView.setStyle(MediaOrientation.LIST);
-			mGridView.setNumColumns(1);
-			break;
-		case THUMBNAIL:
-			mGridView.setVerticalSpacing((int) getResources().getDimension(
-					R.dimen.px0));
-			mGridView.setPadding(0, 0, 0, 22);
-			mGridView.setStyle(MediaOrientation.THUMBNAIL);
-			mGridView.setNumColumns(5);
-			break;
-		}
-	}
+    public void setGridStyle(MediaOrientation mStyle) {
+        switch (mStyle) {
+            case LIST:
+                mGridView.setVerticalSpacing((int) getResources().getDimension(
+                        R.dimen.px31));
+                mGridView.setPadding(0, 0, 0, 0);
+                mGridView.setStyle(MediaOrientation.LIST);
+                mGridView.setNumColumns(1);
+                break;
+            case THUMBNAIL:
+                mGridView.setVerticalSpacing((int) getResources().getDimension(
+                        R.dimen.px0));
+                mGridView.setPadding(0, 0, 0, 22);
+                mGridView.setStyle(MediaOrientation.THUMBNAIL);
+                mGridView.setNumColumns(5);
+                break;
+        }
+    }
 
-	@Override
-	public void onBackPressed() {
-		// MediaGridView childGridView = (MediaGridView)
-		// mContentView.getFocusedChild();
-		MediaGridView childGridView = (MediaGridView) mContentView
-				.getChildAt(0);
-		if ((null != childGridView) && (!childGridView.onBack())) {
-			finish();
-		} else {
-			return;
-		}
-	}
+    @Override
+    public void onBackPressed() {
+        // MediaGridView childGridView = (MediaGridView)
+        // mContentView.getFocusedChild();
+        MediaGridView childGridView = (MediaGridView) mContentView
+                .getChildAt(0);
+        if ((null != childGridView) && (!childGridView.onBack())) {
+            finish();
+        } else {
+            return;
+        }
+    }
 
-	private void showMenuDialog() {
-		if (mMenuDialog == null) {
-			mMenuDialog = new MenuDialog(this);
-			list = createMenuData();
-			mMenuDialog.setMenuList(list);
-			mMenuDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					mGridView.setDefaultStyle();
-				}
-			});
-			mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onSubMenuItemClick(LinearLayout parent, View view,
-						int position) {
-					subMenuClick(position);
-				}
+    private void showMenuDialog() {
+        if (mMenuDialog == null) {
+            mMenuDialog = new MenuDialog(this);
+            list = createMenuData();
+            mMenuDialog.setMenuList(list);
+            mMenuDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    mGridView.setDefaultStyle();
+                }
+            });
+            mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onSubMenuItemClick(LinearLayout parent, View view,
+                                               int position) {
+                    subMenuClick(position);
+                }
 
-				@Override
-				public boolean onMenuItemClick(LinearLayout parent, View view,
-						int position) {
-					if (position != 2) {
-						if (mSelectedMenuPosi == position) {
-							return false;
-						}
-					}
-					mMenuList.get(mSelectedMenuPosi).setSelected(false);
-					mSelectedMenuPosi = position;
-					MenuItem menuItem = mMenuList.get(position);
-					menuItem.setSelected(true);
-					mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
-					if (position == 2) {
-						mDeleteItem = mGridView.mSelectItemPosition;
-						List<Media> datas = mGridView.mListAdapter.getData();
+                @Override
+                public boolean onMenuItemClick(LinearLayout parent, View view,
+                                               int position) {
+                    if (position != 2) {
+                        if (mSelectedMenuPosi == position) {
+                            return false;
+                        }
+                    }
+                    mMenuList.get(mSelectedMenuPosi).setSelected(false);
+                    mSelectedMenuPosi = position;
+                    MenuItem menuItem = mMenuList.get(position);
+                    menuItem.setSelected(true);
+                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    if (position == 2) {
+                        mDeleteItem = mGridView.mSelectItemPosition;
+                        List<Media> datas = mGridView.mListAdapter.getData();
 
-						if (datas.size() > 0) { // 防止当前目录没有数据,进行删除操作发生异常
-							Media media = datas.get(mDeleteItem);
-							boolean deleteSuccessed = FileUtil.delete(media);
-							if (deleteSuccessed) {
-								datas.remove(mDeleteItem);
-								mGridView.mListAdapter.bindData(datas);
-								Log.i("shen", "mDeleteItem:" + mDeleteItem);
-							} else {
-								Toast.makeText(GridViewActivity.this,
-										R.string.deleteFailed,
-										Toast.LENGTH_SHORT).show();
-							}
-						} else {
-							Toast.makeText(GridViewActivity.this, "没有数据!",
-									Toast.LENGTH_SHORT).show();
-						}
+                        if (datas.size() > 0) { // 防止当前目录没有数据,进行删除操作发生异常
+                            Media media = datas.get(mDeleteItem);
+                            boolean deleteSuccessed = FileUtil.delete(media);
+                            if (deleteSuccessed) {
+                                datas.remove(mDeleteItem);
+                                mGridView.mListAdapter.bindData(datas);
+                                Log.i("shen", "mDeleteItem:" + mDeleteItem);
+                            } else {
+                                Toast.makeText(GridViewActivity.this,
+                                        R.string.deleteFailed,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(GridViewActivity.this, "没有数据!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
-						return true;
-					} else {
-						return false;
-					}
-				}
-			});
-		}
-		mMenuDialog.show();
-	}
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+        }
+        mMenuDialog.show();
+    }
 
-	private List<MenuItem> createMenuData() {
-		mMenuList = new ArrayList<MenuItem>();
+    private List<MenuItem> createMenuData() {
+        mMenuList = new ArrayList<MenuItem>();
 
-		sortListMenuItem = new MenuItem(getString(R.string.sort));
-		sortListMenuItem.setType(MenuItem.TYPE_SELECTOR);
-		sortListMenuItem.setSelected(true);
-		sortListSubMenuItems = new ArrayList<MenuItem>();
-		sortMenuItem = new MenuItem(getString(R.string.sort_date),
-				MenuItem.TYPE_SELECTOR);
-		sortListSubMenuItems.add(sortMenuItem);
-		sortListSubMenuItems.add(new MenuItem(
-				getString(R.string.sort_filesize), MenuItem.TYPE_SELECTOR));
-		sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_name),
-				MenuItem.TYPE_SELECTOR));
-		MenuItem sortMenu = sortListSubMenuItems.get(2);
-		sortMenu.setParent(sortListMenuItem);
-		sortMenu.setSelected(true);
-		sortListMenuItem.setChildren(sortListSubMenuItems);
-		mMenuList.add(sortListMenuItem);
+        sortListMenuItem = new MenuItem(getString(R.string.sort));
+        sortListMenuItem.setType(MenuItem.TYPE_SELECTOR);
+        sortListMenuItem.setSelected(true);
+        sortListSubMenuItems = new ArrayList<MenuItem>();
+        sortMenuItem = new MenuItem(getString(R.string.sort_date),
+                MenuItem.TYPE_SELECTOR);
+        sortListSubMenuItems.add(sortMenuItem);
+        sortListSubMenuItems.add(new MenuItem(
+                getString(R.string.sort_filesize), MenuItem.TYPE_SELECTOR));
+        sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_name),
+                MenuItem.TYPE_SELECTOR));
+        MenuItem sortMenu = sortListSubMenuItems.get(2);
+        sortMenu.setParent(sortListMenuItem);
+        sortMenu.setSelected(true);
+        sortListMenuItem.setChildren(sortListSubMenuItems);
+        mMenuList.add(sortListMenuItem);
 
-		viewModeMenuItem = new MenuItem(getString(R.string.view));
-		viewModeMenuItem.setType(MenuItem.TYPE_SELECTOR);
-		viewModeSubMenuItems = new ArrayList<MenuItem>();
-		viewItem = new MenuItem(getString(R.string.view_list),
-				MenuItem.TYPE_SELECTOR);
-		viewModeSubMenuItems.add(viewItem);
-		viewModeSubMenuItems.add(new MenuItem(getString(R.string.view_tile),
-				MenuItem.TYPE_SELECTOR));
-		MenuItem viewMenu = viewModeSubMenuItems.get(1);
-		viewMenu.setParent(viewModeMenuItem);
-		viewMenu.setSelected(true);
-		viewModeMenuItem.setChildren(viewModeSubMenuItems);
-		mMenuList.add(viewModeMenuItem);
+        viewModeMenuItem = new MenuItem(getString(R.string.view));
+        viewModeMenuItem.setType(MenuItem.TYPE_SELECTOR);
+        viewModeSubMenuItems = new ArrayList<MenuItem>();
+        viewItem = new MenuItem(getString(R.string.view_list),
+                MenuItem.TYPE_SELECTOR);
+        viewModeSubMenuItems.add(viewItem);
+        viewModeSubMenuItems.add(new MenuItem(getString(R.string.view_tile),
+                MenuItem.TYPE_SELECTOR));
+        MenuItem viewMenu = viewModeSubMenuItems.get(1);
+        viewMenu.setParent(viewModeMenuItem);
+        viewMenu.setSelected(true);
+        viewModeMenuItem.setChildren(viewModeSubMenuItems);
+        mMenuList.add(viewModeMenuItem);
 
-		deleteMenuItem = new MenuItem(getString(R.string.delete));
-		deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
-		mMenuList.add(deleteMenuItem);
+        deleteMenuItem = new MenuItem(getString(R.string.delete));
+        deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
+        mMenuList.add(deleteMenuItem);
 
-		return mMenuList;
-	}
+        return mMenuList;
+    }
 
-	private void subMenuClick(int position) {
-		boolean isRefreshed = false;
-		MenuItem menuItemData = mMenuList.get(mSelectedMenuPosi);
-		int lastSelectPosi = menuItemData.setChildSelected(position);
-		if (mSelectedMenuPosi == 0) {
-			if (position == 0) {
-				isRefreshed = FileUtil.sortList(
-						mGridView.mListAdapter.getData(),
-						FileComparator.SORT_TYPE_DATE_DOWN, false);
-			} else if (position == 1) {
-				isRefreshed = FileUtil.sortList(
-						mGridView.mListAdapter.getData(),
-						FileComparator.SORT_TYPE_SIZE_DOWN, false);
-			} else if (position == 2) {
-				isRefreshed = FileUtil.sortList(
-						mGridView.mListAdapter.getData(),
-						FileComparator.SORT_TYPE_NAME_UP, false);
-			}
-			if (isRefreshed) {
-				mGridView.mListAdapter.notifyDataSetChanged();
-			}
-		} else if (mSelectedMenuPosi == 1) {
-			if (position == 0) {
-				setGridStyle(MediaOrientation.LIST);
-			} else if (position == 1) {
-				setGridStyle(MediaOrientation.THUMBNAIL);
-			}
-		}
+    private void subMenuClick(int position) {
+        boolean isRefreshed = false;
+        MenuItem menuItemData = mMenuList.get(mSelectedMenuPosi);
+        int lastSelectPosi = menuItemData.setChildSelected(position);
+        if (mSelectedMenuPosi == 0) {
+            if (position == 0) {
+                isRefreshed = FileUtil.sortList(
+                        mGridView.mListAdapter.getData(),
+                        FileComparator.SORT_TYPE_DATE_DOWN, false);
+            } else if (position == 1) {
+                isRefreshed = FileUtil.sortList(
+                        mGridView.mListAdapter.getData(),
+                        FileComparator.SORT_TYPE_SIZE_DOWN, false);
+            } else if (position == 2) {
+                isRefreshed = FileUtil.sortList(
+                        mGridView.mListAdapter.getData(),
+                        FileComparator.SORT_TYPE_NAME_UP, false);
+            }
+            if (isRefreshed) {
+                mGridView.mListAdapter.notifyDataSetChanged();
+            }
+        } else if (mSelectedMenuPosi == 1) {
+            if (position == 0) {
+                setGridStyle(MediaOrientation.LIST);
+                SharedPreferenceUtil.setGridStyle(1);
+            } else if (position == 1) {
+                setGridStyle(MediaOrientation.THUMBNAIL);
+                SharedPreferenceUtil.setGridStyle(0);
+            }
+        }
 
-		View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(
-				MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
-		if (oldSubMenuItemView != null) {
-			mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView,
-					menuItemData.getChildAt(lastSelectPosi));
-		}
-		View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(
-				MenuAdapter.TAG_SUB_MENU_VIEW + position);
-		if (subMenuItemView != null) {
-			mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView,
-					menuItemData.getSelectedChild());
-		}
-		View menuItemView = mMenuDialog.getMenu().findViewWithTag(
-				MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
-		if (menuItemView != null) {
-			mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView,
-					menuItemData);
-		}
-	}
+        View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(
+                MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
+        if (oldSubMenuItemView != null) {
+            mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView,
+                    menuItemData.getChildAt(lastSelectPosi));
+        }
+        View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(
+                MenuAdapter.TAG_SUB_MENU_VIEW + position);
+        if (subMenuItemView != null) {
+            mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView,
+                    menuItemData.getSelectedChild());
+        }
+        View menuItemView = mMenuDialog.getMenu().findViewWithTag(
+                MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
+        if (menuItemView != null) {
+            mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView,
+                    menuItemData);
+        }
+    }
 
-	BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-				// 有新设备插入
-				openRootDir();
-			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
-					|| intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-				// 移除设备
-				openRootDir();
-			}
-		}
-	};
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+                // 有新设备插入
+                openRootDir();
+            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
+                    || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+                // 移除设备
+                openRootDir();
+            }
+        }
+    };
 
-	/**
-	 * 到根目录: 适用在当前处于外接设备目录
-	 */
-	private void openRootDir() {
-		if (!isExternal) {
-			return;
-		}
+    /**
+     * 到根目录: 适用在当前处于外接设备目录
+     */
+    private void openRootDir() {
+        if (!isExternal) {
+            return;
+        }
 
-		List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
+        List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
 
-		List<Media> mediaes = new ArrayList<>();
+        List<Media> mediaes = new ArrayList<>();
 
-		for (int i = 0; i < usbRootPaths.size(); i++) {
+        for (int i = 0; i < usbRootPaths.size(); i++) {
 
-			File file = new File(usbRootPaths.get(i));
-			Media fileInfo = FileUtil.getFileInfo(file, null, false);
+            File file = new File(usbRootPaths.get(i));
+            Media fileInfo = FileUtil.getFileInfo(file, null, false);
 
-			mediaes.add(fileInfo);
-		}
+            mediaes.add(fileInfo);
+        }
 
-		// 清除记录的上级目录
-		mGridView.mMediaStack.clear();
-		mGridView.mPosStack.clear();
-		mGridView.mListAdapter.bindData(mediaes);
-		if(mediaes.size()<1){
-			mGridView.showNoDataPage();
-		}
-		
-	}
+        // 清除记录的上级目录
+        mGridView.mMediaStack.clear();
+        mGridView.mPosStack.clear();
+        mGridView.mListAdapter.bindData(mediaes);
+        if (mediaes.size() < 1) {
+            mGridView.showNoDataPage();
+        }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		unregisterReceiver(mReceiver);
-	}
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
 
 }
