@@ -9,6 +9,7 @@ import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.constants.FileCategory;
+import com.cantv.media.center.service.BootDialogService;
 import com.cantv.media.center.utils.MediaUtils;
 
 import android.app.Activity;
@@ -209,6 +210,10 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 		mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
 		mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
 		alertDialog = new AlertDialog.Builder(mContext).create();
+
+		Intent intentStart = new Intent(this, BootDialogService.class);
+		intentStart.setAction("com.cantv.service.RECEIVER_START");
+		this.startService(intentStart);
 		// showMountedDialog();
 	}
 
