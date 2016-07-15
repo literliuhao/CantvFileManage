@@ -43,9 +43,9 @@ public class SharedPreferenceUtil {
 
     public static int getGridStyle() {
         if(mSp != null){
-            return mSp.getInt(GRID_STYLE, 0);
+            return mSp.getInt(GRID_STYLE, 1);
         }else{
-            return 0;
+            return 1;
         }
     }
 
