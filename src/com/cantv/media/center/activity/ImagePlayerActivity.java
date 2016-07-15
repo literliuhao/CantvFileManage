@@ -66,7 +66,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int NEXT = 2;
     private int AUTO = 3;
     private int INFO = 4;
-    private int POSTION = 0;
+    private int POSTION = 5;
     private FocusUtils mFocusUtils;
 	private TextView mTvRotation;
 	private TextView mTvSize;
@@ -84,6 +84,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private long mNextTime;
 	private long mDurationTime;
 	private boolean isFirst = true ;
+	private boolean isFirstFocus = true ;
 	private boolean mSizeType = false;
 	private Handler mHandler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
@@ -115,6 +116,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mPosition = (TextView) findViewById(R.id.media__image_tv__position);
         mTotal = (TextView) findViewById(R.id.media__image_tv__total);
         mtxtresolution = (TextView) findViewById(R.id.txt_solution);
+    	mTvRotation = (TextView) findViewById(R.id.media__image_tv__rotation);
+    	mTvSize = (TextView) findViewById(R.id.media__image_tv__size);
+    	mTvAuto = (TextView) findViewById(R.id.media__image_tv__auto);
+    	mTvInfo = (TextView) findViewById(R.id.media__image_tv__info);
+    	mRotation = (ImageView) findViewById(R.id.media__image_view__rotation);
+    	mSize = (ImageView) findViewById(R.id.media__image_view__size);
+    	mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
+    	mInfo = (ImageView) findViewById(R.id.media__image_view__info);
         mFrameView = new ImageFrameView(this);
         mFrameView.setNotifyParentUpdateListner(this);
         mImageBrowser = (ImageBrowser) findViewById(R.id.media__image_view__image);
@@ -215,14 +224,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     private void initViewClickEvent() {
-    	mTvRotation = (TextView) findViewById(R.id.media__image_tv__rotation);
-    	mTvSize = (TextView) findViewById(R.id.media__image_tv__size);
-    	mTvAuto = (TextView) findViewById(R.id.media__image_tv__auto);
-    	mTvInfo = (TextView) findViewById(R.id.media__image_tv__info);
-    	mRotation = (ImageView) findViewById(R.id.media__image_view__rotation);
-    	mSize = (ImageView) findViewById(R.id.media__image_view__size);
-    	mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
-    	mInfo = (ImageView) findViewById(R.id.media__image_view__info);
     	
     	mRotation.setOnClickListener(new OnClickListener() {
             @Override
@@ -253,7 +254,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     	mSize.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "缩放", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "缩放", Toast.LENGTH_SHORT).show();
                 if(!mSizeType){
                     mSizeType = true;
                     mImageBrowser.onZoomIn();
@@ -371,9 +372,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
         });
-        mRotation.setFocusable(true);
-				mRotation.requestFocus();
-				mFocusUtils.startMoveFocus(mRotation, true, (float) 0.9);
     }
 
     private PowerManager.WakeLock getScreenLock() {
@@ -449,6 +447,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mFocusUtils.showFocus();
         mediaimagebar.setVisibility(View.VISIBLE);
         toFlyView(0, 0, 1, 0, true);
+        if(isFirstFocus){
+        	isFirstFocus = false ; 
+        	mFocusUtils.setFocusLayout(mRotation, true, (float) 0.9);
+        }
 
     }
 
