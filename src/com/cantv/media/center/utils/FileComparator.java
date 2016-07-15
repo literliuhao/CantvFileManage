@@ -33,19 +33,23 @@ public class FileComparator implements Comparator<Media> {
 	public int compare(Media media1, Media media2) {
 		switch (mSoryType) {
 		case SORT_TYPE_DATE_UP:
-			int i = (media1.modifiedDate - media2.modifiedDate) > 0 ? 1
+			int d = (media1.modifiedDate - media2.modifiedDate) > 0 ? 1
 					: (media1.modifiedDate - media2.modifiedDate) == 0 ? 0 : -1;
-			return sort(media1, media2, i, SORT_MODE_UP);
+			return sort(media1, media2, d, SORT_MODE_UP);
 		case SORT_TYPE_DATE_DOWN:
-			int i1 = (media1.modifiedDate - media2.modifiedDate) > 0 ? 1
+			int d1 = (media1.modifiedDate - media2.modifiedDate) > 0 ? 1
 					: (media1.modifiedDate - media2.modifiedDate) == 0 ? 0 : -1;
-			return sort(media1, media2, i1, SORT_MODE_DOWN);
+			return sort(media1, media2, d1, SORT_MODE_DOWN);
 		case SORT_TYPE_SIZE_UP:
-			return sort(media1, media2,
-					(int) (media1.fileSize - media2.fileSize), SORT_MODE_UP);
+			int s = (media1.fileSize - media2.fileSize) > 0 ? 1
+					: (media1.fileSize - media2.fileSize) == 0 ? 0 : -1;
+			
+			return sort(media1, media2,s, SORT_MODE_UP);
 		case SORT_TYPE_SIZE_DOWN:
-			return sort(media1, media2,
-					(int) (media1.fileSize - media2.fileSize), SORT_MODE_DOWN);
+			
+			int s1 = (media1.fileSize - media2.fileSize) > 0 ? 1
+					: (media1.fileSize - media2.fileSize) == 0 ? 0 : -1;
+			return sort(media1, media2,s1, SORT_MODE_DOWN);
 		case SORT_TYPE_NAME_UP:
 			return sort(media1, media2, media1.mName.toLowerCase(Locale.CHINA)
 					.compareTo(media2.mName.toLowerCase(Locale.CHINA)),
