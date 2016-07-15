@@ -79,7 +79,10 @@ public class MediaGridItemView extends MediaItemView {
         mImageView.setPicStretch(PicStretch.SCALE_CROP);
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
         imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        imageParams.topMargin=FileUtil.dip2px(mContext, 72);
+//        imageParams.topMargin=110;
+//        imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
+//        imageParams.setMargins(20,20,0,0);
         mImageView.setLayoutParams(imageParams);
 
         mTextView = new TextView(context);
@@ -109,7 +112,7 @@ public class MediaGridItemView extends MediaItemView {
         mNumDrawable.setNum(media.getSubMediasCount());
         switch (media.getMediaFormat()) {
             case IMAGE:
-                mBgView.setMedia(media);
+            	mImageView.setMedia(media);
                 mBgView.setBackground(media);
                 break;
             case AUDIO:

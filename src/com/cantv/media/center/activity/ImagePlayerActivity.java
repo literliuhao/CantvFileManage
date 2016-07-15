@@ -1,6 +1,7 @@
 package com.cantv.media.center.activity;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -12,12 +13,15 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
+import android.provider.ContactsContract.DataUsageFeedback;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
@@ -33,6 +37,7 @@ import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
 import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
 import com.cantv.media.center.ui.MediaControllerBar;
+import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
@@ -41,11 +46,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private ImageBrowser mImageBrowser;
     private Runnable mAutoRunnable;
     private ImageView mAutoRunImageView;
+    private ImageView mRotation;
+	private ImageView mSize;
+	private ImageView mInfo;
     private PowerManager.WakeLock mScreenLock;
     private boolean mAutoPlay = false;
     private LinearLayout mLayout;
-    private TextView mtxtname;
-    private TextView mtxtsize;
     private TextView mtxtresolution;
     private boolean nflag = true;
     private int screenWitdh;
@@ -62,6 +68,36 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int INFO = 4;
     private int POSTION = 0;
     private FocusUtils mFocusUtils;
+	private TextView mTvRotation;
+	private TextView mTvSize;
+	private TextView mTvAuto;
+	private TextView mTvInfo;
+	private ImageView mArrowLeft;
+	private ImageView mArrowRight;
+	private TextView mPosition;
+	private TextView mTotal;
+	private TextView mInfoName;
+	private TextView mInfoSize;
+	private TextView mInfoTime;
+	private TextView mInfoUrl;
+	private static final int DELAYED_TIME = 5*1000;
+	private long mNextTime;
+	private long mDurationTime;
+	private boolean isFirst = true ;
+	private boolean mSizeType = false;
+	private Handler mHandler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			int flag =msg.what;
+			if(flag == 1){
+				if(mArrowLeft.getVisibility() == View.GONE && mArrowRight.getVisibility() == View.GONE){
+					return ;
+				}
+				mHandler.removeCallbacksAndMessages(null);
+				mArrowLeft.setVisibility(View.GONE);
+				mArrowRight.setVisibility(View.GONE);
+			}
+		};
+	};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +105,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mContext = this;
         setContentView(R.layout.media__image_view);
         mediaimagebar = (LinearLayout) findViewById(R.id.mediaimagebar);
-        mLayout = (LinearLayout) findViewById(R.id.ly_imageinfo);
-        mtxtname = (TextView) findViewById(R.id.txt_name);
-        mtxtsize = (TextView) findViewById(R.id.txt_size);
+        mLayout = (LinearLayout) findViewById(R.id.media__image_info_total);
+        mInfoName = (TextView) findViewById(R.id.media__image_info_name);
+        mInfoSize = (TextView) findViewById(R.id.media__image_info_size);
+        mInfoTime = (TextView) findViewById(R.id.media__image_info_time);
+        mInfoUrl = (TextView) findViewById(R.id.media__image_info_url);
+        mArrowLeft = (ImageView) findViewById(R.id.media__image_view__left);
+        mArrowRight = (ImageView) findViewById(R.id.media__image_view__right);
+        mPosition = (TextView) findViewById(R.id.media__image_tv__position);
+        mTotal = (TextView) findViewById(R.id.media__image_tv__total);
         mtxtresolution = (TextView) findViewById(R.id.txt_solution);
         mFrameView = new ImageFrameView(this);
         mFrameView.setNotifyParentUpdateListner(this);
@@ -96,26 +138,17 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 toHideView();
             }
         };
-		toShowView();
+		//toShowView();
         mimageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.i("liujun22", "onReceive");
                 if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                    // Intent temintent = new Intent();
-                    // temintent.setClass(ImagePlayerActivity.this,
-                    // IndexActivity.class);
-                    // ImagePlayerActivity.this.startActivity(temintent);
                     if (getData() == null || getData().size() == 0) {
                         return;
                     }
                     String sourcepath = getData().get(0);
                     String targetpath = intent.getDataString();
                     boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-                    // Intent temintent = new Intent();
-                    // temintent.setClass(VideoPlayerActivity.this,
-                    // IndexActivity.class);
-                    // VideoPlayerActivity.this.startActivity(temintent);
                     if (isequal) {
                         ImagePlayerActivity.this.finish();
                     }
@@ -124,9 +157,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         };
         IntentFilter usbFilter = new IntentFilter();
         usbFilter.setPriority(1000);
-        // usbFilter.addAction(Intent.ACTION_MEDIA_CHECKING);
         usbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        // usbFilter.addAction(Intent.ACTION_MEDIA_EJECT);
         usbFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
         usbFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         usbFilter.addDataScheme("file");
@@ -144,6 +175,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             return;
         }
         mCurImageIndex = index;
+        int curIndex = index + 1;
+        mPosition.setText(String.valueOf(mCurImageIndex + 1));
+        mTotal.setText(" / "+data.size());
         mFrameView.playImage(data.get(index), onfinish);
         UiUtils.runAfterLayout(mImageBrowser, new Runnable() {
             @Override
@@ -153,12 +187,44 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
         });
         String curFileUri = getData().get(mCurImageIndex);
-        mtxtname.setText(new File(curFileUri).getName());
-        mtxtsize.setText("文件大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
+        if (!mAutoPlay){
+        if(mCurImageIndex == 0 && data.size() > 1){
+        	//显示右面
+        	mArrowRight.setVisibility(View.VISIBLE);
+        	mArrowLeft.setVisibility(View.GONE);
+        }else if(mCurImageIndex == data.size() - 1 && data.size() > 1){
+        	//显示左面
+        	mArrowLeft.setVisibility(View.VISIBLE);
+        	mArrowRight.setVisibility(View.GONE);
+        }else if(mCurImageIndex > 0 && data.size() > 1 && mCurImageIndex < data.size() - 1){
+        	mArrowLeft.setVisibility(View.VISIBLE);
+        	mArrowRight.setVisibility(View.VISIBLE);
+        }else{
+        	mArrowLeft.setVisibility(View.GONE);
+        	mArrowRight.setVisibility(View.GONE);
+        	}
+        new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+					mHandler.removeCallbacksAndMessages(null);
+					mHandler.sendEmptyMessageDelayed(1, DELAYED_TIME);
+			}
+		}).start();
+        }
     }
 
     private void initViewClickEvent() {
-        findViewById(R.id.media__image_view__rotation).setOnClickListener(new OnClickListener() {
+    	mTvRotation = (TextView) findViewById(R.id.media__image_tv__rotation);
+    	mTvSize = (TextView) findViewById(R.id.media__image_tv__size);
+    	mTvAuto = (TextView) findViewById(R.id.media__image_tv__auto);
+    	mTvInfo = (TextView) findViewById(R.id.media__image_tv__info);
+    	mRotation = (ImageView) findViewById(R.id.media__image_view__rotation);
+    	mSize = (ImageView) findViewById(R.id.media__image_view__size);
+    	mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
+    	mInfo = (ImageView) findViewById(R.id.media__image_view__info);
+    	
+    	mRotation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainThread.cancel(mToHideRunnable);
@@ -166,96 +232,94 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 mImageBrowser.changeRotation();
             }
         });
-        findViewById(R.id.media__image_view__rotation).setOnFocusChangeListener(new OnFocusChangeListener() {
+    	mRotation.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     POSTION = 0;
                     mFocusUtils.startMoveFocus(v, true, (float) 0.9);
+                    translateDown(mTvRotation);
+                }else{
+                	translateUp(mTvRotation);
+                }
+                
+                MainThread.cancel(mToHideRunnable);
+                MainThread.runLater(mToHideRunnable, 5 * 1000);
+            }
+
+        });
+
+    	mSize.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "缩放", Toast.LENGTH_SHORT).show();
+                if(!mSizeType){
+                    mSizeType = true;
+                    mImageBrowser.onZoomIn();
+                }else{
+                    mSizeType = false;
+                    mImageBrowser.onZoomOut();
                 }
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
         });
-//		findViewById(R.id.media__image_view__prev).setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				MainThread.cancel(mToHideRunnable);
-//				MainThread.runLater(mToHideRunnable, 5 * 1000);
-//				int offset = mCurImageIndex - 1;
-//				offset = (offset < 0) ? getData().size() - 1 : offset;
-//				showImage(offset, null);
-//			}
-//		});
-//		findViewById(R.id.media__image_view__prev).setOnFocusChangeListener(new OnFocusChangeListener() {
-//
-//			@Override
-//			public void onFocusChange(View v, boolean hasFocus) {
-//				if (hasFocus) {
-//					POSTION = 1;
-//				}
-//				MainThread.cancel(mToHideRunnable);
-//				MainThread.runLater(mToHideRunnable, 5 * 1000);
-//			}
-//		});
-//		findViewById(R.id.media__image_view__next).setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				Log.i("liujun001", "onClick--------");
-//				MainThread.cancel(mToHideRunnable);
-//				MainThread.runLater(mToHideRunnable, 5 * 1000);
-//				int offset = mCurImageIndex + 1;
-//				offset = (offset >= getData().size()) ? 0 : offset;
-//				showImage(offset, null);
-//			}
-//		});
-//		findViewById(R.id.media__image_view__next).setOnFocusChangeListener(new OnFocusChangeListener() {
-//
-//			@Override
-//			public void onFocusChange(View v, boolean hasFocus) {
-//				if (hasFocus) {
-//					POSTION = 2;
-//				}
-//				MainThread.cancel(mToHideRunnable);
-//				MainThread.runLater(mToHideRunnable, 5 * 1000);
-//			}
-//		});
+    	mSize.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-        mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+            	if (hasFocus) {
+                    POSTION = 1;
+                    mFocusUtils.startMoveFocus(v, true, (float) 0.9);
+                    translateDown(mTvSize);
+                }else{
+                	translateUp(mTvSize);
+                }
+                MainThread.cancel(mToHideRunnable);
+                MainThread.runLater(mToHideRunnable, 5 * 1000);
+            }
+        });
+
         mAutoRunImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
+                int curIndex = mCurImageIndex + 1;
+            	int size = getData().size();
+            	
+            	if(curIndex == size){
+            		Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+            		return ;
+            	}
                 if (mAutoPlay) {
                     stopAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.general__share__auto_normal);
-//					findViewById(R.id.media__image_view__prev).setFocusable(true);
-//					findViewById(R.id.media__image_view__next).setFocusable(true);
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     startAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.play_stop);
-//					findViewById(R.id.media__image_view__prev).setFocusable(false);
-//					findViewById(R.id.media__image_view__next).setFocusable(false);
                 }
             }
         });
         mAutoRunImageView.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    POSTION = 3;
+            	if (hasFocus) {
+                    POSTION = 2;
                     mFocusUtils.startMoveFocus(v, true, (float) 0.9);
+                    translateDown(mTvAuto);
+                }else{
+                	translateUp(mTvAuto);
                 }
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
         });
 
-        findViewById(R.id.media__image_view__info).setOnClickListener(new OnClickListener() {
+        mInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainThread.cancel(mToHideRunnable);
@@ -263,36 +327,38 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (nflag) {
                     mLayout.setVisibility(View.VISIBLE);
                     // 初始化
-                    Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 100.0f, 0.1f);
+                    AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1.0f);
                     // 设置动画时间
-                    translateAnimation.setDuration(300);
-                    mLayout.startAnimation(translateAnimation);
+                    alphaAnimation.setDuration(500);
+                    alphaAnimation.setFillAfter(true);
+                    mLayout.startAnimation(alphaAnimation);
                     nflag = false;
                 } else {
-                    Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 0.1f, 100.0f);
+                	AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0);
                     // 设置动画时间
-                    translateAnimation.setDuration(300);
-                    mLayout.startAnimation(translateAnimation);
+                    alphaAnimation.setDuration(500);
+                    alphaAnimation.setFillAfter(true);
+                    mLayout.startAnimation(alphaAnimation);
                     mLayout.setVisibility(View.GONE);
                     nflag = true;
                 }
                 String curFileUri = getData().get(mCurImageIndex);
-                mtxtname.setText(new File(curFileUri).getName());
-                mtxtsize.setText("文件大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
-
+                mInfoName.setText("图片名称："+new File(curFileUri).getName());
+                mInfoSize.setText("图片大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
+                mInfoTime.setText("上传时间：" +DateUtil.onDate2String(new Date(new File(curFileUri).lastModified())));
+                mInfoUrl.setText("图片路径：" +curFileUri);
             }
         });
-        findViewById(R.id.media__image_view__info).setOnFocusChangeListener(new OnFocusChangeListener() {
+        mInfo.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    POSTION = 4;
+            	if (hasFocus) {
+                    POSTION = 3;
                     mFocusUtils.startMoveFocus(v, true, (float) 0.9);
-                }
-                MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
-                if (!hasFocus) {
-                    if (mLayout.getVisibility() == View.VISIBLE) {
+                    translateDown(mTvInfo);
+                }else{
+                	translateUp(mTvInfo);
+                	if (mLayout.getVisibility() == View.VISIBLE) {
                         Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 0.1f, 100.0f);
                         // 设置动画时间
                         translateAnimation.setDuration(300);
@@ -301,10 +367,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         nflag = true;
                     }
                 }
-
+                MainThread.cancel(mToHideRunnable);
+                MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
         });
-        findViewById(R.id.media__image_view__rotation).requestFocus();
+        mRotation.setFocusable(true);
+				mRotation.requestFocus();
+				mFocusUtils.startMoveFocus(mRotation, true, (float) 0.9);
     }
 
     private PowerManager.WakeLock getScreenLock() {
@@ -315,12 +384,20 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     private void startAutoPlay() {
+    	int curIndex = mCurImageIndex + 1;
+    	int size = getData().size();
+    	
+    	if(curIndex == size){
+    		stopAutoPlay();
+    		Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+    		return ;
+    	}
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
             Log.i("", "Hua...getScreenLock().acquire();");
         }
-        MainThread.runLater(mAutoRunnable, 4000);
+        MainThread.runLater(mAutoRunnable, 5000);
     }
 
     private void stopAutoPlay() {
@@ -352,19 +429,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             return;
         switch (POSTION) {
             case 0:
-                findViewById(R.id.media__image_view__rotation).requestFocus();
+                mRotation.requestFocus();
                 break;
-//		case 1:
-//			findViewById(R.id.media__image_view__prev).requestFocus();
-//			break;
-//		case 2:
-//			findViewById(R.id.media__image_view__next).requestFocus();
-//			break;
+            case 1:
+            	mSize.requestFocus();
+            	break;
+            case 2:
+            	mAutoRunImageView.requestFocus();
+                break;
             case 3:
-                findViewById(R.id.media__image_view__auto).requestFocus();
-                break;
-            case 4:
-                findViewById(R.id.media__image_view__info).requestFocus();
+                mInfo.requestFocus();
                 break;
 
             default:
@@ -399,7 +473,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             return false;
         }
         if (keyCode == event.KEYCODE_MENU && event.getAction() == KeyEvent.ACTION_DOWN) {
-            toShowView();
+        	toShowView();
             return true;
         }
         if (!mAutoPlay) {
@@ -417,21 +491,40 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 return true;
 
             }
+            
+            if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
+            	mImageBrowser.changeUpRotation();
+                return true;
+
+            }
+            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
+            	mImageBrowser.changeRotation();
+                return true;
+
+            }
         }
+        
+        if(mAutoPlay){
+        	if(!mShowing){
+        	 if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+        		 stopAutoPlay();
+        		 Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
+                 mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+                 return true;
+        	 	}
+        	 }
+        }
+        
         if (keyCode == event.KEYCODE_DPAD_CENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (!mShowing) {
                 if (mAutoPlay) {
                     stopAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.general__share__auto_normal);
-//					findViewById(R.id.media__image_view__prev).setFocusable(true);
-//					findViewById(R.id.media__image_view__next).setFocusable(true);
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     startAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.media__image__pause);
-//					findViewById(R.id.media__image_view__prev).setFocusable(false);
-//					findViewById(R.id.media__image_view__next).setFocusable(false);
+                    mAutoRunImageView.setImageResource(R.drawable.play_stop);
                 }
 
             }
@@ -463,4 +556,19 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mImageBrowser.reset();
     }
 
+	private void translateDown(View view) {
+		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.7f);
+		translateAnimation.setDuration(200);
+		translateAnimation.setFillAfter(true);
+		view.clearAnimation();
+		view.startAnimation(translateAnimation);
+	}
+	
+	private void translateUp(View view) {
+		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0);
+		translateAnimation.setDuration(200);
+		translateAnimation.setFillAfter(true);
+		view.clearAnimation();
+		view.startAnimation(translateAnimation);
+	}
 }

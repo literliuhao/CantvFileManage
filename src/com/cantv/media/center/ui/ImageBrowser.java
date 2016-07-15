@@ -42,5 +42,14 @@ public class ImageBrowser extends TransformView {
 		 mWatchingView.onRotationChanged((int) rotationOffset, true);
 		 setChildLayoutTransform(mWatchingView, layoutT);
 	}
+	
+	public void changeUpRotation() {
+		 final LayoutTransform currLayoutT = getChildLayoutTransform(mWatchingView);
+		 final LayoutTransform layoutT = new LayoutTransform(currLayoutT);
+		 layoutT.setRotationZ(layoutT.getRotationZ() + 90);
+		 final float rotationOffset = currLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - layoutT.getRotationZ();
+		 mWatchingView.onRotationChanged((int) rotationOffset, true);
+		 setChildLayoutTransform(mWatchingView, layoutT);
+	}
 
 }

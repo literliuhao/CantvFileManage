@@ -11,9 +11,9 @@
         android:layout_height="@dimen/px248"
         android:layout_gravity="center"
         android:layout_margin="@dimen/dimen_15px"
-        android:background="@drawable/bj_06"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"
+        android:background="@drawable/bj_06"/>
 
     <ImageView
         android:id="@+id/imageview_external_u"

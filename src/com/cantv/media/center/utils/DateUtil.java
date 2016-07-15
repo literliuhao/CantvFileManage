@@ -12,7 +12,7 @@ public class DateUtil {
      * date转换成String类型
      *
      * @param date
-     * @param format 传递将要转换的日期格式,默认是"yyyy-MM-dd"
+     * @param format 可选参数,传递将要转换的日期格式,默认是"yyyy-MM-dd"
      * @return
      */
     public static String onDate2String(Date date, String... format) {
