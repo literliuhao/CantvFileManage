@@ -141,11 +141,11 @@ public class GridViewActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (8 == keyCode || 166 == keyCode) {
-            setGridStyle(MediaOrientation.THUMBNAIL);
-            SharedPreferenceUtil.setGridStyle(0);
-        } else if (9 == keyCode || 167 == keyCode) {
-            SharedPreferenceUtil.setGridStyle(1);
-            setGridStyle(MediaOrientation.LIST);
+//            setGridStyle(MediaOrientation.THUMBNAIL);
+//            SharedPreferenceUtil.setGridStyle(0);
+//        } else if (9 == keyCode || 167 == keyCode) {
+//            SharedPreferenceUtil.setGridStyle(1);
+//            setGridStyle(MediaOrientation.LIST);
         } else if (keyCode == KeyEvent.KEYCODE_MENU) {
             if (null == mMenuDialog || !mMenuDialog.isShowing()) {
                 mGridView.setStyleFocus(R.drawable.unfocus);
