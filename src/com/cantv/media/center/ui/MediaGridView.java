@@ -313,31 +313,6 @@ public class MediaGridView extends CustomGridView {
                 }
 
 
-//				if ((mSourceType == SourceType.LOCAL)
-//						|| ((mSourceType == SourceType.DEVICE) && MediaUtils
-//								.getUsbRootPaths().size() < 3)) {
-//					mMediaes.addAll(FileUtil.getFileList(mSourceUries));
-//				} else {
-//
-//					if (usbRootPaths.size() == 1) {
-//
-//						List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
-//						
-//						mMediaes.addAll(fileList);
-//						
-//					} else if (usbRootPaths.size() > 1) {
-//
-//						for (int i = 0; i < usbRootPaths.size(); i++) {
-//
-//							File file = new File(usbRootPaths.get(i));
-//							Media fileInfo = FileUtil.getFileInfo(file, null,
-//									false);
-//
-//							mMediaes.add(fileInfo);
-//						}
-//					}
-//
-//				}
             } catch (Exception e) {
                 // TODO: handle exception
             }
