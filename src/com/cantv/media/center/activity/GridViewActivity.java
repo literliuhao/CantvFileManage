@@ -128,10 +128,10 @@ public class GridViewActivity extends Activity {
         mGridView.show();
         mContentView.removeAllViews();
         switch (SharedPreferenceUtil.getGridStyle()) {
-            case 0:
+            case 1:
                 setGridStyle(MediaOrientation.THUMBNAIL);
                 break;
-            case 1:
+            case 0:
                 setGridStyle(MediaOrientation.LIST);
                 break;
         }
@@ -265,7 +265,8 @@ public class GridViewActivity extends Activity {
                 getString(R.string.sort_filesize), MenuItem.TYPE_SELECTOR));
         sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_name),
                 MenuItem.TYPE_SELECTOR));
-        MenuItem sortMenu = sortListSubMenuItems.get(2);
+        int sortType = SharedPreferenceUtil.getSortType();
+		MenuItem sortMenu = sortListSubMenuItems.get(sortType);
         sortMenu.setParent(sortListMenuItem);
         sortMenu.setSelected(true);
         sortListMenuItem.setChildren(sortListSubMenuItems);
@@ -279,7 +280,8 @@ public class GridViewActivity extends Activity {
         viewModeSubMenuItems.add(viewItem);
         viewModeSubMenuItems.add(new MenuItem(getString(R.string.view_tile),
                 MenuItem.TYPE_SELECTOR));
-        MenuItem viewMenu = viewModeSubMenuItems.get(1);
+        int gridStyle = SharedPreferenceUtil.getGridStyle();
+		MenuItem viewMenu = viewModeSubMenuItems.get(gridStyle);
         viewMenu.setParent(viewModeMenuItem);
         viewMenu.setSelected(true);
         viewModeMenuItem.setChildren(viewModeSubMenuItems);
@@ -316,10 +318,10 @@ public class GridViewActivity extends Activity {
         } else if (mSelectedMenuPosi == 1) {
             if (position == 0) {
                 setGridStyle(MediaOrientation.LIST);
-                SharedPreferenceUtil.setGridStyle(1);
+                SharedPreferenceUtil.setGridStyle(0);
             } else if (position == 1) {
                 setGridStyle(MediaOrientation.THUMBNAIL);
-                SharedPreferenceUtil.setGridStyle(0);
+                SharedPreferenceUtil.setGridStyle(1);
             }
         }
 
