@@ -270,10 +270,8 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 					@Override
 					public void onFocusChange(View v, boolean hasFocus) {
 						if (hasFocus) {
-							mFocusScaleUtils.scaleToLargeWH(v, 1.03F, 1.05f);
-							// mFocusUtils.startMoveFocus(v, true, (float)
-							// 0.89,(float)0.92,(float)0,89);
-							mFocusUtils.startMoveFocus(v, (Rect) null, true, 0.89f, 1.1f, 0.89F);
+							mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.04f);
+							mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.90F);
 						} else {
 							mFocusScaleUtils.scaleToNormal(v);
 						}
@@ -291,8 +289,8 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 				@Override
 				public void onFocusChange(View v, boolean hasFocus) {
 					if (hasFocus) {
-						mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.08f);
-						mFocusUtils.startMoveFocus(v, true, 0.92F);
+						mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.04f);
+						mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.90F);
 					} else {
 						mFocusScaleUtils.scaleToNormal(v);
 					}

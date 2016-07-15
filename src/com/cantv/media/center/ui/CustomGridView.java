@@ -93,6 +93,14 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
 		};
 	}
 
+	public void setStyleFocus(int sytle){
+		mFocusView.setFocusFrameImageResourceAndMeasure(sytle);
+	}
+
+	public void setDefaultStyle(){
+		mFocusView.setFocusFrameImageResourceAndMeasure(R.drawable.focus);
+	}
+
 	public void setOnItemSelectedListener(OnItemSelectedListener l) {
 		mSelectedListener = l;
 	}

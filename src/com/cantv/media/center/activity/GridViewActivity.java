@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -146,6 +147,11 @@ public class GridViewActivity extends Activity {
 			SharedPreferenceUtil.setGridStyle(1);
 			setGridStyle(MediaOrientation.LIST);
 		} else if (keyCode == KeyEvent.KEYCODE_MENU) {
+			if(null == mMenuDialog || !mMenuDialog.isShowing()){
+				mGridView.setStyleFocus(R.drawable.unfocus);
+			}else{
+				mGridView.setDefaultStyle();
+			}
 			showMenuDialog();
 		}
 		return super.onKeyDown(keyCode, event);
@@ -188,6 +194,12 @@ public class GridViewActivity extends Activity {
 			mMenuDialog = new MenuDialog(this);
 			list = createMenuData();
 			mMenuDialog.setMenuList(list);
+			mMenuDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					mGridView.setDefaultStyle();
+				}
+			});
 			mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onSubMenuItemClick(LinearLayout parent, View view,
