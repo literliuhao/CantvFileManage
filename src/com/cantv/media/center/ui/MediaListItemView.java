@@ -93,10 +93,11 @@ public class MediaListItemView extends MediaItemView {
 		LayoutParams imageParams = new RelativeLayout.LayoutParams(
 				(int) getResources().getDimension(R.dimen.px160),
 				(int) getResources().getDimension(R.dimen.px90));
-		// imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
+		 imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
 		// imageParams.setMargins(20,63,0,0);
-		imageParams.setMargins(FileUtil.dip2px(mContext, 14),
-				FileUtil.dip2px(mContext, 42), 0, 0);
+//		imageParams.setMargins(FileUtil.dip2px(mContext, 14),
+//				FileUtil.dip2px(mContext, 42), 0, 0);
+		 imageParams.setMargins(FileUtil.dip2px(mContext, 14),0, 0, 0);
 		mImageView.setLayoutParams(imageParams);
 
 		mTvName = new TextView(context);
