@@ -84,7 +84,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private long mNextTime;
 	private long mDurationTime;
 	private boolean isFirst = true ;
-	private boolean mSizeType = true;
+	private boolean mSizeType = false;
 	private Handler mHandler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			int flag =msg.what;
@@ -142,7 +142,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mimageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.i("liujun22", "onReceive");
                 if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                     if (getData() == null || getData().size() == 0) {
                         return;
@@ -255,10 +254,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "缩放", Toast.LENGTH_SHORT).show();
-                if(mSizeType){
-                	mSizeType = false;
-                	 
+                if(!mSizeType){
+                    mSizeType = true;
+                    mImageBrowser.onZoomIn();
+                }else{
+                    mSizeType = false;
+                    mImageBrowser.onZoomOut();
                 }
+                MainThread.cancel(mToHideRunnable);
+                MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
         });
     	mSize.setOnFocusChangeListener(new OnFocusChangeListener() {
