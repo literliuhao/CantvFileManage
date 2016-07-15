@@ -191,16 +191,15 @@ public class FileUtil {
 							&& (!fileInfo.mName
 									.equals("System Volume Information"))) {
 
-						//当文件是图片类型,并且大于10k,才进行显示
-						if(fileInfo.mType==SourceType.PICTURE){
-							if(fileInfo.fileSize>1024*6){
+						// 当文件是图片类型,并且大于10k,才进行显示
+						if (fileInfo.mType == SourceType.PICTURE) {
+							if (fileInfo.fileSize > 1024 * 6) {
 								tList.add(fileInfo);
 							}
-							
-						}else{
+
+						} else {
 							tList.add(fileInfo);
 						}
-						
 
 					}
 				}
@@ -243,25 +242,22 @@ public class FileUtil {
 
 					// 是文件夹或这是指定类型的文件,就加入到集合中
 					SourceType sourceType = type[0];
-					if ((sourceType == fileInfo.mType)
-							|| 
-							//过滤掉指定2个无卵用的文件夹
+					if ((sourceType == fileInfo.mType) ||
+					// 过滤掉指定2个无卵用的文件夹
 							(addFolder && fileInfo.isDir
-							&& (!fileInfo.mName.equals("LOST.DIR"))
-							&& (!fileInfo.mName.equals("System Volume Information")))) {
-						
-						
-						//当文件是图片类型,并且大于10k,才进行显示
-						if(fileInfo.mType==SourceType.PICTURE){
-							if(fileInfo.fileSize>1024*6){
+									&& (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName
+										.equals("System Volume Information")))) {
+
+						// 当文件是图片类型,并且大于10k,才进行显示
+						if (fileInfo.mType == SourceType.PICTURE) {
+							if (fileInfo.fileSize > 1024 * 6) {
 								tList.add(fileInfo);
 							}
-							
-						}else{
+
+						} else {
 							tList.add(fileInfo);
 						}
-						
-						
+
 					}
 
 				}
@@ -580,6 +576,25 @@ public class FileUtil {
 	}
 
 	/**
+	 * 从集合中取出指定类型的数据,组成新的集合
+	 * 
+	 * @param fromList
+	 * @param sourceType
+	 * @return
+	 */
+	public static ArrayList<String> getListFromList(List<Media> fromList,
+			SourceType sourceType) {
+		ArrayList<String> arrayList = new ArrayList<>();
+		for (Media media : fromList) {
+			if (sourceType == media.mType) {
+				arrayList.add(media.mUri);
+			}
+		}
+
+		return arrayList;
+	}
+
+	/**
 	 * 找出与目标字符串相同的字符串在集合中的索引
 	 * 
 	 * @param list
@@ -595,24 +610,21 @@ public class FileUtil {
 		}
 		return 0;
 	}
-	
-	
-	/**
-     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
-     */
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
 
-    /**
-     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
-     */
-    public static int px2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (pxValue / scale + 0.5f);
-    }
-	
-	
+	/**
+	 * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+	 */
+	public static int dip2px(Context context, float dpValue) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (dpValue * scale + 0.5f);
+	}
+
+	/**
+	 * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+	 */
+	public static int px2dip(Context context, float pxValue) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (pxValue / scale + 0.5f);
+	}
 
 }
