@@ -1,9 +1,9 @@
 package com.cantv.media.center.ui;
 
-import java.io.InputStream;
-
 import android.graphics.Bitmap;
 
+import java.io.InputStream;
+
 public interface PicViewDecoder {
-	Bitmap decodePic(String picUri, InputStream picStream);
+    Bitmap decodePic(String picUri, InputStream picStream);
 }

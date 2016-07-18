@@ -11,47 +11,46 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
 public class BitmapUtils {
-	
-	/**
-	 * 图片高斯模糊
-	 * 
-	 * @param bitmap
-	 * @return
-	 */
-	public static Drawable blurBitmap(Bitmap bitmap , Context ctx) {
 
-		// Let's create an empty bitmap with the same size of the bitmap we want
-		// to blur
-		Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
-				Config.ARGB_8888);
+    /**
+     * 图片高斯模糊
+     *
+     * @param bitmap
+     * @return
+     */
+    public static Drawable blurBitmap(Bitmap bitmap, Context ctx) {
 
-		// Instantiate a new Renderscript
-		RenderScript rs = RenderScript.create(ctx);
+        // Let's create an empty bitmap with the same size of the bitmap we want
+        // to blur
+        Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
 
-		// Create an Intrinsic Blur Script using the Renderscript
-		ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        // Instantiate a new Renderscript
+        RenderScript rs = RenderScript.create(ctx);
 
-		// Create the Allocations (in/out) with the Renderscript and the in/out
-		// bitmaps
-		Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
-		Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
+        // Create an Intrinsic Blur Script using the Renderscript
+        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
 
-		// Set the radius of the blur
-		blurScript.setRadius(25.f);
+        // Create the Allocations (in/out) with the Renderscript and the in/out
+        // bitmaps
+        Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
+        Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
 
-		// Perform the Renderscript
-		blurScript.setInput(allIn);
-		blurScript.forEach(allOut);
+        // Set the radius of the blur
+        blurScript.setRadius(25.f);
 
-		// Copy the final bitmap created by the out Allocation to the outBitmap
-		allOut.copyTo(outBitmap);
+        // Perform the Renderscript
+        blurScript.setInput(allIn);
+        blurScript.forEach(allOut);
 
-		// recycle the original bitmap
+        // Copy the final bitmap created by the out Allocation to the outBitmap
+        allOut.copyTo(outBitmap);
+
+        // recycle the original bitmap
 //		bitmap.recycle();
 
-		// After finishing everything, we destroy the Renderscript.
-		rs.destroy();
+        // After finishing everything, we destroy the Renderscript.
+        rs.destroy();
 
-		return new BitmapDrawable(ctx.getResources(), outBitmap);
-	}
+        return new BitmapDrawable(ctx.getResources(), outBitmap);
+    }
 }

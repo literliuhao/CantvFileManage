@@ -1,9 +1,8 @@
 package com.cantv.media.center.greendao;
 
-import java.util.Map;
-
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.Map;
 
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.AbstractDaoSession;
@@ -14,7 +13,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 
 /**
  * {@inheritDoc}
- * 
+ *
  * @see de.greenrobot.dao.AbstractDaoSession
  */
 public class DaoSession extends AbstractDaoSession {
@@ -23,8 +22,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final VideoPlayerDao videoPlayerDao;
 
-    public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
-            daoConfigMap) {
+    public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig> daoConfigMap) {
         super(db);
 
         videoPlayerDaoConfig = daoConfigMap.get(VideoPlayerDao.class).clone();
@@ -34,7 +32,7 @@ public class DaoSession extends AbstractDaoSession {
 
         registerDao(VideoPlayer.class, videoPlayerDao);
     }
-    
+
     public void clear() {
         videoPlayerDaoConfig.getIdentityScope().clear();
     }

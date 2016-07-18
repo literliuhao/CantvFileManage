@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -138,15 +137,13 @@ public class GridViewActivity extends Activity {
     public void setGridStyle(MediaOrientation mStyle) {
         switch (mStyle) {
             case LIST:
-                mGridView.setVerticalSpacing((int) getResources().getDimension(
-                        R.dimen.px31));
+                mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px31));
                 mGridView.setPadding(0, 0, 0, 0);
                 mGridView.setStyle(MediaOrientation.LIST);
                 mGridView.setNumColumns(1);
                 break;
             case THUMBNAIL:
-                mGridView.setVerticalSpacing((int) getResources().getDimension(
-                        R.dimen.px0));
+                mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px0));
                 mGridView.setPadding(0, 0, 0, 22);
                 mGridView.setStyle(MediaOrientation.THUMBNAIL);
                 mGridView.setNumColumns(5);
@@ -179,14 +176,12 @@ public class GridViewActivity extends Activity {
             });
             mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
                 @Override
-                public void onSubMenuItemClick(LinearLayout parent, View view,
-                                               int position) {
+                public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
                     subMenuClick(position);
                 }
 
                 @Override
-                public boolean onMenuItemClick(LinearLayout parent, View view,
-                                               int position) {
+                public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
                     if (position != 2) {
                         if (mSelectedMenuPosi == position) {
                             return false;
@@ -209,13 +204,10 @@ public class GridViewActivity extends Activity {
                                 mGridView.mListAdapter.bindData(datas);
                                 Log.i("shen", "mDeleteItem:" + mDeleteItem);
                             } else {
-                                Toast.makeText(GridViewActivity.this,
-                                        R.string.deleteFailed,
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GridViewActivity.this, R.string.deleteFailed, Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(GridViewActivity.this, "没有数据!",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GridViewActivity.this, "没有数据!", Toast.LENGTH_SHORT).show();
                         }
 
                         return true;
@@ -235,13 +227,10 @@ public class GridViewActivity extends Activity {
         sortListMenuItem.setType(MenuItem.TYPE_SELECTOR);
         sortListMenuItem.setSelected(true);
         sortListSubMenuItems = new ArrayList<MenuItem>();
-        sortMenuItem = new MenuItem(getString(R.string.sort_date),
-                MenuItem.TYPE_SELECTOR);
+        sortMenuItem = new MenuItem(getString(R.string.sort_date), MenuItem.TYPE_SELECTOR);
         sortListSubMenuItems.add(sortMenuItem);
-        sortListSubMenuItems.add(new MenuItem(
-                getString(R.string.sort_filesize), MenuItem.TYPE_SELECTOR));
-        sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_name),
-                MenuItem.TYPE_SELECTOR));
+        sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_filesize), MenuItem.TYPE_SELECTOR));
+        sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_name), MenuItem.TYPE_SELECTOR));
         int sortType = SharedPreferenceUtil.getSortType();
         MenuItem sortMenu = sortListSubMenuItems.get(sortType);
         sortMenu.setParent(sortListMenuItem);
@@ -252,11 +241,9 @@ public class GridViewActivity extends Activity {
         viewModeMenuItem = new MenuItem(getString(R.string.view));
         viewModeMenuItem.setType(MenuItem.TYPE_SELECTOR);
         viewModeSubMenuItems = new ArrayList<MenuItem>();
-        viewItem = new MenuItem(getString(R.string.view_list),
-                MenuItem.TYPE_SELECTOR);
+        viewItem = new MenuItem(getString(R.string.view_list), MenuItem.TYPE_SELECTOR);
         viewModeSubMenuItems.add(viewItem);
-        viewModeSubMenuItems.add(new MenuItem(getString(R.string.view_tile),
-                MenuItem.TYPE_SELECTOR));
+        viewModeSubMenuItems.add(new MenuItem(getString(R.string.view_tile), MenuItem.TYPE_SELECTOR));
         int gridStyle = SharedPreferenceUtil.getGridStyle();
         MenuItem viewMenu = viewModeSubMenuItems.get(gridStyle);
         viewMenu.setParent(viewModeMenuItem);
@@ -277,17 +264,11 @@ public class GridViewActivity extends Activity {
         int lastSelectPosi = menuItemData.setChildSelected(position);
         if (mSelectedMenuPosi == 0) {
             if (position == 0) {
-                isRefreshed = FileUtil.sortList(
-                        mGridView.mListAdapter.getData(),
-                        FileComparator.SORT_TYPE_DATE_DOWN, false);
+                isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_DATE_DOWN, false);
             } else if (position == 1) {
-                isRefreshed = FileUtil.sortList(
-                        mGridView.mListAdapter.getData(),
-                        FileComparator.SORT_TYPE_SIZE_DOWN, false);
+                isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_SIZE_DOWN, false);
             } else if (position == 2) {
-                isRefreshed = FileUtil.sortList(
-                        mGridView.mListAdapter.getData(),
-                        FileComparator.SORT_TYPE_NAME_UP, false);
+                isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_NAME_UP, false);
             }
             if (isRefreshed) {
                 mGridView.mListAdapter.notifyDataSetChanged();
@@ -302,23 +283,17 @@ public class GridViewActivity extends Activity {
             }
         }
 
-        View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(
-                MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
+        View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
         if (oldSubMenuItemView != null) {
-            mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView,
-                    menuItemData.getChildAt(lastSelectPosi));
+            mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(lastSelectPosi));
         }
-        View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(
-                MenuAdapter.TAG_SUB_MENU_VIEW + position);
+        View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + position);
         if (subMenuItemView != null) {
-            mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView,
-                    menuItemData.getSelectedChild());
+            mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView, menuItemData.getSelectedChild());
         }
-        View menuItemView = mMenuDialog.getMenu().findViewWithTag(
-                MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
+        View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
         if (menuItemView != null) {
-            mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView,
-                    menuItemData);
+            mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
         }
     }
 
@@ -328,8 +303,7 @@ public class GridViewActivity extends Activity {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 // 有新设备插入
                 openRootDir();
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
-                    || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // 移除设备
                 openRootDir();
             }

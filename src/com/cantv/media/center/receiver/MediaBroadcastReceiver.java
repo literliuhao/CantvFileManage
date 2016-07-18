@@ -8,15 +8,15 @@ import android.content.Intent;
 import android.util.Log;
 
 public class MediaBroadcastReceiver extends BroadcastReceiver {
-	private static String TAG = "MediaBroadcastReceiver";
-	private boolean mIsUsb = false;
-	private boolean mIsTF = false;
-	private Context mContext;
-	private List<String> mlistusb;
-	private String mtfpath;
+    private static String TAG = "MediaBroadcastReceiver";
+    private boolean mIsUsb = false;
+    private boolean mIsTF = false;
+    private Context mContext;
+    private List<String> mlistusb;
+    private String mtfpath;
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
-	}
+    @Override
+    public void onReceive(Context context, Intent intent) {
+    }
 
 }

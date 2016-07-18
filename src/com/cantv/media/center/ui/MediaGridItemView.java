@@ -1,14 +1,7 @@
 package com.cantv.media.center.ui;
 
-import com.cantv.media.R;
-import com.cantv.media.center.constants.PicStretch;
-import com.cantv.media.center.data.Media;
-import com.cantv.media.center.utils.FileUtil;
-import com.cantv.media.center.utils.MediaUtils;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
@@ -20,6 +13,11 @@ import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.cantv.media.R;
+import com.cantv.media.center.constants.PicStretch;
+import com.cantv.media.center.data.Media;
+import com.cantv.media.center.utils.FileUtil;
 
 @SuppressLint("NewApi")
 public class MediaGridItemView extends MediaItemView {
@@ -91,9 +89,9 @@ public class MediaGridItemView extends MediaItemView {
 //        mTextView.setPadding(0,(int) getResources().getDimension(R.dimen.px30),0,0);
         mTextView.setSingleLine(true);
         RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        tvParams.addRule(RelativeLayout.BELOW,mBgView.getId());
+        tvParams.addRule(RelativeLayout.BELOW, mBgView.getId());
         tvParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        tvParams.setMargins(0,18,0,0);
+        tvParams.setMargins(0, 18, 0, 0);
         mTextView.setLayoutParams(tvParams);
         relativeLayout.addView(mFocusView);
         relativeLayout.addView(mBgView);
@@ -112,7 +110,7 @@ public class MediaGridItemView extends MediaItemView {
         mNumDrawable.setNum(media.getSubMediasCount());
         switch (media.getMediaFormat()) {
             case IMAGE:
-            	mImageView.setMedia(media);
+                mImageView.setMedia(media);
                 mBgView.setBackground(media);
                 break;
             case AUDIO:
@@ -168,8 +166,7 @@ public class MediaGridItemView extends MediaItemView {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (isSelected())
-                    animateView(to, from);
+                if (isSelected()) animateView(to, from);
             }
         });
     }
@@ -177,8 +174,7 @@ public class MediaGridItemView extends MediaItemView {
     boolean needReDraw() {
         long currentTime = AnimationUtils.currentAnimationTimeMillis();
         if (mAnimation != null && mAnimation.hasEnded() == false) {
-            if (mAnimation.hasStarted() == false)
-                mAnimation.setStartTime(currentTime);
+            if (mAnimation.hasStarted() == false) mAnimation.setStartTime(currentTime);
             mAnimation.getTransformation(currentTime, mDrawingTransform);
             mAnimateRate = mDrawingTransform.getAlpha();
             return true;

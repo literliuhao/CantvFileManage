@@ -85,9 +85,7 @@ public class MediaGridView extends CustomGridView {
                     }
                     MediaGridView.this.setSelection(0);
 
-                } else if ((item.mType == SourceType.MOIVE)
-                        || (item.mType == SourceType.MUSIC)
-                        || (item.mType == SourceType.PICTURE)) {
+                } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
                     openMediaActivity(item);
                 } else {
                     MediaUtils.openMedia(mActivity, item.mUri);
@@ -96,8 +94,7 @@ public class MediaGridView extends CustomGridView {
         });
         setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (view != null) {
                     mSelectItemPosition = position;
                 }
@@ -121,7 +118,7 @@ public class MediaGridView extends CustomGridView {
         }
     }
 
-    public void setDevicePath(String path){
+    public void setDevicePath(String path) {
         devicePath = path;
     }
 
@@ -145,8 +142,7 @@ public class MediaGridView extends CustomGridView {
             public int compare(Media arg0, Media arg1) {
                 boolean one = arg0.isCollection();
                 boolean two = arg1.isCollection();
-                return one == two ? mCollator.compare(arg0.getName(),
-                        arg1.getName()) : (one ? 1 : -1);
+                return one == two ? mCollator.compare(arg0.getName(), arg1.getName()) : (one ? 1 : -1);
             }
         };
 
@@ -174,7 +170,7 @@ public class MediaGridView extends CustomGridView {
             }
 
             FileUtil.sortList(result, FileComparator.SORT_TYPE_DEFAULT, true);
-            mCurrMediaList=result;
+            mCurrMediaList = result;
             mListAdapter.bindData(result);
             setAdapter(mListAdapter);
             if (result.size() == 0) {
@@ -189,13 +185,13 @@ public class MediaGridView extends CustomGridView {
             try {
                 List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
                 //外接设备选择
-                if(MediaUtils.getUSBNum() > 1){
+                if (MediaUtils.getUSBNum() > 1) {
                     for (int i = 0; i < usbRootPaths.size(); i++) {
                         File file = new File(usbRootPaths.get(i));
                         Media fileInfo = FileUtil.getFileInfo(file, null, false);
                         mMediaes.add(fileInfo);
                     }
-                }else{
+                } else {
                     if (mSourceType == SourceType.LOCAL) {
                         mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
                     } else if (mSourceType == SourceType.DEVICE) {
@@ -236,9 +232,7 @@ public class MediaGridView extends CustomGridView {
     protected void animateFoucs(View v) {
         if (v != null && v instanceof MediaItemView) {
             View child = ((MediaItemView) v).getFocusImage();
-            animateFoucs(child.getLeft() + v.getLeft(),
-                    child.getTop() + v.getTop(), child.getWidth(),
-                    child.getHeight());
+            animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(), child.getHeight());
         } else {
             super.animateFoucs(v);
         }
@@ -293,14 +287,12 @@ public class MediaGridView extends CustomGridView {
 
 //        ArrayList<String> mediaPathList = FileUtil.getMediaPathList(substring,
 //                media.mType);
-        
-        ArrayList<String> mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
-        
-        int indexFromList = FileUtil
-                .getIndexFromList(mediaPathList, media.mUri);
 
-        MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList,
-                media.mType);
+        ArrayList<String> mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
+
+        int indexFromList = FileUtil.getIndexFromList(mediaPathList, media.mUri);
+
+        MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType);
 
     }
 

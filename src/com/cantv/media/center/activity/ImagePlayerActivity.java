@@ -1,9 +1,5 @@
 package com.cantv.media.center.activity;
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +35,10 @@ import com.cantv.media.center.ui.MediaControllerBar;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
     private int mCurImageIndex;
     private ImageFrameView mFrameView;
@@ -46,8 +46,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private Runnable mAutoRunnable;
     private ImageView mAutoRunImageView;
     private ImageView mRotation;
-	private ImageView mSize;
-	private ImageView mInfo;
+    private ImageView mSize;
+    private ImageView mInfo;
     private PowerManager.WakeLock mScreenLock;
     private boolean mAutoPlay = false;
     private LinearLayout mLayout;
@@ -67,38 +67,40 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int INFO = 4;
     private int POSTION = 5;
     private FocusUtils mFocusUtils;
-	private TextView mTvRotation;
-	private TextView mTvSize;
-	private TextView mTvAuto;
-	private TextView mTvInfo;
-	private ImageView mArrowLeft;
-	private ImageView mArrowRight;
-	private TextView mPosition;
-	private TextView mTotal;
-	private TextView mInfoName;
-	private TextView mInfoSize;
-	private TextView mInfoTime;
-	private TextView mInfoUrl;
-	private static final int DELAYED_TIME = 5*1000;
-	private long mNextTime;
-	private long mDurationTime;
-	private boolean isFirst = true ;
-	private boolean isFirstFocus = true ;
-	private boolean mSizeType = false;
-	private Handler mHandler = new Handler(){
-		public void handleMessage(android.os.Message msg) {
-			int flag =msg.what;
-			if(flag == 1){
-				if(mArrowLeft.getVisibility() == View.GONE && mArrowRight.getVisibility() == View.GONE){
-					return ;
-				}
-				mHandler.removeCallbacksAndMessages(null);
-				mArrowLeft.setVisibility(View.GONE);
-				mArrowRight.setVisibility(View.GONE);
-			}
-		};
-	};
-	
+    private TextView mTvRotation;
+    private TextView mTvSize;
+    private TextView mTvAuto;
+    private TextView mTvInfo;
+    private ImageView mArrowLeft;
+    private ImageView mArrowRight;
+    private TextView mPosition;
+    private TextView mTotal;
+    private TextView mInfoName;
+    private TextView mInfoSize;
+    private TextView mInfoTime;
+    private TextView mInfoUrl;
+    private static final int DELAYED_TIME = 5 * 1000;
+    private long mNextTime;
+    private long mDurationTime;
+    private boolean isFirst = true;
+    private boolean isFirstFocus = true;
+    private boolean mSizeType = false;
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            int flag = msg.what;
+            if (flag == 1) {
+                if (mArrowLeft.getVisibility() == View.GONE && mArrowRight.getVisibility() == View.GONE) {
+                    return;
+                }
+                mHandler.removeCallbacksAndMessages(null);
+                mArrowLeft.setVisibility(View.GONE);
+                mArrowRight.setVisibility(View.GONE);
+            }
+        }
+
+        ;
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,14 +117,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mPosition = (TextView) findViewById(R.id.media__image_tv__position);
         mTotal = (TextView) findViewById(R.id.media__image_tv__total);
         mtxtresolution = (TextView) findViewById(R.id.txt_solution);
-    	mTvRotation = (TextView) findViewById(R.id.media__image_tv__rotation);
-    	mTvSize = (TextView) findViewById(R.id.media__image_tv__size);
-    	mTvAuto = (TextView) findViewById(R.id.media__image_tv__auto);
-    	mTvInfo = (TextView) findViewById(R.id.media__image_tv__info);
-    	mRotation = (ImageView) findViewById(R.id.media__image_view__rotation);
-    	mSize = (ImageView) findViewById(R.id.media__image_view__size);
-    	mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
-    	mInfo = (ImageView) findViewById(R.id.media__image_view__info);
+        mTvRotation = (TextView) findViewById(R.id.media__image_tv__rotation);
+        mTvSize = (TextView) findViewById(R.id.media__image_tv__size);
+        mTvAuto = (TextView) findViewById(R.id.media__image_tv__auto);
+        mTvInfo = (TextView) findViewById(R.id.media__image_tv__info);
+        mRotation = (ImageView) findViewById(R.id.media__image_view__rotation);
+        mSize = (ImageView) findViewById(R.id.media__image_view__size);
+        mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
+        mInfo = (ImageView) findViewById(R.id.media__image_view__info);
         mFrameView = new ImageFrameView(this);
         mFrameView.setNotifyParentUpdateListner(this);
         mImageBrowser = (ImageBrowser) findViewById(R.id.media__image_view__image);
@@ -146,7 +148,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 toHideView();
             }
         };
-		//toShowView();
+        //toShowView();
         mimageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -185,7 +187,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mCurImageIndex = index;
         int curIndex = index + 1;
         mPosition.setText(String.valueOf(mCurImageIndex + 1));
-        mTotal.setText(" / "+data.size());
+        mTotal.setText(" / " + data.size());
         mFrameView.playImage(data.get(index), onfinish);
         UiUtils.runAfterLayout(mImageBrowser, new Runnable() {
             @Override
@@ -195,36 +197,35 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
         });
         String curFileUri = getData().get(mCurImageIndex);
-        if (!mAutoPlay){
-        if(mCurImageIndex == 0 && data.size() > 1){
-        	//显示右面
-        	mArrowRight.setVisibility(View.VISIBLE);
-        	mArrowLeft.setVisibility(View.GONE);
-        }else if(mCurImageIndex == data.size() - 1 && data.size() > 1){
-        	//显示左面
-        	mArrowLeft.setVisibility(View.VISIBLE);
-        	mArrowRight.setVisibility(View.GONE);
-        }else if(mCurImageIndex > 0 && data.size() > 1 && mCurImageIndex < data.size() - 1){
-        	mArrowLeft.setVisibility(View.VISIBLE);
-        	mArrowRight.setVisibility(View.VISIBLE);
-        }else{
-        	mArrowLeft.setVisibility(View.GONE);
-        	mArrowRight.setVisibility(View.GONE);
-        	}
-        new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-					mHandler.removeCallbacksAndMessages(null);
-					mHandler.sendEmptyMessageDelayed(1, DELAYED_TIME);
-			}
-		}).start();
+        if (!mAutoPlay) {
+            if (mCurImageIndex == 0 && data.size() > 1) {
+                //显示右面
+                mArrowRight.setVisibility(View.VISIBLE);
+                mArrowLeft.setVisibility(View.GONE);
+            } else if (mCurImageIndex == data.size() - 1 && data.size() > 1) {
+                //显示左面
+                mArrowLeft.setVisibility(View.VISIBLE);
+                mArrowRight.setVisibility(View.GONE);
+            } else if (mCurImageIndex > 0 && data.size() > 1 && mCurImageIndex < data.size() - 1) {
+                mArrowLeft.setVisibility(View.VISIBLE);
+                mArrowRight.setVisibility(View.VISIBLE);
+            } else {
+                mArrowLeft.setVisibility(View.GONE);
+                mArrowRight.setVisibility(View.GONE);
+            }
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    mHandler.removeCallbacksAndMessages(null);
+                    mHandler.sendEmptyMessageDelayed(1, DELAYED_TIME);
+                }
+            }).start();
         }
     }
 
     private void initViewClickEvent() {
-    	
-    	mRotation.setOnClickListener(new OnClickListener() {
+        mRotation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainThread.cancel(mToHideRunnable);
@@ -232,7 +233,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 mImageBrowser.changeRotation();
             }
         });
-    	mRotation.setOnFocusChangeListener(new OnFocusChangeListener() {
+        mRotation.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -240,25 +241,25 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     POSTION = 0;
                     mFocusUtils.startMoveFocus(v, true, (float) 0.9);
                     translateDown(mTvRotation);
-                }else{
-                	translateUp(mTvRotation);
+                } else {
+                    translateUp(mTvRotation);
                 }
-                
+
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
 
         });
 
-    	mSize.setOnClickListener(new OnClickListener() {
+        mSize.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getApplicationContext(), "缩放", Toast.LENGTH_SHORT).show();
-                if(!mSizeType){
+                if (!mSizeType) {
                     mSizeType = true;
                     mImageBrowser.onZoomIn();
                     mTvSize.setText("实际尺寸");
-                }else{
+                } else {
                     mSizeType = false;
                     mImageBrowser.onZoomOut();
                     mTvSize.setText("等比全屏");
@@ -267,16 +268,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
         });
-    	mSize.setOnFocusChangeListener(new OnFocusChangeListener() {
+        mSize.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-            	if (hasFocus) {
+                if (hasFocus) {
                     POSTION = 1;
                     mFocusUtils.startMoveFocus(v, true, (float) 0.9);
                     translateDown(mTvSize);
-                }else{
-                	translateUp(mTvSize);
+                } else {
+                    translateUp(mTvSize);
                 }
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
@@ -289,12 +290,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
                 int curIndex = mCurImageIndex + 1;
-            	int size = getData().size();
-            	
-            	if(curIndex == size){
-            		Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
-            		return ;
-            	}
+                int size = getData().size();
+
+                if (curIndex == size) {
+                    Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if (mAutoPlay) {
                     stopAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
@@ -302,19 +303,19 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 } else {
                     startAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.photo_info33);
+                    mAutoRunImageView.setImageResource(R.drawable.play_stop);
                 }
             }
         });
         mAutoRunImageView.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-            	if (hasFocus) {
+                if (hasFocus) {
                     POSTION = 2;
                     mFocusUtils.startMoveFocus(v, true, (float) 0.9);
                     translateDown(mTvAuto);
-                }else{
-                	translateUp(mTvAuto);
+                } else {
+                    translateUp(mTvAuto);
                 }
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
@@ -336,7 +337,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     mLayout.startAnimation(alphaAnimation);
                     nflag = false;
                 } else {
-                	AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0);
+                    AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0);
                     // 设置动画时间
                     alphaAnimation.setDuration(500);
                     alphaAnimation.setFillAfter(true);
@@ -345,22 +346,22 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     nflag = true;
                 }
                 String curFileUri = getData().get(mCurImageIndex);
-                mInfoName.setText("图片名称："+new File(curFileUri).getName());
+                mInfoName.setText("图片名称：" + new File(curFileUri).getName());
                 mInfoSize.setText("图片大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
-                mInfoTime.setText("上传时间：" +DateUtil.onDate2String(new Date(new File(curFileUri).lastModified())));
-                mInfoUrl.setText("图片路径：" +curFileUri);
+                mInfoTime.setText("上传时间：" + DateUtil.onDate2String(new Date(new File(curFileUri).lastModified())));
+                mInfoUrl.setText("图片路径：" + curFileUri);
             }
         });
         mInfo.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-            	if (hasFocus) {
+                if (hasFocus) {
                     POSTION = 3;
                     mFocusUtils.startMoveFocus(v, true, (float) 0.9);
                     translateDown(mTvInfo);
-                }else{
-                	translateUp(mTvInfo);
-                	if (mLayout.getVisibility() == View.VISIBLE) {
+                } else {
+                    translateUp(mTvInfo);
+                    if (mLayout.getVisibility() == View.VISIBLE) {
                         Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 0.1f, 100.0f);
                         // 设置动画时间
                         translateAnimation.setDuration(300);
@@ -383,14 +384,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     private void startAutoPlay() {
-    	int curIndex = mCurImageIndex + 1;
-    	int size = getData().size();
-    	
-    	if(curIndex == size){
-    		stopAutoPlay();
-    		Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
-    		return ;
-    	}
+        int curIndex = mCurImageIndex + 1;
+        int size = getData().size();
+
+        if (curIndex == size) {
+            stopAutoPlay();
+            Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+            return;
+        }
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
@@ -424,17 +425,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     private void toShowView() {
-        if (mShowing)
-            return;
+        if (mShowing) return;
         switch (POSTION) {
             case 0:
                 mRotation.requestFocus();
                 break;
             case 1:
-            	mSize.requestFocus();
-            	break;
+                mSize.requestFocus();
+                break;
             case 2:
-            	mAutoRunImageView.requestFocus();
+                mAutoRunImageView.requestFocus();
                 break;
             case 3:
                 mInfo.requestFocus();
@@ -448,16 +448,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mFocusUtils.showFocus();
         mediaimagebar.setVisibility(View.VISIBLE);
         toFlyView(0, 0, 1, 0, true);
-        if(isFirstFocus){
-        	isFirstFocus = false ; 
-        	mFocusUtils.setFocusLayout(mRotation, true, (float) 0.9);
+        if (isFirstFocus) {
+            isFirstFocus = false;
+            mFocusUtils.setFocusLayout(mRotation, true, (float) 0.9);
         }
 
     }
 
     private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter) {
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue,
-                Animation.RELATIVE_TO_SELF, toYValue);
+        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
         animation.setDuration(UiUtils.ANIM_DURATION_LONG);
         animation.setFillAfter(fillAfter);
         mediaimagebar.clearAnimation();
@@ -476,7 +475,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             return false;
         }
         if (keyCode == event.KEYCODE_MENU && event.getAction() == KeyEvent.ACTION_DOWN) {
-        	toShowView();
+            toShowView();
             return true;
         }
         if (!mAutoPlay) {
@@ -494,30 +493,30 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 return true;
 
             }
-            
+
             if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
-            	mImageBrowser.changeUpRotation();
+                mImageBrowser.changeUpRotation();
                 return true;
 
             }
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
-            	mImageBrowser.changeRotation();
+                mImageBrowser.changeRotation();
                 return true;
 
             }
         }
-        
-        if(mAutoPlay){
-        	if(!mShowing){
-        	 if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-        		 stopAutoPlay();
-        		 Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
-                 mAutoRunImageView.setImageResource(R.drawable.photo_info3);
-                 return true;
-        	 	}
-        	 }
+
+        if (mAutoPlay) {
+            if (!mShowing) {
+                if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    stopAutoPlay();
+                    Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+                    return true;
+                }
+            }
         }
-        
+
         if (keyCode == event.KEYCODE_DPAD_CENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (!mShowing) {
                 if (mAutoPlay) {
@@ -527,7 +526,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 } else {
                     startAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.photo_info33);
+                    mAutoRunImageView.setImageResource(R.drawable.play_stop);
                 }
 
             }
@@ -559,20 +558,20 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mImageBrowser.reset();
     }
 
-	private void translateDown(View view) {
-		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f);
-		translateAnimation.setDuration(200);
-		translateAnimation.setFillAfter(true);
-		view.clearAnimation();
-		view.startAnimation(translateAnimation);
-	}
-	
-	private void translateUp(View view) {
-		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0);
-		translateAnimation.setDuration(200);
-		translateAnimation.setFillAfter(true);
-		view.clearAnimation();
-		view.startAnimation(translateAnimation);
-	}
-	
+    private void translateDown(View view) {
+        Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f);
+        translateAnimation.setDuration(200);
+        translateAnimation.setFillAfter(true);
+        view.clearAnimation();
+        view.startAnimation(translateAnimation);
+    }
+
+    private void translateUp(View view) {
+        Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0);
+        translateAnimation.setDuration(200);
+        translateAnimation.setFillAfter(true);
+        view.clearAnimation();
+        view.startAnimation(translateAnimation);
+    }
+
 }

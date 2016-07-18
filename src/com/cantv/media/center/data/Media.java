@@ -31,20 +31,17 @@ public class Media {
     }
 
     public String getUri() {
-        if (isCollection() && TextUtils.isEmpty(mUri))
-            mUri = new File(mSubMedias.get(0).getUri()).getParent();
+        if (isCollection() && TextUtils.isEmpty(mUri)) mUri = new File(mSubMedias.get(0).getUri()).getParent();
         return mUri;
     }
 
     public String getName() {
-        if (TextUtils.isEmpty(mName))
-            mName = parseMediaName();
+        if (TextUtils.isEmpty(mName)) mName = parseMediaName();
         return mName;
     }
 
     public int getSubMediasCount() {
-        if (mSubMedias == null)
-            return 0;
+        if (mSubMedias == null) return 0;
         return mSubMedias.size();
     }
 
@@ -57,16 +54,11 @@ public class Media {
     }
 
     public MediaFormat getMediaFormat() {
-        if (getSourceType() == SourceType.DEVICE)
-            return MediaFormat.UNKNOW;
-        if (getSourceType() == SourceType.MUSIC)
-            return MediaFormat.AUDIO;
-        if (getSourceType() == SourceType.MOIVE)
-            return MediaFormat.VIDEO;
-        if (getSourceType() == SourceType.PICTURE)
-            return MediaFormat.IMAGE;
-        if (getSourceType() == SourceType.APP)
-            return MediaFormat.APP;
+        if (getSourceType() == SourceType.DEVICE) return MediaFormat.UNKNOW;
+        if (getSourceType() == SourceType.MUSIC) return MediaFormat.AUDIO;
+        if (getSourceType() == SourceType.MOIVE) return MediaFormat.VIDEO;
+        if (getSourceType() == SourceType.PICTURE) return MediaFormat.IMAGE;
+        if (getSourceType() == SourceType.APP) return MediaFormat.APP;
         if (getSourceType() == SourceType.FOLDER) {
             return MediaFormat.FOLDER;
         }

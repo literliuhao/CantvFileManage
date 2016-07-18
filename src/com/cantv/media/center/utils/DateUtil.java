@@ -25,12 +25,12 @@ public class DateUtil {
         return defaFormat;
     }
 
-    public static String longToDate(Long millSec,String dateFormat){
-        if(null == dateFormat){
+    public static String longToDate(Long millSec, String dateFormat) {
+        if (null == dateFormat) {
             dateFormat = "yyyy-MM-dd";
         }
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        Date date= new Date(millSec);
+        Date date = new Date(millSec);
         return sdf.format(date);
     }
 }
