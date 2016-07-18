@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.widgets.CustomDialog;
 
 /**
@@ -45,18 +46,22 @@ public class BootDialogService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+                MediaUtils.addUsbRootPaths(intent.getData().getPath());
                 showMountedDialog();
+            }else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+                MediaUtils.removeUsbRootPaths(intent.getData().getPath());
             }
-//            else if (intent.getAction().equals("com.cantv.service.MEDIA_MOUNTED")) {
-//                showMountedDialog();
-//            }
         }
     };
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+        Intent intentStart = new Intent();
+        intentStart.setAction("com.cantv.service.RECEIVER_START");
+        intentStart.setClass(this, BootDialogService.class);
+        this.startService(intentStart);
+//        unregisterReceiver(mReceiver);
     }
 
     private boolean isShow() {

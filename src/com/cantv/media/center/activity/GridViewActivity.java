@@ -1,9 +1,5 @@
 package com.cantv.media.center.activity;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -34,10 +30,9 @@ import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 
-import com.cantv.media.R;
-import com.cantv.media.center.constants.SourceType;
-import com.cantv.media.center.ui.MediaGridView;
-import com.cantv.media.center.utils.MediaUtils;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GridViewActivity extends Activity {
     private static String TAG = "GridViewActivity";
@@ -84,42 +79,34 @@ public class GridViewActivity extends Activity {
         }
         if ("video".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_movie);
-            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-                    SourceType.MOIVE);
+            mGridView = new MediaGridView(this, SourceType.MOIVE);
             isExternal = true;
         } else if ("image".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_photo);
-            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-                    SourceType.PICTURE);
+            mGridView = new MediaGridView(this, SourceType.PICTURE);
             isExternal = true;
         } else if ("audio".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_music);
-            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-                    SourceType.MUSIC);
+            mGridView = new MediaGridView(this, SourceType.MUSIC);
             isExternal = true;
         } else if ("app".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_app);
-            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
+            mGridView = new MediaGridView(this,
                     SourceType.APP);
             isExternal = true;
         } else if ("local".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_file);
-            mGridView = new MediaGridView(this, MediaUtils.getUsbRootPath(),
-                    SourceType.LOCAL);
+            mGridView = new MediaGridView(this, SourceType.LOCAL);
             isExternal = false;
         } else if ("device1".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_external);
-            String filePath = "";
-            if ((null == deviceFlag) && MediaUtils.isExistUSB()) {
-                filePath = MediaUtils.getUsbRootPaths().get(0);
-            }
-
-            mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
+            mGridView = new MediaGridView(this, SourceType.DEVICE);
+            mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(0));
             isExternal = true;
         } else if ("device2".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_external);
-            String filePath = getIntent().getStringExtra("filePath");
-            mGridView = new MediaGridView(this, filePath, SourceType.DEVICE);
+            mGridView = new MediaGridView(this, SourceType.DEVICE);
+            mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
             isExternal = true;
         }
         if (null != deviceFlag) {
@@ -266,7 +253,7 @@ public class GridViewActivity extends Activity {
         sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_name),
                 MenuItem.TYPE_SELECTOR));
         int sortType = SharedPreferenceUtil.getSortType();
-		MenuItem sortMenu = sortListSubMenuItems.get(sortType);
+        MenuItem sortMenu = sortListSubMenuItems.get(sortType);
         sortMenu.setParent(sortListMenuItem);
         sortMenu.setSelected(true);
         sortListMenuItem.setChildren(sortListSubMenuItems);
@@ -281,7 +268,7 @@ public class GridViewActivity extends Activity {
         viewModeSubMenuItems.add(new MenuItem(getString(R.string.view_tile),
                 MenuItem.TYPE_SELECTOR));
         int gridStyle = SharedPreferenceUtil.getGridStyle();
-		MenuItem viewMenu = viewModeSubMenuItems.get(gridStyle);
+        MenuItem viewMenu = viewModeSubMenuItems.get(gridStyle);
         viewMenu.setParent(viewModeMenuItem);
         viewMenu.setSelected(true);
         viewModeMenuItem.setChildren(viewModeSubMenuItems);
