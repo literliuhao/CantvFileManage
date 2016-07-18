@@ -1,9 +1,23 @@
 package com.cantv.media.center.activity;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnVideoSizeChangedListener;
+import android.os.Bundle;
+import android.os.PowerManager;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceHolder.Callback;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
@@ -19,33 +33,14 @@ import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
 import com.cantv.media.center.ui.player.BasePlayer;
 import com.cantv.media.center.ui.player.PlayerController;
-import com.cantv.media.center.ui.player.PlayerController.PlayerDialogListener;
 import com.cantv.media.center.ui.player.SrcParser;
 import com.cantv.media.center.ui.player.SrtBeans;
 import com.cantv.media.center.utils.MediaUtils;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.PixelFormat;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnVideoSizeChangedListener;
-import android.os.Bundle;
-import android.os.Message;
-import android.os.PowerManager;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceHolder.Callback;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener, StDisplayCallBack {
 	
@@ -247,21 +242,18 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		}
 		return super.onKeyUp(keyCode, event);
 	}
-	private void getAllVideo() {
-
-		new Thread() {
-			@Override
-			public void run() {
-				super.run();
-				String path = MediaUtils.getUsbRootPath();
-				ArrayList<String> arrayList = getVideos(path);
-
-				Message m = Message.obtain();
-				m.arg1 = arrayList.size();
-			}
-		}.start();
-
-	}
+//	private void getAllVideo() {
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				super.run();
+//				String path = MediaUtils.getUsbRootPaths();
+//				ArrayList<String> arrayList = getVideos(path);
+//				Message m = Message.obtain();
+//				m.arg1 = arrayList.size();
+//			}
+//		}.start();
+//	}
 
 	public ArrayList<String> getVideos(String path) {
 		File file = new File(path);

@@ -19,6 +19,7 @@ import android.os.Message;
 import android.os.StatFs;
 import android.provider.MediaStore.Files.FileColumns;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.widget.Toast;
 import com.cantv.media.center.activity.AudioPlayerActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
@@ -36,23 +37,30 @@ public class MediaUtils {
 	// public static String getUsbRootPath() {
 	// return "/storage/external_storage/udisk0/";
 	// }
+	private static List<String> usbList = new ArrayList<>();
 
-	public static String getUsbRootPath() {
+	public static String getLocalPath() {
 		return Environment.getExternalStorageDirectory().getPath();
-		// return "/mnt/usb/sda1/";
-		// return "/data/data/com.cantv.media/files/";
-		// return "/";
 	}
 
 	public static List<String> getUsbRootPaths() {
-		List<String> usbList = new ArrayList<String>();
-		usbList = runMount();
 		return usbList;
 	}
 
+	public static void addUsbRootPaths(String usbPath){
+		if(!usbList.contains(usbPath)){
+			usbList.add(usbPath);
+		}
+	}
+
+	public static void removeUsbRootPaths(String usbPath){
+		if(usbList.contains(usbPath)){
+			usbList.remove(usbPath);
+		}
+	}
+
 	public static boolean isExistUSB() {
-		List<String> usbList = new ArrayList<String>();
-		usbList = runMount();
+//		usbList = runMount();
 		if (usbList != null && usbList.size() > 0) {
 			return true;
 		}
@@ -60,8 +68,6 @@ public class MediaUtils {
 	}
 
 	public static int getUSBNum() {
-		List<String> usbList = new ArrayList<String>();
-		usbList = runMount();
 		if (usbList != null) {
 			return usbList.size();
 		}
@@ -160,30 +166,31 @@ public class MediaUtils {
 		return total;
 	}
 
-	private static List<String> runMount() {
-		Set<String> set = new TreeSet<String>();
-		List<String> list = null;
-		Process mprocess;
-		BufferedReader mreader;
-		String temp;
-		Runtime runtime = Runtime.getRuntime();
-		try {
-			mprocess = runtime.exec("mount");
-			mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
-			while ((temp = mreader.readLine()) != null) {
-				if (temp.contains("/dev/block/vold/8:")) {
-					String usbpath = temp.split(" ")[1];
-					set.add(usbpath);
-				}
-			}
-			mreader.close();
-			list = new ArrayList<String>(set);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-		}
-		return list;
-	}
+//	private static List<String> runMount() {
+//		Set<String> set = new TreeSet<String>();
+//		List<String> list = null;
+//		Process mprocess;
+//		BufferedReader mreader;
+//		String temp;
+//		Runtime runtime = Runtime.getRuntime();
+//		try {
+//			mprocess = runtime.exec("mount");
+//			mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
+//			while ((temp = mreader.readLine()) != null) {
+//				if (temp.contains("/dev/block/vold/8:")) {
+// 					String usbpath = temp.split(" ")[1];
+//					Log.i("mount","usbpath >>>>> " + usbpath);
+//					set.add(usbpath);
+//				}
+//			}
+//			mreader.close();
+//			list = new ArrayList<String>(set);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//		}
+//		return list;
+//	}
 
 	public static boolean isImage(String filename) {
 		String[] str = { "jpg", "png", "jpeg", "bmp", "gif", "webp", "wbmp" };
