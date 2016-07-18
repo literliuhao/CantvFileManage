@@ -1,5 +1,9 @@
 package com.cantv.media.center.activity;
 
+import com.cantv.liteplayer.core.focus.FocusScaleUtils;
+import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.media.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,10 +14,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-
-import com.cantv.liteplayer.core.focus.FocusScaleUtils;
-import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.media.R;
 
 /**
  * Created by liuhao on 16/7/14.

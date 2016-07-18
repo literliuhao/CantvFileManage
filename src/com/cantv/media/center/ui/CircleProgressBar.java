@@ -1,5 +1,7 @@
 package com.cantv.media.center.ui;
 
+import com.cantv.media.R;
+
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.TypeEvaluator;
@@ -14,8 +16,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
-
-import com.cantv.media.R;
 
 public class CircleProgressBar extends View {
 

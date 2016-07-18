@@ -1,9 +1,9 @@
 package com.cantv.media.center.utils;
 
+import com.cantv.media.center.app.MyApplication;
+
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.cantv.media.center.app.MyApplication;
 
 /**
  * Created by yibh on 2016/7/6.

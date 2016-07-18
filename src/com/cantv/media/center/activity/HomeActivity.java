@@ -1,5 +1,17 @@
 package com.cantv.media.center.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.cantv.liteplayer.core.focus.FocusScaleUtils;
+import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.media.R;
+import com.cantv.media.center.constants.FileCategory;
+import com.cantv.media.center.service.BootDialogService;
+import com.cantv.media.center.utils.MediaUtils;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -19,18 +31,6 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.cantv.liteplayer.core.focus.FocusScaleUtils;
-import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.media.R;
-import com.cantv.media.center.constants.FileCategory;
-import com.cantv.media.center.service.BootDialogService;
-import com.cantv.media.center.utils.MediaUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class HomeActivity extends Activity implements OnFocusChangeListener {
     private static final String TAG = "HomeActivity";

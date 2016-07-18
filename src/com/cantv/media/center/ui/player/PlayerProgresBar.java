@@ -1,5 +1,10 @@
 package com.cantv.media.center.ui.player;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
+import com.cantv.media.R;
+
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -14,11 +19,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-
-import com.cantv.media.R;
-
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 public class PlayerProgresBar extends View {
 

@@ -1,5 +1,13 @@
 package com.cantv.media.center.ui;
 
+import java.util.List;
+
+import com.cantv.media.R;
+import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnItemFocusChangeListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
@@ -10,14 +18,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.cantv.media.R;
-import com.cantv.media.center.data.MenuItem;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemFocusChangeListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
-
-import java.util.List;
 
 public class MenuDialog extends Dialog {
 

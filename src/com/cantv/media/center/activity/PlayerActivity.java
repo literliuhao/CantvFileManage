@@ -1,11 +1,8 @@
 package com.cantv.media.center.activity;
 
-import android.app.Activity;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.center.constants.PlayMode;
@@ -14,9 +11,12 @@ import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarContext;
 import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarListener;
 import com.cantv.media.center.utils.MediaUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import android.app.Activity;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.TextUtils;
 
 public abstract class PlayerActivity extends Activity implements PlayerCtrlBarContext, PlayerCtrlBarListener, OnCompletionListener, CoverFlowViewListener {
 

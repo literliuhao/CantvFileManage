@@ -1,5 +1,13 @@
 package com.cantv.media.center.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+import com.cantv.media.R;
+import com.cantv.media.center.adapter.MediaListAdapter;
+import com.cantv.media.center.data.Media;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,14 +17,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.cantv.media.R;
-import com.cantv.media.center.adapter.MediaListAdapter;
-import com.cantv.media.center.data.Media;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 
 public class ListViewActivity extends Activity {
     private static String TAG = "ListViewActivity";

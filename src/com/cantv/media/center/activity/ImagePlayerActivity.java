@@ -1,5 +1,20 @@
 package com.cantv.media.center.activity;
 
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import com.app.core.sys.MainThread;
+import com.app.core.utils.UiUtils;
+import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.media.R;
+import com.cantv.media.center.ui.ImageBrowser;
+import com.cantv.media.center.ui.ImageFrameView;
+import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
+import com.cantv.media.center.ui.MediaControllerBar;
+import com.cantv.media.center.utils.DateUtil;
+import com.cantv.media.center.utils.MediaUtils;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,21 +38,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.app.core.sys.MainThread;
-import com.app.core.utils.UiUtils;
-import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.media.R;
-import com.cantv.media.center.ui.ImageBrowser;
-import com.cantv.media.center.ui.ImageFrameView;
-import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
-import com.cantv.media.center.ui.MediaControllerBar;
-import com.cantv.media.center.utils.DateUtil;
-import com.cantv.media.center.utils.MediaUtils;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
 
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
     private int mCurImageIndex;

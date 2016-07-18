@@ -1,5 +1,7 @@
 package com.cantv.media.center.ui;
 
+import com.cantv.media.R;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -17,8 +19,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.cantv.media.R;
 
 @SuppressLint("NewApi")
 public class CustomListMenu extends Dialog {

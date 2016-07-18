@@ -2,22 +2,6 @@ package com.cantv.media.center.ui.player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.xml.datatype.Duration;
-
-import android.app.Activity;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnTimedTextListener;
-import android.media.TimedText;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnSeekCompleteListener;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Looper;
-import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.center.greendao.DaoOpenHelper;
@@ -26,6 +10,15 @@ import com.cantv.media.center.ui.player.PlayerController.CoverFlowViewListener;
 import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarContext;
 import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarListener;
 import com.cantv.media.center.utils.MediaUtils;
+
+import android.app.Activity;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnSeekCompleteListener;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener {
 

@@ -1,5 +1,24 @@
 package com.cantv.media.center.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.cantv.media.R;
+import com.cantv.media.center.activity.AudioPlayerActivity;
+import com.cantv.media.center.activity.ImagePlayerActivity;
+import com.cantv.media.center.activity.VideoPlayActicity;
+import com.cantv.media.center.constants.FileCategory;
+import com.cantv.media.center.constants.MediaFormat;
+import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.data.Audio;
+import com.cantv.media.center.data.Media;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,51 +29,46 @@ import android.os.Message;
 import android.provider.MediaStore.Files.FileColumns;
 import android.widget.Toast;
 
-import com.cantv.media.center.activity.AudioPlayerActivity;
-import com.cantv.media.center.activity.ImagePlayerActivity;
-import com.cantv.media.center.activity.VideoPlayActicity;
-import com.cantv.media.center.constants.FileCategory;
-import com.cantv.media.center.constants.MediaFormat;
-import com.cantv.media.center.constants.SourceType;
-import com.cantv.media.center.data.Audio;
-import com.cantv.media.center.data.Media;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 public class MediaUtils {
-    private static final String TAG = "MediaUtils";
+	private static final String TAG = "MediaUtils";
 
-    // public static String getUsbRootPath() {
-    // return "/storage/external_storage/udisk0/";
-    // }
-    private static List<String> usbList = new ArrayList<>();
-
-    public static String getLocalPath() {
-        return Environment.getExternalStorageDirectory().getPath();
+	// public static String getUsbRootPath() {
+	// return "/storage/external_storage/udisk0/";
+	// }
+	private static List<String> usbList = new ArrayList<>();
+	
+	
+	private static Map<String,Integer> mAduioIconMap=new HashMap<>();
+    static {
+        mAduioIconMap.put("ape",R.drawable.music_ape);
+        mAduioIconMap.put("mp3",R.drawable.music_mp3);
+        mAduioIconMap.put("ogg",R.drawable.music_ogg);
+        mAduioIconMap.put("wma",R.drawable.music_wma);
+        mAduioIconMap.put("wav",R.drawable.music_wav);
     }
+	
 
-    public static List<String> getUsbRootPaths() {
-        return usbList;
-    }
+	public static String getLocalPath() {
+		return Environment.getExternalStorageDirectory().getPath();
+	}
 
-    public static void addUsbRootPaths(String usbPath) {
-        if (!usbList.contains(usbPath)) {
-            usbList.add(usbPath);
-        }
-    }
+	public static List<String> getUsbRootPaths() {
+		return usbList;
+	}
 
-    public static void removeUsbRootPaths(String usbPath) {
-        if (usbList.contains(usbPath)) {
-            usbList.remove(usbPath);
-        }
-    }
+	public static void addUsbRootPaths(String usbPath){
+		if(!usbList.contains(usbPath)){
+			usbList.add(usbPath);
+		}
+	}
 
-    public static boolean isExistUSB() {
+	public static void removeUsbRootPaths(String usbPath){
+		if(usbList.contains(usbPath)){
+			usbList.remove(usbPath);
+		}
+	}
+
+	public static boolean isExistUSB() {
 //		usbList = runMount();
         if (usbList != null && usbList.size() > 0) {
             return true;
@@ -352,24 +366,35 @@ public class MediaUtils {
      * @param currIndex
      * @param sourceType
      */
-    public static void openMediaActivity(Context context, ArrayList<String> pathList, int currIndex, SourceType sourceType) {
+   public static void openMediaActivity(Context context,ArrayList<String > pathList,int currIndex,SourceType sourceType){
 
-        Intent intent = new Intent();
-        Class currClass = null;
-        if (sourceType == SourceType.MOIVE) {
-            currClass = VideoPlayActicity.class;
-        } else if (sourceType == SourceType.MUSIC) {
-            currClass = AudioPlayerActivity.class;
-        } else if (sourceType == SourceType.PICTURE) {
-            currClass = ImagePlayerActivity.class;
-        }
 
-        intent.setClass(context, currClass);
-        intent.putStringArrayListExtra("data_list", pathList);
-        intent.putExtra("data_index", currIndex);
-        context.startActivity(intent);
+       Intent intent = new Intent();
+       Class currClass= null;
+       if (sourceType==SourceType.MOIVE){
+           currClass= VideoPlayActicity.class;
+       }else if (sourceType==SourceType.MUSIC){
+    	   currClass= AudioPlayerActivity.class;
+       }else if (sourceType==SourceType.PICTURE){
+           currClass= ImagePlayerActivity.class;
+       }
 
-    }
+       intent.setClass(context, currClass);
+       intent.putStringArrayListExtra("data_list",pathList);
+       intent.putExtra("data_index", currIndex);
+       context.startActivity(intent);
 
+   }
+	
+   
+   /**
+    * 根据Audio文件的拓展名,得到对应图标的id
+    *
+    * @param extensinName
+    */
+   public static int getAudioIconFromExtensionName(String extensinName) {
+       return mAduioIconMap.get(extensinName);
+   }
+   
 
 }

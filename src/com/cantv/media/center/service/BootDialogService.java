@@ -1,5 +1,8 @@
 package com.cantv.media.center.service;
 
+import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.widgets.CustomDialog;
+
 import android.app.Dialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -10,9 +13,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.WindowManager;
-
-import com.cantv.media.center.utils.MediaUtils;
-import com.cantv.media.center.widgets.CustomDialog;
 
 /**
  * Created by liuhao on 16/7/14.
