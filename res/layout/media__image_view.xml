@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_24px"
             android:layout_gravity="center_horizontal"
-            android:text="实际尺寸"
+            android:text="等比全屏"
             android:textColor="@android:color/background_light"
             android:textSize="@dimen/fontsize_32px"/>
 		</LinearLayout>
@@ -183,7 +183,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/dimen_60px"
-                  android:layout_marginTop="@dimen/dimen_24px"
+                  android:layout_marginTop="@dimen/dimen_20px"
                   android:textColor="#7fffffff"
                   android:textSize="@dimen/fontsize_32px" />
 
@@ -192,7 +192,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/dimen_60px"
-                  android:layout_marginTop="@dimen/dimen_24px"
+                  android:layout_marginTop="@dimen/dimen_20px"
                   android:textColor="#7fffffff"
                   android:textSize="@dimen/fontsize_32px" />
 
@@ -202,11 +202,10 @@
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/dimen_60px"
                   android:layout_marginRight="@dimen/dimen_60px"
-                  android:layout_marginTop="@dimen/dimen_24px"
+                  android:layout_marginTop="@dimen/dimen_20px"
                   android:singleLine="true"
                   android:ellipsize="end"
                   android:textColor="#7fffffff"
                   android:textSize="@dimen/fontsize_32px" />
-          </LinearLayout>
-
+          	</LinearLayout>
 </RelativeLayout>

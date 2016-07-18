@@ -15,6 +15,7 @@
     <dimen name="dimen_18px">12dp</dimen>
     <dimen name="dimen_20px">13dp</dimen>
     <dimen name="dimen_21px">14dp</dimen>
+    <dimen name="dimen_22px">15dp</dimen>
     <dimen name="dimen_24px">16dp</dimen>
     <dimen name="dimen_26px">17dp</dimen>
     <dimen name="dimen_30px">20dp</dimen>

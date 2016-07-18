@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.provider.ContactsContract.DataUsageFeedback;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -99,7 +98,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			}
 		};
 	};
-
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -258,9 +257,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if(!mSizeType){
                     mSizeType = true;
                     mImageBrowser.onZoomIn();
+                    mTvSize.setText("实际尺寸");
                 }else{
                     mSizeType = false;
                     mImageBrowser.onZoomOut();
+                    mTvSize.setText("等比全屏");
                 }
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
@@ -559,7 +560,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
 	private void translateDown(View view) {
-		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.7f);
+		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f);
 		translateAnimation.setDuration(200);
 		translateAnimation.setFillAfter(true);
 		view.clearAnimation();
@@ -567,10 +568,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	}
 	
 	private void translateUp(View view) {
-		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0);
+		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0);
 		translateAnimation.setDuration(200);
 		translateAnimation.setFillAfter(true);
 		view.clearAnimation();
 		view.startAnimation(translateAnimation);
 	}
+	
 }
