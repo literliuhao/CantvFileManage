@@ -74,20 +74,6 @@
             </intent-filter>
         </activity>
 
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-
-            <data android:scheme="data" />
-        </intent-filter>
-        <intent-filter>
-            <action android:name="com.cantv.action.LOCAL_PLAYER" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-
-            <data android:scheme="file" />
-        </intent-filter>
 
         <activity
             android:name="com.cantv.media.center.activity.VideoPlayActicity"
