@@ -72,9 +72,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		if (mDataList == null || mDataList.size() == 0) {
 			return;
 		}
-		
-		
-		
 		acquireWakeLock();// 禁止屏保弹出
 		initView();
 		registerTimeReceiver();
@@ -223,22 +220,26 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		switch (keyCode) {
 
 		case KeyEvent.KEYCODE_MENU:
-
-			showMenuDialog();
-
+			if(mDataList != null && mDataList.size() != 0){
+				showMenuDialog();
+			}
 			break;
 
 		default:
 			break;
 		}
-		mCtrBar.onKeyDownEvent(keyCode,event);
+		if(mCtrBar != null){
+			mCtrBar.onKeyDownEvent(keyCode,event);
+		}
 		
 		return super.onKeyDown(keyCode, event);
 
 	}
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		mCtrBar.onKeyUpEvent(keyCode,event);
+		if(mCtrBar != null){
+			mCtrBar.onKeyUpEvent(keyCode,event);
+		}
 		return super.onKeyUp(keyCode, event);
 	}
 //	private void getAllVideo() {
@@ -379,13 +380,20 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 	@Override
 	public void onBackPressed() {
 		storeDuration();
-		mCtrBar.onBackPressed(this);
+		if(mCtrBar != null){
+			mCtrBar.onBackPressed(this);
+		}
+		super.onBackPressed();
 	}
 	
 	public void storeDuration(){
-		long position = getPlayerCurPosition();
+		if(mDataList == null || mCurPlayIndex >= mDataList.size()){
+			return;
+		}
+		
 		String path = mDataList.get(mCurPlayIndex);
 		
+		long position = getPlayerCurPosition();
 		if(mRecord == null){
 			List<VideoPlayer> list= DaoOpenHelper.getInstance(this).queryInfo(path);
 			if(list.size() == 0){

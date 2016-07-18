@@ -112,6 +112,9 @@ public class GridViewActivity extends Activity {
         if (null != deviceFlag) {
             mGridView.mDevecesFlag = deviceFlag;
         }
+        if(mGridView == null){
+        	return;
+        }
         mGridView.show();
         mContentView.removeAllViews();
         switch (SharedPreferenceUtil.getGridStyle()) {
@@ -172,6 +175,7 @@ public class GridViewActivity extends Activity {
         if ((null != childGridView) && (!childGridView.onBack())) {
             finish();
         } else {
+        	super.onBackPressed();
             return;
         }
     }

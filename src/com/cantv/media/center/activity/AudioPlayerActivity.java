@@ -231,6 +231,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.ib_play_pause:
+			if(mDataList == null || mDataList.size() == 0){
+				break;
+			}
 			onPlayerPlayOrPause();
 			if (isPlayerPaused()) {
 				if (mHandler != null) {

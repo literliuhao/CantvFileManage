@@ -175,6 +175,7 @@ public class MediaGridView extends CustomGridView {
             }
 
             FileUtil.sortList(result, FileComparator.SORT_TYPE_DEFAULT, true);
+            mCurrMediaList=result;
             mListAdapter.bindData(result);
             setAdapter(mListAdapter);
             if (result.size() == 0) {
@@ -290,8 +291,11 @@ public class MediaGridView extends CustomGridView {
     private void openMediaActivity(Media media) {
         String substring = media.mUri.substring(0, media.mUri.lastIndexOf("/"));
 
-        ArrayList<String> mediaPathList = FileUtil.getMediaPathList(substring,
-                media.mType);
+//        ArrayList<String> mediaPathList = FileUtil.getMediaPathList(substring,
+//                media.mType);
+        
+        ArrayList<String> mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
+        
         int indexFromList = FileUtil
                 .getIndexFromList(mediaPathList, media.mUri);
 
