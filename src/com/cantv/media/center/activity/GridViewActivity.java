@@ -60,7 +60,6 @@ public class GridViewActivity extends Activity {
         mTitleTV = (TextView) findViewById(R.id.title_textview);
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
         Intent intent = getIntent();
-        Uri uri = intent.getData();
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
@@ -69,14 +68,7 @@ public class GridViewActivity extends Activity {
         filter.addDataScheme("file");
         registerReceiver(mReceiver, filter);
 
-        String deviceFlag = getIntent().getStringExtra("toListFlag");
-
-        String type = null;
-        if (uri != null) {
-            type = uri.getHost();
-        } else {
-            type = intent.getStringExtra("type");
-        }
+        String type = intent.getStringExtra("type");
         if ("video".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_movie);
             mGridView = new MediaGridView(this, SourceType.MOIVE);
@@ -91,8 +83,7 @@ public class GridViewActivity extends Activity {
             isExternal = true;
         } else if ("app".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_app);
-            mGridView = new MediaGridView(this,
-                    SourceType.APP);
+            mGridView = new MediaGridView(this, SourceType.APP);
             isExternal = true;
         } else if ("local".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_file);
@@ -109,11 +100,8 @@ public class GridViewActivity extends Activity {
             mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
             isExternal = true;
         }
-        if (null != deviceFlag) {
-            mGridView.mDevecesFlag = deviceFlag;
-        }
-        if(mGridView == null){
-        	return;
+        if (mGridView == null) {
+            return;
         }
         mGridView.show();
         mContentView.removeAllViews();
@@ -170,12 +158,10 @@ public class GridViewActivity extends Activity {
     public void onBackPressed() {
         // MediaGridView childGridView = (MediaGridView)
         // mContentView.getFocusedChild();
-        MediaGridView childGridView = (MediaGridView) mContentView
-                .getChildAt(0);
+        MediaGridView childGridView = (MediaGridView) mContentView.getChildAt(0);
         if ((null != childGridView) && (!childGridView.onBack())) {
             finish();
         } else {
-        	super.onBackPressed();
             return;
         }
     }

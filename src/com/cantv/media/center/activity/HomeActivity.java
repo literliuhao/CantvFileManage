@@ -244,24 +244,18 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 				mExternalFL2.setVisibility(View.VISIBLE);
 				mExternalUIV1.setBackgroundResource(R.drawable.icon_u);
 				mExternalUIV2.setBackgroundResource(R.drawable.icon_u);
-				mExternalFreeTV1
-						.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
-				mExternalTotalTV1
-						.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
-				mExternalFreeTV2
-						.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
-				mExternalTotalTV2
-						.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
+				mExternalFreeTV1 .setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
+				mExternalTotalTV1 .setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+				mExternalFreeTV2 .setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
+				mExternalTotalTV2 .setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
 			} else {
 				mExternalFL.setVisibility(View.VISIBLE);
 				mExternalFL1.setVisibility(View.GONE);
 				mExternalFL2.setVisibility(View.GONE);
 				mExternalUIV.setBackgroundResource(R.drawable.icon_u);
 				if (num == 1) {
-					mExternalFreeTV
-							.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
-					mExternalTotalTV.setText(
-							getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+					mExternalFreeTV .setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
+					mExternalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
 				} else {
 					mExternalFreeTV.setText(getString(R.string.str_total) + num + getString(R.string.str_devicenum));
 					mExternalTotalTV.setVisibility(View.GONE);
@@ -296,12 +290,12 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 					}
 				}
 			});
-			mExternalIV.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					closeTimer();
-				}
-			});
+//			mExternalIV.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					closeTimer();
+//				}
+//			});
 		}
 	}
 
@@ -310,11 +304,12 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
 				// openTimer();
+				MediaUtils.addUsbRootPaths(intent.getData().getPath());
 				mUsbRootPaths = MediaUtils.getUsbRootPaths();
 				sendUSBRefreshMsg(true, mUsbRootPaths.size());
-			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
-					|| intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 				closeTimer();
+				MediaUtils.removeUsbRootPaths(intent.getData().getPath());
 				mUsbRootPaths = MediaUtils.getUsbRootPaths();
 				if (null != mUsbRootPaths && mUsbRootPaths.size() > 0) {
 					sendUSBRefreshMsg(true, mUsbRootPaths.size());
@@ -452,9 +447,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(mReceiver);
-		ActivityManager am = (ActivityManager) getSystemService(this.ACTIVITY_SERVICE);
-		am.killBackgroundProcesses(getPackageName());
-		// SecretCollector.get().unregeistToCollectorCore(this);
 	}
 
 	@Override

@@ -51,7 +51,6 @@ public class MediaGridView extends CustomGridView {
     private GridViewActivity mActivity;
     public int mSelectItemPosition;
     public List<Media> mCurrMediaList = new ArrayList<>(); // 记录当前的数据集合
-    public String mDevecesFlag = null; //用来标记是否进入外接设备列表
 
     public MediaGridView(Context context, SourceType sourceType) {
         super(context);
@@ -189,13 +188,14 @@ public class MediaGridView extends CustomGridView {
             //下面是进入根目录的几种情况,进入更深层的内容在点击事件那里
             try {
                 List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
-                if (null != mDevecesFlag) { //进入设备列表
+                //外接设备选择
+                if(MediaUtils.getUSBNum() > 1){
                     for (int i = 0; i < usbRootPaths.size(); i++) {
                         File file = new File(usbRootPaths.get(i));
                         Media fileInfo = FileUtil.getFileInfo(file, null, false);
                         mMediaes.add(fileInfo);
                     }
-                } else {
+                }else{
                     if (mSourceType == SourceType.LOCAL) {
                         mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
                     } else if (mSourceType == SourceType.DEVICE) {
