@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import android.content.Context;
@@ -21,6 +23,8 @@ import android.provider.MediaStore.Files.FileColumns;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.cantv.media.R;
 import com.cantv.media.center.activity.AudioPlayerActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.activity.MediaPlayerActivity;
@@ -38,6 +42,17 @@ public class MediaUtils {
 	// return "/storage/external_storage/udisk0/";
 	// }
 	private static List<String> usbList = new ArrayList<>();
+	
+	
+	private static Map<String,Integer> mAduioIconMap=new HashMap<>();
+    static {
+        mAduioIconMap.put("ape",R.drawable.music_ape);
+        mAduioIconMap.put("mp3",R.drawable.music_mp3);
+        mAduioIconMap.put("ogg",R.drawable.music_ogg);
+        mAduioIconMap.put("wma",R.drawable.music_wma);
+        mAduioIconMap.put("wav",R.drawable.music_wav);
+    }
+	
 
 	public static String getLocalPath() {
 		return Environment.getExternalStorageDirectory().getPath();
@@ -383,5 +398,15 @@ public class MediaUtils {
 
    }
 	
+   
+   /**
+    * 根据Audio文件的拓展名,得到对应图标的id
+    *
+    * @param extensinName
+    */
+   public static int getAudioIconFromExtensionName(String extensinName) {
+       return mAduioIconMap.get(extensinName);
+   }
+   
 
 }

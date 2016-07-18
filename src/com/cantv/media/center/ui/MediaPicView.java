@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import com.cantv.media.R;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
+import com.cantv.media.center.utils.FileUtil;
+import com.cantv.media.center.utils.MediaUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,7 +43,7 @@ public class MediaPicView extends PicView implements PicViewDecoder {
 			if (media.isCollection()) {
 				setDefaultPic(R.drawable.folder_wj);
 			} else {
-				setDefaultPic(R.drawable.folder_music);
+				setDefaultPic(MediaUtils.getAudioIconFromExtensionName(FileUtil.getExtFromFilename(media.mName)));
 			}
 		}else if (media.getSourceType() == SourceType.PICTURE) {
 			if (media.isCollection()) {

@@ -23,7 +23,7 @@ public class FileCategoryHelper {
 				"rmvb", "wmv", "rm", "m4v", "3gpp", "3g2", "3gpp2", "asf" },
 				TYPE_MOIVE);
         addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp", "wbmp"}, TYPE_PICTURE);
-        addItem(new String[]{"mp3", "wma", "wav"}, TYPE_MUSIC);
+        addItem(new String[]{"mp3", "wma", "wav","ogg","ape"}, TYPE_MUSIC);
         addItem(new String[]{"apk"}, TYPE_APP);
     }
 
