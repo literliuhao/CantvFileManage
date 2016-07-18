@@ -302,7 +302,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 } else {
                     startAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.play_stop);
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info33);
                 }
             }
         });
@@ -527,7 +527,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 } else {
                     startAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.play_stop);
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info33);
                 }
 
             }
