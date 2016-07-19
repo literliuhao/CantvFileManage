@@ -10,23 +10,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="50dp"
-        android:textSize="48px" />
+        android:layout_marginLeft="@dimen/dimen_75px"
+        android:layout_marginTop="@dimen/dimen_75px"
+        android:textSize="@dimen/fontsize_48px" />
 
     <TextView
         android:id="@+id/tv_definiton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_name"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="@dimen/dimen_75px"
         android:background="@drawable/rect_gray"
         android:gravity="center"
-        android:paddingBottom="3dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="3dp"
-        android:textSize="33px"
+        android:paddingBottom="@dimen/dimen_5px"
+        android:paddingLeft="@dimen/dimen_15px"
+        android:paddingRight="@dimen/dimen_15px"
+        android:paddingTop="@dimen/dimen_5px"
+        android:textSize="@dimen/fontsize_33px"
         android:visibility="invisible" />
 
     <TextView
@@ -34,16 +34,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="50dp"
-        android:textSize="48px" />
+        android:layout_marginRight="@dimen/dimen_75px"
+        android:layout_marginTop="@dimen/dimen_75px"
+        android:textSize="@dimen/fontsize_48px" />
 
     <LinearLayout
         android:id="@+id/rl_continue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="270dp"
+        android:layout_marginTop="@dimen/dimen_405px"
         android:visibility="invisible"
         android:orientation="vertical" >
 
@@ -57,31 +57,31 @@
             android:shadowDy="4"
             android:shadowRadius="10"
             android:textColor="#ffffff"
-            android:textSize="35sp" />
+            android:textSize="@dimen/fontsize_52px" />
 
         <LinearLayout
             android:id="@+id/ll_continue_tips"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/dimen_60px"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal" >
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="@dimen/dimen_53px"
+                android:layout_height="@dimen/dimen_53px"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/play_continue" 
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="@dimen/dimen_5px"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
+                android:layout_height="@dimen/dimen_53px"
                 android:layout_gravity="center_vertical"
                 android:text="按下键可以从头播放"
                 android:textColor="#eeffffff"
-                android:textSize="30sp" 
-                android:layout_marginLeft="10dp"
+                android:textSize="@dimen/fontsize_46px" 
+                android:layout_marginLeft="@dimen/dimen_15px"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -89,31 +89,31 @@
     <RelativeLayout
         android:id="@+id/rl_progress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dimen_171px"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100px" >
+        android:layout_marginBottom="@dimen/dimen_100px" >
 
         <ImageView
             android:id="@+id/iv_play"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:layout_marginLeft="128px"
+            android:layout_width="@dimen/dimen_100px"
+            android:layout_height="@dimen/dimen_100px"
+            android:layout_marginLeft="@dimen/dimen_128px"
             android:background="@drawable/play_stop" />
 
         <com.cantv.media.center.ui.player.PlayerProgresBar
             android:id="@+id/pb_progress"
-            android:layout_width="1515px"
-            android:layout_height="38px"
-            android:layout_marginLeft="50px"
-            android:layout_marginTop="30px"
+            android:layout_width="@dimen/dimen_1515px"
+            android:layout_height="@dimen/dimen_38px"
+            android:layout_marginLeft="@dimen/dimen_50px"
+            android:layout_marginTop="@dimen/dimen_30px"
             android:layout_toRightOf="@id/iv_play"
-            android:padding="10px"
+            android:padding="@dimen/dimen_10px"
             ppb:barColor="#99019dd4"
-            ppb:barhight="50dp"
-            ppb:barwidth="50dp"
+            ppb:barhight="@dimen/dimen_75px"
+            ppb:barwidth="@dimen/dimen_75px"
             ppb:bordercolor="#77999999"
             ppb:textcolor="#aaffffff"
-            ppb:textsize="18dp" />
+            ppb:textsize="@dimen/dimen_27px" />
 
         <TextView
             android:id="@+id/tv_menu"
@@ -121,18 +121,18 @@
             android:layout_height="wrap_content"
             android:layout_alignRight="@id/pb_progress"
             android:layout_below="@id/pb_progress"
-            android:layout_marginTop="32px"
+            android:layout_marginTop="@dimen/dimen_32px"
             android:text="@string/play_tips"
             android:textColor="#77ffffff"
-            android:textSize="32px" />
+            android:textSize="@dimen/fontsize_32px" />
 
         <ImageView
             android:id="@+id/iv_menu"
-            android:layout_width="42px"
-            android:layout_height="42px"
+            android:layout_width="@dimen/dimen_42px"
+            android:layout_height="@dimen/dimen_42px"
             android:layout_below="@id/pb_progress"
-            android:layout_marginRight="8px"
-            android:layout_marginTop="32px"
+            android:layout_marginRight="@dimen/dimen_8px"
+            android:layout_marginTop="@dimen/dimen_32px"
             android:layout_toLeftOf="@+id/tv_menu"
             android:background="@drawable/icon_menu1" />
     </RelativeLayout>
