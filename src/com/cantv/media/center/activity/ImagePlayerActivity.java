@@ -1,6 +1,8 @@
 package com.cantv.media.center.activity;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -20,8 +22,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.ExifInterface;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,7 +93,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private long mDurationTime;
     private boolean isFirst = true;
     private boolean isFirstFocus = true;
+    private boolean isFirstPlayMusic = true;
     private boolean mSizeType = false;
+    private MediaPlayer mMediaPlayer ;
+    private String mMusicPath ; 
+    private boolean isPause = false; 
+    private int PLAYING_STATUS;
+	private int STOP = 0;
+	private int PLAYING = 1;
+	private int PAUSE = 2;
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             int flag = msg.what;
@@ -106,7 +123,63 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.media__image_view);
-        mediaimagebar = (LinearLayout) findViewById(R.id.mediaimagebar);
+        initView();
+        showImage(indexOfDefaultPlay(), null);
+        initViewClickEvent();
+        mCurImageIndex = indexOfDefaultPlay();
+        autoRunnable();
+        toHideRunnable();
+        registerReceiver();
+    }
+
+	private void toHideRunnable() {
+		mToHideRunnable = new Runnable() {
+            @Override
+            public void run() {
+                toHideView();
+            }
+        };
+	}
+
+	private void autoRunnable() {
+		mAutoRunnable = new Runnable() {
+            public void run() {
+                int offset = mCurImageIndex + 1;
+                offset = (offset >= getData().size()) ? 0 : offset;
+                showImage(offset, null);
+                startAutoPlay();
+            }
+        };
+	}
+
+	private void registerReceiver() {
+		mimageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+                    if (getData() == null || getData().size() == 0) {
+                        return;
+                    }
+                    String sourcepath = getData().get(0);
+                    String targetpath = intent.getDataString();
+                    boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
+                    if (isequal) {
+                        ImagePlayerActivity.this.finish();
+                    }
+                }
+            }
+        };
+        IntentFilter usbFilter = new IntentFilter();
+        usbFilter.setPriority(1000);
+        usbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        usbFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
+        usbFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        usbFilter.addDataScheme("file");
+        mContext.registerReceiver(mimageReceiver, usbFilter);
+	}
+
+	private void initView() {
+		mediaimagebar = (LinearLayout) findViewById(R.id.mediaimagebar);
         mLayout = (LinearLayout) findViewById(R.id.media__image_info_total);
         mInfoName = (TextView) findViewById(R.id.media__image_info_name);
         mInfoSize = (TextView) findViewById(R.id.media__image_info_size);
@@ -131,48 +204,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mImageBrowser.setContentImageView(mFrameView);
         mImageBrowser.setBackgroundColor(Color.BLACK);
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus);
-        showImage(indexOfDefaultPlay(), null);
-        initViewClickEvent();
-        mCurImageIndex = indexOfDefaultPlay();
-        mAutoRunnable = new Runnable() {
-            public void run() {
-                int offset = mCurImageIndex + 1;
-                offset = (offset >= getData().size()) ? 0 : offset;
-                showImage(offset, null);
-                startAutoPlay();
-            }
-        };
-        mToHideRunnable = new Runnable() {
-            @Override
-            public void run() {
-                toHideView();
-            }
-        };
-        //toShowView();
-        mimageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                    if (getData() == null || getData().size() == 0) {
-                        return;
-                    }
-                    String sourcepath = getData().get(0);
-                    String targetpath = intent.getDataString();
-                    boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-                    if (isequal) {
-                        ImagePlayerActivity.this.finish();
-                    }
-                }
-            }
-        };
-        IntentFilter usbFilter = new IntentFilter();
-        usbFilter.setPriority(1000);
-        usbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        usbFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
-        usbFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        usbFilter.addDataScheme("file");
-        mContext.registerReceiver(mimageReceiver, usbFilter);
-    }
+	}
 
     @Override
     protected MediaControllerBar getMediaControllerBar() {
@@ -199,11 +231,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         String curFileUri = getData().get(mCurImageIndex);
         if (!mAutoPlay) {
             if (mCurImageIndex == 0 && data.size() > 1) {
-                //显示右面
                 mArrowRight.setVisibility(View.VISIBLE);
                 mArrowLeft.setVisibility(View.GONE);
             } else if (mCurImageIndex == data.size() - 1 && data.size() > 1) {
-                //显示左面
                 mArrowLeft.setVisibility(View.VISIBLE);
                 mArrowRight.setVisibility(View.GONE);
             } else if (mCurImageIndex > 0 && data.size() > 1 && mCurImageIndex < data.size() - 1) {
@@ -296,16 +326,26 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
                     return;
                 }
+                //添加音乐播放
                 if (mAutoPlay) {
                     stopAutoPlay();
+                    //stopMusic();
+                    pauseMusic();
                     Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     startAutoPlay();
+                    if(isFirstPlayMusic){
+                    	isFirstPlayMusic = false;
+                    	startMusic();
+                    }else{
+                    	resumeMusic();
+                    }
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.play_stop);
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info33);
                 }
             }
+
         });
         mAutoRunImageView.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -346,10 +386,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     nflag = true;
                 }
                 String curFileUri = getData().get(mCurImageIndex);
+
                 mInfoName.setText("图片名称：" + new File(curFileUri).getName());
                 mInfoSize.setText("图片大小：" + MediaUtils.fileLength(new File(curFileUri).length()));
-                mInfoTime.setText("上传时间：" + DateUtil.onDate2String(new Date(new File(curFileUri).lastModified())));
-                mInfoUrl.setText("图片路径：" + curFileUri);
+                imageSize(curFileUri);
+                mInfoTime.setText("修改时间：" + DateUtil.onDate2String(new Date(new File(curFileUri).lastModified()),"yyyy-MM-dd HH:mm"));
             }
         });
         mInfo.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -389,7 +430,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
         if (curIndex == size) {
             stopAutoPlay();
+            stopMusic();
             Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+            mAutoRunImageView.setImageResource(R.drawable.photo_info3);
             return;
         }
         if (mAutoPlay == false) {
@@ -510,28 +553,35 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             if (!mShowing) {
                 if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
                     stopAutoPlay();
+                    stopMusic();
                     Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                     return true;
                 }
+               /* if (keyCode == event.KEYCODE_DPAD_CENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                	stopAutoPlay();
+                    Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+                    return true;
+                }*/
             }
         }
 
-        if (keyCode == event.KEYCODE_DPAD_CENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+        /*if (keyCode == event.KEYCODE_DPAD_CENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (!mShowing) {
                 if (mAutoPlay) {
-                    stopAutoPlay();
-                    Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+                    //stopAutoPlay();
+                    //Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
+                    //mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     startAutoPlay();
                     Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.play_stop);
+                    mAutoRunImageView.setImageResource(R.drawable.photo_info33);
                 }
 
             }
             return true;
-        }
+        }*/
         return super.onKeyDown(keyCode, event);
     }
 
@@ -540,6 +590,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onDestroy();
         if (mAutoPlay) {
             stopAutoPlay();
+            stopMusic();
         }
         unregisterReceiver(mimageReceiver);
     }
@@ -573,5 +624,85 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         view.clearAnimation();
         view.startAnimation(translateAnimation);
     }
+    
+    //停止背景音乐播放
+    private void stopMusic() {
+		stop();
+		isFirstPlayMusic = true;
+		Log.i("shen", "停止播放音乐!");
+	}
+    
+    //开始背景音乐播放
+	private void startMusic() {
+		play();
+		Log.i("shen", "开始播放音乐!");
+	}
+	
+	//暂停音乐
+	private void pauseMusic() {
+		pause();
+		Log.i("shen", "暂停音乐!");
+	}
+	//播放音乐
+	private void resumeMusic() {
+		resume();
+		Log.i("shen", "继续播放音乐!");
+	}
+	
+	private void play() {
+		try {
+			mMediaPlayer = new MediaPlayer();
+			mMediaPlayer.reset();
+			AssetManager assetManager = mContext.getAssets();
+			AssetFileDescriptor fileDescriptor = assetManager.openFd("Monody.mp3");
+			mMediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(),fileDescriptor.getStartOffset(),fileDescriptor.getLength());
+			mMediaPlayer.prepare();
+			mMediaPlayer.start();
+			mMediaPlayer.setLooping(true);
+			mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+				
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					mMediaPlayer.start();
+					
+				}
+			});
+			PLAYING_STATUS = PLAYING;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
+	private void pause() {
+		if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+			mMediaPlayer.pause();
+			PLAYING_STATUS = PAUSE;
+		}
+	}
+
+	private void resume() {
+		if (mMediaPlayer != null && PLAYING_STATUS == PAUSE) {
+			mMediaPlayer.start();
+			PLAYING_STATUS = PLAYING;
+		}
+	}
+
+	private void stop() {
+		if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+			mMediaPlayer.stop();
+			mMediaPlayer.release();
+			mMediaPlayer = null;
+			PLAYING_STATUS = STOP;
+		}
+	}
+
+	private void imageSize(String url){
+		
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		Bitmap bmp = BitmapFactory.decodeFile(url, options);
+		int outHeight = options.outHeight;
+		int outWidth = options.outWidth;
+		mInfoUrl.setText("图片尺寸：" + outWidth+"*"+outHeight);
+	}
 }

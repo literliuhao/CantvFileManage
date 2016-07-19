@@ -188,7 +188,7 @@
                   android:textSize="@dimen/fontsize_32px" />
 
               <TextView
-                  android:id="@+id/media__image_info_time"
+                  android:id="@+id/media__image_info_url"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/dimen_60px"
@@ -197,14 +197,14 @@
                   android:textSize="@dimen/fontsize_32px" />
 
               <TextView
-                  android:id="@+id/media__image_info_url"
+                  android:id="@+id/media__image_info_time"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/dimen_60px"
                   android:layout_marginRight="@dimen/dimen_60px"
                   android:layout_marginTop="@dimen/dimen_20px"
                   android:singleLine="true"
-                  android:ellipsize="end"
+                  android:ellipsize="marquee"
                   android:textColor="#7fffffff"
                   android:textSize="@dimen/fontsize_32px" />
           	</LinearLayout>
