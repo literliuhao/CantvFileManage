@@ -1,5 +1,4 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
     <style name="media_app_theme">
         <item name="android:windowBackground">@null</item>
         <item name="android:windowNoTitle">true</item>
@@ -13,9 +12,9 @@
         <item name="android:windowNoTitle">true</item> <!-- 无标题 -->
         <item name="android:background">@color/transparent</item> <!-- 背景透明 -->
         <item name="android:backgroundDimEnabled">false</item> <!-- 模糊 -->
-
     </style>
-        <style name="general__shared__full_screen_dialog">
+
+    <style name="general__shared__full_screen_dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -26,17 +25,18 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
-     <style name="general__shared__full_screen_dialog_animation" mce_bogus="1" parent="android:Animation">
+
+    <style name="general__shared__full_screen_dialog_animation" mce_bogus="1" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/general__shared__scale_center_in</item>
         <item name="android:windowExitAnimation">@anim/general__shared__scale_center_out</item>
     </style>
-    
-     <style name="animRightIn" parent="@android:style/Animation">
+
+    <style name="animRightIn" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@anim/dialog_right_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_right_out</item>
     </style>
 
-     <style name="dialog_menu" parent="android:Theme.Dialog">
+    <style name="dialog_menu" parent="android:Theme.Dialog">
         <item name="android:windowAnimationStyle">@style/animRightIn</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
@@ -46,11 +46,10 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/transparent</item>
     </style>
-    
+
     <style name="dialog_transparent" parent="android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
-    
 </resources>

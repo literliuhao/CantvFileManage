@@ -1,50 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/imageview_local"
-        android:background="@drawable/bj_07"
-        android:focusable="true"
-    	android:clickable="true"               
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/dimen_15px"
         android:layout_width="@dimen/px360"
-        android:layout_height="@dimen/px248" />
+        android:layout_height="@dimen/px240"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/px16"
+        android:background="@drawable/bj_07"
+        android:clickable="true"
+        android:focusable="true"/>
+
     <ImageView
-        android:background="@drawable/icon_tv"
-        android:layout_marginLeft="@dimen/px16"
-		android:layout_marginTop="@dimen/px54"
         android:layout_width="@dimen/px112"
-        android:layout_height="@dimen/px112" />
+        android:layout_height="@dimen/px112"
+        android:layout_marginLeft="@dimen/px40"
+        android:layout_marginTop="@dimen/px58"
+        android:background="@drawable/icon_tv"/>
+
     <TextView
         android:id="@+id/textview_internal_lable"
-        android:layout_marginLeft="@dimen/px144"
-        android:layout_marginTop="@dimen/px74"
-        android:gravity="center_vertical|left"
-        android:textSize="@dimen/px36"
-        android:textColor="@color/per80_white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/str_local" />
+        android:layout_marginLeft="@dimen/px168"
+        android:layout_marginTop="@dimen/px79"
+        android:gravity="center_vertical|left"
+        android:text="@string/str_local"
+        android:textColor="@color/per80_white"
+        android:textSize="@dimen/px36"/>
+
     <TextView
         android:id="@+id/textview_localdiskfree"
-        android:layout_marginLeft="@dimen/px144"
-        android:layout_marginTop="@dimen/px126"
-        android:gravity="center_vertical|left"
-        android:textSize="@dimen/px28"
-        android:textColor="@color/per50_white"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/px168"
+        android:layout_marginTop="@dimen/px131"
+        android:gravity="center_vertical|left"
+        android:textColor="@color/per50_white"
+        android:textSize="@dimen/px28"/>
+
     <TextView
         android:id="@+id/textview_localdisktotal"
-        android:layout_marginLeft="@dimen/px144"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/px168"
         android:layout_marginTop="@dimen/px162"
         android:gravity="center_vertical|left"
-        android:textSize="@dimen/px28"
         android:textColor="@color/per50_white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textSize="@dimen/px28"/>
 </FrameLayout>

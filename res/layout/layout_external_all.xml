@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_external_all"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:visibility="visible">
+             android:id="@+id/layout_external_all"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:visibility="visible">
 
     <ImageView
         android:id="@+id/imageview_external"
-        android:layout_width="@dimen/px742"
-        android:layout_height="@dimen/px248"
+        android:layout_width="@dimen/px736"
+        android:layout_height="@dimen/px240"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/dimen_15px"
+        android:layout_margin="@dimen/px16"
+        android:background="@drawable/bj_06"
         android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/bj_06"/>
+        android:focusable="true"/>
 
     <ImageView
         android:id="@+id/imageview_external_u"
         android:layout_width="@dimen/px112"
         android:layout_height="@dimen/px112"
-        android:layout_marginLeft="@dimen/px196"
-        android:layout_marginTop="@dimen/px54"
-        android:background="@drawable/icon_nou" />
+        android:layout_marginLeft="@dimen/px205"
+        android:layout_marginTop="@dimen/px55"
+        android:background="@drawable/icon_nou"/>
 
     <TextView
         android:id="@+id/textview_external_lable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px324"
-        android:layout_marginTop="@dimen/px74"
+        android:layout_marginTop="@dimen/px75"
         android:text="@string/str_external"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/px36" />
+        android:textSize="@dimen/px36"/>
 
     <TextView
         android:id="@+id/textview_external_free"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px324"
-        android:layout_marginTop="@dimen/px126"
+        android:layout_marginTop="@dimen/px123"
         android:gravity="center_vertical|left"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/px28" />
+        android:textSize="@dimen/px28"/>
 
     <TextView
         android:id="@+id/textview_external_total"
@@ -51,5 +51,5 @@
         android:layout_marginTop="@dimen/px162"
         android:gravity="center_vertical|left"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/px28" />
+        android:textSize="@dimen/px28"/>
 </FrameLayout>

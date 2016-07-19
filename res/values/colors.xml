@@ -23,8 +23,8 @@
     <color name="per80_blue_00b7ee">#CC00B7EE</color>
     <color name="per50_blue_00b7ee">#8000B7EE</color>
     <color name="yellow_fdf352">#FDF352</color>
-    
-     <!-- 菜单对话框 -->
-	 <color name="menu_bg">#E6111111</color>
-	 <color name="submenu_bg">#CC111111</color>
+
+    <!-- 菜单对话框 -->
+    <color name="menu_bg">#E6111111</color>
+    <color name="submenu_bg">#CC111111</color>
 </resources>
