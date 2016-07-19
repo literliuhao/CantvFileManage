@@ -497,7 +497,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		toFlyView(0, 0, 1, 0, true);
 		if (isFirstFocus) {
 			isFirstFocus = false;
-			mFocusUtils.setFocusLayout(mRotation, true, (float) 0.9);
+			mFocusUtils.setFocusLayout(mRotation, true, (float) 1.2);
 		}
 
 	}
