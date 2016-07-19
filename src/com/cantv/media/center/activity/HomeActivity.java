@@ -96,7 +96,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mAppTV = (TextView) findViewById(R.id.textview_app);
         mLocalFreeTV = (TextView) findViewById(R.id.textview_localdiskfree);
         mLocalTotalTV = (TextView) findViewById(R.id.textview_localdisktotal);
-        mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus);
+        mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
         initUSB();
         mVideoIV.setOnFocusChangeListener(this);
@@ -262,7 +262,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if (hasFocus) {
-                            mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.04f);
+                            mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.06f);
                             mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.90F);
                         } else {
                             mFocusScaleUtils.scaleToNormal(v);
@@ -281,7 +281,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
-                        mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.04f);
+                        mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.06f);
                         mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.90F);
                     } else {
                         mFocusScaleUtils.scaleToNormal(v);
@@ -462,7 +462,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             mFocusScaleUtils.scaleToLarge(v);
-            mFocusUtils.startMoveFocus(v, true, 0.92F);
+            mFocusUtils.startMoveFocus(v, true, 0.93F);
         } else {
             mFocusScaleUtils.scaleToNormal(v);
         }

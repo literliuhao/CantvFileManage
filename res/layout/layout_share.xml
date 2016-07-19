@@ -6,9 +6,9 @@
     <ImageView
         android:id="@+id/imageview_share"
         android:layout_width="@dimen/px360"
-        android:layout_height="@dimen/px248"
+        android:layout_height="@dimen/px240"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/dimen_15px"
+        android:layout_margin="@dimen/px16"
         android:background="@drawable/bj_04"
         android:clickable="true"
         android:focusable="true" />
@@ -16,7 +16,7 @@
     <ImageView
         android:layout_width="@dimen/px112"
         android:layout_height="@dimen/px112"
-        android:layout_marginLeft="@dimen/px16"
+        android:layout_marginLeft="@dimen/px33"
         android:layout_marginTop="@dimen/px54"
         android:background="@drawable/icon_share" />
 
@@ -24,7 +24,7 @@
         android:id="@+id/textview_share_lable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/px144"
+        android:layout_marginLeft="@dimen/px168"
         android:layout_marginTop="@dimen/px74"
         android:gravity="center_vertical|left"
         android:text="@string/str_share"
@@ -35,7 +35,7 @@
         android:id="@+id/textview_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/px144"
+        android:layout_marginLeft="@dimen/px168"
         android:layout_marginTop="@dimen/px126"
         android:gravity="center_vertical|left"
         android:text="@string/str_noshare"
