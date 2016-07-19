@@ -5,10 +5,10 @@
 
     <ImageView
         android:id="@+id/dialog_audio"
-        android:layout_width="@dimen/px160"
-        android:layout_height="@dimen/px200"
+        android:layout_width="@dimen/px190"
+        android:layout_height="@dimen/px300"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/dimen_15px"
+        android:layout_margin="@dimen/px10"
         android:background="@drawable/bj_03"
         android:clickable="true"
         android:focusable="true" />
@@ -17,14 +17,14 @@
         android:layout_width="@dimen/px80"
         android:layout_height="@dimen/px80"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/px45"
+        android:layout_marginTop="@dimen/px76"
         android:background="@drawable/popup_music" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/px155"
+        android:layout_marginTop="@dimen/px186"
         android:text="@string/str_music"
         android:textColor="@color/per80_white"
         android:textSize="@dimen/px24" />

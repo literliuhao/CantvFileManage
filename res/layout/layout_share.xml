@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/imageview_share"
@@ -11,14 +11,14 @@
         android:layout_margin="@dimen/px16"
         android:background="@drawable/bj_04"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"/>
 
     <ImageView
-        android:layout_width="@dimen/px112"
-        android:layout_height="@dimen/px112"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px33"
-        android:layout_marginTop="@dimen/px54"
-        android:background="@drawable/icon_share" />
+        android:layout_marginTop="@dimen/px60"
+        android:background="@drawable/icon_share"/>
 
     <TextView
         android:id="@+id/textview_share_lable"
@@ -29,7 +29,7 @@
         android:gravity="center_vertical|left"
         android:text="@string/str_share"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/px36" />
+        android:textSize="@dimen/px36"/>
 
     <TextView
         android:id="@+id/textview_share"
@@ -40,5 +40,5 @@
         android:gravity="center_vertical|left"
         android:text="@string/str_noshare"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/px28" />
+        android:textSize="@dimen/px28"/>
 </FrameLayout>
