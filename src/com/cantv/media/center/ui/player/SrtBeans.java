@@ -130,7 +130,6 @@ public class SrtBeans implements Comparable<Long> {
 		return false;
 	}
 	
-	
 	/**
 	 * 判断当前字幕是超过了某个时间点
 	 * 
@@ -166,7 +165,6 @@ public class SrtBeans implements Comparable<Long> {
 		}
 		return false;
 	}
-	
 	public String getSrt() {
 		if (!srtInitialized) {
 			StringBuilder sb = new StringBuilder();

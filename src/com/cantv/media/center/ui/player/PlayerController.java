@@ -396,6 +396,7 @@ public class PlayerController extends RelativeLayout {
 		}
 	}
 
+<<<<<<< HEAD
 //	static class SRT extends HandlerThread {
 //
 //		private Context mContext;
@@ -412,5 +413,23 @@ public class PlayerController extends RelativeLayout {
 //			((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
 //		}
 //	}
+=======
+	static class SRT extends HandlerThread {
+
+		private Context mContext;
+		private PlayerCtrlBarContext mCtrlBarContext;
+
+		public SRT(String name, int priority, Context mContext, PlayerCtrlBarContext mCtrlBarContext) {
+			super(name, priority);
+			this.mContext = mContext;
+			this.mCtrlBarContext = mCtrlBarContext;
+		}
+
+		@Override
+		public void run() {
+			((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
+		}
+	}
+>>>>>>> f2c01a6... 调整界面
 
 }
