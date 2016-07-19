@@ -434,12 +434,12 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
         if (position >= mMenuContainer.getChildCount()) {
             StringBuilder sb = new StringBuilder("Fail to scrollMenu2Posi. [There are total ").append(mMenuContainer.getChildCount()).append(" child in menu, but your choice of position is ").append(position).append("]");
             Log.w(TAG, sb.toString());
-            return;
+            return; 
         }
         final View child = mMenuContainer.getChildAt(position);
         if (!isViewVisible(mMenuScrollView, child)) {
             mMenuScrollView.smoothScrollTo(0, child.getTop());
-        }
+        } 
     }
 
     public void focusMenuItem(int posi) {
@@ -451,7 +451,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
         int mPosi = 0;
         if (posi > 0 && posi < childCount) {
             mPosi = posi;
-        }
+        } 
         View child = mMenuContainer.getChildAt(mPosi);
         if (child.isEnabled() && child.isFocusable()) {
             child.requestFocus();
