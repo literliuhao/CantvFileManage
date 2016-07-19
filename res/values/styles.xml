@@ -2,7 +2,6 @@
     <style name="media_app_theme">
         <item name="android:windowBackground">@null</item>
         <item name="android:windowNoTitle">true</item>
-
     </style>
 
     <style name="floatdialog" parent="@android:style/Theme.Dialog">
@@ -35,6 +34,10 @@
         <item name="android:windowEnterAnimation">@anim/dialog_right_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_right_out</item>
     </style>
+    <style name="animFadeIn" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
 
     <style name="dialog_menu" parent="android:Theme.Dialog">
         <item name="android:windowAnimationStyle">@style/animRightIn</item>
@@ -57,4 +60,12 @@
         <item name="android:textColor">@color/per80_white</item>
     </style>
     
+    <style name="dialog_device_share" parent="dialog_menu">
+        <item name="android:windowAnimationStyle">@style/animFadeIn</item>
+    </style>
+
+    <style name="cb_show_pwd" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/selector_bg_checkbox</item>
+    </style>
+
 </resources>

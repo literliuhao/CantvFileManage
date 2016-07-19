@@ -199,6 +199,15 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 startActivity(intent);
             }
         });
+        mShareIV.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				closeTimer();
+                Intent intent = new Intent(mContext, DeviceShareActivity.class);
+                startActivity(intent);
+			}
+		});
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
