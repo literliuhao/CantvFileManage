@@ -37,7 +37,7 @@ public class CustomDialog extends Dialog {
 
         public Builder(Context context) {
             this.mContext = context;
-            mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
+            mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.06f, null, null);
         }
 
         /**
@@ -48,10 +48,8 @@ public class CustomDialog extends Dialog {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final CustomDialog dialog = new CustomDialog(mContext, R.style.dialog_transparent);
             View layout = inflater.inflate(R.layout.dialog_mounted, null);
-            ImageView ivback = (ImageView) layout.findViewById(R.id.iv_back);
-            ivback.setBackgroundResource(R.drawable.home_devices_background);
             dialog.addContentView(layout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            final FocusUtils focusUtils = new FocusUtils(mContext, layout, R.drawable.focus);
+            final FocusUtils focusUtils = new FocusUtils(mContext, layout, R.drawable.image_focus);
             ImageView dialogImage = (ImageView) layout.findViewById(R.id.dialog_image);
             dialogImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,7 +111,7 @@ public class CustomDialog extends Dialog {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
                         mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, true, 0.85f);
+                        focusUtils.startMoveFocus(v, true, 0.90f);
                     } else {
                         mFocusScaleUtils.scaleToNormal(v);
                     }
@@ -124,7 +122,7 @@ public class CustomDialog extends Dialog {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
                         mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, true, 0.85f);
+                        focusUtils.startMoveFocus(v, true, 0.90f);
                     } else {
                         mFocusScaleUtils.scaleToNormal(v);
                     }
@@ -135,7 +133,7 @@ public class CustomDialog extends Dialog {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
                         mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, true, 0.85f);
+                        focusUtils.startMoveFocus(v, true, 0.90f);
                     } else {
                         mFocusScaleUtils.scaleToNormal(v);
                     }
@@ -146,7 +144,7 @@ public class CustomDialog extends Dialog {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
                         mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, true, 0.85f);
+                        focusUtils.startMoveFocus(v, true, 0.90f);
                     } else {
                         mFocusScaleUtils.scaleToNormal(v);
                     }

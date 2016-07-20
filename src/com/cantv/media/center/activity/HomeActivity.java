@@ -107,9 +107,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mExternalIV1.setOnFocusChangeListener(this);
         mExternalIV2.setOnFocusChangeListener(this);
         mLocalIV.setOnFocusChangeListener(this);
-        // mExternalFL.setOnFocusChangeListener(this);
-        // mExternalFL1.setOnFocusChangeListener(this);
-        // mExternalFL2.setOnFocusChangeListener(this);
+//        mExternalFL.setOnFocusChangeListener(this);
+//        mExternalFL1.setOnFocusChangeListener(this);
+//        mExternalFL2.setOnFocusChangeListener(this);
         mShareIV.setOnFocusChangeListener(this);
         mVideoIV.setOnClickListener(new OnClickListener() {
             @Override
@@ -258,17 +258,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                     mExternalFreeTV.setText(getString(R.string.str_total) + num + getString(R.string.str_devicenum));
                     mExternalTotalTV.setVisibility(View.GONE);
                 }
-                mExternalIV.setOnFocusChangeListener(new OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus) {
-                            mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.06f);
-                            mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.90F);
-                        } else {
-                            mFocusScaleUtils.scaleToNormal(v);
-                        }
-                    }
-                });
+
             }
         } else {
             mExternalFL.setVisibility(View.VISIBLE);
@@ -277,23 +267,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             mExternalTotalTV.setVisibility(View.GONE);
             mExternalFreeTV.setText(R.string.str_nodev);
             mExternalUIV.setBackgroundResource(R.drawable.icon_nou);
-            mExternalIV.setOnFocusChangeListener(new OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.06f);
-                        mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.90F);
-                    } else {
-                        mFocusScaleUtils.scaleToNormal(v);
-                    }
-                }
-            });
-//			mExternalIV.setOnClickListener(new OnClickListener() {
-//				@Override
-//				public void onClick(View v) {
-//					closeTimer();
-//				}
-//			});
         }
     }
 
@@ -461,8 +434,16 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            mFocusScaleUtils.scaleToLarge(v);
-            mFocusUtils.startMoveFocus(v, true, 0.93F);
+            if (v.getId() == mExternalIV.getId()) {
+                mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.06f);
+                mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.91F);
+            } else if(v.getId() == mExternalIV1.getId() || v.getId() == mExternalIV2.getId() || v.getId() == mLocalIV.getId()|| v.getId() == mShareIV.getId()){
+                mFocusScaleUtils.scaleToLargeWH(v, 1.03F, 1.06f);
+                mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.91F);
+            }else {
+                mFocusScaleUtils.scaleToLarge(v);
+                mFocusUtils.startMoveFocus(v, true, 0.93F);
+            }
         } else {
             mFocusScaleUtils.scaleToNormal(v);
         }

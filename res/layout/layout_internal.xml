@@ -15,10 +15,10 @@
         android:focusable="true"/>
 
     <ImageView
-        android:layout_width="@dimen/px112"
-        android:layout_height="@dimen/px112"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px40"
-        android:layout_marginTop="@dimen/px58"
+        android:layout_marginTop="@dimen/px60"
         android:background="@drawable/icon_tv"/>
 
     <TextView

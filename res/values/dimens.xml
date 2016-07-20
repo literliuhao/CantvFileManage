@@ -2108,6 +2108,7 @@
     <dimen name="dimen_f65px">-43dp</dimen>
     <dimen name="dimen_1px">1dp</dimen>
     <dimen name="dimen_3px">2dp</dimen>
+    <dimen name="dimen_5px">3dp</dimen>
     <dimen name="dimen_7px">5dp</dimen>
     <dimen name="dimen_8px">6dp</dimen>
     <dimen name="dimen_9px">6dp</dimen>
@@ -2121,10 +2122,13 @@
     <dimen name="dimen_22px">15dp</dimen>
     <dimen name="dimen_24px">16dp</dimen>
     <dimen name="dimen_26px">17dp</dimen>
+    <dimen name="dimen_27px">17.5dp</dimen>
+    <dimen name="dimen_28px">18dp</dimen>
     <dimen name="dimen_30px">20dp</dimen>
     <dimen name="dimen_32px">21dp</dimen>
     <dimen name="dimen_34px">23dp</dimen>
     <dimen name="dimen_36px">24dp</dimen>
+    <dimen name="dimen_38px">25dp</dimen>
     <dimen name="dimen_39px">26dp</dimen>
     <dimen name="dimen_40px">27dp</dimen>
     <dimen name="dimen_42px">28dp</dimen>
@@ -2137,6 +2141,7 @@
     <dimen name="dimen_66px">44dp</dimen>
     <dimen name="dimen_70px">47dp</dimen>
     <dimen name="dimen_72px">48dp</dimen>
+    <dimen name="dimen_75px">50dp</dimen>
     <dimen name="dimen_76px">51dp</dimen>
     <dimen name="dimen_80px">53dp</dimen>
     <dimen name="dimen_90px">60dp</dimen>
@@ -2178,6 +2183,7 @@
     <dimen name="dimen_380px">254dp</dimen>
     <dimen name="dimen_390px">260dp</dimen>
     <dimen name="dimen_400px">267dp</dimen>
+    <dimen name="dimen_405px">270dp</dimen>
     <dimen name="dimen_410px">273dp</dimen>
     <dimen name="dimen_430px">287dp</dimen>
     <dimen name="dimen_460px">307dp</dimen>
@@ -2194,6 +2200,8 @@
     <dimen name="dimen_1055px">703dp</dimen>
     <dimen name="dimen_1160px">773dp</dimen>
     <dimen name="dimen_1200px">800dp</dimen>
+    <dimen name="dimen_1515px">1010dp</dimen>
+    
 
     <dimen name="fontsize_21px">14sp</dimen>
     <dimen name="fontsize_24px">16sp</dimen>
