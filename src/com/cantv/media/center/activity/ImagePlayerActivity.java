@@ -287,7 +287,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mSize.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// Toast.makeText(getApplicationContext(), "缩放", Toast.LENGTH_SHORT).show();
 				if (!mSizeType) {
 					mSizeType = true;
 					mImageBrowser.onZoomIn();
@@ -329,10 +328,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 					Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
 					return;
 				}
-				// 添加音乐播放
+				
 				if (mAutoPlay) {
 					stopAutoPlay();
-					// stopMusic();
 					pauseMusic();
 					Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
 					mAutoRunImageView.setImageResource(R.drawable.photo_info3);
@@ -628,29 +626,21 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		view.startAnimation(translateAnimation);
 	}
 
-	// 停止背景音乐播放
 	private void stopMusic() {
 		stop();
 		isFirstPlayMusic = true;
-		Log.i("shen", "停止播放音乐!");
 	}
 
-	// 开始背景音乐播放
 	private void startMusic() {
 		play();
-		Log.i("shen", "开始播放音乐!");
 	}
 
-	// 暂停音乐
 	private void pauseMusic() {
 		pause();
-		Log.i("shen", "暂停音乐!");
 	}
 
-	// 播放音乐
 	private void resumeMusic() {
 		resume();
-		Log.i("shen", "继续播放音乐!");
 	}
 
 	private void play() {
