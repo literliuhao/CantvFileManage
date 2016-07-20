@@ -591,6 +591,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			stopAutoPlay();
 			stopMusic();
 		}
+		mHandler.removeCallbacksAndMessages(null);
 		unregisterReceiver(mimageReceiver);
 	}
 
