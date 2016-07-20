@@ -51,13 +51,27 @@ public class GridViewActivity extends Activity {
     private int mSelectedMenuPosi;
     private int mDeleteItem;
     public boolean isExternal; // 记录当前是否处于外接设备,true:处于外接设备(通过USB接口接入)
-
+    public TextView mFocusName; //选中显示的名称
+    public TextView mRTCountView; //显示数量和当前选中position
+    public View mBg_view; //上部阴影
+    public int mCurrGridStyle; //记录当前是什么排列方式
+    
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gridview);
         mTitleTV = (TextView) findViewById(R.id.title_textview);
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
+        
+        mBg_view = findViewById(R.id.bg_view);
+
+        mCurrGridStyle=SharedPreferenceUtil.getGridStyle();
+
+        mFocusName = (TextView) findViewById(R.id.focusview_name);
+        mRTCountView = (TextView) findViewById(R.id.file_count);
+        
+        
         Intent intent = getIntent();
 
         IntentFilter filter = new IntentFilter();
@@ -113,6 +127,14 @@ public class GridViewActivity extends Activity {
                 break;
         }
         mContentView.addView(mGridView);
+
+        mGridView.setOnFocusChangedListener(new MediaGridView.OnFocusChangedListener() {
+            @Override
+            public void focusPosition(Media media, int position) {
+                mFocusName.setText(media.mName);
+
+            }
+        });
     }
 
     @Override
@@ -281,6 +303,7 @@ public class GridViewActivity extends Activity {
                 setGridStyle(MediaOrientation.THUMBNAIL);
                 SharedPreferenceUtil.setGridStyle(1);
             }
+            mCurrGridStyle=position;
         }
 
         View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
