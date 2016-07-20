@@ -175,11 +175,9 @@ public class MediaListItemView extends MediaItemView {
                 mBgView.setDefaultPic(apkIcon);
                 break;
             case FOLDER:
-                mBgView.setMedia(media);
                 mBgView.setDefaultPic(R.drawable.folder_wj);
                 break;
             case UNKNOW:
-                mBgView.setMedia(media);
                 mBgView.setDefaultPic(R.drawable.ic_other_filetype);
             default:
                 break;

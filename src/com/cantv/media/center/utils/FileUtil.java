@@ -116,9 +116,7 @@ public class FileUtil {
         } else {
             fileBean = new Media(fileType, file.getAbsolutePath());
         }
-
         String path = file.getPath();
-        // File file1 = new File(path);
         fileBean.canRead = file.canRead();
         fileBean.canWrite = file.canWrite();
         fileBean.isHidden = file.isHidden();
@@ -126,34 +124,7 @@ public class FileUtil {
         fileBean.modifiedDate = file.lastModified();
         fileBean.isDir = file.isDirectory();
         fileBean.mUri = file.getPath();
-
-        // 文件夹时计算出总的下一级文件/夹数量
-        if (fileBean.isDir) {
-            // int fileCount = 0; // 子级目录文件/夹数量
-            // File[] files = file.listFiles(filter);
-            // if (files == null) {
-            // return null;
-            // }
-            //
-            // for (File childFile : files) {
-            // // 文件是非隐藏文件或者已经规定显示隐藏文件时,并且文件是正常文件时执行下一步操作
-            // if ((!childFile.isHidden() || showOrHidden)
-            // && FileUtil.isNormalFile(childFile.getAbsolutePath())) {
-            // fileCount++;
-            // Media media = new Media(FileUtil.getFileType(childFile),
-            // childFile.getAbsolutePath());
-            // fileBean.mSubMedias.add(media);
-            // }
-            // }
-            // fileBean.childCount = fileCount;
-
-            // fileBean.fileSize = getFileSize(file);
-
-        } else {
-            // 文件大小
-            fileBean.fileSize = file.length();
-        }
-
+        fileBean.fileSize = file.length();
         return fileBean;
     }
 
@@ -181,7 +152,6 @@ public class FileUtil {
                 // 是常见文件,并且是非隐藏文件
                 if (FileUtil.isShowFile(childFile)) {
                     Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
-
                     if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information"))) {
 
                         // 当文件是图片类型,并且大于10k,才进行显示
@@ -193,7 +163,7 @@ public class FileUtil {
                         } else {
                             tList.add(fileInfo);
                         }
-
+//
                     }
                 }
 

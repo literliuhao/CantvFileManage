@@ -91,12 +91,16 @@ public class GridViewActivity extends Activity {
         } else if ("device1".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
-            mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(0));
+            if(MediaUtils.getUSBNum() > 0){
+                mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(0));
+            }
             isExternal = true;
         } else if ("device2".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
-            mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
+            if(MediaUtils.getUSBNum() > 1) {
+                mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
+            }
             isExternal = true;
         }
         if (mGridView == null) {

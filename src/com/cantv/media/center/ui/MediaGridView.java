@@ -204,7 +204,7 @@ public class MediaGridView extends CustomGridView {
                     }
                 }
             } catch (Exception e) {
-                // TODO: handle exception
+                e.printStackTrace();
             }
             return mMediaes;
         }
