@@ -119,57 +119,57 @@ public class MediaGridView extends CustomGridView {
         });
 
 
-        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                //经测试,在触摸滚动的时候才执行此方法,遥控器控制不会执行
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-
-                //顶部阴影
-                if (firstVisibleItem > 0) {
-                    mActivity.mBg_view.setVisibility(View.VISIBLE);
-                } else {
-                    mActivity.mBg_view.setVisibility(View.GONE);
-                }
-
-                int lastVisiblePosition = mGridView.getLastVisiblePosition();
-                Log.w("第一个 ", firstVisibleItem + "  总数 " + totalItemCount + "   当前页面数量" + visibleItemCount + "   最后" + lastVisiblePosition + "  选中" + mSelectItemPosition);
-                //底部文字及阴影
-                //ListView 排列方式
-                if (mActivity.mCurrGridStyle == 0) {
-
-                    //每页可以排列4个item,
-                    if ((mSelectItemPosition >= 3)) {
-                        //选中的是当前页最后一项时,隐藏底部,记录下当前选项
-                        if (lastVisiblePosition == mSelectItemPosition) {
-                            mActivity.mFocusName.setVisibility(View.GONE);
-                            beforFocus = mSelectItemPosition;
-
-                            //当前选项小于上次记录,并且当前页最后一项大于选中项时,记录下;底部显示
-                        } else if ((mSelectItemPosition < beforFocus) && lastVisiblePosition > mSelectItemPosition) {
-                            beforFocus = mSelectItemPosition;
-                            mActivity.mFocusName.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        mActivity.mFocusName.setVisibility(View.VISIBLE);
-                    }
-
-                } else {
-                    if ((mSelectItemPosition >= 9) && (lastVisiblePosition - mSelectItemPosition < 5)) {
-                        mActivity.mFocusName.setVisibility(View.GONE);
-                    } else {
-                        mActivity.mFocusName.setVisibility(View.VISIBLE);
-                    }
-
-                }
-
-
-            }
-        });
+//        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                //经测试,在触摸滚动的时候才执行此方法,遥控器控制不会执行
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//
+//
+//                //顶部阴影
+//                if (firstVisibleItem > 0) {
+//                    mActivity.mBg_view.setVisibility(View.VISIBLE);
+//                } else {
+//                    mActivity.mBg_view.setVisibility(View.GONE);
+//                }
+//
+//                int lastVisiblePosition = mGridView.getLastVisiblePosition();
+//                Log.w("第一个 ", firstVisibleItem + "  总数 " + totalItemCount + "   当前页面数量" + visibleItemCount + "   最后" + lastVisiblePosition + "  选中" + mSelectItemPosition);
+//                //底部文字及阴影
+//                //ListView 排列方式
+//                if (mActivity.mCurrGridStyle == 0) {
+//
+//                    //每页可以排列4个item,
+//                    if ((mSelectItemPosition >= 3)) {
+//                        //选中的是当前页最后一项时,隐藏底部,记录下当前选项
+//                        if (lastVisiblePosition == mSelectItemPosition) {
+//                            mActivity.mFocusName.setVisibility(View.GONE);
+//                            beforFocus = mSelectItemPosition;
+//
+//                            //当前选项小于上次记录,并且当前页最后一项大于选中项时,记录下;底部显示
+//                        } else if ((mSelectItemPosition < beforFocus) && lastVisiblePosition > mSelectItemPosition) {
+//                            beforFocus = mSelectItemPosition;
+//                            mActivity.mFocusName.setVisibility(View.VISIBLE);
+//                        }
+//                    } else {
+//                        mActivity.mFocusName.setVisibility(View.VISIBLE);
+//                    }
+//
+//                } else {
+//                    if ((mSelectItemPosition >= 9) && (lastVisiblePosition - mSelectItemPosition < 5)) {
+//                        mActivity.mFocusName.setVisibility(View.GONE);
+//                    } else {
+//                        mActivity.mFocusName.setVisibility(View.VISIBLE);
+//                    }
+//
+//                }
+//
+//
+//            }
+//        });
 
     }
 
@@ -265,7 +265,7 @@ public class MediaGridView extends CustomGridView {
                 } else {
                     if (mSourceType == SourceType.LOCAL) {
                         mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
-                    } else if (mSourceType == SourceType.DEVICE) {
+                    } else if (mSourceType == SourceType.DEVICE || devicePath != null) {
                         mMediaes.addAll(FileUtil.getFileList(devicePath));
                     } else {
                         if (usbRootPaths.size() > 0) { //为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误

@@ -54,8 +54,8 @@ public class MediaListItemView extends MediaItemView {
     public MediaListItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         RelativeLayout relativeLayout = new RelativeLayout(context);
-        relativeLayout.setPadding(80, 0, 0, 0);
-        int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px1600);
+        relativeLayout.setPadding(35, 0, 0, 0);
+        int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px1764);
         int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px200);
         RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
         relativeLayout.setLayoutParams(relativeLayoutParams);

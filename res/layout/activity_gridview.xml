@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/home_title"
-    android:clipChildren="false"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/home_title"
+                android:clipChildren="false"
+                android:orientation="vertical">
 
     <View
         android:id="@+id/flag_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/px187"
-        android:layout_alignParentTop="true" />
+        android:layout_height="@dimen/px150"
+        android:layout_alignParentTop="true"/>
 
 
     <RelativeLayout
@@ -18,24 +18,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/flag_view"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/px240"
-        android:gravity="center" />
-        <!--android:clipChildren="true"/-->
+        android:layout_marginLeft="@dimen/px80"
+        android:gravity="center"/>
+    <!--android:clipChildren="true"/-->
     <!--android:paddingBottom="@dimen/px130"-->
 
     <!--&lt;!&ndash;底部文字&ndash;&gt;-->
     <TextView
         android:id="@+id/focusview_name"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/px172"
+        android:layout_height="@dimen/px110"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="0px"
         android:background="@drawable/shadow_bottom"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/px36"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/bg_view"
@@ -43,13 +42,13 @@
         android:layout_height="@dimen/px300"
         android:layout_alignParentTop="true"
         android:background="@drawable/shadow_top"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <!--顶部布局-->
     <RelativeLayout
         android:id="@+id/media_header"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/px220"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:paddingLeft="@dimen/px128"
         android:paddingRight="@dimen/px128">
@@ -62,7 +61,7 @@
             android:layout_marginTop="@dimen/px70"
             android:text="@string/str_local"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/px56" />
+            android:textSize="@dimen/px56"/>
 
         <ImageView
             android:id="@+id/title_image"
@@ -71,7 +70,7 @@
             android:layout_marginLeft="@dimen/px40"
             android:layout_marginTop="@dimen/px92"
             android:layout_toRightOf="@id/title_textview"
-            android:background="@drawable/icon_menu1" />
+            android:background="@drawable/icon_menu1"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -81,14 +80,14 @@
             android:layout_toRightOf="@id/title_image"
             android:text="@string/str_menu"
             android:textColor="@color/per50_white"
-            android:textSize="@dimen/px32" />
+            android:textSize="@dimen/px32"/>
 
         <TextView
             android:id="@+id/textview_num"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/px32"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/px32" />
+            android:textSize="@dimen/px32"/>
 
         <TextView
             android:id="@+id/textview_totalnum"
@@ -96,7 +95,7 @@
             android:layout_height="@dimen/px32"
             android:layout_marginRight="@dimen/px128"
             android:textColor="@color/per50_white"
-            android:textSize="@dimen/px32" />
+            android:textSize="@dimen/px32"/>
 
         <TextView
 
@@ -106,7 +105,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/px88"
             android:gravity="center"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
 

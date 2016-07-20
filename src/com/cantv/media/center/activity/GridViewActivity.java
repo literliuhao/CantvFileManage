@@ -55,23 +55,22 @@ public class GridViewActivity extends Activity {
     public TextView mRTCountView; //显示数量和当前选中position
     public View mBg_view; //上部阴影
     public int mCurrGridStyle; //记录当前是什么排列方式
-    
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gridview);
         mTitleTV = (TextView) findViewById(R.id.title_textview);
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
-        
+//        mContentView.mar(0,0,0,200);
+
         mBg_view = findViewById(R.id.bg_view);
 
-        mCurrGridStyle=SharedPreferenceUtil.getGridStyle();
+        mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
 
         mFocusName = (TextView) findViewById(R.id.focusview_name);
         mRTCountView = (TextView) findViewById(R.id.file_count);
-        
-        
+
         Intent intent = getIntent();
 
         IntentFilter filter = new IntentFilter();
@@ -105,14 +104,14 @@ public class GridViewActivity extends Activity {
         } else if ("device1".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
-            if(MediaUtils.getUSBNum() > 0){
+            if (MediaUtils.getUSBNum() > 0) {
                 mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(0));
             }
             isExternal = true;
         } else if ("device2".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
-            if(MediaUtils.getUSBNum() > 1) {
+            if (MediaUtils.getUSBNum() > 1) {
                 mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
             }
             isExternal = true;
@@ -163,16 +162,17 @@ public class GridViewActivity extends Activity {
     public void setGridStyle(MediaOrientation mStyle) {
         switch (mStyle) {
             case LIST:
-                mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px31));
-                mGridView.setPadding(0, 0, 0, 0);
+                mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px18));
+                mGridView.setPadding(0, 0, 0,76);
                 mGridView.setStyle(MediaOrientation.LIST);
                 mGridView.setNumColumns(1);
                 break;
             case THUMBNAIL:
                 mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px0));
-                mGridView.setPadding(0, 0, 0, 22);
+                mGridView.setPadding(0, 0, 0, 60);
                 mGridView.setStyle(MediaOrientation.THUMBNAIL);
                 mGridView.setNumColumns(5);
+//                mGridView.setOutlineProvider();
                 break;
         }
     }
@@ -307,7 +307,7 @@ public class GridViewActivity extends Activity {
                 setGridStyle(MediaOrientation.THUMBNAIL);
                 SharedPreferenceUtil.setGridStyle(1);
             }
-            mCurrGridStyle=position;
+            mCurrGridStyle = position;
         }
 
         View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
