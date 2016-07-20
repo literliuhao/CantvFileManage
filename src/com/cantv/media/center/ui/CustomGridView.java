@@ -21,7 +21,7 @@ import com.cantv.media.R;
 
 @SuppressLint("ResourceAsColor")
 public class CustomGridView extends FrameLayout implements OnItemSelectedListener {
-    private GridView mGridView;
+    public GridView mGridView;
     private GridFocusView mFocusView;
     private Point mLastFocusPoint = new Point(-1, -1);
     private OnItemSelectedListener mSelectedListener = null;

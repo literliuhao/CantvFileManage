@@ -48,7 +48,7 @@ public class ImageWatchingView extends ZoomView {
         zoomAndCenterChildSmoothlyTo(mFrameView.getWidth() / 2, mFrameView.getHeight() / 2, newfactor, null, null);
     }
 
-    public void onRotationChanged(final int newRotation, final boolean restZoomFactor) {
+    public void onRotationChanged(final int newRotation, final boolean restZoomFactor,final boolean rotation) {
         final View view = mFrameView;
         final Point oldCenter = new Point(getScrollX() + getWidth() / 2, getScrollY() + getHeight() / 2);
         UiUtils.transformPoint(oldCenter, this, view);
@@ -63,8 +63,10 @@ public class ImageWatchingView extends ZoomView {
                         setMinZoomFactor(newfactor);
                     }
                 };
-                forceZoomAndCenterChildTo(oldCenter.x, oldCenter.y, oldFactor, newRotation + getZoomAngle());
-                forceZoomAndCenterChildSmoothlyTo(view.getWidth() / 2, view.getHeight() / 2, newfactor, 0, runnable, runnable);
+                if(rotation){
+                	forceZoomAndCenterChildTo(oldCenter.x, oldCenter.y, oldFactor, newRotation + getZoomAngle());
+                	forceZoomAndCenterChildSmoothlyTo(view.getWidth() / 2, view.getHeight() / 2, newfactor, 0, runnable, runnable);
+                }
             }
         });
     }
