@@ -4,11 +4,15 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.app.core.ui.TransformView;
 
 public class ImageBrowser extends TransformView {
     private final ImageWatchingView mWatchingView;
+    private boolean isFirst = true;
+	private LayoutTransform mCurrLayoutT;
+	private LayoutTransform mLayoutT;
 
     // ### 构造函数 ###
     public ImageBrowser(Context context) {
@@ -46,7 +50,7 @@ public class ImageBrowser extends TransformView {
         final LayoutTransform layoutT = new LayoutTransform(currLayoutT);
         layoutT.setRotationZ(layoutT.getRotationZ() - 90);
         final float rotationOffset = currLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - layoutT.getRotationZ();
-        mWatchingView.onRotationChanged((int) rotationOffset, true);
+        mWatchingView.onRotationChanged((int) rotationOffset, true,true);
         setChildLayoutTransform(mWatchingView, layoutT);
     }
 
@@ -55,8 +59,23 @@ public class ImageBrowser extends TransformView {
         final LayoutTransform layoutT = new LayoutTransform(currLayoutT);
         layoutT.setRotationZ(layoutT.getRotationZ() + 90);
         final float rotationOffset = currLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - layoutT.getRotationZ();
-        mWatchingView.onRotationChanged((int) rotationOffset, true);
+        mWatchingView.onRotationChanged((int) rotationOffset, true,true);
         setChildLayoutTransform(mWatchingView, layoutT);
     }
-
+    
+    public void layoutOriginal(){
+    	if(isFirst){
+    		isFirst =false;
+    		mCurrLayoutT = getChildLayoutTransform(mWatchingView);
+        	mLayoutT = new LayoutTransform(mCurrLayoutT);
+    	}
+    }
+    
+    public void changeReset() {
+    	mLayoutT.setRotationZ(mLayoutT.getRotationZ());
+        final float rotationOffset = mCurrLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - mLayoutT.getRotationZ();
+        mWatchingView.onRotationChanged((int) rotationOffset, true,false);
+        setChildLayoutTransform(mWatchingView, mLayoutT);
+    }
+    
 }

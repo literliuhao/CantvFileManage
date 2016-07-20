@@ -8,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.cantv.media.R;
 import com.cantv.media.center.utils.ImageUtils;
 
 import java.io.File;
@@ -23,7 +25,7 @@ public class ImageFrameView extends FrameLayout {
     private int mImgOrginWidth;
     private int mImgOrginHeight;
     private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
-    private final long SHOWPROCESS_FILE_SIZE = 50 * 1024 * 1024;
+    private final long SHOWPROCESS_FILE_SIZE = 50 *1024* 1024;
     private ProgressDialog mProgressDialog;
     private MediaImageViewLoaderTask mTask;
     private NotifyParentUpdate mNotifyParentUpdate;
@@ -34,7 +36,7 @@ public class ImageFrameView extends FrameLayout {
         mProgressDialog = new ProgressDialog(context);
         WindowManager.LayoutParams params = mProgressDialog.getWindow().getAttributes();
         mProgressDialog.getWindow().setGravity(Gravity.CENTER);
-        params.x = 250;
+        //params.x = 250;
         mProgressDialog.getWindow().setAttributes(params);
         mImageView = new ImageView(context);
         addView(mImageView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
@@ -74,7 +76,7 @@ public class ImageFrameView extends FrameLayout {
             return;
         }
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage(message == null ? "閸ュ墽澧栭崝鐘烘祰娑擄拷..." : message);
+        mProgressDialog.setMessage(message == null ? "正在加载中..." : message);
         mProgressDialog.show();
     }
 

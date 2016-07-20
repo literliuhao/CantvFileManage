@@ -204,6 +204,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mImageBrowser = (ImageBrowser) findViewById(R.id.media__image_view__image);
 		mImageBrowser.setContentImageView(mFrameView);
 		mImageBrowser.setBackgroundColor(Color.BLACK);
+		mImageBrowser.layoutOriginal();
 		mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus);
 	}
 
@@ -226,6 +227,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			@Override
 			public void run() {
 				mImageBrowser.reset();
+				mImageBrowser.changeReset();
 				UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
 			}
 		});
@@ -656,18 +658,17 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			mMediaPlayer = new MediaPlayer();
 			mMediaPlayer.reset();
 			AssetManager assetManager = mContext.getAssets();
-			AssetFileDescriptor fileDescriptor = assetManager.openFd("Monody.mp3");
+			AssetFileDescriptor fileDescriptor = assetManager.openFd("mm.mp3");
 			mMediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(),
 					fileDescriptor.getLength());
 			mMediaPlayer.prepare();
 			mMediaPlayer.start();
-			mMediaPlayer.setLooping(true);
 			mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
 
 				@Override
 				public void onCompletion(MediaPlayer mp) {
 					mMediaPlayer.start();
-
+					mMediaPlayer.setLooping(true);
 				}
 			});
 			PLAYING_STATUS = PLAYING;
