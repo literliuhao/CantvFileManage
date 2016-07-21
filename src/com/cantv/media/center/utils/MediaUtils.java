@@ -45,6 +45,7 @@ public class MediaUtils {
         mAduioIconMap.put("ogg",R.drawable.music_ogg);
         mAduioIconMap.put("wma",R.drawable.music_wma);
         mAduioIconMap.put("wav",R.drawable.music_wav);
+        mAduioIconMap.put("flac",R.drawable.music_flac);
     }
 	
 

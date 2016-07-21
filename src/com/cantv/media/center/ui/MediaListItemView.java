@@ -49,7 +49,7 @@ public class MediaListItemView extends MediaItemView {
         RelativeLayout relativeLayout = new RelativeLayout(context);
         relativeLayout.setPadding(35, 0, 0, 0);
         int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px1764);
-        int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px200);
+        int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px220);
         RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
         relativeLayout.setLayoutParams(relativeLayoutParams);
         mContext = context;
@@ -58,14 +58,14 @@ public class MediaListItemView extends MediaItemView {
         setWillNotDraw(false);
         setFocusable(false);
         mFocusView = new ImageView(context);
-        LayoutParams mFocusParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.px200));
+        LayoutParams mFocusParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.px220));
         mFocusParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mFocusView.setLayoutParams(mFocusParams);
         mBgView = new MediaPicView(context);
         mBgView.setId(0x559584);
         mBgView.setPicStretch(PicStretch.SCALE_CROP);
-        LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px168));
+        LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
         mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mBgView.setLayoutParams(mediaParams);
         mImageView = new MediaPicView(context);

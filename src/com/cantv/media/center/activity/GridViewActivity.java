@@ -1,7 +1,9 @@
 package com.cantv.media.center.activity;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.cantv.media.R;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
@@ -15,6 +17,7 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 public class GridViewActivity extends Activity {
     private static String TAG = "GridViewActivity";
     private RelativeLayout mContentView;
@@ -51,6 +55,7 @@ public class GridViewActivity extends Activity {
     public TextView mRTCountView; //显示数量和当前选中position
     public View mBg_view; //上部阴影
     public int mCurrGridStyle; //记录当前是什么排列方式
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +131,7 @@ public class GridViewActivity extends Activity {
             }
         });
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (8 == keyCode || 166 == keyCode) {
@@ -144,11 +150,12 @@ public class GridViewActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
     public void setGridStyle(MediaOrientation mStyle) {
         switch (mStyle) {
             case LIST:
-                mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px18));
-                mGridView.setPadding(0, 0, 0,76);
+                mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px16));
+                mGridView.setPadding(0, 0, 0, 2);
                 mGridView.setStyle(MediaOrientation.LIST);
                 mGridView.setNumColumns(1);
                 break;
@@ -161,6 +168,7 @@ public class GridViewActivity extends Activity {
                 break;
         }
     }
+
     @Override
     public void onBackPressed() {
         // MediaGridView childGridView = (MediaGridView)
@@ -172,6 +180,7 @@ public class GridViewActivity extends Activity {
             return;
         }
     }
+
     private void showMenuDialog() {
         if (mMenuDialog == null) {
             mMenuDialog = new MenuDialog(this);
@@ -188,6 +197,7 @@ public class GridViewActivity extends Activity {
                 public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
                     subMenuClick(position);
                 }
+
                 @Override
                 public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
                     if (position != 2) {
@@ -225,6 +235,7 @@ public class GridViewActivity extends Activity {
         }
         mMenuDialog.show();
     }
+
     private List<MenuItem> createMenuData() {
         mMenuList = new ArrayList<MenuItem>();
         sortListMenuItem = new MenuItem(getString(R.string.sort));
@@ -258,6 +269,7 @@ public class GridViewActivity extends Activity {
         mMenuList.add(deleteMenuItem);
         return mMenuList;
     }
+
     private void subMenuClick(int position) {
         boolean isRefreshed = false;
         MenuItem menuItemData = mMenuList.get(mSelectedMenuPosi);
@@ -296,6 +308,7 @@ public class GridViewActivity extends Activity {
             mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
         }
     }
+
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -308,6 +321,7 @@ public class GridViewActivity extends Activity {
             }
         }
     };
+
     /**
      * 到根目录: 适用在当前处于外接设备目录
      */
@@ -330,6 +344,7 @@ public class GridViewActivity extends Activity {
             mGridView.showNoDataPage();
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
