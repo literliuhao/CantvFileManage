@@ -66,7 +66,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private BroadcastReceiver mimageReceiver;
 	private LinearLayout mediaimagebar;
 	private Runnable mToHideRunnable;
-    private boolean mShowing = true;
+	private boolean mShowing = true;
 	private int ROTATION = 0;
 	private int PREV = 1;
 	private int NEXT = 2;
@@ -140,7 +140,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		autoRunnable();
 		toHideRunnable();
 		registerReceiver();
-        toHideView();
+		toHideView();
 	}
 
 	private void toHideRunnable() {
@@ -167,7 +167,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mimageReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+				if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 					if (getData() == null || getData().size() == 0) {
 						return;
 					}
@@ -233,9 +233,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		int curIndex = index + 1;
 //		mPosition.setText(String.valueOf(mCurImageIndex + 1));
 //		mTotal.setText(" / " + data.size());
-		
+
 		mFrameView.playImage(data.get(index), onfinish,new onLoadingImgListener() {
-			
+
 			@Override
 			public void loadSuccessed() {
 				// TODO Auto-generated method stub
@@ -363,7 +363,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 					Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
 					return;
 				}
-				
+
 				if (mAutoPlay) {
 					stopAutoPlay();
 					pauseMusic();
@@ -501,65 +501,65 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mShowing = false;
 		mediaimagebar.setVisibility(View.GONE);
 		MainThread.cancel(mToHideRunnable);
-        mFocusUtils.hideFocus();
-        toFlyView(0, 0, 0, 1, true,false);
+		mFocusUtils.hideFocus();
+		toFlyView(0, 0, 0, 1, true,false);
 	}
 
 	private void toShowView() {
-        if (mShowing) return;
-        switch (POSTION) {
-            case 0:
-                mRotation.requestFocus();
-                break;
-            case 1:
-                mSize.requestFocus();
-                break;
-            case 2:
-                mAutoRunImageView.requestFocus();
-                break;
-            case 3:
-                mInfo.requestFocus();
-                break;
+		if (mShowing) return;
+		switch (POSTION) {
+			case 0:
+				mRotation.requestFocus();
+				break;
+			case 1:
+				mSize.requestFocus();
+				break;
+			case 2:
+				mAutoRunImageView.requestFocus();
+				break;
+			case 3:
+				mInfo.requestFocus();
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 		mShowing = true;
 		MainThread.runLater(mToHideRunnable, 5 * 1000);
 		mediaimagebar.setVisibility(View.VISIBLE);
-        toFlyView(0, 0, 1, 0, true,true);
-    }
+		toFlyView(0, 0, 1, 0, true,true);
+	}
 
-    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status) {
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
-        animation.setDuration(UiUtils.ANIM_DURATION_LONG);
-        animation.setFillAfter(fillAfter);
-        mediaimagebar.clearAnimation();
-        mediaimagebar.startAnimation(animation);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+	private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status) {
+		TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
+		animation.setDuration(UiUtils.ANIM_DURATION_LONG);
+		animation.setFillAfter(fillAfter);
+		mediaimagebar.clearAnimation();
+		mediaimagebar.startAnimation(animation);
+		animation.setAnimationListener(new Animation.AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
 
-            }
+			}
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if(status){
-                    if (isFirstFocus) {
-                        isFirstFocus = false;
-                        mRotation.requestFocus();
-                        mFocusUtils.setFocusLayout(mRotation, true, (float) 1.2);
-                    }
-                    mFocusUtils.showFocus();
-                }
-            }
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				if(status){
+					if (isFirstFocus) {
+						isFirstFocus = false;
+						mRotation.requestFocus();
+						mFocusUtils.setFocusLayout(mRotation, true, (float) 1.2);
+					}
+					mFocusUtils.showFocus();
+				}
+			}
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+			@Override
+			public void onAnimationRepeat(Animation animation) {
 
-            }
-        });
-    }
+			}
+		});
+	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -764,13 +764,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		int outWidth = options.outWidth;
 		mInfoUrl.setText("图片尺寸：" + outWidth + "*" + outHeight);
 	}
-	
-    public synchronized static boolean isFastClick() {
-        long time = System.currentTimeMillis();   
-        if ( time - lastClickTime < 500) {   
-            return true;   
-        }   
-        lastClickTime = time;   
-        return false;   
-    }
+
+	public synchronized static boolean isFastClick() {
+		long time = System.currentTimeMillis();
+		if ( time - lastClickTime < 500) {
+			return true;
+		}
+		lastClickTime = time;
+		return false;
+	}
 }
