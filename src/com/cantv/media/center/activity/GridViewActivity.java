@@ -1,5 +1,6 @@
 package com.cantv.media.center.activity;
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.cantv.media.R;
@@ -15,6 +16,8 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.utils.cybergarage.FileServer;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 public class GridViewActivity extends Activity {
     private static String TAG = "GridViewActivity";
     private RelativeLayout mContentView;
@@ -104,6 +108,11 @@ public class GridViewActivity extends Activity {
                 mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
             }
             isExternal = true;
+        } else if("share".equalsIgnoreCase(type)){
+        	mTitleTV.setText(intent.getStringExtra("title"));
+        	mGridView = new MediaGridView(this, SourceType.SHARE);
+            mGridView.setDevicePath(intent.getStringExtra("path"));
+            isExternal = false;
         }
         if (mGridView == null) {
             return;
@@ -332,7 +341,10 @@ public class GridViewActivity extends Activity {
     }
     @Override
     protected void onDestroy() {
+    	if(mGridView != null && mGridView.fileServer != null){
+    		mGridView.fileServer.release();
+    	}
+    	unregisterReceiver(mReceiver);
         super.onDestroy();
-        unregisterReceiver(mReceiver);
     }
 }

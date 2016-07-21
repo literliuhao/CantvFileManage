@@ -367,6 +367,18 @@ public class MediaUtils {
      * @param sourceType
      */
    public static void openMediaActivity(Context context,ArrayList<String > pathList,int currIndex,SourceType sourceType){
+	   openMediaActivity(context, pathList, currIndex, sourceType, true);
+   }
+    
+    /**
+     * 打开指定的媒体文件
+     *
+     * @param context
+     * @param pathList
+     * @param currIndex
+     * @param sourceType
+     */
+   public static void openMediaActivity(Context context,ArrayList<String > pathList,int currIndex,SourceType sourceType, boolean isLocal){
 
 
        Intent intent = new Intent();
@@ -382,6 +394,7 @@ public class MediaUtils {
        intent.setClass(context, currClass);
        intent.putStringArrayListExtra("data_list",pathList);
        intent.putExtra("data_index", currIndex);
+       intent.putExtra("isLocal", isLocal);
        context.startActivity(intent);
 
    }

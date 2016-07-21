@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
@@ -93,6 +94,7 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
 		mUserNameEt.setText("");
 		mPasswordEt.setText("");
 		mUserNameEt.requestFocus();
+		mFocusUtils.setFocusLayout(mUserNameEt, false, 0);
 		if (isFirst) {
 			isFirst = false;
 			getWindow().getDecorView().postDelayed(new Runnable() {
@@ -119,6 +121,15 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
 			} else if (v == mConfirmBtn || v == mCancelBtn) {
 				mFocusUtils.startMoveFocus(v, true, 0.91f, 0, -6f);
 			}
+		}
+	}
+	
+	public void refreshData(String userName, String password){
+		if(!TextUtils.isEmpty(userName)){
+			mUserNameEt.setText(userName);
+		}
+		if(!TextUtils.isEmpty(password)){
+			mPasswordEt.setText(password);
 		}
 	}
 

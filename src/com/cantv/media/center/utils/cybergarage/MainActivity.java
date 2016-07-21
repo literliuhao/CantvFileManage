@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import com.cantv.media.center.utils.cybergarage.ScanSambaTask.IScanFileListener;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -19,6 +21,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements OnItemClickListener {
@@ -105,28 +110,39 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 	private void searchFile(String path) {
 		if (mScanSambaTask == null || mScanSambaTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-//			mScanSambaTask = new ScanSambaTask(new IScanFileListener() {
-//
-//				@Override
-//				public void callBack(ArrayList<SmbFile> list) {
-//					if (list == null || list.isEmpty()) {
-//						Toast.makeText(MainActivity.this, "����ʧ���ˣ������� ", Toast.LENGTH_SHORT).show();
-//						return;
-//					}
-//					mAdapter.clear();
-//					for (SmbFile f : list) {
-//						String filePath = f.getPath();
-//						String fileName = f.getName();
-//						try {
-//							boolean isFile = f.isFile();
-//							Log.d("", "fileName: " + fileName + " " + filePath + " isFile: " + isFile);
-//							mAdapter.add(new FileItem(fileName, filePath, isFile));
-//						} catch (SmbException e) {
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//			});
+			mScanSambaTask = new ScanSambaTask(true, new IScanFileListener() {
+
+				@Override
+				public void onSuccess(ArrayList<SmbFile> list) {
+					if (list == null || list.isEmpty()) {
+						Toast.makeText(MainActivity.this, "����ʧ���ˣ������� ", Toast.LENGTH_SHORT).show();
+						return;
+					}
+					mAdapter.clear();
+					for (SmbFile f : list) {
+						String filePath = f.getPath();
+						String fileName = f.getName();
+						try {
+							boolean isFile = f.isFile();
+							Log.d("", "fileName: " + fileName + " " + filePath + " isFile: " + isFile);
+							mAdapter.add(new FileItem(fileName, filePath, isFile));
+						} catch (SmbException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				@Override
+				public void onLoginFailed() {
+					
+				}
+
+				@Override
+				public void onException(Throwable ta) {
+					
+				}
+
+			});
 			mScanSambaTask.execute(path);
 		}
 	}

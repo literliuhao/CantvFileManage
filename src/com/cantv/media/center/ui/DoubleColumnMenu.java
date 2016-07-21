@@ -150,7 +150,6 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
         mSubMenu = new RelativeLayout(context);
         mSubMenu.setFocusable(false);
         mSubMenu.setId(generateViewId());
-        mSubMenu.setBackgroundResource(mSubMenuBg);
         FrameLayout.LayoutParams subMenuLp = new FrameLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         mSubMenuRoot.addView(mSubMenu, subMenuLp);
 

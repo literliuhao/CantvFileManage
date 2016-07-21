@@ -8,5 +8,6 @@ public enum SourceType {
     LOCAL,
     PICTURE,
     FOLDER,
+    SHARE,
     UNKNOW
 }

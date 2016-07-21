@@ -14,6 +14,8 @@ import org.cybergarage.http.HTTPResponse;
 import org.cybergarage.http.HTTPServerList;
 import org.cybergarage.http.HTTPStatus;
 
+import android.util.Log;
+
 public class FileServer extends Thread implements org.cybergarage.http.HTTPRequestListener {
 
 	public static final String CONTENT_EXPORT_URI = "/smb";
@@ -21,6 +23,15 @@ public class FileServer extends Thread implements org.cybergarage.http.HTTPReque
 	private int HTTPPort = 2222;
 	private String bindIP = null;
 	public static int mPort;
+	private OnInitlizedListener listener;
+	
+	public interface OnInitlizedListener{
+		public void onInitlized();
+	}
+
+	public void setOnInitlizedListener(OnInitlizedListener listener) {
+		this.listener = listener;
+	}
 
 	public String getBindIP() {
 		return bindIP;
@@ -33,6 +44,15 @@ public class FileServer extends Thread implements org.cybergarage.http.HTTPReque
 	public int getHTTPPort() {
 		return HTTPPort;
 	}
+	
+	public String getProxyPathPrefix(){
+		if(bindIP == null){
+			return "";
+		}
+		return new StringBuilder("http://")
+				.append(bindIP).append(":")
+				.append(HTTPPort).append("/smb=").toString();
+	}
 
 	@Override
 	public void run() {
@@ -42,18 +62,21 @@ public class FileServer extends Thread implements org.cybergarage.http.HTTPReque
 		 * ����http�����������չ�������
 		 *************************************************/
 		int retryCnt = 0;
-		int bindPort = getHTTPPort();
 		HTTPServerList httpServerList = getHttpServerList();
-		while (httpServerList.open(bindPort) == false) {
+		while (httpServerList.open(HTTPPort) == false) {
 			retryCnt++;
 			if (100 < retryCnt) {
 				return;
 			}
-			bindPort++;
+			HTTPPort++;
 		}
 		httpServerList.addRequestListener(this);
 		httpServerList.start();
 		bindIP = httpServerList.getHTTPServer(0).getBindAddress();
+		Log.i("", "bindIP = " + bindIP + ", bindPort = " + HTTPPort);
+		if(listener != null){
+			listener.onInitlized();
+		}
 	}
 
 	@Override

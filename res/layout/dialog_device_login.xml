@@ -5,16 +5,21 @@
     android:orientation="horizontal" >
 
     <RelativeLayout
+        android:id="@+id/rl_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_225px"
-        android:paddingTop="@dimen/dimen_60px" >
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dimen_200px"
+        android:layout_marginEnd="@dimen/dimen_430px"
+        android:layout_marginStart="@dimen/dimen_430px"
+        android:layout_marginTop="@dimen/dimen_200px"
+        android:background="@drawable/home_devices_background" >
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_105px"
             android:text="@string/user_login"
             android:textColor="@color/per80_white"
             android:textSize="@dimen/fontsize_40px" />
@@ -25,15 +30,15 @@
             android:layout_height="@dimen/dimen_80px"
             android:layout_below="@id/tv_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dimen_80px"
+            android:layout_marginTop="@dimen/dimen_76px"
             android:background="@drawable/youxian_txt"
             android:gravity="start|center_vertical"
+            android:inputType="text"
             android:paddingEnd="0dp"
             android:paddingStart="@dimen/dimen_32px"
+            android:singleLine="true"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36px"
-            android:inputType="text"
-             />
+            android:textSize="@dimen/fontsize_36px" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,15 +57,15 @@
             android:layout_height="@dimen/dimen_80px"
             android:layout_below="@id/et_username"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dimen_40px"
+            android:layout_marginTop="@dimen/dimen_22px"
             android:background="@drawable/youxian_txt"
             android:gravity="start|center_vertical"
+            android:inputType="textPassword"
             android:paddingEnd="0dp"
             android:paddingStart="@dimen/dimen_32px"
+            android:singleLine="true"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36px" 
-            android:inputType="textPassword"
-            />
+            android:textSize="@dimen/fontsize_36px" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -80,8 +85,8 @@
             android:layout_height="@dimen/dimen_36px"
             android:layout_alignStart="@id/et_pwd"
             android:layout_below="@id/et_pwd"
-            android:layout_marginTop="@dimen/dimen_24px"
             android:layout_marginStart="@dimen/dimen_8px"
+            android:layout_marginTop="@dimen/dimen_24px"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/dimen_24px"
             android:text="@string/show_pwd"
@@ -89,7 +94,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_88px"
+            android:layout_height="@dimen/dimen_100px"
             android:layout_below="@id/cb_show_pwd"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dimen_44px"
@@ -101,11 +106,10 @@
                 android:layout_width="@dimen/dimen_336px"
                 android:layout_height="match_parent"
                 android:background="@drawable/btn2_normal"
+                android:paddingBottom="@dimen/dimen_15px"
                 android:text="@string/str_confirm"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36px"
-                android:paddingBottom="@dimen/dimen_15px"
-                 />
+                android:textSize="@dimen/fontsize_36px" />
 
             <Button
                 android:id="@+id/btn_cancel"
@@ -113,11 +117,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dimen_24px"
                 android:background="@drawable/btn2_normal"
+                android:paddingBottom="@dimen/dimen_15px"
                 android:text="@string/str_cancel"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36px"
-                android:paddingBottom="@dimen/dimen_15px"
-                 />
+                android:textSize="@dimen/fontsize_36px" />
         </LinearLayout>
     </RelativeLayout>
 

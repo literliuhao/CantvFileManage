@@ -58,7 +58,11 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:animateLayoutChanges="true"
+            android:paddingStart="@dimen/dimen_15px"
+            android:paddingEnd="@dimen/dimen_15px"
+             >
 
             <com.cantv.media.center.ui.DeviceShareItemView
                 android:id="@+id/dsiv_add_device"

@@ -63,6 +63,9 @@
     <style name="dialog_device_share" parent="dialog_menu">
         <item name="android:windowAnimationStyle">@style/animFadeIn</item>
     </style>
+    <style name="dialog_loading" parent="dialog_device_share">
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 
     <style name="cb_show_pwd" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/selector_bg_checkbox</item>

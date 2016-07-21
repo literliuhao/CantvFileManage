@@ -93,6 +93,7 @@
     <dimen name="dimen_650px">433dp</dimen>
     <dimen name="dimen_660px">440dp</dimen>
     <dimen name="dimen_680px">453.3dp</dimen>
+    <dimen name="dimen_700px">467dp</dimen>
     <dimen name="dimen_820px">547dp</dimen>
     <dimen name="dimen_848px">565dp</dimen>
     <dimen name="dimen_854px">569dp</dimen>

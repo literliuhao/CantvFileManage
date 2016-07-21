@@ -70,6 +70,7 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
 
 	public void reset() {
 		mIpEt.setText("");
+		mFocusUtils.setFocusLayout(mIpEt, false, 0);
 		mIpEt.requestFocus();
 		if (isFirst) {
 			isFirst = false;

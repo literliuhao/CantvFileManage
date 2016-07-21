@@ -104,5 +104,12 @@
     <string name="ip_addr">IP地址</string>
     <string name="user_login">用户登录</string>
     <string name="show_pwd">显示密码</string>
+    <string name="ip_err_tips">您输入的IP地址格式错误，请重新输入</string>
+    <string name="devices_has_added">设备已添加</string>
+    <string name="username_pwd_err">用户名或密码输入错误，请重新输入</string>
+    <string name="login_succ">登录成功</string>
+    <string name="loading_tips">正在努力加载中，稍等一下…</string>
+    <string name="no_file_sharing_tips">未发现该设备共享的文件</string>
+    <string name="device_login_failed">无法访问该设备</string>
     
 </resources>
