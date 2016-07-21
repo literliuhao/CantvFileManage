@@ -765,7 +765,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mInfoUrl.setText("图片尺寸：" + outWidth + "*" + outHeight);
 	}
 	
-    public static boolean isFastClick() {
+    public synchronized static boolean isFastClick() {
         long time = System.currentTimeMillis();   
         if ( time - lastClickTime < 500) {   
             return true;   
