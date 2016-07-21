@@ -675,7 +675,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
 	private void translateDown(View view) {
 		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
-				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f);
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.2f);
 		translateAnimation.setDuration(200);
 		translateAnimation.setFillAfter(true);
 		view.clearAnimation();
@@ -684,7 +684,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
 	private void translateUp(View view) {
 		Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
-				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0);
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.2f, Animation.RELATIVE_TO_SELF, 0);
 		translateAnimation.setDuration(200);
 		translateAnimation.setFillAfter(true);
 		view.clearAnimation();

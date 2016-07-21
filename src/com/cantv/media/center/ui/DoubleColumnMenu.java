@@ -737,21 +737,21 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
 
                         @Override
                         public void run() {
-                            ScaleAnimation mZoomInAnim = new ScaleAnimation(1, 1.125f, 1, 1.125f, ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+                            /*ScaleAnimation mZoomInAnim = new ScaleAnimation(1, 1.125f, 1, 1.125f, ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
                             mZoomInAnim.setInterpolator(new DecelerateInterpolator());
                             mZoomInAnim.setFillAfter(true);
                             mZoomInAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
                             newView.clearAnimation();
-                            newView.startAnimation(mZoomInAnim);
+                            newView.startAnimation(mZoomInAnim);*/
                         }
                     });
                 } else {
-                    ScaleAnimation mZoomOutAnim = new ScaleAnimation(1.125f, 1, 1.125f, 1, ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+                	/*ScaleAnimation mZoomOutAnim = new ScaleAnimation(1.125f, 1, 1.125f, 1, ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
                     mZoomOutAnim.setInterpolator(new DecelerateInterpolator());
                     mZoomOutAnim.setFillAfter(true);
                     mZoomOutAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
                     newView.clearAnimation();
-                    newView.startAnimation(mZoomOutAnim);
+                    newView.startAnimation(mZoomOutAnim);*/
                 }
                 if (mFocusChangeListener != null) {
                     mFocusChangeListener.onSubMenuItemFocusChanged(mSubMenuContainer, newView, position, hasFocus);
