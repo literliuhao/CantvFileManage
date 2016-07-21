@@ -47,7 +47,7 @@ public class GridViewActivity extends Activity {
     private int mSelectedMenuPosi;
     private int mDeleteItem;
     public boolean isExternal; // 记录当前是否处于外接设备,true:处于外接设备(通过USB接口接入)
-    public TextView mFocusName; //选中显示的名称
+//    public TextView mFocusName; //选中显示的名称
     public TextView mRTCountView; //显示数量和当前选中position
     public View mBg_view; //上部阴影
     public int mCurrGridStyle; //记录当前是什么排列方式
@@ -60,7 +60,7 @@ public class GridViewActivity extends Activity {
 //        mContentView.mar(0,0,0,200);
         mBg_view = findViewById(R.id.bg_view);
         mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
-        mFocusName = (TextView) findViewById(R.id.focusview_name);
+//        mFocusName = (TextView) findViewById(R.id.focusview_name);
         mRTCountView = (TextView) findViewById(R.id.file_count);
         Intent intent = getIntent();
         IntentFilter filter = new IntentFilter();
@@ -122,7 +122,7 @@ public class GridViewActivity extends Activity {
         mGridView.setOnFocusChangedListener(new MediaGridView.OnFocusChangedListener() {
             @Override
             public void focusPosition(Media media, int position) {
-                mFocusName.setText(media.mName);
+//                mFocusName.setText(media.mName);
             }
         });
     }

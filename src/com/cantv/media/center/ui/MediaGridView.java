@@ -83,11 +83,11 @@ public class MediaGridView extends CustomGridView {
                     mListAdapter.bindData(mCurrMediaList);
                     if (mCurrMediaList.size() == 0) {
                         showNoDataPage();
-                        mActivity.mFocusName.setVisibility(View.GONE);
+//                        mActivity.mFocusName.setVisibility(View.GONE);
                         mActivity.mRTCountView.setVisibility(View.GONE);
                     } else {
-                        mActivity.mFocusName.setVisibility(View.VISIBLE);
-                        mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+//                        mActivity.mFocusName.setVisibility(View.VISIBLE);
+//                        mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
                         setTextRTview(1+""," / "+mCurrMediaList.size());
                     }
                     MediaGridView.this.setSelection(0);
@@ -224,8 +224,8 @@ public class MediaGridView extends CustomGridView {
             if (result.size() == 0) {
                 showNoDataPage();
             } else {
-                mActivity.mFocusName.setVisibility(View.VISIBLE);
-                mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+//                mActivity.mFocusName.setVisibility(View.VISIBLE);
+//                mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
                 setTextRTview("1"," / "+mCurrMediaList.size());
                 
@@ -269,13 +269,13 @@ public class MediaGridView extends CustomGridView {
             mListAdapter.bindData(pop);
             MediaGridView.this.setSelection(mPosStack.pop());
             mCurrMediaList = pop;
-            if (mActivity.mFocusName.getVisibility() == View.GONE) {
-                mActivity.mFocusName.setVisibility(View.VISIBLE);
-            }
+//            if (mActivity.mFocusName.getVisibility() == View.GONE) {
+//                mActivity.mFocusName.setVisibility(View.VISIBLE);
+//            }
             if (mActivity.mRTCountView.getVisibility() == View.GONE) {
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
             }
-            mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+//            mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
             setTextRTview("1"," / "+mCurrMediaList.size());
             isback = true;
         }

@@ -22,7 +22,7 @@
     <!-- android:clipChildren="true"/ -->
     <!-- android:paddingBottom="@dimen/px130" -->
     <!-- &lt;!&ndash;底部文字&ndash;&gt; -->
-
+    <!--
     <TextView
         android:id="@+id/focusview_name"
         android:layout_width="match_parent"
@@ -33,7 +33,8 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/px36"
-        android:visibility="gone" />
+        android:visibility="gone" />
+    -->
 
     <View
         android:id="@+id/bg_view"
@@ -76,12 +77,11 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/px50"
             android:layout_marginLeft="@dimen/px20"
-            android:layout_marginTop="@dimen/px88"
+            android:layout_marginTop="@dimen/px84"
             android:layout_toRightOf="@id/title_image"
             android:text="@string/str_menu"
             android:textColor="@color/per50_white"
             android:textSize="@dimen/px32" />
-
 
         <TextView
             android:id="@+id/file_count"
@@ -93,7 +93,6 @@
             android:textColor="@color/per50_white"
             android:textSize="@dimen/px32"
             android:visibility="gone" />
-
     </RelativeLayout>
 
 </RelativeLayout>
