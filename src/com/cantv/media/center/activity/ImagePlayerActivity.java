@@ -599,11 +599,17 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			}
 
 			if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
+				if(isFastClick()){
+					return true;
+				}
 				mImageBrowser.changeRotation();
 				return true;
 
 			}
 			if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
+				if(isFastClick()){
+					return true;
+				}
 				mImageBrowser.changeUpRotation();
 				return true;
 
@@ -759,7 +765,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mInfoUrl.setText("图片尺寸：" + outWidth + "*" + outHeight);
 	}
 	
-    public synchronized static boolean isFastClick() {
+    public static boolean isFastClick() {
         long time = System.currentTimeMillis();   
         if ( time - lastClickTime < 500) {   
             return true;   
