@@ -154,13 +154,13 @@ public class GridViewActivity extends Activity {
 	public void setGridStyle(MediaOrientation mStyle) {
 		switch (mStyle) {
 		case LIST:
-			mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px16));
-			mGridView.setPadding(0, 0, 0, 2);
+			mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px5));
+			mGridView.setPadding(0, 30, 0, 5);
 			mGridView.setStyle(MediaOrientation.LIST);
 			mGridView.setNumColumns(1);
 			break;
 		case THUMBNAIL:
-			mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px0));
+			mGridView.setVerticalSpacing((int) getResources().getDimension(R.dimen.px15));
 			mGridView.setPadding(0, 0, 0, 60);
 			mGridView.setStyle(MediaOrientation.THUMBNAIL);
 			mGridView.setNumColumns(5);

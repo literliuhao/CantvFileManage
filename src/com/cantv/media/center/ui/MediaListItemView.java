@@ -1,8 +1,10 @@
 package com.cantv.media.center.ui;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -11,6 +13,7 @@ import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.cantv.media.R;
 import com.cantv.media.center.constants.PicStretch;
 import com.cantv.media.center.constants.SourceType;
@@ -18,8 +21,10 @@ import com.cantv.media.center.data.Media;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+
 import java.util.Date;
 import java.util.List;
+
 @SuppressLint("NewApi")
 public class MediaListItemView extends MediaItemView {
     private MediaPicView mImageView;
@@ -37,17 +42,20 @@ public class MediaListItemView extends MediaItemView {
     private AlphaAnimation mAnimation = null;
     private Transformation mDrawingTransform = new Transformation();
     private Context mContext;
+
     public MediaListItemView(Context context) {
         this(context, null);
     }
+
     public MediaListItemView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
+
     @SuppressLint("ResourceAsColor")
     public MediaListItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         RelativeLayout relativeLayout = new RelativeLayout(context);
-        relativeLayout.setPadding(35, 0, 0, 0);
+        relativeLayout.setPadding(40, 0, 0, 0);
         int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px1764);
         int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px220);
         RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
@@ -72,9 +80,6 @@ public class MediaListItemView extends MediaItemView {
         mImageView.setPicStretch(PicStretch.SCALE_CROP);
         LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
         imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        // imageParams.setMargins(20,63,0,0);
-//		imageParams.setMargins(FileUtil.dip2px(mContext, 14),
-//				FileUtil.dip2px(mContext, 42), 0, 0);
         imageParams.setMargins(FileUtil.dip2px(mContext, 14), 0, 0, 0);
         mImageView.setLayoutParams(imageParams);
         mTvName = new TextView(context);
@@ -112,9 +117,11 @@ public class MediaListItemView extends MediaItemView {
         relativeLayout.addView(mTvDate);
         addView(relativeLayout);
     }
+
     public ImageView getFocusImage() {
         return mFocusView;
     }
+
     public void setMediaItem(Media media) {
         mMedia = media;
         mTvName.setText(media.getName());
@@ -137,6 +144,7 @@ public class MediaListItemView extends MediaItemView {
         }
         mTvDate.setText("日期: " + DateUtil.onDate2String(new Date(media.modifiedDate), "yyyy.MM.dd HH:mm"));
         mNumDrawable.setNum(media.getSubMediasCount());
+        LayoutParams mediaParams;
         switch (media.getMediaFormat()) {
             case IMAGE:
                 mImageView.setMedia(media);
@@ -151,10 +159,17 @@ public class MediaListItemView extends MediaItemView {
                 break;
             case APP:
                 Drawable apkIcon = FileUtil.getApkIcon(mContext, media.mUri);
+                mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px165), (int) getResources().getDimension(R.dimen.px160));
+                mediaParams.setMargins(10, 0, 0, 0);
+                mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                mBgView.setLayoutParams(mediaParams);
                 mBgView.setBackground(media);
                 mBgView.setDefaultPic(apkIcon);
                 break;
             case FOLDER:
+                mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
+                mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                mBgView.setLayoutParams(mediaParams);
                 mBgView.setDefaultPic(R.drawable.folder_wj);
                 break;
             case UNKNOW:
@@ -163,11 +178,13 @@ public class MediaListItemView extends MediaItemView {
                 break;
         }
     }
+
     @Override
     public void setSelected(boolean selected) {
         super.setSelected(selected);
         animateSelection(selected);
     }
+
     void animateView(final float from, final float to) {
         mAnimation = new AlphaAnimation(from, to);
         mAnimation.setDuration(1000);
@@ -175,15 +192,18 @@ public class MediaListItemView extends MediaItemView {
             @Override
             public void onAnimationStart(Animation animation) {
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (isSelected()) animateView(to, from);
             }
         });
     }
+
     boolean needReDraw() {
         long currentTime = AnimationUtils.currentAnimationTimeMillis();
         if (mAnimation != null && mAnimation.hasEnded() == false) {
@@ -194,6 +214,7 @@ public class MediaListItemView extends MediaItemView {
         }
         return false;
     }
+
     void animateSelection(boolean select) {
         if (select) {
             animateView(0, 1);

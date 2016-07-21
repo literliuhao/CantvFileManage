@@ -43,7 +43,7 @@ public class MediaGridItemView extends MediaItemView {
         super(context, attrs, defStyle);
         RelativeLayout relativeLayout = new RelativeLayout(context);
         int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px280);
-        int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px290);
+        int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px280);
         RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
         relativeLayoutParams.alignWithParent = true;
         relativeLayout.setLayoutParams(relativeLayoutParams);
@@ -53,14 +53,14 @@ public class MediaGridItemView extends MediaItemView {
         setWillNotDraw(false);
         setFocusable(false);
         mFocusView = new ImageView(context);
-        RelativeLayout.LayoutParams mFocusParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px280), (int) getResources().getDimension(R.dimen.px235));
+        RelativeLayout.LayoutParams mFocusParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px280), (int) getResources().getDimension(R.dimen.px220));
         mFocusParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mFocusView.setLayoutParams(mFocusParams);
         mBgView = new MediaPicView(context);
         mBgView.setId(0x559589);
         mBgView.setPicStretch(PicStretch.SCALE_CROP);
-        RelativeLayout.LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px168));
+        RelativeLayout.LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
         mediaParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mBgView.setLayoutParams(mediaParams);
@@ -99,6 +99,7 @@ public class MediaGridItemView extends MediaItemView {
         mMedia = media;
         mTextView.setText(media.getName());
         mNumDrawable.setNum(media.getSubMediasCount());
+        LayoutParams mediaParams;
         switch (media.getMediaFormat()) {
             case IMAGE:
                 mImageView.setMedia(media);
@@ -113,6 +114,10 @@ public class MediaGridItemView extends MediaItemView {
                 break;
             case APP:
                 Drawable apkIcon = FileUtil.getApkIcon(mContext, media.mUri);
+                mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px155), (int) getResources().getDimension(R.dimen.px155));
+                mediaParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                mBgView.setLayoutParams(mediaParams);
                 mBgView.setBackground(media);
                 mBgView.setDefaultPic(apkIcon);
                 break;
