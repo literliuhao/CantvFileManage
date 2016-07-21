@@ -172,8 +172,7 @@
               android:layout_width="@dimen/dimen_854px"
               android:layout_height="@dimen/dimen_352px"
               android:layout_marginLeft="@dimen/dimen_848px"
-              android:layout_above="@id/mediaimagebar"
-              android:layout_marginBottom="@dimen/dimen_20px"
+              android:layout_marginTop="@dimen/dimen_460px"
               android:visibility="gone"
               android:background="@drawable/infobj"
               android:orientation="vertical" >
