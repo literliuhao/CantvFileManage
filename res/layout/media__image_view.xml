@@ -146,7 +146,6 @@
             android:layout_marginTop="@dimen/dimen_72px"
             android:layout_marginRight="@dimen/dimen_128px"
             android:layout_alignParentRight="true"
-            android:text="/ 30"
             android:textColor="#3fffffff"
             android:textSize="@dimen/fontsize_36px"/>
           <TextView
@@ -155,7 +154,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_72px"
             android:layout_toLeftOf="@id/media__image_tv__total"
-            android:text="13"
             android:textColor="#7fffffff"
             android:textSize="@dimen/fontsize_36px"/>
 

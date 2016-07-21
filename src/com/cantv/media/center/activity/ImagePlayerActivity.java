@@ -11,6 +11,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
 import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
+import com.cantv.media.center.ui.ImageFrameView.onLoadingImgListener;
 import com.cantv.media.center.ui.MediaControllerBar;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.MediaUtils;
@@ -211,15 +212,25 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	}
 
 	private void showImage(int index, Runnable onfinish) {
-		List<String> data = getData();
+		final List<String> data = getData();
 		if (index < 0 || index >= data.size()) {
 			return;
 		}
 		mCurImageIndex = index;
 		int curIndex = index + 1;
-		mPosition.setText(String.valueOf(mCurImageIndex + 1));
-		mTotal.setText(" / " + data.size());
-		mFrameView.playImage(data.get(index), onfinish);
+//		mPosition.setText(String.valueOf(mCurImageIndex + 1));
+//		mTotal.setText(" / " + data.size());
+		
+		mFrameView.playImage(data.get(index), onfinish,new onLoadingImgListener() {
+			
+			@Override
+			public void loadSuccessed() {
+				// TODO Auto-generated method stub
+				mPosition.setText(String.valueOf(mCurImageIndex + 1));
+				mTotal.setText(" / " + data.size());
+				arrowShow(data);
+			}
+		});
 		UiUtils.runAfterLayout(mImageBrowser, new Runnable() {
 			@Override
 			public void run() {
@@ -229,6 +240,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			}
 		});
 		String curFileUri = getData().get(mCurImageIndex);
+	}
+
+	private void arrowShow(final List<String> data) {
 		if (!mAutoPlay) {
 			if (mCurImageIndex == 0 && data.size() > 1) {
 				mArrowRight.setVisibility(View.VISIBLE);
