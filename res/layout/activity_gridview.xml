@@ -98,13 +98,13 @@
             android:textSize="@dimen/px32"/>
 
         <TextView
-
             android:id="@+id/file_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/px88"
             android:gravity="center"
+            android:textSize="@dimen/px32"
             android:visibility="gone"/>
     </RelativeLayout>
 
