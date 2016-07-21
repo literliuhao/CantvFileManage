@@ -8,9 +8,9 @@
     <ImageView
         android:id="@+id/imageview_external_1"
         android:layout_width="@dimen/px360"
-        android:layout_height="@dimen/px248"
+        android:layout_height="@dimen/px240"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/px30"
+        android:layout_margin="@dimen/px16"
         android:background="@drawable/bj_06"
         android:clickable="true"
         android:focusable="true" />

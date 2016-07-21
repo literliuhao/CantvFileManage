@@ -1,5 +1,4 @@
 package com.cantv.media.center.ui;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
@@ -8,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -15,10 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-
 import com.app.core.sys.MainThread;
 import com.cantv.media.R;
-
 @SuppressLint("ResourceAsColor")
 public class CustomGridView extends FrameLayout implements OnItemSelectedListener {
     public GridView mGridView;
@@ -28,15 +26,12 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
     private Runnable mRefreshSelectedViewRunnable;
     private View memptyView;
     private TextView mdata_tip;
-
     public CustomGridView(Context context) {
         this(context, null);
     }
-
     public CustomGridView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
     public CustomGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mFocusView = new GridFocusView(context);
@@ -92,21 +87,16 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
             }
         };
     }
-
     public void setStyleFocus(int sytle) {
         mFocusView.setFocusFrameImageResourceAndMeasure(sytle);
     }
-
     public void setDefaultStyle() {
         mFocusView.setFocusFrameImageResourceAndMeasure(R.drawable.focus);
     }
-
     public void setOnItemSelectedListener(OnItemSelectedListener l) {
         mSelectedListener = l;
     }
-
     public void setAdapter(ListAdapter adapter) {
-
         if (adapter.getCount() == 0) {
             if (mdata_tip != null) {
                 mdata_tip.setVisibility(View.VISIBLE);
@@ -115,31 +105,24 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
         }
         mGridView.setAdapter(adapter);
     }
-
     public void setHorizontalSpacing(int horizontalSpacing) {
         mGridView.setHorizontalSpacing(horizontalSpacing);
     }
-
     public void setVerticalSpacing(int verticalSpacing) {
         mGridView.setVerticalSpacing(verticalSpacing);
     }
-
     public void setGridViewSelector(Drawable sel) {
         mGridView.setSelector(sel);
     }
-
     public void setNumColumns(int num) {
         mGridView.setNumColumns(num);
     }
-
     public void setOnItemClickListener(OnItemClickListener l) {
         mGridView.setOnItemClickListener(l);
     }
-
     public void setSelection(int position) {
         mGridView.setSelection(position);
     }
-
     @Override
     public void onItemSelected(AdapterView<?> arg0, View v, int arg2, long arg3) {
         if (mSelectedListener != null) {
@@ -147,20 +130,17 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
         }
         animateFoucs(v);
     }
-
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
         if (mSelectedListener != null) {
             mSelectedListener.onNothingSelected(arg0);
         }
     }
-
     protected void animateFoucs(View v) {
         if (v != null) {
             animateFoucs(v.getLeft(), v.getTop(), v.getWidth(), v.getHeight());
         }
     }
-
     protected void animateFoucs(int left, int top, int width, int height) {
         if (mGridView.hasFocus()) {
             int oldLeft = mLastFocusPoint.x < 0 ? left : mLastFocusPoint.x;
@@ -169,7 +149,6 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
             mLastFocusPoint.set(left, top);
         }
     }
-
     /**
      * 展示空白页
      *
@@ -178,5 +157,4 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
     public void showNoDataPage() {
         mGridView.setEmptyView(memptyView);
     }
-
 }
