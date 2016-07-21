@@ -43,6 +43,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
@@ -85,13 +86,18 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private TextView mInfoSize;
 	private TextView mInfoTime;
 	private TextView mInfoUrl;
+	private RelativeLayout mHeader;
 	private static final int DELAYED_TIME = 5 * 1000;
+	private final int ARROW_SHOW = 1;
+	private final int MENU_SHOW = 2;
+	private final int MSG_UPDATE_NET_SPEED = 0x001;
 	private long mNextTime;
 	private long mDurationTime;
 	private boolean isFirst = true;
 	private boolean isFirstFocus = true;
 	private boolean isFirstPlayMusic = true;
 	private boolean mSizeType = false;
+	private boolean isFirstMenu = true;
 	private MediaPlayer mMediaPlayer;
 	private String mMusicPath;
 	private boolean isPause = false;
@@ -107,9 +113,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 				if (mArrowLeft.getVisibility() == View.GONE && mArrowRight.getVisibility() == View.GONE) {
 					return;
 				}
-				mHandler.removeCallbacksAndMessages(null);
+				mHandler.removeMessages(ARROW_SHOW);
 				mArrowLeft.setVisibility(View.GONE);
 				mArrowRight.setVisibility(View.GONE);
+			}else if(flag == 2){
+				if (mHeader.getVisibility() == View.GONE ) {
+					return;
+				}
+				mHandler.removeMessages(MENU_SHOW);
+				mHeader.setVisibility(View.GONE);
 			}
 		}
 
@@ -197,6 +209,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mSize = (ImageView) findViewById(R.id.media__image_view__size);
 		mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
 		mInfo = (ImageView) findViewById(R.id.media__image_view__info);
+		mHeader = (RelativeLayout) findViewById(R.id.media_image_header);
 		mFrameView = new ImageFrameView(this);
 		mFrameView.setNotifyParentUpdateListner(this);
 		mImageBrowser = (ImageBrowser) findViewById(R.id.media__image_view__image);
@@ -226,6 +239,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			@Override
 			public void loadSuccessed() {
 				// TODO Auto-generated method stub
+				if(isFirstMenu){
+					isFirstMenu = false;
+					mHeader.setVisibility(View.VISIBLE);
+					mHandler.sendEmptyMessageDelayed(MENU_SHOW, DELAYED_TIME);
+				}
 				mPosition.setText(String.valueOf(mCurImageIndex + 1));
 				mTotal.setText(" / " + data.size());
 				arrowShow(data);
@@ -261,8 +279,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
 				@Override
 				public void run() {
-					mHandler.removeCallbacksAndMessages(null);
-					mHandler.sendEmptyMessageDelayed(1, DELAYED_TIME);
+					mHandler.removeMessages(ARROW_SHOW);
+					mHandler.sendEmptyMessageDelayed(ARROW_SHOW, DELAYED_TIME);
 				}
 			}).start();
 		}
@@ -614,7 +632,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			stopAutoPlay();
 			stopMusic();
 		}
-		mHandler.removeCallbacksAndMessages(null);
+		if(mHandler!=null){
+			mHandler.removeMessages(ARROW_SHOW);
+			mHandler.removeMessages(MENU_SHOW);
+		}
 		unregisterReceiver(mimageReceiver);
 	}
 
