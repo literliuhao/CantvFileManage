@@ -1,11 +1,9 @@
 package com.cantv.media.center.activity;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
 import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
@@ -16,7 +14,6 @@ import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
 import com.cantv.media.center.ui.MediaControllerBar;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.MediaUtils;
-
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,7 +44,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
 	private int mCurImageIndex;
 	private ImageFrameView mFrameView;
@@ -102,6 +98,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private int STOP = 0;
 	private int PLAYING = 1;
 	private int PAUSE = 2;
+	private static long lastClickTime;
 	private Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			int flag = msg.what;
@@ -704,7 +701,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mInfoUrl.setText("图片尺寸：" + outWidth + "*" + outHeight);
 	}
 	
-	private static long lastClickTime;
     public synchronized static boolean isFastClick() {
         long time = System.currentTimeMillis();   
         if ( time - lastClickTime < 500) {   
