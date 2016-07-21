@@ -86,11 +86,12 @@ public class MediaGridView extends CustomGridView {
 					mListAdapter.bindData(mCurrMediaList);
 					if (mCurrMediaList.size() == 0) {
 						showNoDataPage();
-						mActivity.mFocusName.setVisibility(View.GONE);
+						// mActivity.mFocusName.setVisibility(View.GONE);
 						mActivity.mRTCountView.setVisibility(View.GONE);
 					} else {
-						mActivity.mFocusName.setVisibility(View.VISIBLE);
-						mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+						// mActivity.mFocusName.setVisibility(View.VISIBLE);
+						// mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+						setTextRTview(1 + "", " / " + mCurrMediaList.size());
 					}
 					MediaGridView.this.setSelection(0);
 				} else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC)
@@ -241,8 +242,8 @@ public class MediaGridView extends CustomGridView {
 			if (result.size() == 0) {
 				showNoDataPage();
 			} else {
-				mActivity.mFocusName.setVisibility(View.VISIBLE);
-				mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+				// mActivity.mFocusName.setVisibility(View.VISIBLE);
+				// mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
 				mActivity.mRTCountView.setVisibility(View.VISIBLE);
 				setTextRTview("1", " / " + mCurrMediaList.size());
 
@@ -265,7 +266,7 @@ public class MediaGridView extends CustomGridView {
 				} else {
 					if (mSourceType == SourceType.LOCAL) {
 						mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
-					} else if (mSourceType == SourceType.DEVICE) {
+					} else if (mSourceType == SourceType.DEVICE || devicePath != null) {
 						mMediaes.addAll(FileUtil.getFileList(devicePath));
 					} else {
 						if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误
@@ -288,13 +289,13 @@ public class MediaGridView extends CustomGridView {
 			mListAdapter.bindData(pop);
 			MediaGridView.this.setSelection(mPosStack.pop());
 			mCurrMediaList = pop;
-			if (mActivity.mFocusName.getVisibility() == View.GONE) {
-				mActivity.mFocusName.setVisibility(View.VISIBLE);
-			}
+			// if (mActivity.mFocusName.getVisibility() == View.GONE) {
+			// mActivity.mFocusName.setVisibility(View.VISIBLE);
+			// }
 			if (mActivity.mRTCountView.getVisibility() == View.GONE) {
 				mActivity.mRTCountView.setVisibility(View.VISIBLE);
 			}
-			mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+			// mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
 			setTextRTview("1", " / " + mCurrMediaList.size());
 			isback = true;
 		}
