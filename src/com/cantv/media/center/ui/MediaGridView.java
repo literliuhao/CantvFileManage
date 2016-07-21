@@ -88,6 +88,7 @@ public class MediaGridView extends CustomGridView {
                     } else {
                         mActivity.mFocusName.setVisibility(View.VISIBLE);
                         mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
+                        setTextRTview(1+""," / "+mCurrMediaList.size());
                     }
                     MediaGridView.this.setSelection(0);
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
