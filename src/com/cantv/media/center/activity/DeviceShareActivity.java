@@ -282,7 +282,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 								mAddDeviceDialog.dismiss();
 								addDeviceItemView(new DeviceInfo(host));
 							} else {
-								ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.ip_err_tips),
+								ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.devices_not_found),
 										Toast.LENGTH_SHORT);
 							}
 						}
@@ -301,7 +301,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
 	protected String resolve(String ip) {
 		ip = ip.replace("\n", "").trim();
-		if (Pattern.matches("^\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}$", ip)) {
+		if (Pattern.matches("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$", ip)) {
 			return ip;
 		}
 
