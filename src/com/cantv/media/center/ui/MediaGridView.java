@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
 
+import com.cantv.media.R;
 import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.adapter.MediaListAdapter;
 import com.cantv.media.center.constants.SourceType;
@@ -16,6 +17,7 @@ import com.cantv.media.center.ui.MediaGridView.OnFocusChangedListener;
 import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.StringUtil;
 import com.cantv.media.center.utils.ToastUtils;
 import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.FileServer.OnInitlizedListener;
@@ -39,10 +41,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 @SuppressLint("ResourceAsColor")
 public class MediaGridView extends CustomGridView {
-	
-	public interface OnFocusChangedListener {
-		public void focusPosition(Media media, int position);
-	}
 
 	private static final String TAG = "MediaGridView";
 	private static final int UPDATE_UI = 0;
@@ -119,6 +117,10 @@ public class MediaGridView extends CustomGridView {
 				if (view != null) {
 					mSelectItemPosition = position;
 				}
+				if (null != mOnFocusChangedListener) {
+                    mOnFocusChangedListener.focusPosition(mCurrMediaList.get(position), position);
+                    setTextRTview(position+1+"","/"+mCurrMediaList.size());
+                }
 			}
 
 			@Override
@@ -329,8 +331,17 @@ public class MediaGridView extends CustomGridView {
 		MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType, media.isSharing ? true : false);
 	}
 
-	public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
-		
-	}
-
+	private OnFocusChangedListener mOnFocusChangedListener;
+    public interface OnFocusChangedListener {
+        void focusPosition(Media media, int position);
+    }
+    public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
+        this.mOnFocusChangedListener = onFocusChangedListener;
+    }
+    
+    
+    private void setTextRTview(String st1,String st2){
+    	StringUtil.getMergeString(mContext, mActivity.mRTCountView,R.style.rtTextStyle,st1,st2);
+        
+    }
 }
