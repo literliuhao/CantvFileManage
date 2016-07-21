@@ -258,6 +258,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mRotation.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(isFastClick()){
+					return ;
+				}
 				MainThread.cancel(mToHideRunnable);
 				MainThread.runLater(mToHideRunnable, 5 * 1000);
 				mImageBrowser.changeRotation();
