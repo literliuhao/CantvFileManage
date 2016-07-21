@@ -43,6 +43,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
@@ -65,7 +66,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private BroadcastReceiver mimageReceiver;
 	private LinearLayout mediaimagebar;
 	private Runnable mToHideRunnable;
-	private boolean mShowing = false;
+    private boolean mShowing = true;
 	private int ROTATION = 0;
 	private int PREV = 1;
 	private int NEXT = 2;
@@ -85,13 +86,18 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 	private TextView mInfoSize;
 	private TextView mInfoTime;
 	private TextView mInfoUrl;
+	private RelativeLayout mHeader;
 	private static final int DELAYED_TIME = 5 * 1000;
+	private final int ARROW_SHOW = 1;
+	private final int MENU_SHOW = 2;
+	private final int MSG_UPDATE_NET_SPEED = 0x001;
 	private long mNextTime;
 	private long mDurationTime;
 	private boolean isFirst = true;
 	private boolean isFirstFocus = true;
 	private boolean isFirstPlayMusic = true;
 	private boolean mSizeType = false;
+	private boolean isFirstMenu = true;
 	private MediaPlayer mMediaPlayer;
 	private String mMusicPath;
 	private boolean isPause = false;
@@ -107,9 +113,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 				if (mArrowLeft.getVisibility() == View.GONE && mArrowRight.getVisibility() == View.GONE) {
 					return;
 				}
-				mHandler.removeCallbacksAndMessages(null);
+				mHandler.removeMessages(ARROW_SHOW);
 				mArrowLeft.setVisibility(View.GONE);
 				mArrowRight.setVisibility(View.GONE);
+			}else if(flag == 2){
+				if (mHeader.getVisibility() == View.GONE ) {
+					return;
+				}
+				mHandler.removeMessages(MENU_SHOW);
+				mHeader.setVisibility(View.GONE);
 			}
 		}
 
@@ -128,6 +140,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		autoRunnable();
 		toHideRunnable();
 		registerReceiver();
+        toHideView();
 	}
 
 	private void toHideRunnable() {
@@ -154,8 +167,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mimageReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
-						|| intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+                if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 					if (getData() == null || getData().size() == 0) {
 						return;
 					}
@@ -197,6 +209,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mSize = (ImageView) findViewById(R.id.media__image_view__size);
 		mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
 		mInfo = (ImageView) findViewById(R.id.media__image_view__info);
+		mHeader = (RelativeLayout) findViewById(R.id.media_image_header);
 		mFrameView = new ImageFrameView(this);
 		mFrameView.setNotifyParentUpdateListner(this);
 		mImageBrowser = (ImageBrowser) findViewById(R.id.media__image_view__image);
@@ -226,6 +239,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			@Override
 			public void loadSuccessed() {
 				// TODO Auto-generated method stub
+				if(isFirstMenu){
+					isFirstMenu = false;
+					mHeader.setVisibility(View.VISIBLE);
+					mHandler.sendEmptyMessageDelayed(MENU_SHOW, DELAYED_TIME);
+				}
 				mPosition.setText(String.valueOf(mCurImageIndex + 1));
 				mTotal.setText(" / " + data.size());
 				arrowShow(data);
@@ -261,8 +279,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
 				@Override
 				public void run() {
-					mHandler.removeCallbacksAndMessages(null);
-					mHandler.sendEmptyMessageDelayed(1, DELAYED_TIME);
+					mHandler.removeMessages(ARROW_SHOW);
+					mHandler.sendEmptyMessageDelayed(ARROW_SHOW, DELAYED_TIME);
 				}
 			}).start();
 		}
@@ -481,53 +499,67 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
 	private void forceHideView() {
 		mShowing = false;
-		mFocusUtils.hideFocus();
 		mediaimagebar.setVisibility(View.GONE);
 		MainThread.cancel(mToHideRunnable);
-		toFlyView(0, 0, 0, 1, true);
+        mFocusUtils.hideFocus();
+        toFlyView(0, 0, 0, 1, true,false);
 	}
 
 	private void toShowView() {
-		if (mShowing)
-			return;
-		switch (POSTION) {
-		case 0:
-			mRotation.requestFocus();
-			break;
-		case 1:
-			mSize.requestFocus();
-			break;
-		case 2:
-			mAutoRunImageView.requestFocus();
-			break;
-		case 3:
-			mInfo.requestFocus();
-			break;
+        if (mShowing) return;
+        switch (POSTION) {
+            case 0:
+                mRotation.requestFocus();
+                break;
+            case 1:
+                mSize.requestFocus();
+                break;
+            case 2:
+                mAutoRunImageView.requestFocus();
+                break;
+            case 3:
+                mInfo.requestFocus();
+                break;
 
 		default:
 			break;
 		}
 		mShowing = true;
 		MainThread.runLater(mToHideRunnable, 5 * 1000);
-		mFocusUtils.showFocus();
 		mediaimagebar.setVisibility(View.VISIBLE);
-		toFlyView(0, 0, 1, 0, true);
-		if (isFirstFocus) {
-			isFirstFocus = false;
-			mFocusUtils.setFocusLayout(mRotation, true, (float) 1.2);
-		}
+        toFlyView(0, 0, 1, 0, true,true);
+    }
 
-	}
+    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status) {
+        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
+        animation.setDuration(UiUtils.ANIM_DURATION_LONG);
+        animation.setFillAfter(fillAfter);
+        mediaimagebar.clearAnimation();
+        mediaimagebar.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
-	private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter) {
-		TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue,
-				Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue,
-				Animation.RELATIVE_TO_SELF, toYValue);
-		animation.setDuration(UiUtils.ANIM_DURATION_LONG);
-		animation.setFillAfter(fillAfter);
-		mediaimagebar.clearAnimation();
-		mediaimagebar.startAnimation(animation);
-	}
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if(status){
+                    if (isFirstFocus) {
+                        isFirstFocus = false;
+                        mRotation.requestFocus();
+                        mFocusUtils.setFocusLayout(mRotation, true, (float) 1.2);
+                    }
+                    mFocusUtils.showFocus();
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -567,12 +599,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			}
 
 			if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
-				mImageBrowser.changeUpRotation();
+				mImageBrowser.changeRotation();
 				return true;
 
 			}
 			if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
-				mImageBrowser.changeRotation();
+				mImageBrowser.changeUpRotation();
 				return true;
 
 			}
@@ -614,7 +646,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			stopAutoPlay();
 			stopMusic();
 		}
-		mHandler.removeCallbacksAndMessages(null);
+		if(mHandler!=null){
+			mHandler.removeMessages(ARROW_SHOW);
+			mHandler.removeMessages(MENU_SHOW);
+		}
 		unregisterReceiver(mimageReceiver);
 	}
 

@@ -233,15 +233,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		}
 
 		time += mMoveTime;
-
 		final String srtByTime = parser.getSrtByTime(time);
-		runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				mSubTitle.setText(srtByTime);
-			}
-		});
+		mSubTitle.setText(srtByTime);
+//		runOnUiThread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				mSubTitle.setText(srtByTime);
+//			}
+//		});
 	}
 
 	@Override

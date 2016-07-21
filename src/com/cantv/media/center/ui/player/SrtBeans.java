@@ -129,7 +129,42 @@ public class SrtBeans implements Comparable<Long> {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * 判断当前字幕是超过了某个时间点
+	 * 
+	 * @param timeInMillis
+	 * @return
+	 */
+	public boolean upTime(long timeInMillis) {
+		if (!timeInitialized) {
+			synchronized (SrtBeans.class) {
+				if (!timeInitialized) {
+					ListIterator<String> listIterator = src.listIterator();
+					while (listIterator.hasNext()) {
+						String s = listIterator.next();
+						Matcher matcher = matchTimePattern.matcher(s);
+						if (matcher.find()) {
+							int groupCount = matcher.groupCount();
+							if (groupCount != 2) {
+								// 非法的时间 或 其他类型
+								continue;
+							}
+							beginTime = TimeToMs(matcher.group(1));
+							endTime = TimeToMs(matcher.group(2));
+							listIterator.remove();
+							break;
+						}
+					}
+					timeInitialized = true;
+				}
+			}
+		}
+		if (timeInMillis > endTime) {
+			return true;
+		}
+		return false;
+	}
 	public String getSrt() {
 		if (!srtInitialized) {
 			StringBuilder sb = new StringBuilder();

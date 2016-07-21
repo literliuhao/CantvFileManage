@@ -1,130 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <com.cantv.media.center.ui.ImageBrowser
         android:id="@+id/media__image_view__image"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="centerInside" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false"
+        android:scaleType="centerInside"/>
 
     <LinearLayout
         android:id="@+id/mediaimagebar"
         android:layout_width="@dimen/dimen_1000px"
         android:layout_height="@dimen/dimen_260px"
-        android:gravity="center_horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:orientation="horizontal" >
-	
-       <LinearLayout 
-           android:id="@+id/media_image_ll_rotation"
-           android:layout_width="@dimen/dimen_140px"
-           android:layout_height="@dimen/dimen_260px"
-           android:orientation="vertical">
-        <ImageView
-            android:id="@+id/media__image_view__rotation"
-            android:layout_width="@dimen/dimen_80px"
-            android:layout_height="@dimen/dimen_80px"
-            android:layout_marginTop="@dimen/dimen_24px"
-            android:layout_gravity="center_horizontal"
-            android:focusable="true"
-            android:src="@drawable/photo_info1" />
-        <TextView 
-            android:id="@+id/media__image_tv__rotation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_24px"
-            android:layout_gravity="center_horizontal"
-            android:text="旋转"
-            android:textColor="@android:color/background_light"
-            android:textSize="@dimen/fontsize_32px"/>
-		</LinearLayout>
-		  <LinearLayout 
-           android:id="@+id/media_image_ll_size"
-           android:layout_width="@dimen/dimen_140px"
-           android:layout_height="@dimen/dimen_260px"
-           android:layout_marginLeft="@dimen/dimen_80px"
-           android:orientation="vertical">
-        <ImageView
-            android:id="@+id/media__image_view__size"
-            android:layout_width="@dimen/dimen_80px"
-            android:layout_height="@dimen/dimen_80px"
-           	android:layout_marginTop="@dimen/dimen_24px"
-           	android:layout_gravity="center_horizontal"
-            android:focusable="true"
-            android:gravity="center"
-            android:src="@drawable/photo_info2" />
-         <TextView 
-            android:id="@+id/media__image_tv__size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_24px"
-            android:layout_gravity="center_horizontal"
-            android:text="等比全屏"
-            android:textColor="@android:color/background_light"
-            android:textSize="@dimen/fontsize_32px"/>
-		</LinearLayout>
-		<LinearLayout 
-           android:id="@+id/media_image_ll_auto"
-           android:layout_width="@dimen/dimen_140px"
-           android:layout_height="@dimen/dimen_260px"
-           android:layout_marginLeft="@dimen/dimen_80px"
-           android:orientation="vertical">
-        <ImageView
-            android:id="@+id/media__image_view__auto"
-            android:layout_width="@dimen/dimen_80px"
-            android:layout_height="@dimen/dimen_80px"
-            android:layout_marginTop="@dimen/dimen_24px"
-            android:layout_gravity="center_horizontal"
-            android:focusable="true"
-            android:gravity="center"
-            android:scaleType="fitXY"
-            android:src="@drawable/photo_info3" />
-         <TextView 
-            android:id="@+id/media__image_tv__auto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_24px"
-            android:layout_gravity="center_horizontal"
-            android:text="幻灯片"
-            android:textColor="@android:color/background_light"
-            android:textSize="@dimen/fontsize_32px"/>
-		</LinearLayout>
-		<LinearLayout 
-           android:id="@+id/media_image_ll_info"
-           android:layout_width="@dimen/dimen_140px"
-           android:layout_height="@dimen/dimen_260px"
-           android:layout_marginLeft="@dimen/dimen_80px"
-           android:orientation="vertical">
-        <ImageView
-            android:id="@+id/media__image_view__info"
-            android:layout_width="@dimen/dimen_80px"
-            android:layout_height="@dimen/dimen_80px"
-            android:layout_marginTop="@dimen/dimen_24px"
-            android:layout_gravity="center_horizontal"
-            android:focusable="true"
-            android:gravity="center"
-            android:src="@drawable/photo_info4" />
-         <TextView 
-            android:id="@+id/media__image_tv__info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_24px"
-            android:layout_gravity="center_horizontal"
-            android:text="图片信息"
-            android:textColor="@android:color/background_light"
-            android:textSize="@dimen/fontsize_32px"/>
-	</LinearLayout>
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/media_image_ll_rotation"
+            android:layout_width="@dimen/dimen_140px"
+            android:layout_height="@dimen/dimen_260px"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/media__image_view__rotation"
+                android:layout_width="@dimen/dimen_80px"
+                android:layout_height="@dimen/dimen_80px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:focusable="true"
+                android:src="@drawable/photo_info1"/>
+
+            <TextView
+                android:id="@+id/media__image_tv__rotation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:text="旋转"
+                android:textColor="@android:color/background_light"
+                android:textSize="@dimen/fontsize_32px"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/media_image_ll_size"
+            android:layout_width="@dimen/dimen_140px"
+            android:layout_height="@dimen/dimen_260px"
+            android:layout_marginLeft="@dimen/dimen_80px"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/media__image_view__size"
+                android:layout_width="@dimen/dimen_80px"
+                android:layout_height="@dimen/dimen_80px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:focusable="true"
+                android:gravity="center"
+                android:src="@drawable/photo_info2"/>
+
+            <TextView
+                android:id="@+id/media__image_tv__size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:text="等比全屏"
+                android:textColor="@android:color/background_light"
+                android:textSize="@dimen/fontsize_32px"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/media_image_ll_auto"
+            android:layout_width="@dimen/dimen_140px"
+            android:layout_height="@dimen/dimen_260px"
+            android:layout_marginLeft="@dimen/dimen_80px"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/media__image_view__auto"
+                android:layout_width="@dimen/dimen_80px"
+                android:layout_height="@dimen/dimen_80px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:focusable="true"
+                android:gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/photo_info3"/>
+
+            <TextView
+                android:id="@+id/media__image_tv__auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:text="幻灯片"
+                android:textColor="@android:color/background_light"
+                android:textSize="@dimen/fontsize_32px"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/media_image_ll_info"
+            android:layout_width="@dimen/dimen_140px"
+            android:layout_height="@dimen/dimen_260px"
+            android:layout_marginLeft="@dimen/dimen_80px"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/media__image_view__info"
+                android:layout_width="@dimen/dimen_80px"
+                android:layout_height="@dimen/dimen_80px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:focusable="true"
+                android:gravity="center"
+                android:src="@drawable/photo_info4"/>
+
+            <TextView
+                android:id="@+id/media__image_tv__info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_24px"
+                android:text="图片信息"
+                android:textColor="@android:color/background_light"
+                android:textSize="@dimen/fontsize_32px"/>
+        </LinearLayout>
     </LinearLayout>
+
 	 <ImageView
             android:id="@+id/media__image_view__left"
             android:layout_width="@dimen/dimen_80px"
             android:layout_height="@dimen/dimen_104px"
             android:layout_marginLeft="@dimen/dimen_104px"
-            android:focusable="true"
             android:visibility="gone"
             android:layout_alignParentLeft="true"
 			android:layout_centerVertical="true"            
@@ -137,7 +148,6 @@
             android:layout_alignParentRight="true"
 			android:layout_centerVertical="true"  
             android:visibility="gone"
-            android:focusable="true"
             android:src="@drawable/arrow_right_normal" />
          <TextView
             android:id="@+id/media__image_tv__total"
@@ -206,4 +216,34 @@
                   android:textColor="#7fffffff"
                   android:textSize="@dimen/fontsize_32px" />
           	</LinearLayout>
+          	
+          <RelativeLayout
+              android:id="@+id/media_image_header"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:visibility="gone"
+              android:paddingLeft="@dimen/px128"
+              android:paddingRight="@dimen/px128" >
+
+              <ImageView
+                  android:id="@+id/title_image"
+                  android:layout_width="@dimen/px32"
+                  android:layout_height="@dimen/px32"
+                  android:layout_marginLeft="@dimen/px40"
+                  android:layout_marginTop="@dimen/px92"
+                  android:layout_toRightOf="@id/title_textview"
+                  android:background="@drawable/icon_menu1" />
+
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="@dimen/px50"
+                  android:layout_marginLeft="@dimen/px20"
+                  android:layout_marginTop="@dimen/px88"
+                  android:layout_toRightOf="@id/title_image"
+                  android:text="@string/str_menu"
+                  android:textColor="@color/per50_white"
+                  android:textSize="@dimen/px32" />
+          </RelativeLayout>
+
 </RelativeLayout>

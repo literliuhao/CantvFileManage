@@ -93,6 +93,7 @@
             android:textColor="@color/per50_white"
             android:textSize="@dimen/px32"
             android:visibility="gone" />
+
     </RelativeLayout>
 
 </RelativeLayout>
