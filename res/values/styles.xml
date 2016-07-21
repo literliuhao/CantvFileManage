@@ -52,4 +52,9 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
+    
+    <style name="rtTextStyle">
+        <item name="android:textColor">@color/per80_white</item>
+    </style>
+    
 </resources>

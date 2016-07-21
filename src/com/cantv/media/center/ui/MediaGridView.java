@@ -15,6 +15,8 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+
+import com.cantv.media.R;
 import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.adapter.MediaListAdapter;
 import com.cantv.media.center.constants.SourceType;
@@ -22,6 +24,8 @@ import com.cantv.media.center.data.Media;
 import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.StringUtil;
+
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -100,7 +104,7 @@ public class MediaGridView extends CustomGridView {
                     mSelectItemPosition = position;
                     if (null != mOnFocusChangedListener) {
                         mOnFocusChangedListener.focusPosition(mCurrMediaList.get(position), position);
-                        mActivity.mRTCountView.setText(position + 1 + "/" + mCurrMediaList.size());
+                        setTextRTview(position+1+"","/"+mCurrMediaList.size());
                     }
                 }
             }
@@ -222,7 +226,8 @@ public class MediaGridView extends CustomGridView {
                 mActivity.mFocusName.setVisibility(View.VISIBLE);
                 mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
-                mActivity.mRTCountView.setText("1/" + mCurrMediaList.size());
+                setTextRTview("1","/"+mCurrMediaList.size());
+                
             }
             mfirst = 1;
         }
@@ -270,7 +275,7 @@ public class MediaGridView extends CustomGridView {
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
             }
             mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
-            mActivity.mRTCountView.setText("1/" + mCurrMediaList.size());
+            setTextRTview("1","/"+mCurrMediaList.size());
             isback = true;
         }
         return isback;
@@ -345,4 +350,11 @@ public class MediaGridView extends CustomGridView {
     public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
         this.mOnFocusChangedListener = onFocusChangedListener;
     }
+    
+    
+    private void setTextRTview(String st1,String st2){
+    	StringUtil.getMergeString(mContext, mActivity.mRTCountView,R.style.rtTextStyle,st1,st2);
+        
+    }
+    
 }
