@@ -1,5 +1,8 @@
 package com.cantv.media.center.ui;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -7,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.app.core.ui.TransformView;
+import com.cantv.media.center.ui.ImageWatchingView.OnRotationListener;
 
 public class ImageBrowser extends TransformView {
     private final ImageWatchingView mWatchingView;
@@ -50,7 +54,14 @@ public class ImageBrowser extends TransformView {
         final LayoutTransform layoutT = new LayoutTransform(currLayoutT);
         layoutT.setRotationZ(layoutT.getRotationZ() - 90);
         final float rotationOffset = currLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - layoutT.getRotationZ();
-        mWatchingView.onRotationChanged((int) rotationOffset, true,true);
+        mWatchingView.onRotationChanged((int) rotationOffset, true,true,new OnRotationListener() {
+			
+			@Override
+			public void onRotationFinish() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
         setChildLayoutTransform(mWatchingView, layoutT);
     }
 
@@ -59,7 +70,14 @@ public class ImageBrowser extends TransformView {
         final LayoutTransform layoutT = new LayoutTransform(currLayoutT);
         layoutT.setRotationZ(layoutT.getRotationZ() + 90);
         final float rotationOffset = currLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - layoutT.getRotationZ();
-        mWatchingView.onRotationChanged((int) rotationOffset, true,true);
+        mWatchingView.onRotationChanged((int) rotationOffset, true,true,new OnRotationListener() {
+			
+			@Override
+			public void onRotationFinish() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
         setChildLayoutTransform(mWatchingView, layoutT);
     }
     
@@ -72,10 +90,28 @@ public class ImageBrowser extends TransformView {
     }
     
     public void changeReset() {
+    	
+    	ObjectAnimator startAlpha = ObjectAnimator.ofFloat(mLayoutT, "alpha",1f,0f);
+   
+    	startAlpha.setDuration(0);
+    	startAlpha.start();
+    	
+    	
     	mLayoutT.setRotationZ(mLayoutT.getRotationZ());
-        final float rotationOffset = mCurrLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - mLayoutT.getRotationZ();
-        mWatchingView.onRotationChanged((int) rotationOffset, true,false);
-        setChildLayoutTransform(mWatchingView, mLayoutT);
+    	final float rotationOffset = mCurrLayoutT.getRotationZ() + mWatchingView.getZoomAngle() - mLayoutT.getRotationZ();
+    	mWatchingView.onRotationChanged((int) rotationOffset, true,false,new OnRotationListener() {
+			
+			@Override
+			public void onRotationFinish() {
+				// TODO Auto-generated method stub
+			}
+		});
+    	setChildLayoutTransform(mWatchingView, mLayoutT);
+    	ObjectAnimator endAlpha = ObjectAnimator.ofFloat(mLayoutT, "alpha",0f,1f);
+    	endAlpha.setDuration(1);
+    	endAlpha.start();
+    	
+    	
     }
     
 }
