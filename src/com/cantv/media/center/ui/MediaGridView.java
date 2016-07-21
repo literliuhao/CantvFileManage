@@ -104,7 +104,7 @@ public class MediaGridView extends CustomGridView {
                     mSelectItemPosition = position;
                     if (null != mOnFocusChangedListener) {
                         mOnFocusChangedListener.focusPosition(mCurrMediaList.get(position), position);
-                        setTextRTview(position+1+"","/"+mCurrMediaList.size());
+                        setTextRTview(position+1+""," / "+mCurrMediaList.size());
                     }
                 }
             }
@@ -226,7 +226,7 @@ public class MediaGridView extends CustomGridView {
                 mActivity.mFocusName.setVisibility(View.VISIBLE);
                 mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
-                setTextRTview("1","/"+mCurrMediaList.size());
+                setTextRTview("1"," / "+mCurrMediaList.size());
                 
             }
             mfirst = 1;
@@ -275,7 +275,7 @@ public class MediaGridView extends CustomGridView {
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
             }
             mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
-            setTextRTview("1","/"+mCurrMediaList.size());
+            setTextRTview("1"," / "+mCurrMediaList.size());
             isback = true;
         }
         return isback;
