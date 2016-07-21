@@ -91,7 +91,8 @@ public class PlayerController extends RelativeLayout {
 				break;
 
 			case CHANG_SRT:
-				new SRT("srt", Thread.MIN_PRIORITY, mContext, mCtrlBarContext).start();
+				//new SRT("srt", Thread.MIN_PRIORITY, mContext, mCtrlBarContext).start();
+				((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
 				handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
 				break;
 				
@@ -395,21 +396,21 @@ public class PlayerController extends RelativeLayout {
 		}
 	}
 
-	static class SRT extends HandlerThread {
-
-		private Context mContext;
-		private PlayerCtrlBarContext mCtrlBarContext;
-
-		public SRT(String name, int priority, Context mContext, PlayerCtrlBarContext mCtrlBarContext) {
-			super(name, priority);
-			this.mContext = mContext;
-			this.mCtrlBarContext = mCtrlBarContext;
-		}
-
-		@Override
-		public void run() {
-			((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
-		}
-	}
+//	static class SRT extends HandlerThread {
+//
+//		private Context mContext;
+//		private PlayerCtrlBarContext mCtrlBarContext;
+//
+//		public SRT(String name, int priority, Context mContext, PlayerCtrlBarContext mCtrlBarContext) {
+//			super(name, priority);
+//			this.mContext = mContext;
+//			this.mCtrlBarContext = mCtrlBarContext;
+//		}
+//
+//		@Override
+//		public void run() {
+//			((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
+//		}
+//	}
 
 }
