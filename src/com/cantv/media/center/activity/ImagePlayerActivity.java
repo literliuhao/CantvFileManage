@@ -287,6 +287,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		mSize.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(isFastClick()){
+					return ;
+				}
 				if (!mSizeType) {
 					mSizeType = true;
 					mImageBrowser.onZoomIn();
@@ -700,4 +703,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		int outWidth = options.outWidth;
 		mInfoUrl.setText("图片尺寸：" + outWidth + "*" + outHeight);
 	}
+	
+	private static long lastClickTime;
+    public synchronized static boolean isFastClick() {
+        long time = System.currentTimeMillis();   
+        if ( time - lastClickTime < 500) {   
+            return true;   
+        }   
+        lastClickTime = time;   
+        return false;   
+    }
 }
