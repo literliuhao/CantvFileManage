@@ -1,5 +1,4 @@
 package com.cantv.media.center.ui;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -12,7 +11,6 @@ import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.cantv.media.R;
 import com.cantv.media.center.constants.PicStretch;
 import com.cantv.media.center.constants.SourceType;
@@ -20,10 +18,8 @@ import com.cantv.media.center.data.Media;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
-
 import java.util.Date;
 import java.util.List;
-
 @SuppressLint("NewApi")
 public class MediaListItemView extends MediaItemView {
     private MediaPicView mImageView;
@@ -41,15 +37,12 @@ public class MediaListItemView extends MediaItemView {
     private AlphaAnimation mAnimation = null;
     private Transformation mDrawingTransform = new Transformation();
     private Context mContext;
-
     public MediaListItemView(Context context) {
         this(context, null);
     }
-
     public MediaListItemView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
     @SuppressLint("ResourceAsColor")
     public MediaListItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -59,26 +52,22 @@ public class MediaListItemView extends MediaItemView {
         int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px200);
         RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
         relativeLayout.setLayoutParams(relativeLayoutParams);
-
         mContext = context;
         mPlayFocusDrawable = getResources().getDrawable(R.drawable.videoplaynomal);
         mNumDrawable = new NumberDrawable(context);
         setWillNotDraw(false);
         setFocusable(false);
-
         mFocusView = new ImageView(context);
         LayoutParams mFocusParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.px200));
         mFocusParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mFocusView.setLayoutParams(mFocusParams);
-
         mBgView = new MediaPicView(context);
         mBgView.setId(0x559584);
         mBgView.setPicStretch(PicStretch.SCALE_CROP);
         LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px168));
         mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mBgView.setLayoutParams(mediaParams);
-
         mImageView = new MediaPicView(context);
         mImageView.setPicStretch(PicStretch.SCALE_CROP);
         LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
@@ -88,7 +77,6 @@ public class MediaListItemView extends MediaItemView {
 //				FileUtil.dip2px(mContext, 42), 0, 0);
         imageParams.setMargins(FileUtil.dip2px(mContext, 14), 0, 0, 0);
         mImageView.setLayoutParams(imageParams);
-
         mTvName = new TextView(context);
         mTvName.setId(0x559586);
         mTvName.setTextColor(getResources().getColorStateList(R.color.btn_selector));
@@ -98,7 +86,6 @@ public class MediaListItemView extends MediaItemView {
         tvParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
         tvParams.setMargins(30, 60, 0, 10);
         mTvName.setLayoutParams(tvParams);
-
         mTvSize = new TextView(context);
         mTvSize.setId(0x559585);
         mTvSize.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
@@ -108,7 +95,6 @@ public class MediaListItemView extends MediaItemView {
         tvSizeParams.addRule(RelativeLayout.BELOW, mTvName.getId());
         tvSizeParams.setMargins(30, 0, 0, 0);
         mTvSize.setLayoutParams(tvSizeParams);
-
         mTvDate = new TextView(context);
         mTvDate.setTextSize(getResources().getDimension(R.dimen.px18));
         mTvDate.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
@@ -118,7 +104,6 @@ public class MediaListItemView extends MediaItemView {
         tvDateParams.addRule(RelativeLayout.ALIGN_BASELINE, mTvSize.getId());
         tvDateParams.setMargins(27, 0, 0, 0);
         mTvDate.setLayoutParams(tvDateParams);
-
         relativeLayout.addView(mFocusView);
         relativeLayout.addView(mBgView);
         relativeLayout.addView(mImageView);
@@ -127,24 +112,19 @@ public class MediaListItemView extends MediaItemView {
         relativeLayout.addView(mTvDate);
         addView(relativeLayout);
     }
-
     public ImageView getFocusImage() {
         return mFocusView;
     }
-
     public void setMediaItem(Media media) {
         mMedia = media;
         mTvName.setText(media.getName());
-
         List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
-
         mTvDate.setVisibility(VISIBLE);
         // 当是文件类型,并且不是外接设备的根目录(根目录是默认1970时间,无意义)
         if ((mMedia.mType == SourceType.FOLDER) && !usbRootPaths.contains(mMedia.mUri)) {
             mTvSize.setVisibility(GONE);
         } else {
             mTvSize.setVisibility(VISIBLE);
-
             // 设置根目录大小
             if (usbRootPaths.contains(mMedia.mUri)) {
                 mTvDate.setVisibility(GONE);
@@ -183,34 +163,27 @@ public class MediaListItemView extends MediaItemView {
                 break;
         }
     }
-
     @Override
     public void setSelected(boolean selected) {
         super.setSelected(selected);
         animateSelection(selected);
     }
-
     void animateView(final float from, final float to) {
         mAnimation = new AlphaAnimation(from, to);
         mAnimation.setDuration(1000);
         mAnimation.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (isSelected()) animateView(to, from);
             }
         });
     }
-
     boolean needReDraw() {
         long currentTime = AnimationUtils.currentAnimationTimeMillis();
         if (mAnimation != null && mAnimation.hasEnded() == false) {
@@ -221,7 +194,6 @@ public class MediaListItemView extends MediaItemView {
         }
         return false;
     }
-
     void animateSelection(boolean select) {
         if (select) {
             animateView(0, 1);
@@ -241,5 +213,4 @@ public class MediaListItemView extends MediaItemView {
         mAnimateRate = 0;
         invalidate();
     }
-
 }

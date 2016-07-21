@@ -1,5 +1,4 @@
 package com.cantv.media.center.ui;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,7 +15,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-
 import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.adapter.MediaListAdapter;
 import com.cantv.media.center.constants.SourceType;
@@ -24,7 +22,6 @@ import com.cantv.media.center.data.Media;
 import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
-
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -32,7 +29,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
-
 @SuppressLint("ResourceAsColor")
 public class MediaGridView extends CustomGridView {
     private static final String TAG = "MediaGridView";
@@ -54,7 +50,6 @@ public class MediaGridView extends CustomGridView {
     public int mSelectItemPosition;
     public List<Media> mCurrMediaList = new ArrayList<>(); // 记录当前的数据集合
     private int beforFocus = 0; //之前选中的position
-
     public MediaGridView(Context context, SourceType sourceType) {
         super(context);
         mActivity = (GridViewActivity) context;
@@ -72,7 +67,6 @@ public class MediaGridView extends CustomGridView {
                 // 1,如果是文件夹则继续显示下级列表
                 // 2,如果是文件则全屏显示
                 Media item = (Media) mListAdapter.getItem(position);
-
                 if (item.isDir) {
                     if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
                         mCurrMediaList = FileUtil.getFileList(item.mUri, true, msSourceType);
@@ -92,7 +86,6 @@ public class MediaGridView extends CustomGridView {
                         mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
                     }
                     MediaGridView.this.setSelection(0);
-
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
                     openMediaActivity(item);
                 } else {
@@ -111,14 +104,10 @@ public class MediaGridView extends CustomGridView {
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
-
-
 //        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
 //            @Override
 //            public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -170,38 +159,30 @@ public class MediaGridView extends CustomGridView {
 //
 //            }
 //        });
-
     }
-
     public void setStyle(MediaOrientation orientation) {
         mListAdapter.bindStyle(orientation);
     }
-
     public void asyncLoadData() {
         if (mTask != null) {
             mTask.execute();
             mTask = null;
         }
     }
-
     public void setDevicePath(String path) {
         devicePath = path;
     }
-
     public void show() {
         mPosStack.clear();
         misShowProcess = true;
         mTask = new MediaLoaderTask(msSourceType);
         asyncLoadData();
-
         MediaGridView.this.setSelection(0);
     }
-
     private class MediaLoaderTask extends AsyncTask<Void, Void, List<Media>> {
         private List<Media> mMediaes;
         private SourceType mSourceType;
         private long mTime = System.currentTimeMillis();
-
         private Collator mCollator = Collator.getInstance(Locale.CHINESE);
         private Comparator mMediaSort = new Comparator<Media>() {
             @Override
@@ -211,12 +192,10 @@ public class MediaGridView extends CustomGridView {
                 return one == two ? mCollator.compare(arg0.getName(), arg1.getName()) : (one ? 1 : -1);
             }
         };
-
         MediaLoaderTask(SourceType sourceType) {
             mMediaes = new ArrayList<Media>();
             mSourceType = sourceType;
         }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -227,14 +206,12 @@ public class MediaGridView extends CustomGridView {
                 misShowProcess = false;
             }
         }
-
         @Override
         protected void onPostExecute(List<Media> result) {
             super.onPostExecute(result);
             if (mfirst == 0) {
                 dismissProgressBar();
             }
-
             FileUtil.sortList(result, FileComparator.SORT_TYPE_DEFAULT, true);
             mCurrMediaList = result;
             mListAdapter.bindData(result);
@@ -249,7 +226,6 @@ public class MediaGridView extends CustomGridView {
             }
             mfirst = 1;
         }
-
         @Override
         protected List<Media> doInBackground(Void... params) {
             //下面是进入根目录的几种情况,进入更深层的内容在点击事件那里
@@ -280,7 +256,6 @@ public class MediaGridView extends CustomGridView {
             return mMediaes;
         }
     }
-
     public boolean onBack() {
         boolean isback = false;
         if (!mPosStack.isEmpty() && !mMediaStack.isEmpty()) {
@@ -296,12 +271,10 @@ public class MediaGridView extends CustomGridView {
             }
             mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
             mActivity.mRTCountView.setText("1/" + mCurrMediaList.size());
-
             isback = true;
         }
         return isback;
     }
-
     @Override
     protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
@@ -309,7 +282,6 @@ public class MediaGridView extends CustomGridView {
             asyncLoadData();
         }
     }
-
     @Override
     protected void animateFoucs(View v) {
         if (v != null && v instanceof MediaItemView) {
@@ -319,15 +291,12 @@ public class MediaGridView extends CustomGridView {
             super.animateFoucs(v);
         }
     }
-
     public void setUpdateMediaDataShowListener(UpdateMediaDataShow listener) {
         mUpdateMediaDataShow = listener;
     }
-
     public interface UpdateMediaDataShow {
         void updateData(boolean isHasData);
     }
-
     protected void showProgressBar(String message) {
         if (mProgressDialog.isShowing()) {
             return;
@@ -336,13 +305,11 @@ public class MediaGridView extends CustomGridView {
         mProgressDialog.setMessage(message == null ? "数据加载中..." : message);
         mProgressDialog.show();
     }
-
     protected void dismissProgressBar() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
     }
-
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -358,7 +325,6 @@ public class MediaGridView extends CustomGridView {
             }
         }
     };
-
     /**
      * 打开指定媒体文件
      *
@@ -366,26 +332,17 @@ public class MediaGridView extends CustomGridView {
      */
     private void openMediaActivity(Media media) {
         String substring = media.mUri.substring(0, media.mUri.lastIndexOf("/"));
-
 //        ArrayList<String> mediaPathList = FileUtil.getMediaPathList(substring,
 //                media.mType);
-
         ArrayList<String> mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
-
         int indexFromList = FileUtil.getIndexFromList(mediaPathList, media.mUri);
-
         MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType);
-
     }
-
     private OnFocusChangedListener mOnFocusChangedListener;
-
     public interface OnFocusChangedListener {
         void focusPosition(Media media, int position);
     }
-
     public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
         this.mOnFocusChangedListener = onFocusChangedListener;
     }
-
 }

@@ -1,9 +1,7 @@
 package com.cantv.media.center.activity;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.cantv.media.R;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
@@ -17,7 +15,6 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 public class GridViewActivity extends Activity {
     private static String TAG = "GridViewActivity";
     private RelativeLayout mContentView;
@@ -55,7 +51,6 @@ public class GridViewActivity extends Activity {
     public TextView mRTCountView; //显示数量和当前选中position
     public View mBg_view; //上部阴影
     public int mCurrGridStyle; //记录当前是什么排列方式
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,23 +58,17 @@ public class GridViewActivity extends Activity {
         mTitleTV = (TextView) findViewById(R.id.title_textview);
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
 //        mContentView.mar(0,0,0,200);
-
         mBg_view = findViewById(R.id.bg_view);
-
         mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
-
         mFocusName = (TextView) findViewById(R.id.focusview_name);
         mRTCountView = (TextView) findViewById(R.id.file_count);
-
         Intent intent = getIntent();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_REMOVED);
         filter.addDataScheme("file");
         registerReceiver(mReceiver, filter);
-
         String type = intent.getStringExtra("type");
         if ("video".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_movie);
@@ -130,16 +119,13 @@ public class GridViewActivity extends Activity {
                 break;
         }
         mContentView.addView(mGridView);
-
         mGridView.setOnFocusChangedListener(new MediaGridView.OnFocusChangedListener() {
             @Override
             public void focusPosition(Media media, int position) {
                 mFocusName.setText(media.mName);
-
             }
         });
     }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (8 == keyCode || 166 == keyCode) {
@@ -158,7 +144,6 @@ public class GridViewActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
     public void setGridStyle(MediaOrientation mStyle) {
         switch (mStyle) {
             case LIST:
@@ -176,7 +161,6 @@ public class GridViewActivity extends Activity {
                 break;
         }
     }
-
     @Override
     public void onBackPressed() {
         // MediaGridView childGridView = (MediaGridView)
@@ -188,7 +172,6 @@ public class GridViewActivity extends Activity {
             return;
         }
     }
-
     private void showMenuDialog() {
         if (mMenuDialog == null) {
             mMenuDialog = new MenuDialog(this);
@@ -205,7 +188,6 @@ public class GridViewActivity extends Activity {
                 public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
                     subMenuClick(position);
                 }
-
                 @Override
                 public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
                     if (position != 2) {
@@ -221,7 +203,6 @@ public class GridViewActivity extends Activity {
                     if (position == 2) {
                         mDeleteItem = mGridView.mSelectItemPosition;
                         List<Media> datas = mGridView.mListAdapter.getData();
-
                         if (datas.size() > 0) { // 防止当前目录没有数据,进行删除操作发生异常
                             Media media = datas.get(mDeleteItem);
                             boolean deleteSuccessed = FileUtil.delete(media);
@@ -235,7 +216,6 @@ public class GridViewActivity extends Activity {
                         } else {
                             Toast.makeText(GridViewActivity.this, "没有数据!", Toast.LENGTH_SHORT).show();
                         }
-
                         return true;
                     } else {
                         return false;
@@ -245,10 +225,8 @@ public class GridViewActivity extends Activity {
         }
         mMenuDialog.show();
     }
-
     private List<MenuItem> createMenuData() {
         mMenuList = new ArrayList<MenuItem>();
-
         sortListMenuItem = new MenuItem(getString(R.string.sort));
         sortListMenuItem.setType(MenuItem.TYPE_SELECTOR);
         sortListMenuItem.setSelected(true);
@@ -263,7 +241,6 @@ public class GridViewActivity extends Activity {
         sortMenu.setSelected(true);
         sortListMenuItem.setChildren(sortListSubMenuItems);
         mMenuList.add(sortListMenuItem);
-
         viewModeMenuItem = new MenuItem(getString(R.string.view));
         viewModeMenuItem.setType(MenuItem.TYPE_SELECTOR);
         viewModeSubMenuItems = new ArrayList<MenuItem>();
@@ -276,14 +253,11 @@ public class GridViewActivity extends Activity {
         viewMenu.setSelected(true);
         viewModeMenuItem.setChildren(viewModeSubMenuItems);
         mMenuList.add(viewModeMenuItem);
-
         deleteMenuItem = new MenuItem(getString(R.string.delete));
         deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
         mMenuList.add(deleteMenuItem);
-
         return mMenuList;
     }
-
     private void subMenuClick(int position) {
         boolean isRefreshed = false;
         MenuItem menuItemData = mMenuList.get(mSelectedMenuPosi);
@@ -309,7 +283,6 @@ public class GridViewActivity extends Activity {
             }
             mCurrGridStyle = position;
         }
-
         View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
         if (oldSubMenuItemView != null) {
             mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(lastSelectPosi));
@@ -323,7 +296,6 @@ public class GridViewActivity extends Activity {
             mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
         }
     }
-
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -336,7 +308,6 @@ public class GridViewActivity extends Activity {
             }
         }
     };
-
     /**
      * 到根目录: 适用在当前处于外接设备目录
      */
@@ -344,19 +315,13 @@ public class GridViewActivity extends Activity {
         if (!isExternal) {
             return;
         }
-
         List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
-
         List<Media> mediaes = new ArrayList<>();
-
         for (int i = 0; i < usbRootPaths.size(); i++) {
-
             File file = new File(usbRootPaths.get(i));
             Media fileInfo = FileUtil.getFileInfo(file, null, false);
-
             mediaes.add(fileInfo);
         }
-
         // 清除记录的上级目录
         mGridView.mMediaStack.clear();
         mGridView.mPosStack.clear();
@@ -364,13 +329,10 @@ public class GridViewActivity extends Activity {
         if (mediaes.size() < 1) {
             mGridView.showNoDataPage();
         }
-
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
     }
-
 }

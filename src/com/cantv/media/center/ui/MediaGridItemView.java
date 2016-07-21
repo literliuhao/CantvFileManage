@@ -1,5 +1,4 @@
 package com.cantv.media.center.ui;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -14,12 +13,10 @@ import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.cantv.media.R;
 import com.cantv.media.center.constants.PicStretch;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.utils.FileUtil;
-
 @SuppressLint("NewApi")
 public class MediaGridItemView extends MediaItemView {
     private MediaPicView mImageView;
@@ -35,15 +32,12 @@ public class MediaGridItemView extends MediaItemView {
     private AlphaAnimation mAnimation = null;
     private Transformation mDrawingTransform = new Transformation();
     private Context mContext;
-
     public MediaGridItemView(Context context) {
         this(context, null);
     }
-
     public MediaGridItemView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
     @SuppressLint("ResourceAsColor")
     public MediaGridItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -53,19 +47,16 @@ public class MediaGridItemView extends MediaItemView {
         RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
         relativeLayoutParams.alignWithParent = true;
         relativeLayout.setLayoutParams(relativeLayoutParams);
-
         mContext = context;
         mPlayFocusDrawable = getResources().getDrawable(R.drawable.videoplaynomal);
         mNumDrawable = new NumberDrawable(context);
         setWillNotDraw(false);
         setFocusable(false);
-
         mFocusView = new ImageView(context);
         RelativeLayout.LayoutParams mFocusParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px280), (int) getResources().getDimension(R.dimen.px235));
         mFocusParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mFocusView.setLayoutParams(mFocusParams);
-
         mBgView = new MediaPicView(context);
         mBgView.setId(0x559589);
         mBgView.setPicStretch(PicStretch.SCALE_CROP);
@@ -73,7 +64,6 @@ public class MediaGridItemView extends MediaItemView {
         mediaParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mBgView.setLayoutParams(mediaParams);
-
         mImageView = new MediaPicView(context);
         mImageView.setPicStretch(PicStretch.SCALE_CROP);
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
@@ -83,7 +73,6 @@ public class MediaGridItemView extends MediaItemView {
         imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
         // imageParams.setMargins(20,20,0,0);
         mImageView.setLayoutParams(imageParams);
-
         // 从xml里添加这个TextView是为了轮播的时候两边有渐变效果,动态添加则没有
         mTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.marquee_textview, null);
         // mTextView = new TextView(context);
@@ -103,11 +92,9 @@ public class MediaGridItemView extends MediaItemView {
         relativeLayout.addView(mTextView);
         addView(relativeLayout);
     }
-
     public ImageView getFocusImage() {
         return mFocusView;
     }
-
     public void setMediaItem(Media media) {
         mMedia = media;
         mTextView.setText(media.getName());
@@ -138,7 +125,6 @@ public class MediaGridItemView extends MediaItemView {
                 break;
         }
     }
-
     @Override
     public void setSelected(boolean selected) {
         // ViewParent parent = getParent();
@@ -148,30 +134,23 @@ public class MediaGridItemView extends MediaItemView {
         // }
         super.setSelected(selected);
         animateSelection(selected);
-
     }
-
     void animateView(final float from, final float to) {
         mAnimation = new AlphaAnimation(from, to);
         mAnimation.setDuration(1000);
         mAnimation.setAnimationListener(new AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (isSelected()) animateView(to, from);
             }
         });
     }
-
     boolean needReDraw() {
         long currentTime = AnimationUtils.currentAnimationTimeMillis();
         if (mAnimation != null && mAnimation.hasEnded() == false) {
@@ -182,7 +161,6 @@ public class MediaGridItemView extends MediaItemView {
         }
         return false;
     }
-
     @SuppressLint("ResourceAsColor")
     void animateSelection(boolean select) {
         if (select) {
@@ -203,5 +181,4 @@ public class MediaGridItemView extends MediaItemView {
         mAnimateRate = 0;
         invalidate();
     }
-
 }

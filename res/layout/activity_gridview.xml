@@ -5,14 +5,11 @@
                 android:background="@drawable/home_title"
                 android:clipChildren="false"
                 android:orientation="vertical">
-
     <View
         android:id="@+id/flag_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/px150"
         android:layout_alignParentTop="true"/>
-
-
     <RelativeLayout
         android:id="@+id/gridview_content"
         android:layout_width="match_parent"
@@ -22,7 +19,6 @@
         android:gravity="center"/>
     <!--android:clipChildren="true"/-->
     <!--android:paddingBottom="@dimen/px130"-->
-
     <!--&lt;!&ndash;底部文字&ndash;&gt;-->
     <TextView
         android:id="@+id/focusview_name"
@@ -35,7 +31,6 @@
         android:textColor="@color/white"
         android:textSize="@dimen/px36"
         android:visibility="gone"/>
-
     <View
         android:id="@+id/bg_view"
         android:layout_width="match_parent"
@@ -43,7 +38,6 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/shadow_top"
         android:visibility="gone"/>
-
     <!--顶部布局-->
     <RelativeLayout
         android:id="@+id/media_header"
@@ -53,7 +47,6 @@
         android:paddingLeft="@dimen/px128"
         android:paddingRight="@dimen/px128">
         <!--android:layout_marginLeft="@dimen/px128"-->
-
         <TextView
             android:id="@+id/title_textview"
             android:layout_width="wrap_content"
@@ -62,7 +55,6 @@
             android:text="@string/str_local"
             android:textColor="@color/per80_white"
             android:textSize="@dimen/px56"/>
-
         <ImageView
             android:id="@+id/title_image"
             android:layout_width="@dimen/px32"
@@ -71,7 +63,6 @@
             android:layout_marginTop="@dimen/px92"
             android:layout_toRightOf="@id/title_textview"
             android:background="@drawable/icon_menu1"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/px50"
@@ -81,14 +72,12 @@
             android:text="@string/str_menu"
             android:textColor="@color/per50_white"
             android:textSize="@dimen/px32"/>
-
         <TextView
             android:id="@+id/textview_num"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/px32"
             android:textColor="@color/per80_white"
             android:textSize="@dimen/px32"/>
-
         <TextView
             android:id="@+id/textview_totalnum"
             android:layout_width="wrap_content"
@@ -96,7 +85,6 @@
             android:layout_marginRight="@dimen/px128"
             android:textColor="@color/per50_white"
             android:textSize="@dimen/px32"/>
-
         <TextView
             android:id="@+id/file_count"
             android:layout_width="wrap_content"
@@ -107,6 +95,4 @@
             android:textSize="@dimen/px32"
             android:visibility="gone"/>
     </RelativeLayout>
-
-
 </RelativeLayout>

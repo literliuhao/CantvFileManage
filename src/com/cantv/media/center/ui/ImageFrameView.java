@@ -42,7 +42,13 @@ public class ImageFrameView extends FrameLayout {
         addView(mImageView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
     }
 
-    public void playImage(final String imageUri, final Runnable onfinish) {
+    public interface onLoadingImgListener{
+    	void loadSuccessed();
+    }
+    
+    private onLoadingImgListener mLoadingImgListener;
+    public void playImage(final String imageUri, final Runnable onfinish,onLoadingImgListener loadingImgListener) {
+    	this.mLoadingImgListener=loadingImgListener;
         mTask = new MediaImageViewLoaderTask(imageUri, onfinish);
         asyncLoadData();
     }
@@ -123,6 +129,11 @@ public class ImageFrameView extends FrameLayout {
             if (mNotifyParentUpdate != null) {
                 mNotifyParentUpdate.update();
             }
+            
+            if(null!=mLoadingImgListener){
+            	mLoadingImgListener.loadSuccessed();
+            }
+            
             requestLayout();
         }
 
