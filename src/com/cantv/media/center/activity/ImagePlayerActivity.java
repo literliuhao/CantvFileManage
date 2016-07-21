@@ -599,12 +599,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 			}
 
 			if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
-				mImageBrowser.changeUpRotation();
+				mImageBrowser.changeRotation();
 				return true;
 
 			}
 			if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
-				mImageBrowser.changeRotation();
+				mImageBrowser.changeUpRotation();
 				return true;
 
 			}
