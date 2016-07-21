@@ -546,6 +546,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		}
 		if (!mAutoPlay) {
 			if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN) {
+				if(isFastClick()){
+					return true;
+				}
 				int offset = mCurImageIndex - 1;
 				offset = (offset < 0) ? getData().size() - 1 : offset;
 				showImage(offset, null);
@@ -553,6 +556,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
 			}
 			if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && event.getAction() == KeyEvent.ACTION_DOWN) {
+				if(isFastClick()){
+					return true;
+				}
 				int offset = mCurImageIndex + 1;
 				offset = (offset >= getData().size()) ? 0 : offset;
 				showImage(offset, null);
