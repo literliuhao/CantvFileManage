@@ -29,6 +29,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -74,13 +75,17 @@ public class MediaGridView extends CustomGridView {
 		setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 				// 1,如果是文件夹则继续显示下级列表
 				// 2,如果是文件则全屏显示
 				Media item = (Media) mListAdapter.getItem(position);
 				if (item.isDir) {
-					if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
+					if (msSourceType == SourceType.SHARE) {
 						try {
+							String proxyPathPrefix = fileServer.getProxyPathPrefix();
 							mCurrMediaList = FileUtil.getSmbFileList(item.mUri, fileServer.getProxyPathPrefix());
+
+							Log.w("共享地址  ", proxyPathPrefix + " 集合" + mCurrMediaList.size());
 						} catch (Exception e) {
 							e.printStackTrace();
 							ToastUtils.showMessage(mContext, "获取数据异常");
@@ -104,8 +109,7 @@ public class MediaGridView extends CustomGridView {
 						setTextRTview(1 + "", " / " + mCurrMediaList.size());
 					}
 					MediaGridView.this.setSelection(0);
-				} else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC)
-						|| (item.mType == SourceType.PICTURE)) {
+				} else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
 					openMediaActivity(item);
 				} else {
 					MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
@@ -123,6 +127,7 @@ public class MediaGridView extends CustomGridView {
 					}
 				}
 			}
+
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
@@ -183,11 +188,11 @@ public class MediaGridView extends CustomGridView {
 		//
 		// }
 		// });
-		if(msSourceType == SourceType.SHARE){
+		if (msSourceType == SourceType.SHARE) {
 			autoLoadData = false;
 			fileServer = new FileServer();
 			fileServer.setOnInitlizedListener(new OnInitlizedListener() {
-				
+
 				@Override
 				public void onInitlized() {
 					asyncLoadData();
@@ -276,23 +281,28 @@ public class MediaGridView extends CustomGridView {
 		protected List<Media> doInBackground(Void... params) {
 			// 下面是进入根目录的几种情况,进入更深层的内容在点击事件那里
 			try {
-				List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
-				// 外接设备选择
-				if (MediaUtils.getUSBNum() > 1 && devicePath == null && mSourceType != SourceType.LOCAL) {
-					for (int i = 0; i < usbRootPaths.size(); i++) {
-						File file = new File(usbRootPaths.get(i));
-						Media fileInfo = FileUtil.getFileInfo(file, null, false);
-						mMediaes.add(fileInfo);
-					}
+				if (mSourceType == SourceType.SHARE) {
+					List<Media> smbFileList = FileUtil.getSmbFileList(devicePath, fileServer.getProxyPathPrefix());
+					mMediaes.addAll(smbFileList);
 				} else {
-					if (mSourceType == SourceType.LOCAL) {
-						mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
-					} else if (mSourceType == SourceType.DEVICE || devicePath != null) {
-						mMediaes.addAll(FileUtil.getFileList(devicePath));
+					List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
+					// 外接设备选择
+					if (MediaUtils.getUSBNum() > 1) {
+						for (int i = 0; i < usbRootPaths.size(); i++) {
+							File file = new File(usbRootPaths.get(i));
+							Media fileInfo = FileUtil.getFileInfo(file, null, false);
+							mMediaes.add(fileInfo);
+						}
 					} else {
-						if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误
-							List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
-							mMediaes.addAll(fileList);
+						if (mSourceType == SourceType.LOCAL) {
+							mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
+						} else if (mSourceType == SourceType.DEVICE) {
+							mMediaes.addAll(FileUtil.getFileList(devicePath));
+						} else {
+							if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误
+								List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
+								mMediaes.addAll(fileList);
+							}
 						}
 					}
 				}
@@ -326,7 +336,8 @@ public class MediaGridView extends CustomGridView {
 	@Override
 	protected void onVisibilityChanged(View changedView, int visibility) {
 		super.onVisibilityChanged(changedView, visibility);
-//		if (changedView == this && visibility == View.VISIBLE && mTask != null) {
+		// if (changedView == this && visibility == View.VISIBLE && mTask !=
+		// null) {
 		if (autoLoadData && changedView == this && visibility == View.VISIBLE && mTask != null) {
 			asyncLoadData();
 		}
@@ -336,8 +347,7 @@ public class MediaGridView extends CustomGridView {
 	protected void animateFoucs(View v) {
 		if (v != null && v instanceof MediaItemView) {
 			View child = ((MediaItemView) v).getFocusImage();
-			animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(),
-					child.getHeight());
+			animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(), child.getHeight());
 		} else {
 			super.animateFoucs(v);
 		}
@@ -384,7 +394,7 @@ public class MediaGridView extends CustomGridView {
 
 	/**
 	 * 打开指定媒体文件
-	 *
+	 * 
 	 * @param media
 	 */
 	private void openMediaActivity(Media media) {
@@ -394,22 +404,26 @@ public class MediaGridView extends CustomGridView {
 		int indexFromList = FileUtil.getIndexFromList(mediaPathList, media.mUri);
 		MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType);
 
-//		ArrayList<String> mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
-//		int indexFromList = FileUtil.getIndexFromList(mediaPathList, media.isSharing ? media.sharePath : media.mUri);
-//		MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType, media.isSharing ? true : false);
+		// ArrayList<String> mediaPathList =
+		// FileUtil.getListFromList(mCurrMediaList, media.mType);
+		// int indexFromList = FileUtil.getIndexFromList(mediaPathList,
+		// media.isSharing ? media.sharePath : media.mUri);
+		// MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList,
+		// media.mType, media.isSharing ? true : false);
 	}
 
 	private OnFocusChangedListener mOnFocusChangedListener;
-    public interface OnFocusChangedListener {
-        void focusPosition(Media media, int position);
-    }
-    public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
-        this.mOnFocusChangedListener = onFocusChangedListener;
-    }
-    
-    
-    private void setTextRTview(String st1,String st2){
-    	StringUtil.getMergeString(mContext, mActivity.mRTCountView,R.style.rtTextStyle,st1,st2);
-        
-    }
+
+	public interface OnFocusChangedListener {
+		void focusPosition(Media media, int position);
+	}
+
+	public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
+		this.mOnFocusChangedListener = onFocusChangedListener;
+	}
+
+	private void setTextRTview(String st1, String st2) {
+		StringUtil.getMergeString(mContext, mActivity.mRTCountView, R.style.rtTextStyle, st1, st2);
+
+	}
 }
