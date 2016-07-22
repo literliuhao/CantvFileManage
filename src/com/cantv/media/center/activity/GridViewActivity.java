@@ -1,6 +1,7 @@
 package com.cantv.media.center.activity;
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +110,11 @@ public class GridViewActivity extends Activity {
 				mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
 			}
 			isExternal = true;
+		} else if ("share".equalsIgnoreCase(type)) {
+			mTitleTV.setText(intent.getStringExtra("title"));
+			mGridView = new MediaGridView(this, SourceType.SHARE);
+			mGridView.setDevicePath(intent.getStringExtra("path"));
+			isExternal = false;
 		}
 		if (mGridView == null) {
 			return;
@@ -276,11 +282,14 @@ public class GridViewActivity extends Activity {
 		int lastSelectPosi = menuItemData.setChildSelected(position);
 		if (mSelectedMenuPosi == 0) {
 			if (position == 0) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_DATE_DOWN, false);
+				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_DATE_DOWN,
+						false);
 			} else if (position == 1) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_SIZE_DOWN, false);
+				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_SIZE_DOWN,
+						false);
 			} else if (position == 2) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_NAME_UP, false);
+				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_NAME_UP,
+						false);
 			}
 			if (isRefreshed) {
 				mGridView.mListAdapter.notifyDataSetChanged();
@@ -315,7 +324,8 @@ public class GridViewActivity extends Activity {
 			if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
 				// 有新设备插入
 				openRootDir();
-			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
+					|| intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 				// 移除设备
 				openRootDir();
 			}
@@ -347,7 +357,11 @@ public class GridViewActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
+		if (mGridView != null && mGridView.fileServer != null) {
+			mGridView.fileServer.release();
+		}
 		unregisterReceiver(mReceiver);
+		super.onDestroy();
 	}
+
 }

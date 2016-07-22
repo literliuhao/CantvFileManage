@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:zby="http://schemas.android.com/apk/res/com.cantv.media"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimen_128px"
+        android:layout_marginTop="@dimen/dimen_70px"
+        android:includeFontPadding="false"
+        android:text="@string/str_share_file"
+        android:textColor="@color/per80_white"
+        android:textSize="@dimen/fontsize_56px" />
+
+    <TextView
+        android:id="@+id/tv_net_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tv_title"
+        android:layout_marginStart="@dimen/dimen_40px"
+        android:layout_toEndOf="@id/tv_title"
+        android:includeFontPadding="false"
+        android:textColor="@color/per50_white"
+        android:textSize="@dimen/fontsize_36px" />
+
+    <TextView
+        android:id="@+id/tv_net_ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tv_net_name"
+        android:layout_marginStart="@dimen/dimen_53px"
+        android:layout_toEndOf="@id/tv_net_name"
+        android:includeFontPadding="false"
+        android:textColor="@color/per50_white"
+        android:textSize="@dimen/fontsize_36px" />
+
+    <HorizontalScrollView
+        android:id="@+id/hsv_device_list"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dimen_650px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/dimen_128px"
+        android:layout_marginStart="@dimen/dimen_128px"
+        android:layout_marginTop="@dimen/dimen_225px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/dimen_100px"
+        android:paddingTop="@dimen/dimen_100px"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:id="@+id/ll_device_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:animateLayoutChanges="true"
+            android:paddingStart="@dimen/dimen_15px"
+            android:paddingEnd="@dimen/dimen_15px"
+             >
+
+            <com.cantv.media.center.ui.DeviceShareItemView
+                android:id="@+id/dsiv_add_device"
+                android:layout_width="@dimen/dimen_300px"
+                android:layout_height="@dimen/dimen_450px"
+                zby:viewType="ADD_DEVICE" >
+            </com.cantv.media.center.ui.DeviceShareItemView>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</RelativeLayout>

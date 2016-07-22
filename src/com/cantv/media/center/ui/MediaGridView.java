@@ -1,21 +1,12 @@
 package com.cantv.media.center.ui;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
+import java.io.File;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Stack;
 
 import com.cantv.media.R;
 import com.cantv.media.center.activity.GridViewActivity;
@@ -26,14 +17,24 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.StringUtil;
+import com.cantv.media.center.utils.ToastUtils;
+import com.cantv.media.center.utils.cybergarage.FileServer;
+import com.cantv.media.center.utils.cybergarage.FileServer.OnInitlizedListener;
 
-import java.io.File;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Stack;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 @SuppressLint("ResourceAsColor")
 public class MediaGridView extends CustomGridView {
@@ -56,11 +57,13 @@ public class MediaGridView extends CustomGridView {
 	public int mSelectItemPosition;
 	public List<Media> mCurrMediaList = new ArrayList<>(); // 记录当前的数据集合
 	private int beforFocus = 0; // 之前选中的position
+	public FileServer fileServer;
+	private boolean autoLoadData = true;
 
 	public MediaGridView(Context context, SourceType sourceType) {
 		super(context);
-		mActivity = (GridViewActivity) context;
 		mContext = context;
+		mActivity = (GridViewActivity) context;
 		mProgressDialog = new ProgressDialog(context);
 		WindowManager.LayoutParams params = mProgressDialog.getWindow().getAttributes();
 		mProgressDialog.getWindow().setGravity(Gravity.CENTER);
@@ -76,6 +79,13 @@ public class MediaGridView extends CustomGridView {
 				Media item = (Media) mListAdapter.getItem(position);
 				if (item.isDir) {
 					if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
+						try {
+							mCurrMediaList = FileUtil.getSmbFileList(item.mUri, fileServer.getProxyPathPrefix());
+						} catch (Exception e) {
+							e.printStackTrace();
+							ToastUtils.showMessage(mContext, "获取数据异常");
+						}
+					} else if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
 						mCurrMediaList = FileUtil.getFileList(item.mUri, true, msSourceType);
 					} else {
 						mCurrMediaList = FileUtil.getFileList(item.mUri);
@@ -98,7 +108,7 @@ public class MediaGridView extends CustomGridView {
 						|| (item.mType == SourceType.PICTURE)) {
 					openMediaActivity(item);
 				} else {
-					MediaUtils.openMedia(mActivity, item.mUri);
+					MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
 				}
 			}
 		});
@@ -113,7 +123,6 @@ public class MediaGridView extends CustomGridView {
 					}
 				}
 			}
-
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
@@ -174,6 +183,19 @@ public class MediaGridView extends CustomGridView {
 		//
 		// }
 		// });
+		if(msSourceType == SourceType.SHARE){
+			autoLoadData = false;
+			fileServer = new FileServer();
+			fileServer.setOnInitlizedListener(new OnInitlizedListener() {
+				
+				@Override
+				public void onInitlized() {
+					asyncLoadData();
+					autoLoadData = true;
+				}
+			});
+			fileServer.start();
+		}
 	}
 
 	public void setStyle(MediaOrientation orientation) {
@@ -181,7 +203,7 @@ public class MediaGridView extends CustomGridView {
 	}
 
 	public void asyncLoadData() {
-		if (mTask != null) {
+		if (mTask != null && mTask.getStatus() != AsyncTask.Status.RUNNING) {
 			mTask.execute();
 			mTask = null;
 		}
@@ -246,7 +268,6 @@ public class MediaGridView extends CustomGridView {
 				// mActivity.mFocusName.setText(mCurrMediaList.get(0).mName);
 				mActivity.mRTCountView.setVisibility(View.VISIBLE);
 				setTextRTview("1", " / " + mCurrMediaList.size());
-
 			}
 			mfirst = 1;
 		}
@@ -305,7 +326,8 @@ public class MediaGridView extends CustomGridView {
 	@Override
 	protected void onVisibilityChanged(View changedView, int visibility) {
 		super.onVisibilityChanged(changedView, visibility);
-		if (changedView == this && visibility == View.VISIBLE && mTask != null) {
+//		if (changedView == this && visibility == View.VISIBLE && mTask != null) {
+		if (autoLoadData && changedView == this && visibility == View.VISIBLE && mTask != null) {
 			asyncLoadData();
 		}
 	}
@@ -367,27 +389,27 @@ public class MediaGridView extends CustomGridView {
 	 */
 	private void openMediaActivity(Media media) {
 		String substring = media.mUri.substring(0, media.mUri.lastIndexOf("/"));
-		// ArrayList<String> mediaPathList =
-		// FileUtil.getMediaPathList(substring,
 		// media.mType);
 		ArrayList<String> mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
 		int indexFromList = FileUtil.getIndexFromList(mediaPathList, media.mUri);
 		MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType);
+
+//		ArrayList<String> mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
+//		int indexFromList = FileUtil.getIndexFromList(mediaPathList, media.isSharing ? media.sharePath : media.mUri);
+//		MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType, media.isSharing ? true : false);
 	}
 
 	private OnFocusChangedListener mOnFocusChangedListener;
-
-	public interface OnFocusChangedListener {
-		void focusPosition(Media media, int position);
-	}
-
-	public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
-		this.mOnFocusChangedListener = onFocusChangedListener;
-	}
-
-	private void setTextRTview(String st1, String st2) {
-		StringUtil.getMergeString(mContext, mActivity.mRTCountView, R.style.rtTextStyle, st1, st2);
-
-	}
-
+    public interface OnFocusChangedListener {
+        void focusPosition(Media media, int position);
+    }
+    public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
+        this.mOnFocusChangedListener = onFocusChangedListener;
+    }
+    
+    
+    private void setTextRTview(String st1,String st2){
+    	StringUtil.getMergeString(mContext, mActivity.mRTCountView,R.style.rtTextStyle,st1,st2);
+        
+    }
 }

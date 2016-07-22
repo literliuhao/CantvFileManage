@@ -84,6 +84,10 @@
                 <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.cantv.media.center.activity.DeviceShareActivity"
+            android:label="@string/app_name">
+        </activity>
 
         <receiver android:name="com.cantv.media.center.receiver.BootCompletedReceiver">
             <intent-filter>
