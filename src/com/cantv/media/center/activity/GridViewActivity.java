@@ -99,7 +99,7 @@ public class GridViewActivity extends Activity {
 		} else if ("device1".equalsIgnoreCase(type)) {
 			mTitleTV.setText(R.string.str_external);
 			mGridView = new MediaGridView(this, SourceType.DEVICE);
-			if (MediaUtils.getUSBNum() > 0 && MediaUtils.getUSBNum() < 3) {
+			if (MediaUtils.getUSBNum() > 0 && MediaUtils.getUSBNum() < 2) {
 				mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(0));
 			}
 			isExternal = true;

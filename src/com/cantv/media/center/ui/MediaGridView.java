@@ -109,7 +109,8 @@ public class MediaGridView extends CustomGridView {
 						setTextRTview(1 + "", " / " + mCurrMediaList.size());
 					}
 					MediaGridView.this.setSelection(0);
-				} else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
+				} else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC)
+						|| (item.mType == SourceType.PICTURE)) {
 					openMediaActivity(item);
 				} else {
 					MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
@@ -287,24 +288,28 @@ public class MediaGridView extends CustomGridView {
 				} else {
 					List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
 					// 外接设备选择
-					if (MediaUtils.getUSBNum() > 1) {
+					if (MediaUtils.getUSBNum() > 1 && devicePath == null && mSourceType != SourceType.LOCAL) {
 						for (int i = 0; i < usbRootPaths.size(); i++) {
 							File file = new File(usbRootPaths.get(i));
 							Media fileInfo = FileUtil.getFileInfo(file, null, false);
 							mMediaes.add(fileInfo);
 						}
 					} else {
+
 						if (mSourceType == SourceType.LOCAL) {
 							mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
-						} else if (mSourceType == SourceType.DEVICE) {
+						} else if (mSourceType == SourceType.DEVICE || devicePath != null) {
 							mMediaes.addAll(FileUtil.getFileList(devicePath));
+
 						} else {
 							if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误
 								List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
 								mMediaes.addAll(fileList);
 							}
 						}
+
 					}
+
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -347,7 +352,8 @@ public class MediaGridView extends CustomGridView {
 	protected void animateFoucs(View v) {
 		if (v != null && v instanceof MediaItemView) {
 			View child = ((MediaItemView) v).getFocusImage();
-			animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(), child.getHeight());
+			animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(),
+					child.getHeight());
 		} else {
 			super.animateFoucs(v);
 		}
