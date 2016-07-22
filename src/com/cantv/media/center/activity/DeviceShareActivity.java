@@ -1,31 +1,5 @@
 package com.cantv.media.center.activity;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.regex.Pattern;
-
-import com.cantv.liteplayer.core.focus.FocusScaleUtils;
-import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.media.R;
-import com.cantv.media.center.activity.DeviceShareActivity.CheckNetAccessTask.OnNetCheckCallback;
-import com.cantv.media.center.data.DeviceInfo;
-import com.cantv.media.center.ui.DeviceAddDialog;
-import com.cantv.media.center.ui.DeviceAddDialog.OnIpConfirmedListener;
-import com.cantv.media.center.ui.DeviceLoginDialog;
-import com.cantv.media.center.ui.DeviceLoginDialog.OnLoginListener;
-import com.cantv.media.center.ui.DeviceShareItemView;
-import com.cantv.media.center.ui.LoadingDialog;
-import com.cantv.media.center.utils.BitmapUtils;
-import com.cantv.media.center.utils.NetworkUtils;
-import com.cantv.media.center.utils.ToastUtils;
-import com.cantv.media.center.utils.cybergarage.FileItem;
-import com.cantv.media.center.utils.cybergarage.FileServer;
-import com.cantv.media.center.utils.cybergarage.ScanSambaTask;
-import com.cantv.media.center.utils.cybergarage.ScanSambaTask.IScanFileListener;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -48,6 +22,33 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.cantv.liteplayer.core.focus.FocusScaleUtils;
+import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.media.R;
+import com.cantv.media.center.activity.DeviceShareActivity.CheckNetAccessTask.OnNetCheckCallback;
+import com.cantv.media.center.data.DeviceInfo;
+import com.cantv.media.center.ui.DeviceAddDialog;
+import com.cantv.media.center.ui.DeviceAddDialog.OnIpConfirmedListener;
+import com.cantv.media.center.ui.DeviceLoginDialog;
+import com.cantv.media.center.ui.DeviceLoginDialog.OnLoginListener;
+import com.cantv.media.center.ui.DeviceShareItemView;
+import com.cantv.media.center.ui.LoadingDialog;
+import com.cantv.media.center.utils.BitmapUtils;
+import com.cantv.media.center.utils.NetworkUtils;
+import com.cantv.media.center.utils.ToastUtils;
+import com.cantv.media.center.utils.cybergarage.FileItem;
+import com.cantv.media.center.utils.cybergarage.FileServer;
+import com.cantv.media.center.utils.cybergarage.ScanSambaTask;
+import com.cantv.media.center.utils.cybergarage.ScanSambaTask.IScanFileListener;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.regex.Pattern;
+
 import jcifs.smb.SmbFile;
 
 public class DeviceShareActivity extends Activity implements OnFocusChangeListener {
