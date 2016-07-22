@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -50,6 +51,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
 	private int curindex;
 	private boolean isSubTitle = true;
+	private boolean isSrtExist;
 	private int mMoveTime = 0;
 	private int mSelectedPosi;
 	private List<MenuItem> list;
@@ -129,6 +131,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 	protected void runProgressBar() {
 
 		String path = mDataList.get(mCurPlayIndex);
+		String srtUrl = checkSrt();
 		mCtrBar.setPlayDuration();
 		List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
 
@@ -137,24 +140,45 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 			final int positon = list.get(0).getPosition();
 			mCtrBar.showContinuePaly(positon);
 		}
-
-		parseSrts();
+		
+		if(isSrtExist){
+			parseSrts(srtUrl);
+		}
 
 	}
-
-	public void parseSrts() {
+	
+	public String checkSrt(){
 		String url = mDataList.get(mCurPlayIndex);
 		final String srt = url.substring(0, url.indexOf(".")) + ".srt";
+         
+		File file = new File(srt);
+		
+		if(file.exists() && file.canRead()){
+			isSrtExist = true;
+			Log.e("sunyanlong","isSrtExist="+isSrtExist);
+		}else{
+			isSrtExist = false;
+			Log.e("sunyanlong","isSrtExist="+isSrtExist);
+		}
+		return srt;
+	}
+	
 
+	public void parseSrts(final String srtUrl) {
+		
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				parser = new SrcParser();
-				parser.parseFromPath(srt);
+				parser.parseFromPath(srtUrl);
 			}
 		}).start();
 
+	}
+	
+	public boolean isSrtExist(){
+		return isSrtExist;
 	}
 
 	@Override
@@ -235,13 +259,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		time += mMoveTime;
 		final String srtByTime = parser.getSrtByTime(time);
 		mSubTitle.setText(srtByTime);
-//		runOnUiThread(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				mSubTitle.setText(srtByTime);
-//			}
-//		});
 	}
 
 	@Override
@@ -517,6 +534,16 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		adjustSubtitlesSubMenus.add(new MenuItem(MenuConstant.SUBMENU_ADJUSTSUBTITLE_BACKWORD, MenuItem.TYPE_NORMAL));
 		adjustSubtitleMenuItem.setChildren(adjustSubtitlesSubMenus);
 		menuList.add(adjustSubtitleMenuItem);
+		
+		
+//		if (list.get(4) != null && "字幕调整".equals(list.get(4).getTitle())) {
+//			list.get(4).setEnabled(isSubTitle);
+//			View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
+//			if (oldSubMenuItemView != null) {
+//				mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
+//			}
+//		}
+		
 
 		return menuList;
 	}

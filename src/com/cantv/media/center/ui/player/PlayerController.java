@@ -37,6 +37,7 @@ public class PlayerController extends RelativeLayout {
 	private boolean isHasDefinition;
 	private boolean isFirstEnter = true;
 	private boolean isShowTip = false;
+	private boolean isSrtExist;
 
 	private Context mContext;
 	private PlayerProgresBar mProgressBar;
@@ -80,6 +81,7 @@ public class PlayerController extends RelativeLayout {
 			case STORE_DURATION:
 
 				((VideoPlayActicity) mContext).storeDuration();
+				handler.sendEmptyMessageDelayed(STORE_DURATION, 60 * 1000);
 
 				break;
 
@@ -91,7 +93,6 @@ public class PlayerController extends RelativeLayout {
 				break;
 
 			case CHANG_SRT:
-				//new SRT("srt", Thread.MIN_PRIORITY, mContext, mCtrlBarContext).start();
 				((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
 				handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
 				break;
@@ -206,7 +207,6 @@ public class PlayerController extends RelativeLayout {
 		mProgressBar.setDuration(mCtrlBarContext.getPlayerDuration());
 		handler.removeMessages(PlayerController.CHANG_PROGRESS);
 		handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);
-		handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 2000);
 		handler.sendEmptyMessage(PlayerController.CHANG_PLAYIMAGE);
 		handler.sendEmptyMessageDelayed(PlayerController.CHANG_VISIBLE, 5000);
 		mTitle.setText(mCtrlBarContext.getPlayerTitle());
@@ -215,8 +215,12 @@ public class PlayerController extends RelativeLayout {
 		mTime.bringToFront();
 		// 设置当前时间
 		refreshTime();
-
-		handler.sendEmptyMessageDelayed(STORE_DURATION, 60 * 1000);
+		//如果有字幕，开始获取字幕
+		isSrtExist = ((VideoPlayActicity) mContext).isSrtExist();
+		if(isSrtExist){
+			handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 2000);
+		}
+		handler.sendEmptyMessage(STORE_DURATION);
 	}
 
 	@SuppressLint("SimpleDateFormat")
@@ -331,7 +335,9 @@ public class PlayerController extends RelativeLayout {
 			public void onSeekComplete(MediaPlayer arg0) {
 				handler.sendEmptyMessageDelayed(PlayerController.CHANG_PLAYIMAGE, 100);
 				handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);
-				handler.sendEmptyMessage(PlayerController.CHANG_SRT);
+				if(isSrtExist){
+					handler.sendEmptyMessage(PlayerController.CHANG_SRT);
+				}
 			}
 		});
 	}
