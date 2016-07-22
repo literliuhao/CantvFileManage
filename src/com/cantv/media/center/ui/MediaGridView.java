@@ -78,7 +78,7 @@ public class MediaGridView extends CustomGridView {
 				// 2,如果是文件则全屏显示
 				Media item = (Media) mListAdapter.getItem(position);
 				if (item.isDir) {
-					if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
+					if (item.isSharing) {
 						try {
 							mCurrMediaList = FileUtil.getSmbFileList(item.mUri, fileServer.getProxyPathPrefix());
 						} catch (Exception e) {
