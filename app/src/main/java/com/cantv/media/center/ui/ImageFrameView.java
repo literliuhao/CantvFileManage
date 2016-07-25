@@ -12,11 +12,19 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cantv.media.R;
 import com.cantv.media.center.utils.ImageUtils;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @SuppressLint("ResourceAsColor")
 public class ImageFrameView extends FrameLayout {
@@ -25,14 +33,16 @@ public class ImageFrameView extends FrameLayout {
     private int mImgOrginWidth;
     private int mImgOrginHeight;
     private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
-    private final long SHOWPROCESS_FILE_SIZE = 50 *1024* 1024;
+    private final long SHOWPROCESS_FILE_SIZE = 50 * 1024 * 1024;
     private ProgressDialog mProgressDialog;
     private MediaImageViewLoaderTask mTask;
     private NotifyParentUpdate mNotifyParentUpdate;
     private int mfirst = 0;
+    private Context mContext;
 
     public ImageFrameView(Context context) {
         super(context);
+        mContext = context;
         mProgressDialog = new ProgressDialog(context);
         WindowManager.LayoutParams params = mProgressDialog.getWindow().getAttributes();
         mProgressDialog.getWindow().setGravity(Gravity.CENTER);
@@ -42,16 +52,26 @@ public class ImageFrameView extends FrameLayout {
         addView(mImageView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
     }
 
-    public interface onLoadingImgListener{
-    	void loadSuccessed();
+    public interface onLoadingImgListener {
+        void loadSuccessed();
     }
-    
+
     private onLoadingImgListener mLoadingImgListener;
-    public void playImage(final String imageUri, final Runnable onfinish,onLoadingImgListener loadingImgListener) {
-    	this.mLoadingImgListener=loadingImgListener;
-        mTask = new MediaImageViewLoaderTask(imageUri, onfinish);
-        asyncLoadData();
+
+    public void playImage(final String imageUri, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+
+        Glide.with(mContext).load(imageUri).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                mImgOrginWidth = resource.getWidth();
+                mImgOrginHeight = resource.getHeight();
+                mImageView.setImageBitmap(resource);
+            }
+        });
     }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -129,11 +149,11 @@ public class ImageFrameView extends FrameLayout {
             if (mNotifyParentUpdate != null) {
                 mNotifyParentUpdate.update();
             }
-            
-            if(null!=mLoadingImgListener){
-            	mLoadingImgListener.loadSuccessed();
+
+            if (null != mLoadingImgListener) {
+                mLoadingImgListener.loadSuccessed();
             }
-            
+
             requestLayout();
         }
 
