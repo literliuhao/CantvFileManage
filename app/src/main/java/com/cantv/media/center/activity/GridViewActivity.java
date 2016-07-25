@@ -115,7 +115,6 @@ public class GridViewActivity extends Activity {
 			mGridView = new MediaGridView(this, SourceType.SHARE);
 			mGridView.setDevicePath(intent.getStringExtra("path"));
 			isExternal = false;
-			Log.w("GridActivity_share", "分享~~~");
 		}
 		if (mGridView == null) {
 			return;

@@ -85,7 +85,7 @@ public class MediaGridView extends CustomGridView {
 							String proxyPathPrefix = fileServer.getProxyPathPrefix();
 							mCurrMediaList = FileUtil.getSmbFileList(item.mUri, fileServer.getProxyPathPrefix());
 
-							Log.w("共享地址  ", proxyPathPrefix + " 集合" + mCurrMediaList.size());
+//							Log.w("共享地址  ", proxyPathPrefix + " 集合" + mCurrMediaList.size());
 						} catch (Exception e) {
 							e.printStackTrace();
 							ToastUtils.showMessage(mContext, "获取数据异常");

@@ -7,8 +7,11 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Audio;
@@ -36,6 +39,12 @@ import jcifs.smb.SmbFile;
  * Created by yibh on 2016/6/28.
  */
 public class FileUtil {
+
+	private static List<String> unlessFileList = new ArrayList<>();
+	static {
+		unlessFileList.add("");
+
+	}
 
 	private static String ANDROID_SECURE = "/mnt/sdcard/.android_secure";
 	private static ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -68,10 +77,31 @@ public class FileUtil {
 		}
 		return true;
 	}
+	
+	
+	/**
+	 * 是否是隐藏文件,隐藏文件返回false
+	 */
+	public static boolean isShowFile(SmbFile file) {
+
+		try {
+			if (file.isHidden()) {
+				return false;
+			}
+		} catch (SmbException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (file.getName().startsWith(".")) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * 根据路径获取文件名
-	 *
+	 * 
 	 * @param path
 	 * @return
 	 */
@@ -171,8 +201,7 @@ public class FileUtil {
 	 * @param sharePathPrefix
 	 * @return
 	 */
-	public static Media getSmbFileInfo(SmbFile file, FilenameFilter filter, boolean showOrHidden,
-			String proxyPathPrefix) {
+	public static Media getSmbFileInfo(SmbFile file, FilenameFilter filter, boolean showOrHidden, String proxyPathPrefix) {
 
 		SourceType fileType = FileUtil.getSmbFileType(file);
 		// 下面分类的写法是为了显示缩略图
@@ -242,7 +271,7 @@ public class FileUtil {
 
 	/**
 	 * 返回指定路径的文件/夹 列表
-	 *
+	 * 
 	 * @param path
 	 * @return
 	 */
@@ -265,8 +294,7 @@ public class FileUtil {
 				if (FileUtil.isShowFile(childFile)) {
 					Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
 
-					if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR"))
-							&& (!fileInfo.mName.equals("System Volume Information"))) {
+					if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information"))) {
 
 						// 当文件是图片类型,并且大于10k,才进行显示
 						if (fileInfo.mType == SourceType.PICTURE) {
@@ -290,7 +318,7 @@ public class FileUtil {
 
 	/**
 	 * 返回指定路径的文件/夹 列表
-	 *
+	 * 
 	 * @param path
 	 * @param string
 	 * @param sharePathPrefix
@@ -310,21 +338,25 @@ public class FileUtil {
 			}
 
 			for (SmbFile childFile : listfiles) {
-				Media fileInfo = FileUtil.getSmbFileInfo(childFile, null, false, proxyPathPrefix);
 
-				if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR"))
-						&& (!fileInfo.mName.equals("System Volume Information"))) {
+				// 是常见文件,并且是非隐藏文件
+				if (FileUtil.isShowFile(childFile)) {
+					Media fileInfo = FileUtil.getSmbFileInfo(childFile, null, false, proxyPathPrefix);
 
-					// 当文件是图片类型,并且大于10k,才进行显示
-					if (fileInfo.mType == SourceType.PICTURE) {
-						if (fileInfo.fileSize > 1024 * 6) {
+					if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")) && (!fileInfo.mName.contains("$/"))
+
+					) {
+
+						// 当文件是图片类型,并且大于10k,才进行显示
+						if (fileInfo.mType == SourceType.PICTURE) {
+							if (fileInfo.fileSize > 1024 * 6) {
+								tList.add(fileInfo);
+							}
+
+						} else {
 							tList.add(fileInfo);
 						}
-
-					} else {
-						tList.add(fileInfo);
 					}
-
 				}
 			}
 		} catch (Exception e) {
@@ -335,7 +367,7 @@ public class FileUtil {
 
 	/**
 	 * 返回指定路径指定类型的文件/夹 列表
-	 *
+	 * 
 	 * @param path
 	 * @param type
 	 * @return
@@ -365,8 +397,7 @@ public class FileUtil {
 					SourceType sourceType = type[0];
 					if ((sourceType == fileInfo.mType) ||
 					// 过滤掉指定2个无卵用的文件夹
-							(addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR"))
-									&& (!fileInfo.mName.equals("System Volume Information")))) {
+							(addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")))) {
 
 						// 当文件是图片类型,并且大于10k,才进行显示
 						if (fileInfo.mType == SourceType.PICTURE) {
@@ -389,15 +420,14 @@ public class FileUtil {
 
 	/**
 	 * 返回指定路径指定类型的文件/夹 列表
-	 *
+	 * 
 	 * @param path
 	 * @param type
 	 * @return
 	 * @throws MalformedURLException
 	 * @throws SmbException
 	 */
-	public static List<Media> getSmbFileList(String path, boolean addFolder, String proxyPathPrefix, SourceType... type)
-			throws MalformedURLException, SmbException {
+	public static List<Media> getSmbFileList(String path, boolean addFolder, String proxyPathPrefix, SourceType... type) throws MalformedURLException, SmbException {
 		List<Media> tList = new ArrayList<>();
 
 		SmbFile file = new SmbFile(path);
@@ -417,8 +447,7 @@ public class FileUtil {
 				SourceType sourceType = type[0];
 				if ((sourceType == fileInfo.mType) ||
 				// 过滤掉指定2个无卵用的文件夹
-						(addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR"))
-								&& (!fileInfo.mName.equals("System Volume Information")))) {
+						(addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")))) {
 
 					// 当文件是图片类型,并且大于10k,才进行显示
 					if (fileInfo.mType == SourceType.PICTURE) {
@@ -460,7 +489,7 @@ public class FileUtil {
 
 	/**
 	 * 获取文件的绝对路径
-	 *
+	 * 
 	 * @return
 	 */
 	public static String getFileAbsPath(String path, String name) {
@@ -481,7 +510,7 @@ public class FileUtil {
 
 	/**
 	 * 获取文件类型
-	 *
+	 * 
 	 * @param file
 	 * @return
 	 */
@@ -516,7 +545,7 @@ public class FileUtil {
 
 	/**
 	 * 获取文件类型
-	 *
+	 * 
 	 * @param file
 	 * @return
 	 */
@@ -556,7 +585,7 @@ public class FileUtil {
 
 	/**
 	 * 获取apk图标
-	 *
+	 * 
 	 * @param context
 	 * @param apkPath
 	 * @return
@@ -579,7 +608,7 @@ public class FileUtil {
 
 	/**
 	 * 得到指定文件大小
-	 *
+	 * 
 	 * @param file
 	 * @return
 	 */
@@ -606,7 +635,7 @@ public class FileUtil {
 
 	/**
 	 * 文件排序
-	 *
+	 * 
 	 * @param list
 	 * @param mode
 	 *            如果传递的不是默认模式,就要进行判断是否保存模式成功,在成功后再进行排序,方便下次使用
@@ -647,8 +676,7 @@ public class FileUtil {
 		}
 
 		if (!f.isDir) {
-			ops.add(ContentProviderOperation.newDelete(getMediaUriFromFilename(f.mName))
-					.withSelection("_data = ?", new String[] { f.mUri }).build());
+			ops.add(ContentProviderOperation.newDelete(getMediaUriFromFilename(f.mName)).withSelection("_data = ?", new String[] { f.mUri }).build());
 		}
 
 		file.delete();
@@ -742,7 +770,7 @@ public class FileUtil {
 
 	/**
 	 * 将media中的路径提取出来
-	 *
+	 * 
 	 * @param
 	 * @return
 	 */
@@ -781,7 +809,7 @@ public class FileUtil {
 
 	/**
 	 * 从集合中取出指定类型的数据,组成新的集合
-	 *
+	 * 
 	 * @param fromList
 	 * @param sourceType
 	 * @return
@@ -799,7 +827,7 @@ public class FileUtil {
 
 	/**
 	 * 找出与目标字符串相同的字符串在集合中的索引
-	 *
+	 * 
 	 * @param list
 	 * @param oldPath
 	 * @return

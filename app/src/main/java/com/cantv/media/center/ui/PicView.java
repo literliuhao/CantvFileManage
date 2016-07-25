@@ -21,6 +21,7 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.app.core.cache.BitmapCache;
 import com.app.core.cache.Cache;
@@ -44,7 +45,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PicView extends View {
+public class PicView extends ImageView {
     private static final ScheduledExecutorService mPicLoadTaskExecutor = Executors.newSingleThreadScheduledExecutor();
     private static final Paint mPaint = new Paint();
     private static final Rect mDrawingRect = new Rect();

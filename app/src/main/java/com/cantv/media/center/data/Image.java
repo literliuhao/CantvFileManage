@@ -24,7 +24,14 @@ public class Image extends Media {
 	@Override
 	public Bitmap getThumbnails() {
 		if (isSharing) {
-			return null;
+			return getBitmap(new OnGlideGetBitmapListener() {
+				
+				@Override
+				public void onFinish(Bitmap bitmap) {
+//					return bitmap;
+					
+				}
+			});
 		} else {
 
 			return getImageThumbnail(800, 800);
@@ -74,28 +81,26 @@ public class Image extends Media {
 		bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 		return bitmap;
 	}
-	
-	
-	
-	
+
 	/**
+	 * 通过Glide获取图片
 	 * 
 	 * @return
 	 */
-	private Bitmap getBitmap(){
-//		final Bitmap bitmap = null;
+	private Bitmap getBitmap(OnGlideGetBitmapListener onGlideGetBitmapListener) {
+		// final Bitmap bitmap = null;
+		this.mOnGlideGetBitmapListener = onGlideGetBitmapListener;
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				
+
 				try {
-					Bitmap bitmap = Glide.with(MyApplication.mContext)
-							.load(sharePath)
-							.asBitmap()
-							.fitCenter()
-							.into(500, 500)
-							.get();
+					Bitmap bitmap = Glide.with(MyApplication.mContext).load(sharePath).asBitmap().fitCenter().into(500, 500).get();
+
+					if (null != mOnGlideGetBitmapListener) {
+						mOnGlideGetBitmapListener.onFinish(bitmap);
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -107,6 +112,11 @@ public class Image extends Media {
 		}).start();
 		return null;
 	}
-	
+
+	private OnGlideGetBitmapListener mOnGlideGetBitmapListener;
+
+	public interface OnGlideGetBitmapListener {
+		void onFinish(Bitmap bitmap);
+	}
 
 }

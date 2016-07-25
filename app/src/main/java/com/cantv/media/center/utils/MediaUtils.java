@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bumptech.glide.Glide;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.AudioPlayerActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
@@ -27,6 +28,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore.Files.FileColumns;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MediaUtils {
@@ -432,6 +434,10 @@ public class MediaUtils {
 	 */
 	public static int getAudioIconFromExtensionName(String extensinName) {
 		return mAduioIconMap.get(extensinName);
+	}
+	
+	public static void loadPicImg(Context context,String path,ImageView imageView){
+		Glide.with(context).load(path).into(imageView);
 	}
 
 }
