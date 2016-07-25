@@ -61,13 +61,16 @@ public class ImageFrameView extends FrameLayout {
     public void playImage(final String imageUri, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
-
+        this.mLoadingImgListener = loadingImgListener ;
         Glide.with(mContext).load(imageUri).asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 mImgOrginWidth = resource.getWidth();
                 mImgOrginHeight = resource.getHeight();
                 mImageView.setImageBitmap(resource);
+                if (null != mLoadingImgListener) {
+                    mLoadingImgListener.loadSuccessed();
+                }
             }
         });
     }

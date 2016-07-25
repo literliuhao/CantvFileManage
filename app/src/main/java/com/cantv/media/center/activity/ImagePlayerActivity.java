@@ -231,14 +231,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 		}
 		mCurImageIndex = index;
 		int curIndex = index + 1;
-//		mPosition.setText(String.valueOf(mCurImageIndex + 1));
-//		mTotal.setText(" / " + data.size());
 
 		mFrameView.playImage(data.get(index), onfinish,new onLoadingImgListener() {
 
 			@Override
 			public void loadSuccessed() {
-				// TODO Auto-generated method stub
 				if(isFirstMenu){
 					isFirstMenu = false;
 					mHeader.setVisibility(View.VISIBLE);
