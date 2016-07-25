@@ -8,6 +8,10 @@
 /captures
 .idea
 app/build
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
 #app/signing.properties
 #app/y_meizi.jks
 
