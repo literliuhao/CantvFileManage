@@ -26,6 +26,7 @@
 	<string name="str_close">关闭</string>
 	<string name="str_share_file">文件共享</string>
 	<string name="str_confirm">确定</string>
+	<string name="str_disclaimerconfirm">同意并继续安装</string>
 	<string name="str_cancel">取消</string>
 	<string name="str_username">用户名</string>
     <string name="str_pwd">密码</string>

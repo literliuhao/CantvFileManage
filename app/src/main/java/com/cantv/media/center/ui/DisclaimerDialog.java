@@ -2,6 +2,7 @@ package com.cantv.media.center.ui;
 
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,47 +12,53 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
-public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
+public class DisclaimerDialog extends Dialog implements OnFocusChangeListener {
 
-	private OnIpConfirmedListener listener;
+	private OnClickableListener listener;
 	private View contentView;
-	private EditText mIpEt;
+	private LinearLayout mDisclaimerText;
 	private FocusUtils mFocusUtils;
 	private Button mConfirmBtn;
 	private Button mCancelBtn;
 
 	private boolean isFirst = true;
 
-	public DeviceAddDialog(Context context) {
+	public DisclaimerDialog(Context context) {
 		super(context, R.style.dialog_device_share);
 		mFocusUtils = new FocusUtils(context, getWindow().getDecorView(), R.drawable.focus_full_content);
-		setupLayout(context, R.layout.dialog_device_add);
+		setupLayout(context, R.layout.dialog_disclaimer);
 	}
 
-	public interface OnIpConfirmedListener {
-		public void onConfirmed(String ip);
+	public interface OnClickableListener {
+		public void onConfirmClickable();
+		public void onCancelClickable();
 	}
 
 	private void setupLayout(Context context, int layoutResId) {
 		contentView = View.inflate(context, layoutResId, null);
 		setContentView(contentView,
 				new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-		mIpEt = (EditText) contentView.findViewById(R.id.et_ip);
+		mDisclaimerText = (LinearLayout) contentView.findViewById(R.id.et_text);
 		mConfirmBtn = (Button) contentView.findViewById(R.id.btn_confirm);
 		mCancelBtn = (Button) contentView.findViewById(R.id.btn_cancel);
-
-		mIpEt.setOnFocusChangeListener(this);
+		
 		mConfirmBtn.setOnFocusChangeListener(this);
 		mCancelBtn.setOnFocusChangeListener(this);
-
+		
+	/*	mFocusUtils.startMoveFocus(mConfirmBtn, true, 0.91f);
+		mConfirmBtn.requestFocus();*/
+		
 		mConfirmBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				if (listener != null) {
-					listener.onConfirmed(mIpEt.getText().toString());
+					listener.onConfirmClickable();
 				}
+				SharedPreferenceUtil.setDisclaimer(1);
+				DisclaimerDialog.this.dismiss();
 			}
 
 		});
@@ -59,7 +66,11 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
 
 			@Override
 			public void onClick(View v) {
-				DeviceAddDialog.this.dismiss();
+				if (listener != null) {
+					listener.onCancelClickable();
+				}
+				SharedPreferenceUtil.setDisclaimer(0);
+				DisclaimerDialog.this.dismiss();
 			}
 		});
 	}
@@ -69,33 +80,31 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
 	}
 
 	public void reset() {
-		mIpEt.setText("");
-		mFocusUtils.setFocusLayout(mIpEt, false, 0);
-		mIpEt.requestFocus();
-		if (isFirst) {
+		mFocusUtils.startMoveFocus(mConfirmBtn, null, true, 0.96f, 0.80f, 0f, 0f);
+		mConfirmBtn.requestFocus();
+		  if (isFirst) {
 			isFirst = false;
 			getWindow().getDecorView().postDelayed(new Runnable() {
 
 				@Override
 				public void run() {
-					mFocusUtils.startMoveFocus(mIpEt, false, 0);
+					mFocusUtils.startMoveFocus(mConfirmBtn, null, true, 0.96f, 0.80f, 0f, 0f);
 				}
 			}, 500);
-		}
+		 }
 	}
 
-	public void setOnIpConfirmedListener(OnIpConfirmedListener listener) {
+	  public void setOnClickableListener(OnClickableListener listener) {
 		this.listener = listener;
 	}
 
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
 		if (hasFocus) {
-			if (v == mIpEt) {
-				mFocusUtils.startMoveFocus(v, false, 0);
-			} else if (v == mConfirmBtn || v == mCancelBtn) {
-//				mFocusUtils.startMoveFocus(v, true, 0.91f, 0, -6f);
-				mFocusUtils.startMoveFocus(v, null, true, 0.97f, 0.91f, 0f, -8f);
+			if (v == mConfirmBtn) {
+				mFocusUtils.startMoveFocus(v, null, true, 0.96f, 0.80f, 0f, 0f);
+			} else if (v == mCancelBtn) {
+				mFocusUtils.startMoveFocus(v, null, true, 0.96f, 0.80f, 0f, 0f);
 			}
 		}
 	}

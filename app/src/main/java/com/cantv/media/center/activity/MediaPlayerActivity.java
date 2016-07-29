@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 
 import com.app.core.utils.UiUtils;
+import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.MediaControllerBar;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public abstract class MediaPlayerActivity extends Activity {
     private int mDefaultPlayIndex;
-    private List<String> mDataList;
+    private List<Media> mDataList;
     private boolean mOnKeyPressedContinuity = false;
 
     @Override
@@ -25,18 +26,18 @@ public abstract class MediaPlayerActivity extends Activity {
             url = Uri.decode(getIntent().getDataString()).substring(7);
         } catch (Exception e) {
         }
-        mDataList = getIntent().getStringArrayListExtra("data_list");
+        mDataList = getIntent().getParcelableArrayListExtra("data_list");
         if (!TextUtils.isEmpty(url)) {
             if (mDataList == null) {
-                mDataList = new ArrayList<String>();
+                mDataList = new ArrayList<Media>();
             }
             mDataList.clear();
-            mDataList.add(url);
+            //mDataList.add(url);
         }
         mDefaultPlayIndex = getIntent().getIntExtra("data_index", 0);
         if (mDataList == null) {
             mDefaultPlayIndex = 0;
-            mDataList = new ArrayList<String>();
+            mDataList = new ArrayList<Media>();
         }
         UiUtils.doHideSystemBar(this);
     }
@@ -88,7 +89,7 @@ public abstract class MediaPlayerActivity extends Activity {
         }
     }
 
-    protected List<String> getData() {
+    protected List<Media> getData() {
         return mDataList;
     }
 

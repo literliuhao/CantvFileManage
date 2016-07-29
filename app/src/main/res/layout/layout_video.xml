@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    android:id="@+id/imageview_video_layout"
+    android:focusable="true"
+    android:clickable="true"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <ImageView
         android:id="@+id/imageview_video"
         android:background="@drawable/bj_01"
-        android:focusable="true"
-    	android:clickable="true"
         android:layout_margin="@dimen/px16"
         android:layout_width="@dimen/px360"
         android:layout_height="@dimen/px360" />

@@ -5,13 +5,14 @@ import java.util.concurrent.ExecutionException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.os.Parcelable;
 
 import com.bumptech.glide.Glide;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.MediaFormat;
 import com.cantv.media.center.constants.SourceType;
 
-public class Image extends Media {
+public class Image extends Media{
 	public Image(SourceType type, String uri) {
 		super(type, uri);
 	}

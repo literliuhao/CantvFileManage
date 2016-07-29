@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="@dimen/px1056"
+        android:layout_height="@dimen/px856"
+        android:layout_marginBottom="@dimen/px112"
+        android:layout_marginEnd="@dimen/px432"
+        android:layout_marginStart="@dimen/px432"
+        android:layout_marginTop="@dimen/px112"
+        android:background="@drawable/home_devices_background">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/px90"
+            android:text="免责声明"
+            android:textColor="@color/per80_white"
+            android:textSize="@dimen/px38" />
+		<LinearLayout 
+		    android:id="@+id/et_text"
+            android:layout_width="@dimen/px800"
+            android:layout_height="@dimen/px430"
+            android:layout_marginTop="@dimen/px60"
+            android:layout_below="@id/tv_title"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            android:background="@drawable/disclaimer_text">
+
+        <TextView
+            android:id="@+id/et_text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/px32"
+            android:layout_marginStart="@dimen/px32"
+            android:layout_marginTop="@dimen/px32"
+            android:paddingStart="@dimen/px62"
+            android:singleLine="true"
+            android:text="按照国家相关政策规定，本机已经禁止安装第三方软"
+            android:textColor="@color/per50_white"
+            android:textSize="@dimen/px28" />
+        
+        <TextView
+            android:id="@+id/et_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/px32"
+            android:layout_marginStart="@dimen/px32"
+            android:layout_marginTop="@dimen/px24"
+            android:singleLine="true"
+            android:text="件，第三方软件不保证能兼容和适用于所有Android平台和"
+            android:textColor="@color/per50_white"
+            android:textSize="@dimen/px28" />
+        
+        <TextView
+            android:id="@+id/et_text3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/px32"
+            android:layout_marginStart="@dimen/px32"
+            android:layout_marginTop="@dimen/px24"
+            android:singleLine="true"
+            android:text="系统，有可能引起冲突和导致不可预测的问题出现，请自行"
+            android:textColor="@color/per50_white"
+            android:textSize="@dimen/px28" />
+        
+        <TextView
+            android:id="@+id/et_text4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/px32"
+            android:layout_marginStart="@dimen/px32"
+            android:layout_marginTop="@dimen/px24"
+            android:singleLine="true"
+            android:text="承担使用第三方软件而导致的风险和后果。"
+            android:textColor="@color/per50_white"
+            android:textSize="@dimen/px28" />
+        
+		</LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/px116"
+            android:layout_below="@id/et_text"
+            android:layout_marginEnd="@dimen/px120"
+            android:layout_marginStart="@dimen/px120"
+            android:layout_marginTop="@dimen/px45"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="@dimen/px396"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_normal_text"
+                android:text="@string/str_disclaimerconfirm"
+                android:textColor="@color/per80_white"
+                android:textSize="@dimen/px34" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="@dimen/px396"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_24px"
+                android:background="@drawable/btn_normal_text"
+                android:text="@string/str_cancel"
+                android:textColor="@color/per80_white"
+                android:textSize="@dimen/px34" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

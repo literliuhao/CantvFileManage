@@ -137,7 +137,9 @@ public class MediaGridItemView extends MediaItemView {
 			mBgView.setBackground(media);
 			break;
 		case VIDEO:
-			mImageView.setMedia(media);
+			if (!media.isSharing) {
+				mImageView.setMedia(media);
+			}
 			mBgView.setBackground(media);
 			break;
 		case APP:
@@ -147,7 +149,9 @@ public class MediaGridItemView extends MediaItemView {
 			mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
 			mBgView.setLayoutParams(mediaParams);
 			mBgView.setBackground(media);
-			mBgView.setDefaultPic(apkIcon);
+			if (null != apkIcon) {
+                mBgView.setDefaultPic(apkIcon);
+            }
 			break;
 		case FOLDER:
 			mBgView.setDefaultPic(R.drawable.folder_wj);

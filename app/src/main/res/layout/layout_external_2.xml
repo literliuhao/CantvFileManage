@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_external_2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:visibility="gone">
+             android:id="@+id/layout_external_2"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:clickable="true"
+             android:focusable="true"
+             android:visibility="gone">
 
     <ImageView
         android:id="@+id/imageview_external_2"
@@ -11,9 +13,7 @@
         android:layout_height="@dimen/px240"
         android:layout_gravity="center"
         android:layout_margin="@dimen/px16"
-        android:background="@drawable/bj_05"
-        android:clickable="true"
-        android:focusable="true" />
+        android:background="@drawable/bj_05"/>
 
     <ImageView
         android:id="@+id/imageview_external_2_u"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px30"
         android:layout_marginTop="@dimen/px60"
-        android:background="@drawable/icon_nou" />
+        android:background="@drawable/icon_nou"/>
 
     <TextView
         android:id="@+id/textview_external_2_lable"
@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/px74"
         android:text="@string/str_external"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/px36" />
+        android:textSize="@dimen/px36"/>
 
     <TextView
         android:id="@+id/textview_external_2_free"
@@ -41,7 +41,7 @@
         android:layout_marginTop="@dimen/px126"
         android:gravity="center_vertical|left"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/px28" />
+        android:textSize="@dimen/px28"/>
 
     <TextView
         android:id="@+id/textview_external_2_total"
@@ -51,6 +51,6 @@
         android:layout_marginTop="@dimen/px162"
         android:gravity="center_vertical|left"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/px28" />
+        android:textSize="@dimen/px28"/>
 
 </FrameLayout>

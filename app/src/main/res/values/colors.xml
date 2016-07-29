@@ -27,4 +27,6 @@
     <!-- 菜单对话框 -->
     <color name="menu_bg">#E6111111</color>
     <color name="submenu_bg">#CC111111</color>
+    
+    <color name="black">#ff000000</color>
 </resources>

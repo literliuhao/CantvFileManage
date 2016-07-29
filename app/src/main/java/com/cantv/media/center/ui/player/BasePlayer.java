@@ -18,8 +18,7 @@ import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarContext;
 import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarListener;
 import com.cantv.media.center.utils.MediaUtils;
 
-public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext,
-		PlayerCtrlBarListener, CoverFlowViewListener {
+public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener {
 
 	protected List<String> mDataList;
 	protected int mDefaultPlayIndex;
@@ -27,8 +26,9 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 	protected int mCurPlayIndex;
 	private boolean mFistPlay = true;
 	protected VideoPlayer mRecord;
-	
+
 	protected abstract void runAfterPlay(boolean isFirst);
+
 	protected abstract void runProgressBar();
 
 	@Override
@@ -55,6 +55,15 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 			mPlayer = new ProxyPlayer();
 			mPlayer.setOnCompletionListener(this);
 		}
+
+		mPlayer.onExceptionListener(new ProxyPlayer.MediaplayExceptionListener() {
+			@Override
+			public void ExceHappen() {
+				Toast.makeText(BasePlayer.this, "文件存在异常!", Toast.LENGTH_LONG).show();
+				finish();
+			}
+		});
+
 		return mPlayer;
 	}
 
@@ -93,7 +102,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 		return true;
 	}
 
-
 	@Override
 	public void onPlayerPlayOrPause() {
 		if (!isPlayerPaused())
@@ -124,7 +132,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
 	@Override
 	public boolean isPlayerPaused() {
-		return mPlayer==null?true:(!mPlayer.isPlaying());
+		return mPlayer == null ? true : (!mPlayer.isPlaying());
 	}
 
 	protected void playMedia(int index) {

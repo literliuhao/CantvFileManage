@@ -12,17 +12,19 @@
 
     <LinearLayout
         android:id="@+id/mediaimagebar"
-        android:layout_width="@dimen/dimen_1000px"
-        android:layout_height="@dimen/dimen_260px"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_400px"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
+        android:background="@drawable/screen_bottom"
         android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/media_image_ll_rotation"
             android:layout_width="@dimen/dimen_140px"
             android:layout_height="@dimen/dimen_260px"
+            android:layout_gravity="bottom"
             android:orientation="vertical">
 
             <ImageView
@@ -49,6 +51,7 @@
             android:id="@+id/media_image_ll_size"
             android:layout_width="@dimen/dimen_140px"
             android:layout_height="@dimen/dimen_260px"
+            android:layout_gravity="bottom"
             android:layout_marginLeft="@dimen/dimen_80px"
             android:orientation="vertical">
 
@@ -77,6 +80,7 @@
             android:id="@+id/media_image_ll_auto"
             android:layout_width="@dimen/dimen_140px"
             android:layout_height="@dimen/dimen_260px"
+            android:layout_gravity="bottom"
             android:layout_marginLeft="@dimen/dimen_80px"
             android:orientation="vertical">
 
@@ -106,6 +110,7 @@
             android:id="@+id/media_image_ll_info"
             android:layout_width="@dimen/dimen_140px"
             android:layout_height="@dimen/dimen_260px"
+            android:layout_gravity="bottom"
             android:layout_marginLeft="@dimen/dimen_80px"
             android:orientation="vertical">
 
@@ -182,7 +187,10 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/dimen_60px"
+                  android:layout_marginRight="@dimen/dimen_60px"
                   android:layout_marginTop="@dimen/dimen_50px"
+                  android:singleLine="true"
+                  android:ellipsize="marquee"
                   android:textColor="#7fffffff"
                   android:textSize="@dimen/fontsize_32px" />
 

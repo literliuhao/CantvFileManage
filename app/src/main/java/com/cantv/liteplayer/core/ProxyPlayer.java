@@ -155,6 +155,19 @@ public class ProxyPlayer {
 			mLitePlayer = new LitePlayer();
 			mLitePlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		}
+		
+		mLitePlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+
+                Log.w("异常","卧槽,文件播放发生异常!");
+
+                if (null!=mExceptionListener){
+                    mExceptionListener.ExceHappen();
+                }
+                return false;
+            }
+        });
 		return mLitePlayer;
 	}
 
@@ -181,5 +194,19 @@ public class ProxyPlayer {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 播放器出现异常的监听
+	 * @author yibh
+	 *
+	 */
+	public interface MediaplayExceptionListener{
+        void ExceHappen();
+    }
+
+    private MediaplayExceptionListener mExceptionListener;
+    public void onExceptionListener(MediaplayExceptionListener exceptionListener){
+        this.mExceptionListener=exceptionListener;
+    }
 
 }

@@ -185,6 +185,7 @@ public class CDView extends ImageView {
     public void stopRotate() {
         isRotate = false;
         mRotateAnim.cancel();
+        mRotateAnim.removeAllUpdateListeners();
     }
 
     @Override

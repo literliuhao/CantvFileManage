@@ -93,6 +93,10 @@ public class FocusUtils {
 		this.startMoveFocus(view, (Rect) null, isScalable, scale, 0.0F, 0.0F);
 	}
 
+	public void startMoveFocus(View view, boolean isScalable, float scaleX,float scaleY) {
+		this.startMoveFocus(view, (Rect) null, isScalable, scaleX,scaleY, 0.0F, 0.0F);
+	}
+
 	public void startMoveFocus(View view, Rect clipRect, boolean isScalable, float scale) {
 		this.startMoveFocus(view, clipRect, isScalable, scale, 0.0F, 0.0F);
 	}
@@ -101,8 +105,7 @@ public class FocusUtils {
 		this.startMoveFocus(view, (Rect) null, isScalable, scale, scrollerX, scrollerY);
 	}
 
-	public void startMoveFocus(View view, Rect clipRect, boolean isScalable, float scale, float scrollerX,
-			float scrollerY) {
+	public void startMoveFocus(View view, Rect clipRect, boolean isScalable, float scale, float scrollerX, float scrollerY) {
 		if (view != null) {
 			int[] location = new int[2];
 			view.getLocationInWindow(location);
@@ -110,8 +113,8 @@ public class FocusUtils {
 			float pT;
 			if (clipRect == null) {
 				if (isScalable) {
-					pL = ((float) view.getWidth() * (scale * 1.05f) - (float) view.getWidth()) / 2.0F;
-					pT = ((float) view.getHeight() * (scale * 1.05f) - (float) view.getHeight()) / 2.0F;
+					pL = ((float) view.getWidth() * (scale * 1.0f) - (float) view.getWidth()) / 2.0F;
+					pT = ((float) view.getHeight() * (scale * 1.0f) - (float) view.getHeight()) / 2.0F;
 					this.focusView.focusMove((float) ((int) ((float) location[0] - pL + scrollerX)),
 							(float) ((int) ((float) location[1] - pT + scrollerY)),
 							(float) ((int) ((float) (location[0] + view.getWidth()) + pL + scrollerX)),
@@ -124,6 +127,43 @@ public class FocusUtils {
 			} else if (isScalable) {
 				pL = ((float) view.getWidth() * scale - (float) view.getWidth()) / 2.0F;
 				pT = ((float) view.getHeight() * scale - (float) view.getHeight()) / 2.0F;
+				this.focusView.focusMove((float) ((int) ((float) location[0] - pL + (float) clipRect.left + scrollerX)),
+						(float) ((int) ((float) location[1] - pT + (float) clipRect.top + scrollerY)),
+						(float) ((int) ((float) (location[0] + view.getWidth()) + pL - (float) clipRect.right
+								+ scrollerX)),
+						(float) ((int) ((float) (location[1] + view.getHeight()) + pT - (float) clipRect.bottom
+								+ scrollerY)));
+			} else {
+				this.focusView.focusMove((float) (location[0] + clipRect.left) + scrollerX,
+						(float) (location[1] + clipRect.top) + scrollerY,
+						(float) (location[0] + view.getWidth() - clipRect.right) + scrollerX,
+						(float) (location[1] + view.getHeight() - clipRect.bottom) + scrollerY);
+			}
+
+		}
+	}
+	public void startMoveFocus(View view, Rect clipRect, boolean isScalable, float scaleX, float scaleY, float scrollerX, float scrollerY) {
+		if (view != null) {
+			int[] location = new int[2];
+			view.getLocationInWindow(location);
+			float pL;
+			float pT;
+			if (clipRect == null) {
+				if (isScalable) {
+					pL = ((float) view.getWidth() * (scaleX * 1.0f) - (float) view.getWidth()) / 2.0F;
+					pT = ((float) view.getHeight() * (scaleY * 1.0f) - (float) view.getHeight()) / 2.0F;
+					this.focusView.focusMove((float) ((int) ((float) location[0] - pL + scrollerX)),
+							(float) ((int) ((float) location[1] - pT + scrollerY)),
+							(float) ((int) ((float) (location[0] + view.getWidth()) + pL + scrollerX)),
+							(float) ((int) ((float) (location[1] + view.getHeight()) + pT + scrollerY)));
+				} else {
+					this.focusView.focusMove((float) location[0] + scrollerX, (float) location[1] + scrollerY,
+							(float) (location[0] + view.getWidth()) + scrollerX,
+							(float) (location[1] + view.getHeight()) + scrollerY);
+				}
+			} else if (isScalable) {
+				pL = ((float) view.getWidth() * scaleX - (float) view.getWidth()) / 2.0F;
+				pT = ((float) view.getHeight() * scaleY - (float) view.getHeight()) / 2.0F;
 				this.focusView.focusMove((float) ((int) ((float) location[0] - pL + (float) clipRect.left + scrollerX)),
 						(float) ((int) ((float) location[1] - pT + (float) clipRect.top + scrollerY)),
 						(float) ((int) ((float) (location[0] + view.getWidth()) + pL - (float) clipRect.right

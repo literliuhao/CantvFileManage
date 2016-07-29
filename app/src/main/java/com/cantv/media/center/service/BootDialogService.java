@@ -1,8 +1,5 @@
 package com.cantv.media.center.service;
 
-import com.cantv.media.center.utils.MediaUtils;
-import com.cantv.media.center.widgets.CustomDialog;
-
 import android.app.Dialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -13,6 +10,10 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.WindowManager;
+
+import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.widgets.CustomDialog;
 
 /**
  * Created by liuhao on 16/7/14.
@@ -46,7 +47,10 @@ public class BootDialogService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                MediaUtils.addUsbRootPaths(intent.getData().getPath());
+            	String path = intent.getData().getPath();
+//                MediaUtils.addUsbRootPaths(path);
+                //保存路径到本地
+                SharedPreferenceUtil.saveDevice(path);
                 showMountedDialog();
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 MediaUtils.removeUsbRootPaths(intent.getData().getPath());

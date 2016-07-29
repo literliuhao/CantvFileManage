@@ -15,7 +15,7 @@ import android.widget.Toast;
 public class ToastUtils {
 	private static Handler mHandler = new Handler(Looper.getMainLooper());
 	private static Toast mToast = null;
-	private static TextView mTextView;
+	// private static TextView mTextView;
 	private static Object synObj = new Object();
 
 	/**
@@ -68,6 +68,7 @@ public class ToastUtils {
 							if (mToast == null) {
 								mToast = new Toast(act);
 							}
+							TextView mTextView = null;
 							if (mTextView == null) {
 								mTextView = new TextView(act);
 								mTextView.setBackgroundResource(R.drawable.shape_toast);

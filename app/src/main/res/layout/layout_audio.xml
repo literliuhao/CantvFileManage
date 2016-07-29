@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/imageview_audio_layout"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/imageview_audio"
@@ -10,15 +14,14 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/px16"
         android:background="@drawable/bj_03"
-        android:clickable="true"
-        android:focusable="true" />
+        />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/px110"
-        android:background="@drawable/icon_music" />
+        android:background="@drawable/icon_music"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,7 +30,7 @@
         android:layout_marginTop="@dimen/px260"
         android:text="@string/str_music"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/px36" />
+        android:textSize="@dimen/px36"/>
 
     <TextView
         android:id="@+id/textview_audio"
@@ -36,5 +39,5 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/px261"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/px28" />
+        android:textSize="@dimen/px28"/>
 </FrameLayout>

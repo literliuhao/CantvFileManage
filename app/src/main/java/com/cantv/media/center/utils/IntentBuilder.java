@@ -29,43 +29,47 @@ public class IntentBuilder {
 //        		Toast.makeText(context,"文件损坏!",Toast.LENGTH_SHORT).show();
 //                e.printStackTrace();
 //        	}
-        } else {
-            // unknown MimeType
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-            dialogBuilder.setTitle("选择文件类型");
-
-            CharSequence[] menuItemArray = new CharSequence[]{"文本", "音频", "视频", "图像"};
-            dialogBuilder.setItems(menuItemArray, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String selectType = "*/*";
-                    switch (which) {
-                        case 0:
-                            selectType = "text/plain";
-                            break;
-                        case 1:
-                            selectType = "audio/*";
-                            break;
-                        case 2:
-                            selectType = "video/*";
-                            break;
-                        case 3:
-                            selectType = "image/*";
-                            break;
-                    }
-                    try {
-                    	Intent intent = new Intent();
-                    	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    	intent.setAction(android.content.Intent.ACTION_VIEW);
-                    	intent.setDataAndType(Uri.fromFile(new File(filePath)), selectType);
-                    	context.startActivity(intent);
-					} catch (Exception e) {
-						Toast.makeText(context, "系统不支持该格式文件", Toast.LENGTH_LONG).show();
-					}
-                }
-            });
-            dialogBuilder.show();
         }
+        
+       
+        else {
+//            // unknown MimeType
+//            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+//            dialogBuilder.setTitle("选择文件类型");
+//
+//            CharSequence[] menuItemArray = new CharSequence[]{"文本", "音频", "视频", "图像"};
+//            dialogBuilder.setItems(menuItemArray, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    String selectType = "*/*";
+//                    switch (which) {
+//                        case 0:
+//                            selectType = "text/plain";
+//                            break;
+//                        case 1:
+//                            selectType = "audio/*";
+//                            break;
+//                        case 2:
+//                            selectType = "video/*";
+//                            break;
+//                        case 3:
+//                            selectType = "image/*";
+//                            break;
+//                    }
+//                    try {
+//                    	Intent intent = new Intent();
+//                    	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    	intent.setAction(android.content.Intent.ACTION_VIEW);
+//                    	intent.setDataAndType(Uri.fromFile(new File(filePath)), selectType);
+//                    	context.startActivity(intent);
+//					} catch (Exception e) {
+						Toast.makeText(context, "系统不支持该格式文件", Toast.LENGTH_SHORT).show();
+//					}
+//                }
+//            });
+//            dialogBuilder.show();
+        }
+       
     }
 
     public static Intent buildSendFile(ArrayList<Media> files) {

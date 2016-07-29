@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -56,7 +57,6 @@ public class GridViewActivity extends Activity {
 	public TextView mRTCountView; // 显示数量和当前选中position
 	public View mBg_view; // 上部阴影
 	public int mCurrGridStyle; // 记录当前是什么排列方式
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,14 +100,18 @@ public class GridViewActivity extends Activity {
 			mTitleTV.setText(R.string.str_external);
 			mGridView = new MediaGridView(this, SourceType.DEVICE);
 			if (MediaUtils.getUSBNum() > 0 && MediaUtils.getUSBNum() < 3) {
-				mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(0));
+				if(null!=getIntent().getStringExtra("toListFlag")){
+					
+				}else{
+					mGridView.setDevicePath(MediaUtils.getCurrPathList().get(0));
+				}
 			}
 			isExternal = true;
 		} else if ("device2".equalsIgnoreCase(type)) {
 			mTitleTV.setText(R.string.str_external);
 			mGridView = new MediaGridView(this, SourceType.DEVICE);
 			if (MediaUtils.getUSBNum() > 1) {
-				mGridView.setDevicePath(MediaUtils.getUsbRootPaths().get(1));
+				mGridView.setDevicePath(MediaUtils.getCurrPathList().get(1));
 			}
 			isExternal = true;
 		} else if ("share".equalsIgnoreCase(type)) {
@@ -130,12 +134,12 @@ public class GridViewActivity extends Activity {
 			break;
 		}
 		mContentView.addView(mGridView);
-		mGridView.setOnFocusChangedListener(new MediaGridView.OnFocusChangedListener() {
-			@Override
-			public void focusPosition(Media media, int position) {
-				// mFocusName.setText(media.mName);
-			}
-		});
+//		mGridView.setOnFocusChangedListener(new MediaGridView.OnFocusChangedListener() {
+//			@Override
+//			public void focusPosition(Media media, int position) {
+//				// mFocusName.setText(media.mName);
+//			}
+//		});
 	}
 
 	@Override
@@ -282,14 +286,11 @@ public class GridViewActivity extends Activity {
 		int lastSelectPosi = menuItemData.setChildSelected(position);
 		if (mSelectedMenuPosi == 0) {
 			if (position == 0) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_DATE_DOWN,
-						false);
+				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_DATE_DOWN, false);
 			} else if (position == 1) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_SIZE_DOWN,
-						false);
+				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_SIZE_DOWN, false);
 			} else if (position == 2) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_NAME_UP,
-						false);
+				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_NAME_UP, false);
 			}
 			if (isRefreshed) {
 				mGridView.mListAdapter.notifyDataSetChanged();
@@ -324,8 +325,7 @@ public class GridViewActivity extends Activity {
 			if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
 				// 有新设备插入
 				openRootDir();
-			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)
-					|| intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 				// 移除设备
 				openRootDir();
 			}
@@ -339,19 +339,33 @@ public class GridViewActivity extends Activity {
 		if (!isExternal) {
 			return;
 		}
-		List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
+		String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
 		List<Media> mediaes = new ArrayList<>();
-		for (int i = 0; i < usbRootPaths.size(); i++) {
-			File file = new File(usbRootPaths.get(i));
-			Media fileInfo = FileUtil.getFileInfo(file, null, false);
-			mediaes.add(fileInfo);
+
+		for (String s : pathList) {
+			if (null == s || s.trim().equals("")) {
+				continue;
+			}
+
+			// 获取路径对应设备的总容量
+			if (null != MediaUtils.getTotal(s)) {
+				File file = new File(s);
+				Media fileInfo = FileUtil.getFileInfo(file, null, false);
+				mediaes.add(fileInfo);
+			}
 		}
+
 		// 清除记录的上级目录
 		mGridView.mMediaStack.clear();
 		mGridView.mPosStack.clear();
+		mGridView.mCurrMediaList=mediaes;
 		mGridView.mListAdapter.bindData(mediaes);
 		if (mediaes.size() < 1) {
+			mRTCountView.setVisibility(View.GONE);
 			mGridView.showNoDataPage();
+		}else{
+			mRTCountView.setVisibility(View.VISIBLE);
+			mGridView.setTextRTview(mGridView.mSelectItemPosition+1+" / ", mediaes.size()+"");
 		}
 	}
 
@@ -362,6 +376,12 @@ public class GridViewActivity extends Activity {
 		}
 		unregisterReceiver(mReceiver);
 		super.onDestroy();
+	}
+	
+	public Bitmap getScreenShot() {
+		getWindow().getDecorView().setDrawingCacheEnabled(false);
+		getWindow().getDecorView().setDrawingCacheEnabled(true);
+		return getWindow().getDecorView().getDrawingCache();
 	}
 
 }

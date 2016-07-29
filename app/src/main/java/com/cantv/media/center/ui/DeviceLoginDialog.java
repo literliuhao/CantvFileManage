@@ -119,7 +119,8 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
 			} else if (v == mShowPwdCb) {
 				mFocusUtils.startMoveFocus(v, true, 1.4f, 30f, 0);
 			} else if (v == mConfirmBtn || v == mCancelBtn) {
-				mFocusUtils.startMoveFocus(v, true, 0.91f, 0, -6f);
+//				mFocusUtils.startMoveFocus(v, true, 0.91f, 0, -6f);
+				mFocusUtils.startMoveFocus(v, null, true, 0.97f, 0.91f, 0f, -8f);
 			}
 		}
 	}

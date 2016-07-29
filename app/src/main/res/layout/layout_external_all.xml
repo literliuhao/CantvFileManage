@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:id="@+id/layout_external_all"
+             android:clickable="true"
+             android:focusable="true"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:visibility="visible">
@@ -11,9 +13,7 @@
         android:layout_height="@dimen/px240"
         android:layout_gravity="center"
         android:layout_margin="@dimen/px16"
-        android:background="@drawable/bj_06"
-        android:clickable="true"
-        android:focusable="true"/>
+        android:background="@drawable/bj_06"/>
 
     <ImageView
         android:id="@+id/imageview_external_u"

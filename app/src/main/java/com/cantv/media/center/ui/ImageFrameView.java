@@ -1,7 +1,6 @@
 package com.cantv.media.center.ui;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,194 +8,198 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cantv.media.R;
 import com.cantv.media.center.utils.ImageUtils;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 @SuppressLint("ResourceAsColor")
 public class ImageFrameView extends FrameLayout {
-    private Bitmap mBitmap = null;
-    private final ImageView mImageView;
-    private int mImgOrginWidth;
-    private int mImgOrginHeight;
-    private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
-    private final long SHOWPROCESS_FILE_SIZE = 50 * 1024 * 1024;
-    private ProgressDialog mProgressDialog;
-    private MediaImageViewLoaderTask mTask;
-    private NotifyParentUpdate mNotifyParentUpdate;
-    private int mfirst = 0;
-    private Context mContext;
+	public Bitmap mBitmap = null;
+	private final ImageView mImageView;
+	private int mImgOrginWidth;
+	private int mImgOrginHeight;
+	private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+	private final long SHOWPROCESS_FILE_SIZE = 50 * 1024 * 1024;
+	private LoadingDialog mLoadingDialog;
+	private MediaImageViewLoaderTask mTask;
+	private NotifyParentUpdate mNotifyParentUpdate;
+	private Context mContext;
 
-    public ImageFrameView(Context context) {
-        super(context);
-        mContext = context;
-        mProgressDialog = new ProgressDialog(context);
-        WindowManager.LayoutParams params = mProgressDialog.getWindow().getAttributes();
-        mProgressDialog.getWindow().setGravity(Gravity.CENTER);
-        //params.x = 250;
-        mProgressDialog.getWindow().setAttributes(params);
-        mImageView = new ImageView(context);
-        addView(mImageView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
-    }
+	public ImageFrameView(Context context) {
+		super(context);
+		mContext = context;
+		mLoadingDialog = new LoadingDialog(mContext);
+		mImageView = new ImageView(context);
+		addView(mImageView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
+	}
 
-    public interface onLoadingImgListener {
-        void loadSuccessed();
-    }
+	public interface onLoadingImgListener {
+		void loadSuccessed();
+		void bitmapSize(int width,int height);
+	}
 
-    private onLoadingImgListener mLoadingImgListener;
+	private onLoadingImgListener mLoadingImgListener;
 
-    public void playImage(final String imageUri, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inJustDecodeBounds = true;
-        this.mLoadingImgListener = loadingImgListener ;
-        Glide.with(mContext).load(imageUri).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                mImgOrginWidth = resource.getWidth();
-                mImgOrginHeight = resource.getHeight();
-                mImageView.setImageBitmap(resource);
-                if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccessed();
-                }
-            }
-        });
-    }
+	public void playImage(final String imageUri, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		opt.inJustDecodeBounds = true;
+		this.mLoadingImgListener = loadingImgListener;
+		showProgressBar();
+		mImageView.setVisibility(View.GONE);
+		Glide.with(mContext).load(imageUri).asBitmap()
+		.diskCacheStrategy(DiskCacheStrategy.ALL)
+		.skipMemoryCache(false)
+		.into(new SimpleTarget<Bitmap>() {
+			@Override
+			public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+				mImgOrginWidth = resource.getWidth();
+				mImgOrginHeight = resource.getHeight();
 
+				mBitmap = resource;
+				mImageView.setImageBitmap(mBitmap);
+				dismissProgressBar();
+				mImageView.setVisibility(View.VISIBLE);
+				if (null != mLoadingImgListener) {
+					mLoadingImgListener.loadSuccessed();
+					mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
+				}
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = mImgOrginWidth;
-        int height = mImgOrginHeight;
-        Log.i("liujun4", "width====" + width + "---height====" + height);
-        if (width == 0 || height == 0) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        } else {
-            for (int i = 0; i < getChildCount(); i++) {
-                measureChild(getChildAt(i), MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-            }
-            setMeasuredDimension(width, height);
-        }
-    }
+				if (mBitmap != null && !mBitmap.isRecycled()) {
+					mBitmap = null;
+					resource = null;
+				}
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (mBitmap != null) {
-            mBitmap.recycle();
-            mBitmap = null;
-        }
-    }
+			}
+		});
+	}
 
-    private void showProgressBar(String message) {
-        if (mProgressDialog.isShowing()) {
-            return;
-        }
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage(message == null ? "正在加载中..." : message);
-        mProgressDialog.show();
-    }
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		int width = mImgOrginWidth;
+		int height = mImgOrginHeight;
+		Log.i("liujun4", "width====" + width + "---height====" + height);
+		if (width == 0 || height == 0) {
+			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		} else {
+			for (int i = 0; i < getChildCount(); i++) {
+				measureChild(getChildAt(i), MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+			}
+			setMeasuredDimension(width, height);
+		}
+	}
 
-    private void dismissProgressBar() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-    }
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		if (mBitmap != null) {
+			mBitmap.recycle();
+			mBitmap = null;
+		}
+	}
 
-    private void asyncLoadData() {
-        if (mTask != null) {
-            mTask.execute();
-            mTask = null;
-        }
-    }
+	private void showProgressBar() {
+		  if (mLoadingDialog.isShowing()) {
+			return;
+		}
+		  mLoadingDialog.show();
+	}
 
-    private class MediaImageViewLoaderTask extends AsyncTask<Void, Void, Bitmap> {
-        private final String mimageUri;
-        private final Runnable monfinish;
-        private int mImgWidth;
-        private int mImgHeight;
+	private void dismissProgressBar() {
+		  if (mLoadingDialog != null) {
+			mLoadingDialog.dismiss();
+		}
+	}
 
-        MediaImageViewLoaderTask(final String imageUri, final Runnable onfinish) {
-            mimageUri = imageUri;
-            monfinish = onfinish;
-        }
+	private void asyncLoadData() {
+		if (mTask != null) {
+			mTask.execute();
+			mTask = null;
+		}
+	}
 
-        protected void onPreExecute() {
-            if (new File(mimageUri).length() > SHOWPROCESS_FILE_SIZE) {
-                showProgressBar(null);
-            }
-            if (mBitmap != null && !mBitmap.isRecycled()) {
-                mBitmap = null;
-            }
-        }
+	private class MediaImageViewLoaderTask extends AsyncTask<Void, Void, Bitmap> {
+		private final String mimageUri;
+		private final Runnable monfinish;
+		private int mImgWidth;
+		private int mImgHeight;
 
-        ;
+		MediaImageViewLoaderTask(final String imageUri, final Runnable onfinish) {
+			mimageUri = imageUri;
+			monfinish = onfinish;
+		}
 
-        protected void onPostExecute(Bitmap result) {
-            dismissProgressBar();
-            mImgOrginWidth = mImgWidth;
-            mImgOrginHeight = mImgHeight;
-            mImageView.setImageBitmap(mBitmap);
-            if (mNotifyParentUpdate != null) {
-                mNotifyParentUpdate.update();
-            }
+		protected void onPreExecute() {
+			if (new File(mimageUri).length() > SHOWPROCESS_FILE_SIZE) {
+				showProgressBar();
+			}
+			if (mBitmap != null && !mBitmap.isRecycled()) {
+				mBitmap = null;
+			}
+		}
 
-            if (null != mLoadingImgListener) {
-                mLoadingImgListener.loadSuccessed();
-            }
+		;
 
-            requestLayout();
-        }
+		protected void onPostExecute(Bitmap result) {
+			dismissProgressBar();
+			mImgOrginWidth = mImgWidth;
+			mImgOrginHeight = mImgHeight;
+			mImageView.setImageBitmap(mBitmap);
+			if (mNotifyParentUpdate != null) {
+				mNotifyParentUpdate.update();
+			}
 
-        ;
+			if (null != mLoadingImgListener) {
+				mLoadingImgListener.loadSuccessed();
+			}
 
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            try {
-                BitmapFactory.Options opt = new BitmapFactory.Options();
-                opt.inJustDecodeBounds = true;
-                mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
-                mImgWidth = opt.outWidth;
-                mImgHeight = opt.outHeight;
-                opt.inJustDecodeBounds = false;
-                if (new File(mimageUri).length() >= MAX_FILE_SIZE) {
-                    opt.inPurgeable = true;//设置为True时，表示系统内存不足时可以被回 收，设置为False时，表示不能被回收
-                    opt.inInputShareable = true;
-                    opt.inPreferredConfig = Bitmap.Config.ARGB_4444;
-                }
-                // mBitmap = ImageUtils.createImageThumbnail(mimageUri);
-                // mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
-                mBitmap = ImageUtils.createBitmap(mimageUri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (monfinish != null) {
-                    monfinish.run();
-                }
-            }
-            // mBitmap = ImageUtils.createBitmap(mimageUri);
-            return mBitmap;
-        }
-    }
+			requestLayout();
+		}
 
-    public void setNotifyParentUpdateListner(NotifyParentUpdate listen) {
-        mNotifyParentUpdate = listen;
-    }
+		;
 
-    public interface NotifyParentUpdate {
-        void update();
-    }
+		@Override
+		protected Bitmap doInBackground(Void... params) {
+			try {
+				BitmapFactory.Options opt = new BitmapFactory.Options();
+				opt.inJustDecodeBounds = true;
+				mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
+				mImgWidth = opt.outWidth;
+				mImgHeight = opt.outHeight;
+				opt.inJustDecodeBounds = false;
+				if (new File(mimageUri).length() >= MAX_FILE_SIZE) {
+					opt.inPurgeable = true;// 设置为True时，表示系统内存不足时可以被回
+											// 收，设置为False时，表示不能被回收
+					opt.inInputShareable = true;
+					opt.inPreferredConfig = Bitmap.Config.ARGB_4444;
+				}
+				// mBitmap = ImageUtils.createImageThumbnail(mimageUri);
+				// mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
+				mBitmap = ImageUtils.createBitmap(mimageUri);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (monfinish != null) {
+					monfinish.run();
+				}
+			}
+			// mBitmap = ImageUtils.createBitmap(mimageUri);
+			return mBitmap;
+		}
+	}
+
+	public void setNotifyParentUpdateListner(NotifyParentUpdate listen) {
+		mNotifyParentUpdate = listen;
+	}
+
+	public interface NotifyParentUpdate {
+		void update();
+	}
 
 }

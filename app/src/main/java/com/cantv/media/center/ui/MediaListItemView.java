@@ -137,7 +137,7 @@ public class MediaListItemView extends MediaItemView {
 	public void setMediaItem(Media media) {
 		mMedia = media;
 		mTvName.setText(media.getName());
-		List<String> usbRootPaths = MediaUtils.getUsbRootPaths();
+		List<String> usbRootPaths = MediaUtils.getCurrPathList();
 		mTvDate.setVisibility(VISIBLE);
 		// 当是文件类型,并且不是外接设备的根目录(根目录是默认1970时间,无意义)
 		if ((mMedia.mType == SourceType.FOLDER) && !usbRootPaths.contains(mMedia.mUri)) {
@@ -174,7 +174,9 @@ public class MediaListItemView extends MediaItemView {
 			mBgView.setBackground(media);
 			break;
 		case VIDEO:
-			mImageView.setMedia(media);
+			if (!media.isSharing) {
+				mImageView.setMedia(media);
+			}
 			mBgView.setBackground(media);
 			break;
 		case APP:
@@ -184,7 +186,9 @@ public class MediaListItemView extends MediaItemView {
 			mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
 			mBgView.setLayoutParams(mediaParams);
 			mBgView.setBackground(media);
-			mBgView.setDefaultPic(apkIcon);
+			if (null != apkIcon) {
+                mBgView.setDefaultPic(apkIcon);
+            }
 			break;
 		case FOLDER:
 			mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));

@@ -9,6 +9,7 @@ import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -76,6 +77,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 	private ScanSambaTask mScanSambaTask;
 
 	private boolean isFirst = true;
+	Drawable mBlurDrawable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,8 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
 	@Override
 	protected void onStop() {
+		mBlurDrawable.setCallback(null);
+		mBlurDrawable = null;
 		unregisterReceiver(mNetChangeReceiver);
 		super.onStop();
 	}
@@ -171,7 +175,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 		}
 		registerReceiver(mNetChangeReceiver, mNetChangeIntentFilter);
 	}
-	
+
 	private void updatePageNetInfo() {
 		NetworkInfo netInfo = NetworkUtils.getNetInfo(this);
 		if (netInfo != null && netInfo.isConnected()) {
@@ -235,7 +239,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				mScrollView.smoothScrollTo(v.getLeft() + getResources().getDimensionPixelSize(R.dimen.dimen_15px), 0);
 			}
 			mFocusScaleUtils.scaleToLarge(v);
-			mFocusUtils.startMoveFocus(v, true, 1.02F, -1f, 0.5f);
+			mFocusUtils.startMoveFocus(v, true, 1.065F, -1f, 0.5f);
 		} else {
 			mFocusScaleUtils.scaleToNormal(v);
 		}
@@ -250,8 +254,13 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				@Override
 				public void onShow(DialogInterface dialog) {
 					((DeviceAddDialog) dialog).reset();
+//					Bitmap decodeResource = BitmapFactory.decodeResource(getResources(), R.drawable.folder_photo);
+					mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
 					((DeviceAddDialog) dialog)
-							.updateBackground(BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this));
+//					.updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
+//							.updateBackground(BitmapUtils.blurBitmap(decodeResource, DeviceShareActivity.this));
+							.updateBackground(mBlurDrawable);
+//					d.setCallback(null);
 				}
 			});
 			mAddDeviceDialog.setOnIpConfirmedListener(new OnIpConfirmedListener() {
@@ -381,8 +390,12 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				@Override
 				public void onShow(DialogInterface dialog) {
 					((DeviceLoginDialog) dialog).reset();
+//					Bitmap decodeResource = BitmapFactory.decodeResource(getResources(), R.drawable.folder_photo);
 					((DeviceLoginDialog) dialog)
-							.updateBackground(BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this));
+//							.updateBackground(BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this));
+//					.updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
+							.updateBackground(mBlurDrawable);
+//					.updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
 				}
 			});
 			mLoginDeviceDialog.setOnLoginListener(new OnLoginListener() {
@@ -483,8 +496,14 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 	}
 
 	private Bitmap getScreenShot() {
-		getWindow().getDecorView().setDrawingCacheEnabled(false);
+		View view = getWindow().getDecorView();
+		view.buildDrawingCache();
 		getWindow().getDecorView().setDrawingCacheEnabled(true);
-		return getWindow().getDecorView().getDrawingCache();
+		Bitmap bm = Bitmap.createBitmap(view.getDrawingCache());
+		getWindow().getDecorView().setDrawingCacheEnabled(false);
+		view.destroyDrawingCache();
+		return bm;
+//		return getWindow().getDecorView().getDrawingCache();
 	}
+
 }

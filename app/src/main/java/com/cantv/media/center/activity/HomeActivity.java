@@ -1,17 +1,4 @@
 package com.cantv.media.center.activity;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.cantv.liteplayer.core.focus.FocusScaleUtils;
-import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.media.R;
-import com.cantv.media.center.constants.FileCategory;
-import com.cantv.media.center.service.BootDialogService;
-import com.cantv.media.center.utils.MediaUtils;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -31,7 +18,16 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.cantv.liteplayer.core.focus.FocusScaleUtils;
+import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.media.R;
+import com.cantv.media.center.constants.FileCategory;
+import com.cantv.media.center.service.BootDialogService;
+import com.cantv.media.center.utils.MediaUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 public class HomeActivity extends Activity implements OnFocusChangeListener {
     private static final String TAG = "HomeActivity";
     private static final String EXTERNAL = "external";
@@ -41,20 +37,17 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private Context mContext;
     private Timer mTimer;
     private TimerTask mTimerTask;
-    private FrameLayout mExternalFL;
-    private FrameLayout mExternalFL1;
-    private FrameLayout mExternalFL2;
-    private ImageView mVideoIV;
-    private ImageView mImageIV;
-    private ImageView mAudioIV;
-    private ImageView mAppIV;
-    private ImageView mLocalIV;
-    private ImageView mShareIV;
-    private ImageView mExternalIV;
+    private FrameLayout mVideoIV;
+    private FrameLayout mImageIV;
+    private FrameLayout mAudioIV;
+    private FrameLayout mAppIV;
+    private FrameLayout mLocalIV;
+    private FrameLayout mShareIV;
+    private FrameLayout mExternalIV;
     private ImageView mExternalUIV;
-    private ImageView mExternalIV1;
+    private FrameLayout mExternalIV1;
     private ImageView mExternalUIV1;
-    private ImageView mExternalIV2;
+    private FrameLayout mExternalIV2;
     private ImageView mExternalUIV2;
     private TextView mVideoTV;
     private TextView mImageTV;
@@ -73,7 +66,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private FocusScaleUtils mFocusScaleUtils;
     private List<String> mUsbRootPaths = new ArrayList<>();
     private AlertDialog alertDialog = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
@@ -81,15 +73,15 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mContext = this;
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
-        mVideoIV = (ImageView) findViewById(R.id.imageview_video);
-        mImageIV = (ImageView) findViewById(R.id.imageview_image);
-        mAudioIV = (ImageView) findViewById(R.id.imageview_audio);
-        mAppIV = (ImageView) findViewById(R.id.imageview_app);
-        mExternalIV = (ImageView) findViewById(R.id.imageview_external);
-        mExternalIV1 = (ImageView) findViewById(R.id.imageview_external_1);
-        mExternalIV2 = (ImageView) findViewById(R.id.imageview_external_2);
-        mLocalIV = (ImageView) findViewById(R.id.imageview_local);
-        mShareIV = (ImageView) findViewById(R.id.imageview_share);
+        mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
+        mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
+        mAudioIV = (FrameLayout) findViewById(R.id.imageview_audio_layout);
+        mAppIV = (FrameLayout) findViewById(R.id.imageview_app_layout);
+        mExternalIV = (FrameLayout) findViewById(R.id.layout_external_all);
+        mExternalIV1 = (FrameLayout) findViewById(R.id.layout_external_1);
+        mExternalIV2 = (FrameLayout) findViewById(R.id.layout_external_2);
+        mLocalIV = (FrameLayout) findViewById(R.id.imageview_local_layout);
+        mShareIV = (FrameLayout) findViewById(R.id.imageview_share_layout);
         mVideoTV = (TextView) findViewById(R.id.textview_video);
         mImageTV = (TextView) findViewById(R.id.textview_image);
         mAudioTV = (TextView) findViewById(R.id.textview_audio);
@@ -107,9 +99,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mExternalIV1.setOnFocusChangeListener(this);
         mExternalIV2.setOnFocusChangeListener(this);
         mLocalIV.setOnFocusChangeListener(this);
-//        mExternalFL.setOnFocusChangeListener(this);
-//        mExternalFL1.setOnFocusChangeListener(this);
-//        mExternalFL2.setOnFocusChangeListener(this);
         mShareIV.setOnFocusChangeListener(this);
         mVideoIV.setOnClickListener(new OnClickListener() {
             @Override
@@ -200,14 +189,13 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             }
         });
         mShareIV.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				closeTimer();
+            @Override
+            public void onClick(View v) {
+                closeTimer();
                 Intent intent = new Intent(mContext, DeviceShareActivity.class);
                 startActivity(intent);
-			}
-		});
+            }
+        });
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
@@ -217,38 +205,29 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
         alertDialog = new AlertDialog.Builder(mContext).create();
-
         Intent intentStart = new Intent(this, BootDialogService.class);
         intentStart.setAction("com.cantv.service.RECEIVER_START");
         this.startService(intentStart);
         // showMountedDialog();
     }
-
     private void initUSB() {
-        mExternalFL = (FrameLayout) findViewById(R.id.layout_external_all);
-        mExternalFL1 = (FrameLayout) findViewById(R.id.layout_external_1);
-        mExternalFL2 = (FrameLayout) findViewById(R.id.layout_external_2);
-
         mExternalUIV = (ImageView) findViewById(R.id.imageview_external_u);
         mExternalFreeTV = (TextView) findViewById(R.id.textview_external_free);
         mExternalTotalTV = (TextView) findViewById(R.id.textview_external_total);
-
         mExternalUIV1 = (ImageView) findViewById(R.id.imageview_external_1_u);
-
         mExternalUIV2 = (ImageView) findViewById(R.id.imageview_external_2_u);
         mExternalFreeTV1 = (TextView) findViewById(R.id.textview_external_1_free);
         mExternalTotalTV1 = (TextView) findViewById(R.id.textview_external_1_total);
         mExternalFreeTV2 = (TextView) findViewById(R.id.textview_external_2_free);
         mExternalTotalTV2 = (TextView) findViewById(R.id.textview_external_2_total);
     }
-
     private void refreshUI(boolean isMounted, int num) {
         if (isMounted) {
             mExternalTotalTV.setVisibility(View.VISIBLE);
             if (num == DOUBLE_DEVICE) {
-                mExternalFL.setVisibility(View.GONE);
-                mExternalFL1.setVisibility(View.VISIBLE);
-                mExternalFL2.setVisibility(View.VISIBLE);
+                mExternalIV.setVisibility(View.GONE);
+                mExternalIV1.setVisibility(View.VISIBLE);
+                mExternalIV2.setVisibility(View.VISIBLE);
                 mExternalUIV1.setBackgroundResource(R.drawable.icon_u);
                 mExternalUIV2.setBackgroundResource(R.drawable.icon_u);
                 mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
@@ -256,9 +235,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
                 mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
             } else {
-                mExternalFL.setVisibility(View.VISIBLE);
-                mExternalFL1.setVisibility(View.GONE);
-                mExternalFL2.setVisibility(View.GONE);
+                mExternalIV.setVisibility(View.VISIBLE);
+                mExternalIV1.setVisibility(View.GONE);
+                mExternalIV2.setVisibility(View.GONE);
                 mExternalUIV.setBackgroundResource(R.drawable.icon_u);
                 if (num == 1) {
                     mExternalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
@@ -267,30 +246,30 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                     mExternalFreeTV.setText(getString(R.string.str_total) + num + getString(R.string.str_devicenum));
                     mExternalTotalTV.setVisibility(View.GONE);
                 }
-
             }
         } else {
-            mExternalFL.setVisibility(View.VISIBLE);
-            mExternalFL1.setVisibility(View.GONE);
-            mExternalFL2.setVisibility(View.GONE);
+            mExternalIV.setVisibility(View.VISIBLE);
+            mExternalIV1.setVisibility(View.GONE);
+            mExternalIV2.setVisibility(View.GONE);
             mExternalTotalTV.setVisibility(View.GONE);
             mExternalFreeTV.setText(R.string.str_nodev);
             mExternalUIV.setBackgroundResource(R.drawable.icon_nou);
         }
     }
-
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 // openTimer();
                 MediaUtils.addUsbRootPaths(intent.getData().getPath());
-                mUsbRootPaths = MediaUtils.getUsbRootPaths();
+                // mUsbRootPaths = MediaUtils.getUsbRootPaths();
+                mUsbRootPaths = MediaUtils.getCurrPathList();
                 sendUSBRefreshMsg(true, mUsbRootPaths.size());
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 closeTimer();
                 MediaUtils.removeUsbRootPaths(intent.getData().getPath());
-                mUsbRootPaths = MediaUtils.getUsbRootPaths();
+                // mUsbRootPaths = MediaUtils.getUsbRootPaths();
+                mUsbRootPaths = MediaUtils.getCurrPathList();
                 if (null != mUsbRootPaths && mUsbRootPaths.size() > 0) {
                     sendUSBRefreshMsg(true, mUsbRootPaths.size());
                 } else {
@@ -299,7 +278,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             }
         }
     };
-
     private void openTimer() {
         if (mTimer == null) {
             mTimer = new Timer(true);
@@ -315,7 +293,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             mTimer.schedule(mTimerTask, 0, 5000);
         }
     }
-
     private void closeTimer() {
         if (mTimer != null) {
             mTimer.cancel();
@@ -325,7 +302,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             mTimerTask = null;
         }
     }
-
     private void sendUSBRefreshMsg(boolean isMounted, int num) {
         Message msg = mHandler.obtainMessage();
         Bundle bundle = new Bundle();
@@ -335,7 +311,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         msg.setData(bundle);
         msg.sendToTarget();
     }
-
     private void sendFileRefreshMsg(int video, int image, int audio, int app) {
         Message msg = mHandler.obtainMessage();
         Bundle bundle = new Bundle();
@@ -347,7 +322,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         msg.setData(bundle);
         msg.sendToTarget();
     }
-
     private void refreshMediaCategory() {
         String[] columns;
         // 视频文件
@@ -368,7 +342,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         int app = refreshMediaCategory(FileCategory.Apk, columns, uri);
         sendFileRefreshMsg(video, image, audio, app);
     }
-
     private int refreshMediaCategory(FileCategory fc, String[] columns, Uri uri) {
         Cursor cursor = mContext.getContentResolver().query(uri, columns, MediaUtils.buildSelectionByCategory(fc), null, null);
         if (cursor == null) {
@@ -378,7 +351,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         // cursor.moveToFirst();
         return cursor.getCount();
     }
-
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -421,37 +393,41 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             }
         }
     };
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         // openTimer();
-        if (MediaUtils.isExistUSB()) {
-            mUsbRootPaths = MediaUtils.getUsbRootPaths();
+//		mUsbRootPaths = MediaUtils.getUsbRootPaths();
+//		List<String> currPathList = MediaUtils.getCurrPathList();
+        mUsbRootPaths = MediaUtils.getCurrPathList();
+//		for (String s : currPathList) {
+//			if (!mUsbRootPaths.contains(s)) {
+//				mUsbRootPaths.add(s);
+//			}
+//		}
+        if (mUsbRootPaths.size() > 0) {
             sendUSBRefreshMsg(true, mUsbRootPaths.size());
         } else {
             sendUSBRefreshMsg(false, 0);
         }
     }
-
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             if (v.getId() == mExternalIV.getId()) {
-                mFocusScaleUtils.scaleToLargeWH(v, 1.01F, 1.06f);
-                mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.91F);
-            } else if(v.getId() == mExternalIV1.getId() || v.getId() == mExternalIV2.getId() || v.getId() == mLocalIV.getId()|| v.getId() == mShareIV.getId()){
                 mFocusScaleUtils.scaleToLargeWH(v, 1.03F, 1.06f);
-                mFocusUtils.startMoveFocus(v, null, true, 0.92f, 1.1f, 0.91F);
-            }else {
+                mFocusUtils.startMoveFocus(v, null, true, 0.95f, 0.84f, 0f, 0f);
+            } else if (v.getId() == mExternalIV1.getId() || v.getId() == mExternalIV2.getId() || v.getId() == mLocalIV.getId() || v.getId() == mShareIV.getId()) {
+                mFocusScaleUtils.scaleToLargeWH(v, 1.05F, 1.06f);
+                mFocusUtils.startMoveFocus(v, null, true, 0.88f, 0.84f, 0f, 0f);
+            } else {
                 mFocusScaleUtils.scaleToLarge(v);
-                mFocusUtils.startMoveFocus(v, true, 0.93F);
+                mFocusUtils.startMoveFocus(v, true, 0.90F);
             }
         } else {
             mFocusScaleUtils.scaleToNormal(v);
