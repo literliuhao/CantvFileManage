@@ -75,7 +75,6 @@ public class ImageFrameView extends FrameLayout {
 					mBitmap = null;
 					resource = null;
 				}
-
 			}
 		});
 	}
