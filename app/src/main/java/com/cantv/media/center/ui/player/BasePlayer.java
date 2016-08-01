@@ -59,7 +59,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 		mPlayer.onExceptionListener(new ProxyPlayer.MediaplayExceptionListener() {
 			@Override
 			public void ExceHappen() {
-				Toast.makeText(BasePlayer.this, "文件存在异常!", Toast.LENGTH_LONG).show();
 				finish();
 			}
 		});
@@ -160,6 +159,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 				mRecord = list.get(0);
 			}
 		} catch (Exception e) {
+			this.finish();
 			e.printStackTrace();
 		}
 	}

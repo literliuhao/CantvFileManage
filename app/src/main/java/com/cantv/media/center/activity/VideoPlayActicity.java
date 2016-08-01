@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.media.R;
 import com.cantv.media.center.data.MenuItem;
@@ -30,6 +32,7 @@ import com.cantv.media.center.greendao.VideoPlayer;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.ExternalSurfaceView;
+import com.cantv.media.center.ui.MediaMenuListRadiaoItem;
 import com.cantv.media.center.ui.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
@@ -145,6 +148,19 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 			parseSrts(srtUrl);
 		}
 
+		if(mMenuDialog != null){
+			MenuItem audioTrackMenuItem = VideoPlayActicity.this.list.get(1);
+			audioTrackMenuItem.setChildren(createAudioTrackList());;
+			audioTrackMenuItem.setChildSelected(0);
+			View menuItemView = mMenuDialog.getMenu()
+					.findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
+			if (menuItemView != null) {
+				mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, audioTrackMenuItem);
+			}
+			if(mSelectedPosi == 1){
+				mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+			}
+		}
 	}
 	
 	public String checkSrt(){
@@ -383,7 +399,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 	}
 
 	private void performSubmenuClickEvent(MenuItem mSubSelectedMenu, int position) {
-		switch (mSubSelectedMenu.getType()) {
+		switch (mSubSelectedMenu.getParent().getType()) {
 		case MenuItem.TYPE_LIST:
 			performTypeListEvent(mSubSelectedMenu, position);
 			break;
@@ -423,7 +439,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
 		switch (mSubSelectedMenu.getTitle()) {
 		case MenuConstant.SUBMENU_AUDIOTRACKER_ONE:
-			getProxyPlayer().setMovieAudioTrack(positon);
+			getProxyPlayer().setMovieAudioTrack(positon);			
 			break;
 		case MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL:
 			mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
@@ -488,7 +504,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		String[] tracks = getCurVideoAudioTracks();
 		for (int i = 0; i < tracks.length; i++) {
 			MenuItem item = new MenuItem(tracks[i]);
-			item.setType(MenuItem.TYPE_LIST);
+			item.setType(MenuItem.TYPE_SELECTOR);
 			audioTrackMenuItems.add(item);
 			if (i == 0) {
 				item.setSelected(true);
@@ -546,6 +562,17 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		
 
 		return menuList;
+	}
+
+	private List<MenuItem> createAudioTrackList() {
+		String[] tracks = getCurVideoAudioTracks();
+		List<MenuItem> audioTrackMenuItems = new ArrayList<MenuItem>();
+		for (int i = 0; i < tracks.length; i++) {
+			MenuItem item = new MenuItem(tracks[i]);
+			item.setType(MenuItem.TYPE_SELECTOR);
+			audioTrackMenuItems.add(item);
+		}
+		return audioTrackMenuItems;
 	}
 
 	@Override

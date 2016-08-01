@@ -29,9 +29,9 @@ public class LitePlayer extends MediaPlayer {
 			@Override
 			public void onTimedText(MediaPlayer mp, TimedText text) {
 				try {
-					if (mStatusInfo.mStDisplayCallBack != null) 
+					if (mStatusInfo.mStDisplayCallBack != null)
 						mStatusInfo.mStDisplayCallBack.showSubTitleText(text.getText());
-					
+
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -42,9 +42,11 @@ public class LitePlayer extends MediaPlayer {
 	public float getVideoWidthHeightRate() {
 		return mVideoWidthHeightRate;
 	}
+
 	public PlayerStatusInfo getStatusInfo() {
 		return mStatusInfo;
 	}
+
 	public void setMovieSubTitle(int index) {
 		mAssitant.setSubTitle(this, index);
 		mStatusInfo.mVideoSubTitleIndex = index;
@@ -79,13 +81,13 @@ public class LitePlayer extends MediaPlayer {
 		super.reset();
 		mAssitant.release();
 	}
-	
+
 	@Override
 	public void setDisplay(SurfaceHolder sh) {
 		super.setDisplay(sh);
 		mStatusInfo.mHolder = sh;
 	}
-	
+
 	@Override
 	public void setOnVideoSizeChangedListener(OnVideoSizeChangedListener listener) {
 		super.setOnVideoSizeChangedListener(listener);
@@ -119,9 +121,9 @@ public class LitePlayer extends MediaPlayer {
 		super.setOnTimedTextListener(listener);
 		mStatusInfo.mOnTimedTextListener = listener;
 	}
+
 	@Override
-	public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException,
-			IllegalStateException {
+	public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
 		super.setDataSource(path);
 		mStatusInfo.mSourceUri = path;
 	}

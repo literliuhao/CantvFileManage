@@ -34,11 +34,12 @@
 
         <TextView
             android:id="@+id/media__video_view__subtitle1"
+            
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:lineSpacingExtra="17dp"
-            android:textSize="@dimen/px80" />
+            android:textSize="@dimen/px60" />
 
         <!--
        <TextView

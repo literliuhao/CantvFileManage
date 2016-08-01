@@ -274,9 +274,13 @@ public class GridViewActivity extends Activity {
 		viewMenu.setSelected(true);
 		viewModeMenuItem.setChildren(viewModeSubMenuItems);
 		mMenuList.add(viewModeMenuItem);
-		deleteMenuItem = new MenuItem(getString(R.string.delete));
-		deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
-		mMenuList.add(deleteMenuItem);
+		Intent intent = getIntent();
+		String type = intent.getStringExtra("type");
+		if(!"share".equalsIgnoreCase(type)){
+			deleteMenuItem = new MenuItem(getString(R.string.delete));
+			deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
+			mMenuList.add(deleteMenuItem);
+		}
 		return mMenuList;
 	}
 

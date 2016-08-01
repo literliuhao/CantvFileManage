@@ -124,7 +124,7 @@ public class MenuDialog extends Dialog {
             mAdpter.notifyDataSetChanged();
         }
     }
-
+    
     public void setOnItemClickListener(DoubleColumnMenu.OnItemClickListener listener) {
         mItemClickListener = listener;
     }

@@ -185,8 +185,12 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             return;
         }
         try {
-            index = (index < 0) ? mDataList.size() - 1 : index;
-            index = (index >= mDataList.size()) ? 0 : index;
+            index = (index < 0) ? 0 : index;
+            if(index >= mDataList.size()){
+            	mPlayer.release();
+            	finish();
+            	return;
+            }
             mCurPlayIndex = index;
             getProxyPlayer().playMedia(mDataList.get(index), new Runnable() {
                 @Override

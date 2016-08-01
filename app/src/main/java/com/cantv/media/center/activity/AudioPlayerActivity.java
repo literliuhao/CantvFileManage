@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -55,9 +56,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	private CDView mCDView;
 	private TextView mCurrProgressTv, mDurationTv, mPlayModeTv, mTitleTv, mSingerTv;
 	private RelativeLayout mNoLyricLayout;
-	private RelativeLayout mLyricLayout;
 	private LyricView mLyricView;
 	private ImageButton mPlayPauseBtn, mPreviousBtn, mNextBtn;
+	private ImageView mPlayModeIconIv, mPlayModeView;
 
 	private BroadcastReceiver mUsbChangeReceiver;
 	private IntentFilter mUsbFilter;
@@ -74,6 +75,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	private Formatter mFormatter;
 
 	private StringBuilder mFormatBuilder;
+
+	private MenuItem playModeMenuItem;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,29 +99,31 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		mCurrProgressTv = (TextView) findViewById(R.id.tv_curr_progress);
 		mCurrProgressTv = (TextView) findViewById(R.id.tv_curr_progress);
 		mNoLyricLayout = (RelativeLayout) findViewById(R.id.rl_nolyric);
-		mLyricLayout = (RelativeLayout) findViewById(R.id.rl_lyric);
 		mTitleTv = (TextView) findViewById(R.id.tv_title);
 		mSingerTv = (TextView) findViewById(R.id.tv_singer);
 		mLyricView = (LyricView) findViewById(R.id.lv_lyric);
 		mPlayPauseBtn = (ImageButton) findViewById(R.id.ib_play_pause);
 		mPreviousBtn = (ImageButton) findViewById(R.id.ib_previous);
 		mNextBtn = (ImageButton) findViewById(R.id.ib_next);
+		mPlayModeView = (ImageView) findViewById(R.id.iv_bg_play_mode);
+		mPlayModeIconIv = (ImageView) findViewById(R.id.iv_play_mode);
 		mPlayModeTv = (TextView) findViewById(R.id.tv_play_mode);
 
 		mPlayPauseBtn.setOnClickListener(this);
 		mPreviousBtn.setOnClickListener(this);
 		mNextBtn.setOnClickListener(this);
-
+		mPlayModeView.setOnClickListener(this);
 		int playPauseBtnId = mPlayPauseBtn.getId();
 		int preBtnId = mPreviousBtn.getId();
 		int nextBtnId = mNextBtn.getId();
+		int playModeViewId = mPlayModeView.getId();
 
 		mPlayPauseBtn.setNextFocusLeftId(preBtnId);
 		mPlayPauseBtn.setNextFocusRightId(nextBtnId);
 		mPlayPauseBtn.setNextFocusUpId(playPauseBtnId);
 		mPlayPauseBtn.setNextFocusDownId(playPauseBtnId);
 
-		mPreviousBtn.setNextFocusLeftId(preBtnId);
+		mPreviousBtn.setNextFocusLeftId(playModeViewId);
 		mPreviousBtn.setNextFocusRightId(playPauseBtnId);
 		mPreviousBtn.setNextFocusUpId(preBtnId);
 		mPreviousBtn.setNextFocusDownId(preBtnId);
@@ -128,6 +133,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		mNextBtn.setNextFocusUpId(nextBtnId);
 		mNextBtn.setNextFocusDownId(nextBtnId);
 
+		mPlayModeView.setNextFocusLeftId(playModeViewId);
+		mPlayModeView.setNextFocusRightId(preBtnId);
+		mPlayModeView.setNextFocusUpId(playModeViewId);
+		mPlayModeView.setNextFocusDownId(playModeViewId);
 	}
 
 	public void regUsbChangeReceiver() {
@@ -268,8 +277,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			} else {
 				onPlayNext();
 			}
-			break;
 
+			break;
+		case R.id.iv_bg_play_mode:
+			cycleChangePlayMode();
+			break;
 		default:
 			break;
 		}
@@ -334,7 +346,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		}
 		if (mMenuDialog == null) {
 			mMenuDialog = new MenuDialog(this);
-			mMenuList = createMenuData();
+			if (mMenuList == null) {
+				mMenuList = createMenuData();
+			}
 			mMenuDialog.setMenuList(mMenuList);
 			mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
 
@@ -351,9 +365,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
 					} else if (mSelectedMenuPosi == 1) {
 						// select playMode
-						mPlayMode = ((PlayModeMenuItem) menuItemData.getChildAt(position)).getPlayMode();
-						mPlayModeTv.setText(menuItemData.getSelectedChild().getTitle());
-
+						changePlayModeByIndex(lastSelectPosi, position, menuItemData);
+						return;
 					} else if (mSelectedMenuPosi == 2) {
 						MenuItem adjuestLyricMenuData = mMenuList.get(3);
 						// select load lyric or no
@@ -387,7 +400,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 							mLyricView.adjustTimeOffset(-200);
 						}
 					}
-
 					View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
 					if (oldSubMenuItemView != null) {
 						mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(lastSelectPosi));
@@ -419,8 +431,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
 				@Override
 				public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-					// if current choice is playList, selected subMenuItem
-					// should be auto-focused after left-key
+					// if current choice is playList, selected subMenuItem should be auto-focused after left-key
 					// down
 					if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN && mSelectedMenuPosi == 0) {
 						mMenuDialog.getMenu().openSubMenu(true, mMenuList.get(0).getSelectedChildIndex());
@@ -462,15 +473,15 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		playListMenuItem.setChildSelected(mCurPlayIndex);
 		menuList.add(playListMenuItem);
 
-		MenuItem playModeMenuItem = new MenuItem(getString(R.string.play_mode));
+		playModeMenuItem = new MenuItem(getString(R.string.play_mode));
 		playModeMenuItem.setType(MenuItem.TYPE_SELECTOR);
 		List<MenuItem> playModeSubMenuItems = new ArrayList<MenuItem>();
-		PlayModeMenuItem menuItem = new PlayModeMenuItem(getString(R.string.play_mode_in_order), MenuItem.TYPE_SELECTOR, PlayMode.IN_ORDER);
+		PlayModeMenuItem menuItem = new PlayModeMenuItem(getString(R.string.play_mode_in_order), MenuItem.TYPE_SELECTOR, PlayMode.IN_ORDER, R.drawable.icon_play_mode_in_order);
 		menuItem.setParent(playModeMenuItem);
 		menuItem.setSelected(true);
 		playModeSubMenuItems.add(menuItem);
-		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_in_random_order), MenuItem.TYPE_SELECTOR, PlayMode.RANDOM_ORDER));
-		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_single_cycle), MenuItem.TYPE_SELECTOR, PlayMode.SINGLE_CYCLE));
+		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_in_random_order), MenuItem.TYPE_SELECTOR, PlayMode.RANDOM_ORDER, R.drawable.icon_play_mode_random));
+		playModeSubMenuItems.add(new PlayModeMenuItem(getString(R.string.play_mode_single_cycle), MenuItem.TYPE_SELECTOR, PlayMode.SINGLE_CYCLE, R.drawable.icon_play_mode_cycle));
 		playModeMenuItem.setChildren(playModeSubMenuItems);
 		menuList.add(playModeMenuItem);
 
@@ -529,20 +540,20 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 	}
 
 	private void showLyricView() {
-		mLyricLayout.setVisibility(View.VISIBLE);
+		mLyricView.setVisibility(View.VISIBLE);
 		mNoLyricLayout.setVisibility(View.INVISIBLE);
 	}
 
 	private void showNoLyricView() {
 		mNoLyricLayout.setVisibility(View.VISIBLE);
-		mLyricLayout.setVisibility(View.INVISIBLE);
+		mLyricView.setVisibility(View.INVISIBLE);
 	}
 
 	private void resetUI() {
 		mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
 		mProgressBar.setProgress(0);
 		mCDView.setImageBitmap(null);
-		mLyricLayout.setVisibility(View.INVISIBLE);
+		mLyricView.setVisibility(View.INVISIBLE);
 		mNoLyricLayout.setVisibility(View.INVISIBLE);
 		mLyricView.setLyricInfo(null);
 		mTitleTv.setText("");
@@ -559,6 +570,40 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
 		} else {
 			return mFormatter.format("%02d:%02d", minutes, seconds).toString();
+		}
+	}
+
+	private void cycleChangePlayMode() {
+		if (mMenuList == null) {
+			mMenuList = createMenuData();
+		}
+		MenuItem playModeMenu = mMenuList.get(1);
+		List<MenuItem> children = playModeMenu.getChildren();
+		int selectedChildIndex = playModeMenu.getSelectedChildIndex();
+		int nextIndex = ++selectedChildIndex % children.size();
+		changePlayModeByIndex(selectedChildIndex, nextIndex, playModeMenu);
+	}
+
+	private void changePlayModeByIndex(int selectedChildPosi, int nextPosi, MenuItem menuItemData) {
+		menuItemData.setChildSelected(nextPosi);
+		PlayModeMenuItem playModeItem = (PlayModeMenuItem) menuItemData.getSelectedChild();
+		mPlayMode = playModeItem.getPlayMode();
+		mPlayModeTv.setText(playModeItem.getTitle());
+		mPlayModeIconIv.setImageResource(playModeItem.getDrawableResId());
+		Log.i("", "selectedChildPosi = " + selectedChildPosi + ", nextPosi = " + nextPosi);
+		if (mMenuDialog != null && mSelectedMenuPosi == 1) {
+			View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + selectedChildPosi);
+			if (oldSubMenuItemView != null) {
+				mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(selectedChildPosi));
+			}
+			View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + nextPosi);
+			if (subMenuItemView != null) {
+				mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView, playModeItem);
+			}
+			View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
+			if (menuItemView != null) {
+				mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
+			}
 		}
 	}
 }

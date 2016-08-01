@@ -79,40 +79,9 @@
             android:layout_marginTop="@dimen/dimen_140px" >
 
             <RelativeLayout
-                android:id="@+id/rl_nolyric"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="@dimen/dimen_120px"
-                android:visibility="invisible" >
-
-                <ImageView
-                    android:id="@+id/iv_icon_lyric"
-                    android:layout_width="@dimen/dimen_138px"
-                    android:layout_height="@dimen/dimen_122px"
-                    android:layout_centerHorizontal="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/nolyric" />
-
-                <TextView
-                    android:id="@+id/tv_nolyric"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/iv_icon_lyric"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/dimen_40px"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:lineSpacingExtra="@dimen/dimen_24px"
-                    android:text="@string/tips_no_lyric"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/fontsize_36px" />
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/rl_lyric"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible" >
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -136,6 +105,7 @@
 
                 <com.cantv.media.center.ui.LyricView
                     android:id="@+id/lv_lyric"
+                    android:visibility="invisible"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/tv_singer"
@@ -148,6 +118,36 @@
                     zby:textColorFocused="@color/yellow_fdf352"
                     zby:textSize="@dimen/fontsize_36px"
                     zby:textSizeFocused="@dimen/fontsize_42px" />
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:id="@+id/rl_nolyric"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dimen_210px"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_icon_lyric"
+                    android:layout_width="@dimen/dimen_138px"
+                    android:layout_height="@dimen/dimen_122px"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/nolyric" />
+
+                <TextView
+                    android:id="@+id/tv_nolyric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_icon_lyric"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dimen_40px"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="@dimen/dimen_24px"
+                    android:text="@string/tips_no_lyric"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/fontsize_36px" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
@@ -192,25 +192,30 @@
             android:src="@drawable/selector_bg_next_btn" />
 
         <RelativeLayout
-            android:layout_width="@dimen/dimen_195px"
-            android:layout_height="@dimen/dimen_50px"
-            android:layout_marginStart="@dimen/dimen_128px"
-            android:layout_marginTop="@dimen/dimen_66px" >
+            android:layout_width="@dimen/dimen_225px"
+            android:layout_height="@dimen/dimen_90px"
+            android:layout_marginStart="@dimen/dimen_108px"
+            android:layout_marginTop="@dimen/dimen_46px"
+             >
 
             <ImageView
+                android:id="@+id/iv_bg_play_mode"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_centerInParent="true"
                 android:scaleType="fitXY"
-                android:src="@drawable/bj_bfms" />
+                android:focusable="true"
+                android:src="@drawable/selector_bg_play_mode_btn" />
 
             <ImageView
                 android:id="@+id/iv_play_mode"
                 android:layout_width="@dimen/dimen_32px"
                 android:layout_height="@dimen/dimen_32px"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dimen_10px"
+                android:layout_marginStart="@dimen/dimen_30px"
                 android:scaleType="fitXY"
-                android:src="@drawable/icon_bfms" />
+                android:focusable="false"
+                android:src="@drawable/icon_play_mode_in_order" />
 
             <TextView
                 android:id="@+id/tv_play_mode"
@@ -221,6 +226,7 @@
                 android:layout_toEndOf="@id/iv_play_mode"
                 android:text="@string/play_in_order"
                 android:textColor="@color/per80_white"
+                android:focusable="false"
                 android:textSize="@dimen/fontsize_32px" />
         </RelativeLayout>
 
