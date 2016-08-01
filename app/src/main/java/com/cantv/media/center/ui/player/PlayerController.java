@@ -1,10 +1,5 @@
 package com.cantv.media.center.ui.player;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.TimeZone;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -24,6 +19,10 @@ import android.widget.TextView;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.VideoPlayActicity;
 import com.cantv.media.center.ui.TimeProgressBar;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class PlayerController extends RelativeLayout {
 
@@ -45,7 +44,7 @@ public class PlayerController extends RelativeLayout {
 	private TimeProgressBar mProgressBar;
 	private ImageView mPlayImage;
 	private TextView mTitle;
-	private TextView mTime, mDefinitionTv; 
+	private TextView mTime, mDefinitionTv;
 	private TextView mMovieTimeTv;
 	private SimpleDateFormat format;
 	private PlayerCtrlBarContext mCtrlBarContext;
@@ -54,14 +53,14 @@ public class PlayerController extends RelativeLayout {
 	private TextView mTip, mContinueText;
 	private ImageView mTipImage;
 	private LinearLayout mContinuePlay;
-		
+
 	/** 长按步长 */
 	private int mStepSize;
 	/** 默认步长 */
 	private static final int DEFAULT_STEP_SIZE=3000;
 	/** 是否是到达最大速度 */
 	private boolean reachMaxG = false;
-	
+
 	private int mTmpSecondeProgress;
 
 	private Handler handler = new Handler() {
@@ -109,10 +108,10 @@ public class PlayerController extends RelativeLayout {
 				((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
 				handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
 				break;
-				
+
 			case SEEK_DURATION:
 				mProgressBar.setSecondProgressEnable(false);
-				seekToDuration(mTmpSecondeProgress);				
+				seekToDuration(mTmpSecondeProgress);
 				break;
 			case CHANGE_PLAY_VISIBILITY:
 				mPlayImage.setVisibility(INVISIBLE);
@@ -205,7 +204,7 @@ public class PlayerController extends RelativeLayout {
 	public void setPlayDuration() {
 
 		isHasDefinition = TextUtils.isEmpty(mCtrlBarContext.getDefinition());
-		
+
 		if (!isHasDefinition) {
 			mDefinitionTv.setText(mCtrlBarContext.getDefinition());
 			mDefinitionTv.setVisibility(View.VISIBLE);
@@ -236,7 +235,7 @@ public class PlayerController extends RelativeLayout {
 			handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 2000);
 		}
 		handler.sendEmptyMessage(STORE_DURATION);
-		
+
 		mMovieTimeTv.setText(time2String(0)+" / "+time2String(mDuration));
 	}
 
@@ -274,9 +273,10 @@ public class PlayerController extends RelativeLayout {
 
 	public void onKeyDownEvent(int keyCode, KeyEvent event) {
 		switch (keyCode) {
+		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_ENTER:
 			if (!isShowTip) {
-				togglePlayImgvi();			
+				togglePlayImgvi();
 				mPlayImage.setVisibility(VISIBLE);
 				mCtrlBarListener.onPlayerPlayOrPause();
 				delayHidePlayImgvi();
@@ -328,7 +328,7 @@ public class PlayerController extends RelativeLayout {
 			boolean isNext = mCoverFlowViewListener.scrollToNext(new OnCompletionListener() {
 				@Override
 				public void onCompletion(MediaPlayer mp) {
-					//TODO   sdfs f 
+					//TODO   sdfs f
 					mTmpSecondeProgress=0;
 				}
 			});
@@ -400,7 +400,7 @@ public class PlayerController extends RelativeLayout {
 			mPlayImage.setBackgroundResource(R.drawable.play_kj);
 		}
 	}
-	
+
 	public void showController() {
 		handler.removeMessages(PlayerController.CHANG_VISIBLE);
 		handler.sendEmptyMessageDelayed(PlayerController.CHANG_VISIBLE, 5000);
@@ -424,7 +424,7 @@ public class PlayerController extends RelativeLayout {
 			context.finish();
 		}
 	}
-	
+
 	private void togglePlayImgvi(){
 		if (mCtrlBarContext.isPlayerPaused()) {
 			mPlayImage.setBackgroundResource(R.drawable.play_stop);
@@ -434,14 +434,14 @@ public class PlayerController extends RelativeLayout {
 			mPlayImage.setBackgroundResource(R.drawable.play_play);
 		}
 	}
-	
+
 	private void delayHidePlayImgvi(){
 		if (!mCtrlBarContext.isPlayerPaused()) {
 			handler.removeMessages(CHANGE_PLAY_VISIBILITY);
 			handler.sendEmptyMessageDelayed(CHANGE_PLAY_VISIBILITY, 1000);
 		}
 	}
-		
+
 	// 视频小于10分钟
 	private void seekPosition(KeyEvent event) {
 		if (KeyEvent.KEYCODE_DPAD_LEFT == event.getKeyCode()) {
@@ -479,7 +479,7 @@ public class PlayerController extends RelativeLayout {
 		}
 		mProgressBar.setSecondProgress(mTmpSecondeProgress);
 	}
-	
+
 	protected String time2String(int timeInMillis) {
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 		formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));

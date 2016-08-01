@@ -1,13 +1,10 @@
 package com.cantv.media.center.ui;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.app.core.ui.TransformView;
 import com.cantv.media.center.ui.ImageWatchingView.OnRotationListener;
@@ -39,6 +36,10 @@ public class ImageBrowser extends TransformView {
 
     public void onZoomIn() {
         mWatchingView.onZoomIn();
+    }
+
+    public void onZoomScale(float sclae) {
+        mWatchingView.onZoomInScale(sclae);
     }
 
     public void onZoomOut() {
