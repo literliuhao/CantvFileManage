@@ -4,8 +4,8 @@
              android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="1920px"
-        android:layout_height="1080px"
+        android:layout_width="@dimen/px1920"
+        android:layout_height="@dimen/px1080"
         android:layout_gravity="center">
 
         <ImageView
