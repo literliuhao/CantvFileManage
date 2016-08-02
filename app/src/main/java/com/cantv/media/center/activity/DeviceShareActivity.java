@@ -213,9 +213,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 			}
 		});
 		LayoutParams layoutParams = new LinearLayout.LayoutParams(
-				getResources().getDimensionPixelSize(R.dimen.dimen_300px),
-				getResources().getDimensionPixelSize(R.dimen.dimen_450px));
-		layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.dimen_80px);
+				getResources().getDimensionPixelSize(R.dimen.px300),
+				getResources().getDimensionPixelSize(R.dimen.px450));
+		layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.px80);
 		mDeviceItemGroup.addView(view, 0, layoutParams);
 		mDeviceInfos.add(info);
 		mDeviceViews.add(view);
@@ -238,7 +238,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 			if (v == mDeviceItemGroup.getChildAt(0)) {
 				mScrollView.smoothScrollTo(0, 0);
 			} else if (v == mDeviceItemGroup.getChildAt(mDeviceItemGroup.getChildCount() - 1)) {
-				mScrollView.smoothScrollTo(v.getLeft() + getResources().getDimensionPixelSize(R.dimen.dimen_15px), 0);
+				mScrollView.smoothScrollTo(v.getLeft() + getResources().getDimensionPixelSize(R.dimen.px15), 0);
 			}
 			mFocusScaleUtils.scaleToLarge(v);
 			mFocusUtils.startMoveFocus(v, true, 1.065F, -1f, 0.5f);

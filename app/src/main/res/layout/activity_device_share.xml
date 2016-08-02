@@ -8,47 +8,47 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimen_128px"
-        android:layout_marginTop="@dimen/dimen_70px"
+        android:layout_marginStart="@dimen/px128"
+        android:layout_marginTop="@dimen/px70"
         android:includeFontPadding="false"
         android:text="@string/str_share_file"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/fontsize_56px" />
+        android:textSize="@dimen/fontsize_56" />
 
     <TextView
         android:id="@+id/tv_net_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/tv_title"
-        android:layout_marginStart="@dimen/dimen_40px"
+        android:layout_marginStart="@dimen/px40"
         android:layout_toEndOf="@id/tv_title"
         android:includeFontPadding="false"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/fontsize_36px" />
+        android:textSize="@dimen/fontsize_36" />
 
     <TextView
         android:id="@+id/tv_net_ip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/tv_net_name"
-        android:layout_marginStart="@dimen/dimen_53px"
+        android:layout_marginStart="@dimen/px53"
         android:layout_toEndOf="@id/tv_net_name"
         android:includeFontPadding="false"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/fontsize_36px" />
+        android:textSize="@dimen/fontsize_36" />
 
     <HorizontalScrollView
         android:id="@+id/hsv_device_list"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dimen_650px"
+        android:layout_height="@dimen/px650"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="@dimen/dimen_128px"
-        android:layout_marginStart="@dimen/dimen_128px"
-        android:layout_marginTop="@dimen/dimen_225px"
+        android:layout_marginEnd="@dimen/px128"
+        android:layout_marginStart="@dimen/px128"
+        android:layout_marginTop="@dimen/px225"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/dimen_100px"
-        android:paddingTop="@dimen/dimen_100px"
+        android:paddingBottom="@dimen/px100"
+        android:paddingTop="@dimen/px100"
         android:scrollbars="none" >
 
         <LinearLayout
@@ -60,14 +60,14 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:animateLayoutChanges="true"
-            android:paddingStart="@dimen/dimen_15px"
-            android:paddingEnd="@dimen/dimen_15px"
+            android:paddingStart="@dimen/px15"
+            android:paddingEnd="@dimen/px15"
              >
 
             <com.cantv.media.center.ui.DeviceShareItemView
                 android:id="@+id/dsiv_add_device"
-                android:layout_width="@dimen/dimen_300px"
-                android:layout_height="@dimen/dimen_450px"
+                android:layout_width="@dimen/px300"
+                android:layout_height="@dimen/px450"
                 zby:viewType="ADD_DEVICE" >
             </com.cantv.media.center.ui.DeviceShareItemView>
         </LinearLayout>

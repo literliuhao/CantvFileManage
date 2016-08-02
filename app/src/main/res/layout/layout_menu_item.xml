@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dimen_114px"
-    android:paddingEnd="@dimen/dimen_40px"
-    android:paddingStart="@dimen/dimen_15px" >
+    android:layout_height="@dimen/px114"
+    android:paddingEnd="@dimen/px40"
+    android:paddingStart="@dimen/px15" >
 
     <ImageView
         android:id="@+id/iv_arrow"
-        android:layout_width="@dimen/dimen_10px"
-        android:layout_height="@dimen/dimen_20px"
+        android:layout_width="@dimen/px10"
+        android:layout_height="@dimen/px20"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"
         android:src="@drawable/sj" />
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/dimen_15px"
+        android:layout_marginStart="@dimen/px15"
         android:layout_toEndOf="@id/iv_arrow" >
 
         <TextView
@@ -27,17 +27,17 @@
             android:duplicateParentState="true"
             android:includeFontPadding="false"
             android:textColor="@color/selector_bg_menu_item_txt"
-            android:textSize="@dimen/fontsize_36px" />
+            android:textSize="@dimen/fontsize_36" />
 
         <TextView
             android:id="@+id/tv_subTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
-            android:layout_marginTop="@dimen/dimen_8px"
+            android:layout_marginTop="@dimen/px8"
             android:includeFontPadding="false"
             android:textColor="@color/per50_white"
-            android:textSize="@dimen/fontsize_24px"
+            android:textSize="@dimen/fontsize_24"
             android:visibility="gone" />
     </RelativeLayout>
 

@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/iv_loading"
-        android:layout_width="@dimen/dimen_136px"
-        android:layout_height="@dimen/dimen_136px"
+        android:layout_width="@dimen/px136"
+        android:layout_height="@dimen/px136"
         android:layout_centerInParent="true"
         android:scaleType="fitXY"
         android:src="@drawable/loading" />
@@ -16,8 +16,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_loading"
-        android:layout_marginTop="@dimen/dimen_40px"
-        android:textSize="@dimen/fontsize_36px"
+        android:layout_marginTop="@dimen/px40"
+        android:textSize="@dimen/fontsize_36"
         android:textColor="@color/per80_white"
         android:text="@string/loading_tips"
         />

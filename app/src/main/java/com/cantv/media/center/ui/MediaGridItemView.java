@@ -33,7 +33,6 @@ public class MediaGridItemView extends MediaItemView {
 	private NumberDrawable mNumDrawable;
 	private Media mMedia;
 	private boolean isShow = false;
-	// private Drawable mFocusDrawable;
 	private float mAnimateRate = 0;
 	private AlphaAnimation mAnimation = null;
 	private Transformation mDrawingTransform = new Transformation();
@@ -79,10 +78,7 @@ public class MediaGridItemView extends MediaItemView {
 		mImageView.setPicStretch(PicStretch.SCALE_CROP);
 		RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
 		imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		// imageParams.topMargin=FileUtil.dip2px(mContext, 72);
-		// imageParams.topMargin=110;
 		imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
-		// imageParams.setMargins(20,20,0,0);
 		mImageView.setLayoutParams(imageParams);
 
 		mPicImageView = new ImageView(context);
@@ -93,12 +89,8 @@ public class MediaGridItemView extends MediaItemView {
 
 		// 从xml里添加这个TextView是为了轮播的时候两边有渐变效果,动态添加则没有
 		mTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.marquee_textview, null);
-		// mTextView = new TextView(context);
 		mTextView.setTextColor(getResources().getColorStateList(R.color.btn_selector));
 		mTextView.setTextSize(getResources().getDimension(R.dimen.px22));
-		// mTextView.setPadding(0,(int)
-		// getResources().getDimension(R.dimen.px30),0,0);
-		// mTextView.setSingleLine(true);
 		RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		tvParams.addRule(RelativeLayout.BELOW, mBgView.getId());
 		tvParams.addRule(RelativeLayout.CENTER_HORIZONTAL);

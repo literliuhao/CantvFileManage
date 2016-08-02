@@ -40,14 +40,9 @@ public class MediaPicView extends PicView implements PicViewDecoder {
 	public void setBackground(Media media) {
 		mMedia = media;
 		if (media.getSourceType() == SourceType.MOIVE) {
-//			if (media.isCollection()) {
-//				setDefaultPic(R.drawable.folder_movies);
-//			} else {
-//				setDefaultPic(R.drawable.folder_movie);
-//			}
-			
-			setDefaultPic(media.isSharing?R.drawable.folder_movie_no:R.drawable.folder_movie);
-			
+
+			setDefaultPic(media.isSharing ? R.drawable.folder_movie_no_gx : R.drawable.folder_movie);
+
 		} else if (media.getSourceType() == SourceType.MUSIC) {
 			if (media.isCollection()) {
 				setDefaultPic(R.drawable.folder_wj);
@@ -74,25 +69,6 @@ public class MediaPicView extends PicView implements PicViewDecoder {
 		if (!media.isCollection()) {
 			setPicUri(Uri.fromFile(new File(media.getUri())).toString());
 		}
-//		if (mMedia.isSharing) {
-//			new Thread(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//
-//					try {
-//						mBitmap = Glide.with(MyApplication.mContext).load(mMedia.sharePath).asBitmap().fitCenter().into(100, 100).get();
-//						Log.w("路径", mMedia.sharePath);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} catch (ExecutionException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			}).start();
-//		}
 
 	}
 
@@ -100,17 +76,13 @@ public class MediaPicView extends PicView implements PicViewDecoder {
 	@Override
 	public Bitmap decodePic(String picUri, InputStream picStream) {
 
-//		if (!mMedia.isSharing) {
-			if (TextUtils.isEmpty(picUri)) {
-				return null;
-			}
-			if (mMedia != null && mMedia.getUri().equals(Uri.parse(picUri).getPath())) {
-				return mMedia.getThumbnails();
-			}
-			return BitmapFactory.decodeFile(Uri.parse(picUri).getPath());
-//		} else {
-//			return mBitmap;
-//		}
+		if (TextUtils.isEmpty(picUri)) {
+			return null;
+		}
+		if (mMedia != null && mMedia.getUri().equals(Uri.parse(picUri).getPath())) {
+			return mMedia.getThumbnails();
+		}
+		return BitmapFactory.decodeFile(Uri.parse(picUri).getPath());
 	}
 
 }

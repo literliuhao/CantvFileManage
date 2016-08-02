@@ -8,10 +8,10 @@
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/dimen_200px"
-        android:layout_marginEnd="@dimen/dimen_430px"
-        android:layout_marginStart="@dimen/dimen_430px"
-        android:layout_marginTop="@dimen/dimen_200px"
+        android:layout_marginBottom="@dimen/px200"
+        android:layout_marginEnd="@dimen/px430"
+        android:layout_marginStart="@dimen/px430"
+        android:layout_marginTop="@dimen/px200"
         android:background="@drawable/home_devices_background">
 
         <TextView
@@ -19,67 +19,67 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dimen_105px"
+            android:layout_marginTop="@dimen/px105"
             android:text="@string/pls_input_device_ip"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_40px" />
+            android:textSize="@dimen/fontsize_40" />
 
         <EditText
             android:id="@+id/et_ip"
-            android:layout_width="@dimen/dimen_680px"
-            android:layout_height="@dimen/dimen_80px"
+            android:layout_width="@dimen/px680"
+            android:layout_height="@dimen/px80"
             android:layout_below="@id/tv_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dimen_120px"
+            android:layout_marginTop="@dimen/px120"
             android:background="@drawable/youxian_txt"
             android:gravity="start|center_vertical"
             android:paddingEnd="0dp"
-            android:paddingStart="@dimen/dimen_32px"
+            android:paddingStart="@dimen/px32"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36px"
+            android:textSize="@dimen/fontsize_36"
             android:singleLine="true"
              />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_80px"
+            android:layout_height="@dimen/px80"
             android:layout_alignBottom="@id/et_ip"
-            android:layout_marginRight="@dimen/dimen_24px"
+            android:layout_marginRight="@dimen/px24"
             android:layout_toStartOf="@id/et_ip"
             android:gravity="center_vertical"
             android:text="@string/ip_addr"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36px" />
+            android:textSize="@dimen/fontsize_36" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_100px"
+            android:layout_height="@dimen/px100"
             android:layout_below="@id/et_ip"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dimen_44px"
-            android:layout_marginTop="@dimen/dimen_80px"
+            android:layout_marginBottom="@dimen/px44"
+            android:layout_marginTop="@dimen/px80"
             android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/btn_confirm"
-                android:layout_width="@dimen/dimen_336px"
+                android:layout_width="@dimen/px336"
                 android:layout_height="match_parent"
                 android:background="@drawable/btn2_normal"
-                android:paddingBottom="@dimen/dimen_15px"
+                android:paddingBottom="@dimen/px15"
                 android:text="@string/str_confirm"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36px" />
+                android:textSize="@dimen/fontsize_36" />
 
             <Button
                 android:id="@+id/btn_cancel"
-                android:layout_width="@dimen/dimen_336px"
+                android:layout_width="@dimen/px336"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dimen_24px"
+                android:layout_marginStart="@dimen/px24"
                 android:background="@drawable/btn2_normal"
-                android:paddingBottom="@dimen/dimen_15px"
+                android:paddingBottom="@dimen/px15"
                 android:text="@string/str_cancel"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36px" />
+                android:textSize="@dimen/fontsize_36" />
         </LinearLayout>
     </RelativeLayout>
 

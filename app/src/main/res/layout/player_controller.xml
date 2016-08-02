@@ -1,59 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:zby="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00ffffff" >
+    android:background="#00ffffff">
 
-    
-    <RelativeLayout 
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_200px"
+        android:layout_height="@dimen/px200"
         android:background="@drawable/bg_play_top"
         >
-     <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/dimen_80px"
-        android:layout_marginTop="@dimen/dimen_75px"
-        android:textSize="@dimen/fontsize_48px" />
 
-    <TextView
-        android:id="@+id/tv_definiton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/tv_name"
-        android:layout_marginStart="@dimen/dimen_60px"
-        android:layout_alignTop="@+id/tv_name"
-        android:gravity="center"
-        android:textSize="@dimen/fontsize_48px"
-        android:visibility="invisible" />
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/px80"
+            android:layout_marginTop="@dimen/px75"
+            android:textSize="@dimen/fontsize_48"/>
 
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/dimen_80px"
-        android:layout_marginTop="@dimen/dimen_75px"
-        android:textSize="@dimen/fontsize_48px" />
-        
-        
-        
-        
+        <TextView
+            android:id="@+id/tv_definiton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tv_name"
+            android:layout_marginStart="@dimen/px60"
+            android:layout_toEndOf="@+id/tv_name"
+            android:gravity="center"
+            android:textSize="@dimen/fontsize_48"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/px80"
+            android:layout_marginTop="@dimen/px75"
+            android:textSize="@dimen/fontsize_48"/>
+
+
     </RelativeLayout>
-   
+
     <LinearLayout
         android:id="@+id/rl_continue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_405px"
-        android:visibility="invisible"
-        android:orientation="vertical" >
+        android:layout_marginTop="@dimen/px405"
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/tv_continue_play"
@@ -65,52 +64,52 @@
             android:shadowDy="4"
             android:shadowRadius="10"
             android:textColor="#ffffff"
-            android:textSize="@dimen/fontsize_52px" />
+            android:textSize="@dimen/fontsize_52"/>
 
         <LinearLayout
             android:id="@+id/ll_continue_tips"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimen_60px"
+            android:layout_height="@dimen/px60"
             android:layout_gravity="center_horizontal"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="@dimen/dimen_53px"
-                android:layout_height="@dimen/dimen_53px"
+                android:layout_width="@dimen/px53"
+                android:layout_height="@dimen/px53"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/play_continue" 
-                android:layout_marginTop="@dimen/dimen_5px"
+                android:layout_marginTop="@dimen/px5"
+                android:background="@drawable/play_continue"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_53px"
+                android:layout_height="@dimen/px53"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/px15"
                 android:text="按下键可以从头播放"
                 android:textColor="#eeffffff"
-                android:textSize="@dimen/fontsize_46px" 
-                android:layout_marginLeft="@dimen/dimen_15px"
+                android:textSize="@dimen/fontsize_46"
                 />
         </LinearLayout>
     </LinearLayout>
-    
+
     <ImageView
         android:id="@+id/iv_play"
-        android:layout_width="@dimen/dimen_250px"
-        android:layout_height="@dimen/dimen_250px"
+        android:layout_width="@dimen/px250"
+        android:layout_height="@dimen/px250"
         android:layout_centerInParent="true"
         android:background="@drawable/play_stop"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
 
     <RelativeLayout
         android:id="@+id/rl_progress"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_215px"
+        android:layout_height="@dimen/px215"
         android:layout_alignParentBottom="true"
-        android:paddingLeft="@dimen/dimen_90px"
-        android:paddingRight="@dimen/dimen_90px"
-        android:paddingBottom="@dimen/dimen_50px" 
         android:background="@drawable/bg_play_bottom"
+        android:paddingBottom="@dimen/px50"
+        android:paddingLeft="@dimen/px90"
+        android:paddingRight="@dimen/px90"
         >
 
         <com.cantv.media.center.ui.TimeProgressBar
@@ -118,27 +117,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             zby:bg_stroke_color="#50FFFFFF"
-            zby:bg_stroke_width="@dimen/dimen_1px"
+            zby:bg_stroke_width="@dimen/px1"
             zby:divider_color="#80FFFFFF"
-            zby:divider_width="@dimen/dimen_1px"
+            zby:divider_width="@dimen/px1"
             zby:progress_color="#99019dd4"
-            zby:progressbar_height="@dimen/dimen_18px"
+            zby:progressbar_height="@dimen/px18"
             zby:second_progress_color="#4c019dd4"
             zby:text_color="#CCffffff"
-            zby:text_size="@dimen/fontsize_36px"
+            zby:text_size="@dimen/fontsize_36"
             zby:timelabel_bg="@drawable/bg_seek_time_label"
-            zby:timelabel_margin_bottom="@dimen/dimen_10px"
-            zby:timelabel_padding_bottom="@dimen/dimen_10px"
-            zby:timelabel_padding_top="@dimen/dimen_10px" />
+            zby:timelabel_margin_bottom="@dimen/px10"
+            zby:timelabel_padding_bottom="@dimen/px10"
+            zby:timelabel_padding_top="@dimen/px10"/>
+
         <ImageView
             android:id="@+id/iv_menu"
-            android:layout_width="@dimen/dimen_53px"
-            android:layout_height="@dimen/dimen_53px"
-            android:layout_marginStart="@dimen/dimen_53px"
+            android:layout_width="@dimen/px53"
+            android:layout_height="@dimen/px53"
             android:layout_alignStart="@id/pb_progress"
             android:layout_below="@+id/pb_progress"
-            android:layout_marginTop="@dimen/dimen_15px"
-            android:src="@drawable/icon_play_menu" />
+            android:layout_marginStart="@dimen/px53"
+            android:layout_marginTop="@dimen/px15"
+            android:src="@drawable/icon_play_menu"/>
 
         <TextView
             android:id="@+id/tv_menu"
@@ -146,13 +146,13 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/iv_menu"
             android:layout_alignTop="@+id/iv_menu"
+            android:layout_marginStart="@dimen/px5"
             android:layout_toEndOf="@+id/iv_menu"
             android:gravity="center_vertical"
             android:text="@string/play_tips"
             android:textColor="@color/white"
-            android:layout_marginStart="@dimen/dimen_5px"
-            android:textSize="@dimen/fontsize_36px" />
-        
+            android:textSize="@dimen/fontsize_36"/>
+
         <TextView
             android:id="@+id/player_txt_time"
             android:layout_width="wrap_content"
@@ -160,11 +160,11 @@
             android:layout_alignBottom="@+id/tv_menu"
             android:layout_alignEnd="@+id/pb_progress"
             android:layout_alignTop="@+id/tv_menu"
-            android:layout_marginEnd="@dimen/dimen_56px"
+            android:layout_marginEnd="@dimen/px56"
             android:gravity="center_vertical"
             android:textColor="@color/white"
-            android:textSize="@dimen/fontsize_36px" />
-      
+            android:textSize="@dimen/fontsize_36"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

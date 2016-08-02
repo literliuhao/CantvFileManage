@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MediaRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/mediabg"
+    android:clipChildren="false"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <cn.cantv.mediacenter.filebrowser.TabBarView
+        android:id="@+id/media_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/px100"
+        android:layout_marginTop="@dimen/px76" />
+
+    <cn.cantv.mediacenter.filebrowser.StackView
+        android:id="@+id/media_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/media_header"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/px90"
+        android:layout_marginRight="@dimen/px80"
+        android:layout_marginTop="@dimen/px165"
+        android:clipChildren="true"
+        android:flipInterval="500"
+        android:gravity="center"
+        android:persistentDrawingCache="animation" />
+
+    <ProgressBar
+        android:id="@+id/progress_datatip"
+        android:layout_width="@dimen/px300"
+        android:layout_height="@dimen/px300"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+       android:indeterminateDrawable="@drawable/progressbar"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txt_datatip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/str_nodata"
+        android:textSize="@dimen/px72"
+        android:visibility="gone" >
+    </TextView>
+
+</RelativeLayout>

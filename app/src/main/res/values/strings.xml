@@ -1,37 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-	<string name="str_filemanager">文件管理</string>
-	<string name="str_movie">视频</string>
-	<string name="str_music">音频</string>
-	<string name="str_photo">图片</string>
-	<string name="str_app">安装包</string>
-	<string name="str_file">文件</string>
-	<string name="str_external">外接设备</string>
-	<string name="str_local">本地储存</string>
-	<string name="str_share">文件共享</string>
-	<string name="str_total">共</string>
-	<string name="str_null">暂无</string>
-	<string name="str_movienum">部视频</string>
-	<string name="str_photonum">张图片</string>
-	<string name="str_musicnum">首音乐</string>
-	<string name="str_appnum">个安装包</string>
-	<string name="str_devicenum">个设备</string>
-	<string name="str_localdiskfree">可用 </string>
-	<string name="str_localdisktotal">全部 </string>
-	<string name="str_menu">按菜单键获取更多功能</string>
-	<string name="str_newdevice">发现设备</string>
-	<string name="str_nodata">暂无数据</string>
-	<string name="str_nodev">暂无设备</string>
-	<string name="str_noshare">暂无文件共享</string>
-	<string name="str_open">打开</string>
-	<string name="str_close">关闭</string>
-	<string name="str_share_file">文件共享</string>
-	<string name="str_confirm">确定</string>
-	<string name="str_disclaimerconfirm">同意并继续安装</string>
-	<string name="str_cancel">取消</string>
-	<string name="str_username">用户名</string>
+    <string name="str_filemanager">文件管理</string>
+    <string name="str_movie">视频</string>
+    <string name="str_music">音频</string>
+    <string name="str_photo">图片</string>
+    <string name="str_app">安装包</string>
+    <string name="str_file">文件</string>
+    <string name="str_external">外接设备</string>
+    <string name="str_local">本地储存</string>
+    <string name="str_share">文件共享</string>
+    <string name="str_total">共</string>
+    <string name="str_null">暂无</string>
+    <string name="str_movienum">部视频</string>
+    <string name="str_photonum">张图片</string>
+    <string name="str_musicnum">首音乐</string>
+    <string name="str_appnum">个安装包</string>
+    <string name="str_devicenum">个设备</string>
+    <string name="str_localdiskfree">可用 </string>
+    <string name="str_localdisktotal">全部 </string>
+    <string name="str_menu">按菜单键获取更多功能</string>
+    <string name="str_newdevice">发现设备</string>
+    <string name="str_nodata">暂无数据</string>
+    <string name="str_nodev">暂无设备</string>
+    <string name="str_noshare">暂无文件共享</string>
+    <string name="str_open">打开</string>
+    <string name="str_close">关闭</string>
+    <string name="str_share_file">文件共享</string>
+    <string name="str_confirm">确定</string>
+    <string name="str_disclaimerconfirm">同意并继续安装</string>
+    <string name="str_cancel">取消</string>
+    <string name="str_username">用户名</string>
     <string name="str_pwd">密码</string>
-	
-	<string name="hello_world">Hello world!</string>
+    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="play_tips">按菜单键获取更多功能</string>
     <string name="filenoexsit">视频文件不存在</string>
@@ -77,7 +77,7 @@
     <string name="total_num">共 %s 个</string>
     <string name="menu">菜单</string>
     <string name="deleteFailed">删除失败,请稍后再试!</string>
-    <!--gridview中二级菜单项-->
+    <!-- gridview中二级菜单项 -->
     <string name="sort">排序</string>
     <string name="sort_date">按日期</string>
     <string name="sort_filesize">按文件大小</string>
@@ -113,5 +113,28 @@
     <string name="loading_tips">正在努力加载中，稍等一下…</string>
     <string name="no_file_sharing_tips">未发现该设备共享的文件</string>
     <string name="device_login_failed">无法访问该设备</string>
-    
+    <string name="baseplayer_not_next_video">没有下一个视频了！</string>
+    <string name="baseplayer_not_video">没有上一个视频了！</string>
+    <string name="null_data">没有数据!</string>
+    <string name="data_exception">获取数据异常</string>
+
+    <!-- 图片 -->
+    <string name="image_full_screen">等比全屏</string>
+    <string name="image_real_size">实际尺寸</string>
+    <string name="image_last_photo">已经是最后一张</string>
+    <string name="image_start_play">开始幻灯片播放</string>
+    <string name="image_end_play">结束幻灯片播放</string>
+    <string name="image_name">图片名称</string>
+    <string name="image_volume">图片大小</string>
+    <string name="image_size">图片尺寸</string>
+    <string name="image_time">修改时间</string>
+    <string name="image_menu_rotation">旋转</string>
+    <string name="image_menu_scale">等比全屏</string>
+    <string name="image_menu_movie">幻灯片</string>
+    <string name="image_menu_info">图片信息</string>
+    <string name="disclaimer_title">免责声明</string>
+    <string name="disclaimer_text1">按照国家相关政策规定，本机已经禁止安装第三方软</string>
+    <string name="disclaimer_text2">件，第三方软件不保证能兼容和适用于所有Android平台和</string>
+    <string name="disclaimer_text3">系统，有可能引起冲突和导致不可预测的问题出现，请自行</string>
+    <string name="disclaimer_text4">承担使用第三方软件而导致的风险和后果。</string>
 </resources>

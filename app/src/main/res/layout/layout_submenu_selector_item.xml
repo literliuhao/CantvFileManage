@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/dimen_90px"
-    android:clipToPadding="true"
-    android:focusable="true"
-    android:paddingEnd="0dp"
-    android:paddingStart="@dimen/dimen_32px" >
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/px90"
+                android:clipToPadding="true"
+                android:focusable="true"
+                android:paddingEnd="0dp"
+                android:paddingStart="@dimen/px32">
 
     <TextView
         android:id="@+id/tv_title"
@@ -14,17 +14,17 @@
         android:layout_centerVertical="true"
         android:duplicateParentState="true"
         android:textColor="@color/selector_submenu_select_item_bg"
-        android:textSize="@dimen/fontsize_32px" />
+        android:textSize="@dimen/fontsize_32"/>
 
     <ImageView
         android:id="@+id/iv_selector"
-        android:layout_width="@dimen/dimen_24px"
-        android:layout_height="@dimen/dimen_24px"
+        android:layout_width="@dimen/px24"
+        android:layout_height="@dimen/px24"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/dimen_24px"
+        android:layout_marginStart="@dimen/px24"
         android:layout_toEndOf="@id/tv_title"
         android:focusable="false"
         android:scaleType="fitXY"
-        android:src="@drawable/menu_ok" />
+        android:src="@drawable/menu_ok"/>
 
 </RelativeLayout>

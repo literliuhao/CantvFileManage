@@ -19,31 +19,6 @@
         android:layout_below="@id/flag_view"
         android:layout_marginLeft="@dimen/px80"
         android:gravity="center" />
-    <!-- android:clipChildren="true"/ -->
-    <!-- android:paddingBottom="@dimen/px130" -->
-    <!-- &lt;!&ndash;底部文字&ndash;&gt; -->
-    <!--
-    <TextView
-        android:id="@+id/focusview_name"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/px110"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="0px"
-        android:background="@drawable/shadow_bottom"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="@dimen/px36"
-        android:visibility="gone" />
-    -->
-
-    <View
-        android:id="@+id/bg_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/px300"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/shadow_top"
-        android:visibility="gone" />
-    <!-- 顶部布局 -->
 
     <RelativeLayout
         android:id="@+id/media_header"

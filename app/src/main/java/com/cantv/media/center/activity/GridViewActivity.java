@@ -47,26 +47,23 @@ public class GridViewActivity extends Activity {
 	private MenuItem deleteMenuItem;
 	private MenuItem sortMenuItem;
 	private MenuItem viewItem;
+	private MenuItem mSortMenu;
 	private List<MenuItem> sortListSubMenuItems;
 	private List<MenuItem> viewModeSubMenuItems;
 	private List<MenuItem> mMenuList;
 	private int mSelectedMenuPosi;
 	private int mDeleteItem;
 	public boolean isExternal; // 记录当前是否处于外接设备,true:处于外接设备(通过USB接口接入)
-	// public TextView mFocusName; //选中显示的名称
 	public TextView mRTCountView; // 显示数量和当前选中position
-	public View mBg_view; // 上部阴影
 	public int mCurrGridStyle; // 记录当前是什么排列方式
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gridview);
 		mTitleTV = (TextView) findViewById(R.id.title_textview);
 		mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
-		// mContentView.mar(0,0,0,200);
-		mBg_view = findViewById(R.id.bg_view);
 		mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
-		// mFocusName = (TextView) findViewById(R.id.focusview_name);
 		mRTCountView = (TextView) findViewById(R.id.file_count);
 		Intent intent = getIntent();
 		IntentFilter filter = new IntentFilter();
@@ -100,9 +97,9 @@ public class GridViewActivity extends Activity {
 			mTitleTV.setText(R.string.str_external);
 			mGridView = new MediaGridView(this, SourceType.DEVICE);
 			if (MediaUtils.getUSBNum() > 0 && MediaUtils.getUSBNum() < 3) {
-				if(null!=getIntent().getStringExtra("toListFlag")){
-					
-				}else{
+				if (null != getIntent().getStringExtra("toListFlag")) {
+
+				} else {
 					mGridView.setDevicePath(MediaUtils.getCurrPathList().get(0));
 				}
 			}
@@ -134,22 +131,11 @@ public class GridViewActivity extends Activity {
 			break;
 		}
 		mContentView.addView(mGridView);
-//		mGridView.setOnFocusChangedListener(new MediaGridView.OnFocusChangedListener() {
-//			@Override
-//			public void focusPosition(Media media, int position) {
-//				// mFocusName.setText(media.mName);
-//			}
-//		});
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (8 == keyCode || 166 == keyCode) {
-			// setGridStyle(MediaOrientation.THUMBNAIL);
-			// SharedPreferenceUtil.setGridStyle(0);
-			// } else if (9 == keyCode || 167 == keyCode) {
-			// SharedPreferenceUtil.setGridStyle(1);
-			// setGridStyle(MediaOrientation.LIST);
 		} else if (keyCode == KeyEvent.KEYCODE_MENU) {
 			if (null == mMenuDialog || !mMenuDialog.isShowing()) {
 				mGridView.setStyleFocus(R.drawable.unfocus);
@@ -174,15 +160,12 @@ public class GridViewActivity extends Activity {
 			mGridView.setPadding(0, 0, 0, 60);
 			mGridView.setStyle(MediaOrientation.THUMBNAIL);
 			mGridView.setNumColumns(5);
-			// mGridView.setOutlineProvider();
 			break;
 		}
 	}
 
 	@Override
 	public void onBackPressed() {
-		// MediaGridView childGridView = (MediaGridView)
-		// mContentView.getFocusedChild();
 		MediaGridView childGridView = (MediaGridView) mContentView.getChildAt(0);
 		if ((null != childGridView) && (!childGridView.onBack())) {
 			finish();
@@ -234,7 +217,7 @@ public class GridViewActivity extends Activity {
 								Toast.makeText(GridViewActivity.this, R.string.deleteFailed, Toast.LENGTH_SHORT).show();
 							}
 						} else {
-							Toast.makeText(GridViewActivity.this, "没有数据!", Toast.LENGTH_SHORT).show();
+							Toast.makeText(GridViewActivity.this, R.string.null_data, Toast.LENGTH_SHORT).show();
 						}
 						return true;
 					} else {
@@ -257,9 +240,15 @@ public class GridViewActivity extends Activity {
 		sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_filesize), MenuItem.TYPE_SELECTOR));
 		sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_name), MenuItem.TYPE_SELECTOR));
 		int sortType = SharedPreferenceUtil.getSortType();
-		MenuItem sortMenu = sortListSubMenuItems.get(sortType);
-		sortMenu.setParent(sortListMenuItem);
-		sortMenu.setSelected(true);
+		if (sortType == 1 || sortType == 2) {
+			mSortMenu = sortListSubMenuItems.get(0);
+		} else if (sortType == 3 || sortType == 4) {
+			mSortMenu = sortListSubMenuItems.get(1);
+		} else if (sortType == 5 || sortType == 6) {
+			mSortMenu = sortListSubMenuItems.get(2);
+		}
+		mSortMenu.setParent(sortListMenuItem);
+		mSortMenu.setSelected(true);
 		sortListMenuItem.setChildren(sortListSubMenuItems);
 		mMenuList.add(sortListMenuItem);
 		viewModeMenuItem = new MenuItem(getString(R.string.view));
@@ -276,7 +265,7 @@ public class GridViewActivity extends Activity {
 		mMenuList.add(viewModeMenuItem);
 		Intent intent = getIntent();
 		String type = intent.getStringExtra("type");
-		if(!"share".equalsIgnoreCase(type)){
+		if (!"share".equalsIgnoreCase(type)) {
 			deleteMenuItem = new MenuItem(getString(R.string.delete));
 			deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
 			mMenuList.add(deleteMenuItem);
@@ -289,13 +278,38 @@ public class GridViewActivity extends Activity {
 		MenuItem menuItemData = mMenuList.get(mSelectedMenuPosi);
 		int lastSelectPosi = menuItemData.setChildSelected(position);
 		if (mSelectedMenuPosi == 0) {
+			int sortType = SharedPreferenceUtil.getSortType();
 			if (position == 0) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_DATE_DOWN, false);
+				if (sortType != FileComparator.SORT_TYPE_DATE_DOWN && sortType != FileComparator.SORT_TYPE_DATE_UP) {
+					sortType = FileComparator.SORT_TYPE_DATE_DOWN;
+				}
+				if (sortType == FileComparator.SORT_TYPE_DATE_DOWN) {
+					sortType = FileComparator.SORT_TYPE_DATE_UP;
+				} else {
+					sortType = FileComparator.SORT_TYPE_DATE_DOWN;
+				}
 			} else if (position == 1) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_SIZE_DOWN, false);
+				if (sortType != FileComparator.SORT_TYPE_SIZE_DOWN && sortType != FileComparator.SORT_TYPE_SIZE_UP) {
+					sortType = FileComparator.SORT_TYPE_SIZE_DOWN;
+				}
+				if (sortType == FileComparator.SORT_TYPE_SIZE_DOWN) {
+					sortType = FileComparator.SORT_TYPE_SIZE_UP;
+
+				} else {
+					sortType = FileComparator.SORT_TYPE_SIZE_DOWN;
+				}
 			} else if (position == 2) {
-				isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), FileComparator.SORT_TYPE_NAME_UP, false);
+				if (sortType != FileComparator.SORT_TYPE_NAME_DOWN && sortType != FileComparator.SORT_TYPE_NAME_UP) {
+					sortType = FileComparator.SORT_TYPE_NAME_DOWN;
+				}
+				if (sortType == FileComparator.SORT_TYPE_NAME_DOWN) {
+					sortType = FileComparator.SORT_TYPE_NAME_UP;
+
+				} else {
+					sortType = FileComparator.SORT_TYPE_NAME_DOWN;
+				}
 			}
+			isRefreshed = FileUtil.sortList(mGridView.mListAdapter.getData(), sortType, false);
 			if (isRefreshed) {
 				mGridView.mListAdapter.notifyDataSetChanged();
 			}
@@ -362,14 +376,14 @@ public class GridViewActivity extends Activity {
 		// 清除记录的上级目录
 		mGridView.mMediaStack.clear();
 		mGridView.mPosStack.clear();
-		mGridView.mCurrMediaList=mediaes;
+		mGridView.mCurrMediaList = mediaes;
 		mGridView.mListAdapter.bindData(mediaes);
 		if (mediaes.size() < 1) {
 			mRTCountView.setVisibility(View.GONE);
 			mGridView.showNoDataPage();
-		}else{
+		} else {
 			mRTCountView.setVisibility(View.VISIBLE);
-			mGridView.setTextRTview(mGridView.mSelectItemPosition+1+" / ", mediaes.size()+"");
+			mGridView.setTextRTview(mGridView.mSelectItemPosition + 1 + " / ", mediaes.size() + "");
 		}
 	}
 
@@ -381,7 +395,7 @@ public class GridViewActivity extends Activity {
 		unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
-	
+
 	public Bitmap getScreenShot() {
 		getWindow().getDecorView().setDrawingCacheEnabled(false);
 		getWindow().getDecorView().setDrawingCacheEnabled(true);

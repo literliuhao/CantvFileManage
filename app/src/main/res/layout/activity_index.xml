@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MediaRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mediabg"
+    android:clipChildren="false"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="@dimen/px152"
+        android:layout_marginTop="@dimen/px76"
+        layout="@layout/activity_header"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:id="@+id/ly_out"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/ln_header"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/px80"
+        android:layout_marginRight="@dimen/px80"
+        android:layout_marginTop="@dimen/px170"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/txt_datatip"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/str_nodata"
+            android:textSize="@dimen/px72"
+            android:visibility="gone" />
+
+        <cn.cantv.mediacenter.filebrowser.MediaGridView
+            android:id="@+id/gridview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:descendantFocusability="afterDescendants"
+            android:gravity="center"
+            android:horizontalSpacing="@dimen/px78"
+            android:numColumns="5"
+            android:scrollbars="none"
+            android:verticalSpacing="@dimen/px85" />
+    </LinearLayout>
+
+    <cn.cantv.mediacenter.filebrowser.MediaScrollView
+        android:id="@+id/medaiscollview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/ln_header"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/px151"
+        android:layout_marginTop="-50dp"
+        android:gravity="center" >
+    </cn.cantv.mediacenter.filebrowser.MediaScrollView>
+
+</RelativeLayout>

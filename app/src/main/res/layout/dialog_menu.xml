@@ -16,13 +16,13 @@
         zby:menuBackground="@drawable/bg_menu"
         zby:menuFocusMode="FOCUS_SELECTED"
         zby:menuFocusResId="@drawable/menu_focus"
-        zby:menuWidth="@dimen/dimen_410px"
+        zby:menuWidth="@dimen/px410"
         zby:subMenuBackground="@drawable/bg_sub_menu"
         zby:subMenuFocusMode="FOCUS_NONE"
         zby:subMenuFocusResId="@drawable/menufocus"
-        zby:subMenuWidth="@dimen/dimen_340px"
-        zby:subMenuPaddingTop="@dimen/dimen_160px"
-        zby:subMenuPaddingBottom="@dimen/dimen_50px"
+        zby:subMenuWidth="@dimen/px340"
+        zby:subMenuPaddingTop="@dimen/px160"
+        zby:subMenuPaddingBottom="@dimen/px50"
         ></com.cantv.media.center.ui.DoubleColumnMenu>
 
 </LinearLayout>

@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/iv_Logo"
-        android:layout_width="@dimen/dimen_156px"
-        android:layout_height="@dimen/dimen_156px"
+        android:layout_width="@dimen/px156"
+        android:layout_height="@dimen/px156"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_92px"
+        android:layout_marginTop="@dimen/px92"
         android:background="@drawable/share_bj"
         android:focusable="false"
         android:scaleType="centerInside" />
@@ -20,9 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_Logo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_60px"
+        android:layout_marginTop="@dimen/px60"
         android:focusable="false"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/fontsize_32px" />
+        android:textSize="@dimen/fontsize_32" />
 
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -57,12 +58,15 @@ public class PlayerController extends RelativeLayout {
 	/** 长按步长 */
 	private int mStepSize;
 	/** 默认步长 */
-	private static final int DEFAULT_STEP_SIZE=3000;
+	private static final int DEFAULT_STEP_SIZE=5000;
 	/** 是否是到达最大速度 */
 	private boolean reachMaxG = false;
-
-	private int mTmpSecondeProgress;
-
+	
+	private int mTmpSecondProgress;
+	
+	private int mKeyDownRepeatCount=0;
+	
+	private static final String TAG="PlayerController";
 	private Handler handler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 
@@ -111,7 +115,7 @@ public class PlayerController extends RelativeLayout {
 
 			case SEEK_DURATION:
 				mProgressBar.setSecondProgressEnable(false);
-				seekToDuration(mTmpSecondeProgress);
+				seekToDuration(mTmpSecondProgress);				
 				break;
 			case CHANGE_PLAY_VISIBILITY:
 				mPlayImage.setVisibility(INVISIBLE);
@@ -287,13 +291,15 @@ public class PlayerController extends RelativeLayout {
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 			handler.removeMessages(CHANG_PLAYIMAGE);
-			handler.removeMessages(SEEK_DURATION);
 			mProgressBar.setSecondProgressEnable(true);
-			if (mDuration <= 1000 * 60 * 10) {
-				seekPosition(event);
-			} else {
-				obtainSeekPosition(event);
+			handler.removeMessages(SEEK_DURATION);
+			if (event.getRepeatCount()==0) {
+				mKeyDownRepeatCount++;
+				if (mKeyDownRepeatCount==1) {
+					mTmpSecondProgress=mCtrlBarContext.getPlayerCurPosition();
+				}
 			}
+			seekPosition(event);
 			toggleSeekImgvi(keyCode);
 			showController();
 			break;
@@ -313,6 +319,7 @@ public class PlayerController extends RelativeLayout {
 
 				@Override
 				public void onCompletion(MediaPlayer mp) {
+					mTmpSecondProgress=0;
 				}
 			});
 
@@ -328,8 +335,7 @@ public class PlayerController extends RelativeLayout {
 			boolean isNext = mCoverFlowViewListener.scrollToNext(new OnCompletionListener() {
 				@Override
 				public void onCompletion(MediaPlayer mp) {
-					//TODO   sdfs f
-					mTmpSecondeProgress=0;
+					mTmpSecondProgress=0;
 				}
 			});
 
@@ -347,9 +353,9 @@ public class PlayerController extends RelativeLayout {
 
 	}
 
-	public void seekToDuration(int duration) {
-		handler.removeMessages(PlayerController.CHANG_PROGRESS, null);
-		handler.removeMessages(PlayerController.CHANG_SRT, null);
+	public void seekToDuration(final int duration) {
+		handler.removeMessages(PlayerController.CHANG_PROGRESS);
+		handler.removeMessages(PlayerController.CHANG_SRT);
 		mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
 			@Override
 			public void onSeekComplete(MediaPlayer arg0) {
@@ -358,7 +364,8 @@ public class PlayerController extends RelativeLayout {
 				if(isSrtExist){
 					handler.sendEmptyMessage(PlayerController.CHANG_SRT);
 				}
-				mTmpSecondeProgress=mCtrlBarContext.getPlayerCurPosition();
+				mProgressBar.setProgress(mCtrlBarContext.getPlayerCurPosition());
+				mKeyDownRepeatCount=0;
 			}
 		});
 	}
@@ -443,20 +450,24 @@ public class PlayerController extends RelativeLayout {
 	}
 
 	// 视频小于10分钟
-	private void seekPosition(KeyEvent event) {
-		if (KeyEvent.KEYCODE_DPAD_LEFT == event.getKeyCode()) {
-			mTmpSecondeProgress=mTmpSecondeProgress-DEFAULT_STEP_SIZE<=0?0:mTmpSecondeProgress-DEFAULT_STEP_SIZE;
-			mProgressBar.setSecondProgress(mTmpSecondeProgress);
-		} else if (KeyEvent.KEYCODE_DPAD_RIGHT == event.getKeyCode()) {
-			mTmpSecondeProgress=mTmpSecondeProgress+DEFAULT_STEP_SIZE>=mDuration?mDuration:mTmpSecondeProgress+DEFAULT_STEP_SIZE;
-			mProgressBar.setSecondProgress(mTmpSecondeProgress);
-		}
+	private void seekPosition(KeyEvent event) {		
+		if (mDuration <= 1000 * 60 * 10) {
+			if (KeyEvent.KEYCODE_DPAD_LEFT == event.getKeyCode()) {
+				mTmpSecondProgress=(mTmpSecondProgress-DEFAULT_STEP_SIZE)<=0?0:(mTmpSecondProgress-DEFAULT_STEP_SIZE);
+				mProgressBar.setSecondProgress(mTmpSecondProgress);
+			} else if (KeyEvent.KEYCODE_DPAD_RIGHT == event.getKeyCode()) {
+				mTmpSecondProgress=(mTmpSecondProgress+DEFAULT_STEP_SIZE)>=mDuration?mDuration:(mTmpSecondProgress+DEFAULT_STEP_SIZE);
+				mProgressBar.setSecondProgress(mTmpSecondProgress);
+			}
+		} else {
+			obtainSeekPosition(event);
+		}		
 	}
 	// 视频时间大于10分钟
 	private void obtainSeekPosition(KeyEvent event) {
 		int repeatCount = event.getRepeatCount();
 		if (repeatCount == 0) {
-			mStepSize = DEFAULT_STEP_SIZE;
+			mStepSize = DEFAULT_STEP_SIZE+5000;
 			reachMaxG = false;
 		}
 		double ss1 = Math.sin(repeatCount * 5 * Math.PI / 180);
@@ -467,17 +478,17 @@ public class PlayerController extends RelativeLayout {
 			mStepSize += ss1 * 3000;
 		}
 		if (KeyEvent.KEYCODE_DPAD_LEFT == event.getKeyCode()) {
-			mTmpSecondeProgress -= mStepSize;
-			if (mTmpSecondeProgress <= 0) {
-				mTmpSecondeProgress = 0;
+			mTmpSecondProgress -= mStepSize;
+			if (mTmpSecondProgress <= 0) {
+				mTmpSecondProgress = 0;
 			}
 		} else if (KeyEvent.KEYCODE_DPAD_RIGHT == event.getKeyCode()) {
-			mTmpSecondeProgress += mStepSize;
-			if (mTmpSecondeProgress >= mDuration) {
-				mTmpSecondeProgress = mDuration;
+			mTmpSecondProgress += mStepSize;
+			if (mTmpSecondProgress >= mDuration) {
+				mTmpSecondProgress = mDuration;
 			}
 		}
-		mProgressBar.setSecondProgress(mTmpSecondeProgress);
+		mProgressBar.setSecondProgress(mTmpSecondProgress);
 	}
 
 	protected String time2String(int timeInMillis) {

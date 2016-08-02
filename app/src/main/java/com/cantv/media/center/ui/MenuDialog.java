@@ -1,13 +1,5 @@
 package com.cantv.media.center.ui;
 
-import java.util.List;
-
-import com.cantv.media.R;
-import com.cantv.media.center.data.MenuItem;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemFocusChangeListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
@@ -18,6 +10,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.cantv.media.R;
+import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnItemFocusChangeListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
+
+import java.util.List;
 
 public class MenuDialog extends Dialog {
 
@@ -46,7 +46,7 @@ public class MenuDialog extends Dialog {
         mMenuView = (DoubleColumnMenu) view.findViewById(R.id.dcm);
 
         View headerView = View.inflate(getContext(), R.layout.layout_menu_header, null);
-        LinearLayout.LayoutParams headerViewLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, getContext().getResources().getDimensionPixelSize(R.dimen.dimen_160px));
+        LinearLayout.LayoutParams headerViewLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, getContext().getResources().getDimensionPixelSize(R.dimen.px160));
         headerView.setLayoutParams(headerViewLp);
         mMenuView.setMenuHeader(headerView);
         setContentView(view);
@@ -195,7 +195,7 @@ public class MenuDialog extends Dialog {
             view.setTag(TAG_MENU_VIEW + position);
             updateMenuItem(view, (MenuItem) getMenuItem(position));
 
-            ViewGroup.LayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, parent.getResources().getDimensionPixelOffset(R.dimen.dimen_114px));
+            ViewGroup.LayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, parent.getResources().getDimensionPixelOffset(R.dimen.px114));
             view.setLayoutParams(lp);
             return view;
         }
@@ -244,7 +244,7 @@ public class MenuDialog extends Dialog {
             }
             updateSubMenuItem(view, data);
             view.setTag(TAG_SUB_MENU_VIEW + position);
-            ViewGroup.LayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, parent.getResources().getDimensionPixelOffset(R.dimen.dimen_90px));
+            ViewGroup.LayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, parent.getResources().getDimensionPixelOffset(R.dimen.px90));
             view.setLayoutParams(lp);
             return view;
         }

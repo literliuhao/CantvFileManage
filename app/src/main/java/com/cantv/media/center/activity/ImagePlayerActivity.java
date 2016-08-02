@@ -207,7 +207,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight = (ImageView) findViewById(R.id.media__image_view__right);
         mPosition = (TextView) findViewById(R.id.media__image_tv__position);
         mTotal = (TextView) findViewById(R.id.media__image_tv__total);
-        mtxtresolution = (TextView) findViewById(R.id.txt_solution);
+//        mtxtresolution = (TextView) findViewById(R.id.txt_solution);
         mTvRotation = (TextView) findViewById(R.id.media__image_tv__rotation);
         mTvSize = (TextView) findViewById(R.id.media__image_tv__size);
         mTvAuto = (TextView) findViewById(R.id.media__image_tv__auto);
@@ -249,13 +249,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 isRotation = false;
                 mSizeType = false;
-                mTvSize.setText("等比全屏");
+                mTvSize.setText(getString(R.string.image_full_screen));
                 mPosition.setText(String.valueOf(mCurImageIndex + 1));
                 mTotal.setText(" / " + getData().size());
                 arrowShow(getData());
 
                 if (curIndex == getData().size()) {
-                    Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
                     return;
                 }
             }
@@ -388,10 +388,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 if (!mSizeType) {
                     mSizeType = true;
-                    mTvSize.setText("实际尺寸");
+                    mTvSize.setText(getString(R.string.image_real_size));
                 } else {
                     mSizeType = false;
-                    mTvSize.setText("等比全屏");
+                    mTvSize.setText(getString(R.string.image_full_screen));
                 }
                 mImageBrowser.onZoomScale(calcByWH(mWidth, mHeight, mSizeType));
                 MainThread.cancel(mToHideRunnable);
@@ -420,13 +420,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int curIndex = mCurImageIndex + 1;
                 int size = getData().size();
                 if (curIndex == size) {
-                    Toast.makeText(getApplicationContext(), "已经是最后一张", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (mAutoPlay) {
                     stopAutoPlay();
                     pauseMusic();
-                    Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     startAutoPlay();
@@ -436,7 +436,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     } else {
                         resumeMusic();
                     }
-                    Toast.makeText(ImagePlayerActivity.this, "开始幻灯片播放", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_start_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info33);
                 }
             }
@@ -482,10 +482,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     nflag = true;
                 }
                 String curFileUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
-                mInfoName.setText("图片名称：" + getData().get(mCurImageIndex).mName);
-                mInfoSize.setText("图片大小：" + FileUtil.convertStorage(getData().get(mCurImageIndex).fileSize));
-                mInfoUrl.setText("图片尺寸：" + mWidth + "*" + mHeight);
-                mInfoTime.setText("修改时间：" + DateUtil.onDate2String(new Date(getData().get(mCurImageIndex).modifiedDate), "yyyy-MM-dd HH:mm"));
+                mInfoName.setText(getString(R.string.image_name)+"：" + getData().get(mCurImageIndex).mName);
+                mInfoSize.setText(getString(R.string.image_volume)+"：" + FileUtil.convertStorage(getData().get(mCurImageIndex).fileSize));
+                mInfoUrl.setText(getString(R.string.image_size) +"："+ mWidth + "*" + mHeight);
+                mInfoTime.setText(getString(R.string.image_time) +"："+ DateUtil.onDate2String(new Date(getData().get(mCurImageIndex).modifiedDate), "yyyy-MM-dd HH:mm"));
             }
         });
         mInfo.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -531,7 +531,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
-            Log.i("", "Hua...getScreenLock().acquire();");
         }
         MainThread.runLater(mAutoRunnable, 5000);
     }
@@ -541,7 +540,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoPlay = false;
             MainThread.cancel(mAutoRunnable);
             getScreenLock().release();
-            Log.i("", "Hua...getScreenLock().release();");
         }
     }
 
@@ -679,7 +677,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
                     stopAutoPlay();
                     stopMusic();
-                    Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                     return true;
                 }
