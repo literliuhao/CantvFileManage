@@ -10,8 +10,8 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/px1056"
+            android:layout_height="@dimen/px696"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:background="@drawable/home_devices_background"/>

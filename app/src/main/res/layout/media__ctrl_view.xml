@@ -27,8 +27,7 @@
                 android:layout_height="@dimen/px200"
                 android:layout_gravity="center_vertical"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:src="@drawable/general__share__prev" />
+                android:focusableInTouchMode="true"/>
 
             <ImageView
                 android:id="@+id/media__ctrl_view__rewind"
@@ -36,8 +35,7 @@
                 android:layout_height="@dimen/px250"
                 android:layout_gravity="center_vertical"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:src="@drawable/general__share__rewind" />
+                android:focusableInTouchMode="true"/>
 
             <ImageView
                 android:id="@+id/media__ctrl_view__pauseorplay"
@@ -45,8 +43,7 @@
                 android:layout_height="@dimen/px150"
                 android:layout_gravity="center_vertical"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:src="@drawable/general__share__pause" />
+                android:focusableInTouchMode="true" />
 
             <ImageView
                 android:id="@+id/media__ctrl_view__forward"
@@ -54,8 +51,7 @@
                 android:layout_height="@dimen/px250"
                 android:layout_gravity="center_vertical"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:src="@drawable/general__share__forward" />
+                android:focusableInTouchMode="true" />
 
             <ImageView
                 android:id="@+id/media__ctrl_view__next"
@@ -63,8 +59,7 @@
                 android:layout_height="@dimen/px250"
                 android:layout_gravity="center_vertical"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:src="@drawable/general__share__next" />
+                android:focusableInTouchMode="true" />
             
         </LinearLayout>
 
