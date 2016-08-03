@@ -29,7 +29,6 @@ public class MediaGridItemView extends MediaItemView {
 	private MediaPicView mBgView;
 	private ImageView mFocusView;
 	private TextView mTextView;
-	private Drawable mPlayFocusDrawable;
 	private NumberDrawable mNumDrawable;
 	private Media mMedia;
 	private boolean isShow = false;
@@ -56,7 +55,6 @@ public class MediaGridItemView extends MediaItemView {
 		relativeLayoutParams.alignWithParent = true;
 		relativeLayout.setLayoutParams(relativeLayoutParams);
 		mContext = context;
-		mPlayFocusDrawable = getResources().getDrawable(R.drawable.videoplaynomal);
 		mNumDrawable = new NumberDrawable(context);
 		setWillNotDraw(false);
 		setFocusable(false);
@@ -206,14 +204,12 @@ public class MediaGridItemView extends MediaItemView {
 			mTextView.setEllipsize(TruncateAt.MARQUEE);
 			mTextView.setHorizontallyScrolling(true);
 			mTextView.setMarqueeRepeatLimit(-1);
-			// mPlayFocusDrawable = getResources().getDrawable(R.drawable.play);
 		} else {
 			if (mAnimation != null) {
 				mAnimation.cancel();
 				mAnimation = null;
 			}
 			isShow = false;
-			mPlayFocusDrawable = getResources().getDrawable(R.drawable.videoplaynomal);
 		}
 		mAnimateRate = 0;
 		invalidate();

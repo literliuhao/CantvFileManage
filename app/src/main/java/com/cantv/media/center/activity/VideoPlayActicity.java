@@ -32,7 +32,6 @@ import com.cantv.media.center.greendao.VideoPlayer;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.ExternalSurfaceView;
-import com.cantv.media.center.ui.MediaMenuListRadiaoItem;
 import com.cantv.media.center.ui.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;

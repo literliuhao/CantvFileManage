@@ -36,7 +36,6 @@ public class MediaListItemView extends MediaItemView {
 	private TextView mTvName;
 	private TextView mTvSize;
 	private TextView mTvDate;
-	private Drawable mPlayFocusDrawable;
 	private NumberDrawable mNumDrawable;
 	private Media mMedia;
 	private boolean isShow = false;
@@ -64,7 +63,6 @@ public class MediaListItemView extends MediaItemView {
 		RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
 		relativeLayout.setLayoutParams(relativeLayoutParams);
 		mContext = context;
-		mPlayFocusDrawable = getResources().getDrawable(R.drawable.videoplaynomal);
 		mNumDrawable = new NumberDrawable(context);
 		setWillNotDraw(false);
 		setFocusable(false);
@@ -248,14 +246,12 @@ public class MediaListItemView extends MediaItemView {
 			// mTvName.setEllipsize(TruncateAt.MARQUEE);
 			// mTvName.setHorizontallyScrolling(true);
 			// mTvName.setMarqueeRepeatLimit(-1);
-			// mPlayFocusDrawable = getResources().getDrawable(R.drawable.play);
 		} else {
 			if (mAnimation != null) {
 				mAnimation.cancel();
 				mAnimation = null;
 			}
 			isShow = false;
-			mPlayFocusDrawable = getResources().getDrawable(R.drawable.videoplaynomal);
 		}
 		mAnimateRate = 0;
 		invalidate();

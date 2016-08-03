@@ -104,7 +104,7 @@ public class ImageWatchingView extends ZoomView {
             public void run() {
                 Point center = getContentStaticCenter();
                 setMinZoomFactor(clacFitScreenScale());
-                if (smoothly == false) {
+                if (!smoothly) {
                     zoomAndCenterChildTo(center.x, center.y, clacFitScreenScale());
                 } else {
                     zoomAndCenterChildSmoothlyTo(center.x, center.y, clacFitScreenScale(), null, null);

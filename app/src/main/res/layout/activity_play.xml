@@ -21,7 +21,6 @@
         android:id="@+id/media__video_view__background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/general__share__player_bg"
         android:visibility="invisible" >
     </ImageView>
 
