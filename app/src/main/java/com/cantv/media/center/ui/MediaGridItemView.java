@@ -92,7 +92,7 @@ public class MediaGridItemView extends MediaItemView {
 		RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		tvParams.addRule(RelativeLayout.BELOW, mBgView.getId());
 		tvParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		tvParams.setMargins(0, 18, 0, 0);
+		tvParams.setMargins(0, (int)getResources().getDimension(R.dimen.px18), 0, 0);
 		mTextView.setLayoutParams(tvParams);
 		relativeLayout.addView(mFocusView);
 		relativeLayout.addView(mBgView);

@@ -59,8 +59,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private LinearLayout mLayout;
     private TextView mtxtresolution;
     private boolean nflag = true;
-    private float screenWidth;
-    private float screenHeight;
+    public float screenWidth;
+    public float screenHeight;
     private Context mContext;
     private BroadcastReceiver mimageReceiver;
     private LinearLayout mediaimagebar;
@@ -107,6 +107,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private static long lastClickTime;
     private int mWidth;
     private int mHeight;
+    private int mSizeWidth;
+	private int mSizeHeight;
     private Boolean isRotation = false;
 
     private Handler mHandler = new Handler() {
@@ -136,6 +138,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.media__image_view);
+        screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+        screenHeight = getWindowManager().getDefaultDisplay().getHeight();
         initView();
         showImage(indexOfDefaultPlay(), null);
         initViewClickEvent();
@@ -145,8 +149,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         registerReceiver();
         toHideView();
 
-        screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        screenHeight = getWindowManager().getDefaultDisplay().getHeight();
     }
 
     private void toHideRunnable() {
@@ -235,6 +237,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (index < 0 || index >= getData().size()) {
             return;
         }
+        
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
@@ -253,7 +256,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 mTotal.setText(" / " + getData().size());
                 arrowShow(getData());
 
-                if (curIndex == getData().size()) {
+                UiUtils.runAfterLayout(mImageBrowser, new Runnable() {
+                	@Override
+                	public void run() {
+                		mImageBrowser.reset();
+                		mImageBrowser.changeReset();
+                		UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
+                	}
+                });
+                if (curIndex == getData().size()&& curIndex != 1) {
                     Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -265,16 +276,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 mHeight = height;
 
             }
-        });
-        UiUtils.runAfterLayout(mImageBrowser, new Runnable() {
+            
             @Override
-            public void run() {
-                mImageBrowser.reset();
-                mImageBrowser.changeReset();
-                UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
+            public void getSizeSuccessed(int width, int height) {
+            	mSizeWidth=width;
+            	mSizeHeight=height;
             }
         });
-        String curFileUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
     }
 
     /**
@@ -483,7 +491,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 String curFileUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
                 mInfoName.setText(getString(R.string.image_name)+"：" + getData().get(mCurImageIndex).mName);
                 mInfoSize.setText(getString(R.string.image_volume)+"：" + FileUtil.convertStorage(getData().get(mCurImageIndex).fileSize));
-                mInfoUrl.setText(getString(R.string.image_size) +"："+ mWidth + "*" + mHeight);
+                mInfoUrl.setText(getString(R.string.image_size) +"："+ mSizeWidth + "*" + mSizeHeight);
                 mInfoTime.setText(getString(R.string.image_time) +"："+ DateUtil.onDate2String(new Date(getData().get(mCurImageIndex).modifiedDate), "yyyy-MM-dd HH:mm"));
             }
         });

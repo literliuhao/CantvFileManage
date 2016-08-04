@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
  */
 
 public class SharedPreferenceUtil {
+	private static final String SHARE_IP_TAG = "share_ip";
 	private static final String DEVICES_TAG = "devices_flag2";
 	private static final String FILE_SORT_TYPE = "sort_type";
 	private static final String GRID_STYLE = "grid_style";
@@ -81,7 +82,7 @@ public class SharedPreferenceUtil {
 	 */
 	public static void saveDevice(String path) {
 		String devicesPath = getDevicesPath();
-		
+
 		if (!devicesPath.contains(path)) {
 			StringBuilder stringBuilder = new StringBuilder(devicesPath);
 			stringBuilder.append("abc").append(path);
@@ -98,25 +99,52 @@ public class SharedPreferenceUtil {
 	public static String getDevicesPath() {
 		return mSp.getString(DEVICES_TAG, "");
 	}
+
 	/**
 	 * 设置免责显示
 	 * 
-	 * @param 
+	 * @param
 	 */
 	public static boolean setDisclaimer(int Disclaimer) {
 		mEditor.putInt(DISCLAIMER_TEXT, Disclaimer);
 		return commitInfo(mEditor);
 	}
+
 	/**
 	 * 获取免责显示
 	 * 
-	 * @param 
+	 * @param
 	 */
-    public static int getDisclaimer() {
-        if (mSp != null) {
-            return mSp.getInt(DISCLAIMER_TEXT, 0);
-        } else {
-            return 0;
-        }
-    }
+	public static int getDisclaimer() {
+		if (mSp != null) {
+			return mSp.getInt(DISCLAIMER_TEXT, 0);
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * 保存共享IP,如果已经保存过就不再保存
+	 * 
+	 * @param host
+	 */
+	public static void saveLinkHost(String host) {
+		String linkHostList = getLinkHostList();
+		if (!linkHostList.contains(host)) {
+			StringBuilder stringBuilder = new StringBuilder(linkHostList);
+			stringBuilder.append("abc").append(host);
+			mEditor.putString(SHARE_IP_TAG, stringBuilder.toString());
+			applyInfo(mEditor);
+		}
+	}
+
+	/**
+	 * 得到已经保存的共享IP
+	 * 
+	 * @return
+	 */
+	public static String getLinkHostList() {
+		return mSp.getString(SHARE_IP_TAG, "");
+	}
+
 }

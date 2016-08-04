@@ -1,6 +1,7 @@
 package com.cantv.media.center.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cantv.media.R;
+import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.ImageUtils;
 
@@ -41,10 +43,12 @@ public class ImageFrameView extends FrameLayout {
 	private MediaImageViewLoaderTask mTask;
 	private NotifyParentUpdate mNotifyParentUpdate;
 	private Context mContext;
+	private ImagePlayerActivity mActivity;
 
 	public ImageFrameView(Context context) {
 		super(context);
 		mContext = context;
+		this.mActivity = (ImagePlayerActivity) context;
 		mLoadingDialog = new LoadingDialog(mContext);
 		mImageView = new ImageView(context);
 		addView(mImageView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
@@ -52,7 +56,10 @@ public class ImageFrameView extends FrameLayout {
 
 	public interface onLoadingImgListener {
 		void loadSuccessed();
-		void bitmapSize(int width,int height);
+
+		void bitmapSize(int width, int height);
+
+		void getSizeSuccessed(int width, int height);
 	}
 
 	private onLoadingImgListener mLoadingImgListener;
@@ -63,10 +70,8 @@ public class ImageFrameView extends FrameLayout {
 		this.mLoadingImgListener = loadingImgListener;
 		showProgressBar();
 		mImageView.setVisibility(View.GONE);
-		Glide.with(mContext).load(imageUri).asBitmap()
-		.diskCacheStrategy(DiskCacheStrategy.ALL)
-		.skipMemoryCache(false)
-		.into(new SimpleTarget<Bitmap>() {
+
+		Glide.with(mContext).load(imageUri).asBitmap().override((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false).into(new SimpleTarget<Bitmap>() {
 			@Override
 			public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
 				mImgOrginWidth = resource.getWidth();
@@ -76,9 +81,10 @@ public class ImageFrameView extends FrameLayout {
 				mImageView.setImageBitmap(mBitmap);
 				dismissProgressBar();
 				mImageView.setVisibility(View.VISIBLE);
+
 				if (null != mLoadingImgListener) {
 					mLoadingImgListener.loadSuccessed();
-					mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
+					mLoadingImgListener.bitmapSize(mImgOrginWidth, mImgOrginHeight);
 				}
 
 				if (mBitmap != null && !mBitmap.isRecycled()) {
@@ -86,6 +92,19 @@ public class ImageFrameView extends FrameLayout {
 					resource = null;
 				}
 
+				Glide.with(mContext).load(imageUri).asBitmap().into(new SimpleTarget<Bitmap>() {
+
+					@Override
+					public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
+
+						// int myWidth = arg0.getWidth();
+						// int myHeiht = arg0.getHeight();
+						if (null != mLoadingImgListener) {
+							// mLoadingImgListener.loadSuccessed();
+							mLoadingImgListener.getSizeSuccessed(arg0.getWidth(), arg0.getHeight());
+						}
+					}
+				});
 			}
 		});
 	}
@@ -115,14 +134,14 @@ public class ImageFrameView extends FrameLayout {
 	}
 
 	private void showProgressBar() {
-		  if (mLoadingDialog.isShowing()) {
+		if (mLoadingDialog.isShowing()) {
 			return;
 		}
-		  mLoadingDialog.show();
+		mLoadingDialog.show();
 	}
 
 	private void dismissProgressBar() {
-		  if (mLoadingDialog != null) {
+		if (mLoadingDialog != null) {
 			mLoadingDialog.dismiss();
 		}
 	}

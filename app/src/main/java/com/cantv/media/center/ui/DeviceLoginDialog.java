@@ -87,6 +87,7 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
 	}
 
 	public void updateBackground(Drawable drawable) {
+		contentView.setPadding(0, 0, 0, 0);
 		contentView.setBackground(drawable);
 	}
 

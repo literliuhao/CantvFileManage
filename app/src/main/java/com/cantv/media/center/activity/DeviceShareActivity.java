@@ -28,6 +28,7 @@ import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.DeviceShareActivity.CheckNetAccessTask.OnNetCheckCallback;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.DeviceInfo;
 import com.cantv.media.center.ui.DeviceAddDialog;
 import com.cantv.media.center.ui.DeviceAddDialog.OnIpConfirmedListener;
@@ -37,6 +38,7 @@ import com.cantv.media.center.ui.DeviceShareItemView;
 import com.cantv.media.center.ui.LoadingDialog;
 import com.cantv.media.center.utils.BitmapUtils;
 import com.cantv.media.center.utils.NetworkUtils;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.ToastUtils;
 import com.cantv.media.center.utils.cybergarage.FileItem;
 import com.cantv.media.center.utils.cybergarage.FileServer;
@@ -63,8 +65,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 	private DeviceLoginDialog mLoginDeviceDialog;
 	private LoadingDialog mLoadingDialog;
 
-	private int[] mDeviceViewBgRes = new int[] { R.drawable.bj_01, R.drawable.bj_02, R.drawable.bj_03, R.drawable.bj_04,
-			R.drawable.bj_05, R.drawable.bj_06, R.drawable.bj_07, R.drawable.bj_08 };
+	private int[] mDeviceViewBgRes = new int[] { R.drawable.bj_01, R.drawable.bj_02, R.drawable.bj_03, R.drawable.bj_04, R.drawable.bj_05, R.drawable.bj_06, R.drawable.bj_07, R.drawable.bj_08 };
 	private LinkedList<DeviceInfo> mDeviceInfos;
 	private LinkedList<DeviceShareItemView> mDeviceViews;
 
@@ -112,7 +113,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
 	@Override
 	protected void onStop() {
-		if(null != mBlurDrawable){
+		if (null != mBlurDrawable) {
 			mBlurDrawable.setCallback(null);
 			mBlurDrawable = null;
 			unregisterReceiver(mNetChangeReceiver);
@@ -162,6 +163,15 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 		mDeviceViews = new LinkedList<DeviceShareItemView>();
 		mFileServer = new FileServer();
 		mFileServer.start();
+
+		String linkHostList = SharedPreferenceUtil.getLinkHostList();
+		if (null != linkHostList && linkHostList.trim().length() > 1) {
+			String[] ipList = linkHostList.split("abc");
+			for (String ip : ipList) {
+				checkIPAccess(ip, true);
+			}
+
+		}
 	}
 
 	private void regNetChangeReceiver() {
@@ -212,9 +222,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				showLoginDeviceDialog(info);
 			}
 		});
-		LayoutParams layoutParams = new LinearLayout.LayoutParams(
-				getResources().getDimensionPixelSize(R.dimen.px300),
-				getResources().getDimensionPixelSize(R.dimen.px450));
+		LayoutParams layoutParams = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.px300), getResources().getDimensionPixelSize(R.dimen.px450));
 		layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.px80);
 		mDeviceItemGroup.addView(view, 0, layoutParams);
 		mDeviceInfos.add(info);
@@ -226,6 +234,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				view.requestFocus();
 			}
 		}, 500);
+
+		SharedPreferenceUtil.saveLinkHost(info.getIp());
+
 	}
 
 	private int getRandomBgRes() {
@@ -256,13 +267,16 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				@Override
 				public void onShow(DialogInterface dialog) {
 					((DeviceAddDialog) dialog).reset();
-//					Bitmap decodeResource = BitmapFactory.decodeResource(getResources(), R.drawable.folder_photo);
+					// Bitmap decodeResource =
+					// BitmapFactory.decodeResource(getResources(),
+					// R.drawable.folder_photo);
 					mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
 					((DeviceAddDialog) dialog)
-//					.updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
-//							.updateBackground(BitmapUtils.blurBitmap(decodeResource, DeviceShareActivity.this));
+					// .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
+					// .updateBackground(BitmapUtils.blurBitmap(decodeResource,
+					// DeviceShareActivity.this));
 							.updateBackground(mBlurDrawable);
-//					d.setCallback(null);
+					// d.setCallback(null);
 				}
 			});
 			mAddDeviceDialog.setOnIpConfirmedListener(new OnIpConfirmedListener() {
@@ -271,34 +285,34 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				public void onConfirmed(final String ip) {
 					final String host;
 					if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(host = resolve(ip))) {
-						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.ip_err_tips),
-								Toast.LENGTH_LONG);
+						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.ip_err_tips), Toast.LENGTH_LONG);
 						return;
 					}
 					if (indexOfAddedDevices(host) != -1) {
-						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.devices_has_added),
-								Toast.LENGTH_LONG);
+						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.devices_has_added), Toast.LENGTH_LONG);
 						return;
 					}
-					startCheckIpAccess(host, new OnNetCheckCallback() {
-
-						@Override
-						public void onStartCheck() {
-							showLoadingDialog();
-						}
-
-						@Override
-						public void onGetResult(boolean success) {
-							hideLoadingDialog();
-							if (success) {
-								mAddDeviceDialog.dismiss();
-								addDeviceItemView(new DeviceInfo(host));
-							} else {
-								ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.devices_not_found),
-										Toast.LENGTH_SHORT);
-							}
-						}
-					});
+					// startCheckIpAccess(host, new OnNetCheckCallback() {
+					//
+					// @Override
+					// public void onStartCheck() {
+					// showLoadingDialog();
+					// }
+					//
+					// @Override
+					// public void onGetResult(boolean success) {
+					// hideLoadingDialog();
+					// if (success) {
+					// mAddDeviceDialog.dismiss();
+					// addDeviceItemView(new DeviceInfo(host));
+					// } else {
+					// ToastUtils.showMessage(DeviceShareActivity.this,
+					// getString(R.string.devices_not_found),
+					// Toast.LENGTH_SHORT);
+					// }
+					// }
+					// });
+					checkIPAccess(ip, false);
 				}
 			});
 		}
@@ -381,6 +395,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 		mCheckNetAccessTask = new CheckNetAccessTask(onNetCheckResultCallback);
 		mCheckNetAccessTask.execute(ip);
 	}
+
 	// --> addDevice
 
 	// <-- loginDevice
@@ -392,12 +407,16 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				@Override
 				public void onShow(DialogInterface dialog) {
 					((DeviceLoginDialog) dialog).reset();
-//					Bitmap decodeResource = BitmapFactory.decodeResource(getResources(), R.drawable.folder_photo);
+					// Bitmap decodeResource =
+					// BitmapFactory.decodeResource(getResources(),
+					// R.drawable.folder_photo);
+					mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
 					((DeviceLoginDialog) dialog)
-//							.updateBackground(BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this));
-//					.updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
+					// .updateBackground(BitmapUtils.blurBitmap(getScreenShot(),
+					// DeviceShareActivity.this));
+//					 .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
 							.updateBackground(mBlurDrawable);
-//					.updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
+					// .updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
 				}
 			});
 			mLoginDeviceDialog.setOnLoginListener(new OnLoginListener() {
@@ -405,14 +424,12 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 				@Override
 				public void onLogin(String userName, String password) {
 					if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
-						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.username_pwd_err),
-								Toast.LENGTH_SHORT);
+						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
 						return;
 					}
 					deviceInfo.setUserName(userName.trim());
 					deviceInfo.setPassword(password.trim());
-					String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":")
-							.append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
+					String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":").append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
 					deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
 					loginDevice(deviceInfo);
 				}
@@ -456,20 +473,19 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 			@Override
 			public void onLoginFailed() {
 				hideLoadingDialog();
-				ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.username_pwd_err),
-						Toast.LENGTH_SHORT);
+				ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
 			}
 
 			@Override
 			public void onException(Throwable ta) {
 				hideLoadingDialog();
-				ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.device_login_failed),
-						Toast.LENGTH_SHORT);
+				ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.device_login_failed), Toast.LENGTH_SHORT);
 			}
 
 		});
 		mScanSambaTask.execute(deviceInfo.getFileItem().getPath());
 	}
+
 	// --> loginDevice
 
 	private void showLoadingDialog() {
@@ -505,7 +521,38 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 		getWindow().getDecorView().setDrawingCacheEnabled(false);
 		view.destroyDrawingCache();
 		return bm;
-//		return getWindow().getDecorView().getDrawingCache();
+		// return getWindow().getDecorView().getDrawingCache();
+	}
+
+	/**
+	 * 链接到指定IP地址
+	 * 
+	 * @param ip
+	 * @param isFirst
+	 */
+	private void checkIPAccess(final String ip, final boolean isFirst) {
+		startCheckIpAccess(ip, new OnNetCheckCallback() {
+
+			@Override
+			public void onStartCheck() {
+				showLoadingDialog();
+			}
+
+			@Override
+			public void onGetResult(boolean success) {
+				hideLoadingDialog();
+				if (success) {
+					if (null != mAddDeviceDialog) {
+						mAddDeviceDialog.dismiss();
+					}
+					addDeviceItemView(new DeviceInfo(ip));
+				} else {
+					if (!isFirst) {
+						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.devices_not_found), Toast.LENGTH_SHORT);
+					}
+				}
+			}
+		});
 	}
 
 }

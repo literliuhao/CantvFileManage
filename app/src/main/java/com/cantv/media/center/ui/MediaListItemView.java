@@ -57,7 +57,7 @@ public class MediaListItemView extends MediaItemView {
 	public MediaListItemView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		RelativeLayout relativeLayout = new RelativeLayout(context);
-		relativeLayout.setPadding(40, 0, 0, 0);
+		relativeLayout.setPadding((int) getResources().getDimension(R.dimen.px40), 0, 0, 0);
 		int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px1764);
 		int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px220);
 		RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
@@ -98,7 +98,7 @@ public class MediaListItemView extends MediaItemView {
 		mTvName.setSingleLine(true);
 		LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		tvParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
-		tvParams.setMargins(30, 60, 0, 10);
+		tvParams.setMargins((int) getResources().getDimension(R.dimen.px30), (int) getResources().getDimension(R.dimen.px60), 0, (int) getResources().getDimension(R.dimen.px10));
 		mTvName.setLayoutParams(tvParams);
 		mTvSize = new TextView(context);
 		mTvSize.setId(0x559585);
@@ -107,7 +107,7 @@ public class MediaListItemView extends MediaItemView {
 		LayoutParams tvSizeParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		tvSizeParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
 		tvSizeParams.addRule(RelativeLayout.BELOW, mTvName.getId());
-		tvSizeParams.setMargins(30, 0, 0, 0);
+		tvSizeParams.setMargins((int) getResources().getDimension(R.dimen.px30), 0, 0, 0);
 		mTvSize.setLayoutParams(tvSizeParams);
 		mTvDate = new TextView(context);
 		mTvDate.setTextSize(getResources().getDimension(R.dimen.px18));
@@ -116,7 +116,7 @@ public class MediaListItemView extends MediaItemView {
 		tvDateParams.addRule(RelativeLayout.RIGHT_OF, mTvSize.getId());
 		tvDateParams.addRule(RelativeLayout.BELOW, mTvName.getId());
 		tvDateParams.addRule(RelativeLayout.ALIGN_BASELINE, mTvSize.getId());
-		tvDateParams.setMargins(27, 0, 0, 0);
+		tvDateParams.setMargins((int) getResources().getDimension(R.dimen.px27), 0, 0, 0);
 		mTvDate.setLayoutParams(tvDateParams);
 		relativeLayout.addView(mFocusView);
 		relativeLayout.addView(mBgView);
@@ -180,13 +180,13 @@ public class MediaListItemView extends MediaItemView {
 		case APP:
 			Drawable apkIcon = FileUtil.getApkIcon(mContext, media.mUri);
 			mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px165), (int) getResources().getDimension(R.dimen.px160));
-			mediaParams.setMargins(10, 0, 0, 0);
+			mediaParams.setMargins((int) getResources().getDimension(R.dimen.px10), 0, 0, 0);
 			mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
 			mBgView.setLayoutParams(mediaParams);
 			mBgView.setBackground(media);
 			if (null != apkIcon) {
-                mBgView.setDefaultPic(apkIcon);
-            }
+				mBgView.setDefaultPic(apkIcon);
+			}
 			break;
 		case FOLDER:
 			mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
