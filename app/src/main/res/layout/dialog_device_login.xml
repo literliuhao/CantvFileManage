@@ -11,7 +11,7 @@
         android:layout_marginBottom="@dimen/px200"
         android:layout_marginEnd="@dimen/px430"
         android:layout_marginStart="@dimen/px430"
-        android:layout_marginTop="@dimen/px200"
+        android:layout_marginTop="@dimen/px150"
         android:background="@drawable/home_devices_background" >
 
         <TextView

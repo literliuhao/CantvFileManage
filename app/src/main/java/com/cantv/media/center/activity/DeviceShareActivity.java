@@ -116,9 +116,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 		if (null != mBlurDrawable) {
 			mBlurDrawable.setCallback(null);
 			mBlurDrawable = null;
-			unregisterReceiver(mNetChangeReceiver);
-			super.onStop();
 		}
+		unregisterReceiver(mNetChangeReceiver);
+		super.onStop();
 	}
 
 	@Override
@@ -270,7 +270,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 					// Bitmap decodeResource =
 					// BitmapFactory.decodeResource(getResources(),
 					// R.drawable.folder_photo);
-					mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+					if (null == mBlurDrawable) {
+						mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+					}
 					((DeviceAddDialog) dialog)
 					// .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
 					// .updateBackground(BitmapUtils.blurBitmap(decodeResource,
@@ -410,11 +412,13 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 					// Bitmap decodeResource =
 					// BitmapFactory.decodeResource(getResources(),
 					// R.drawable.folder_photo);
-					mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+					if (null == mBlurDrawable) {
+						mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+					}
 					((DeviceLoginDialog) dialog)
 					// .updateBackground(BitmapUtils.blurBitmap(getScreenShot(),
 					// DeviceShareActivity.this));
-//					 .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
+					// .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
 							.updateBackground(mBlurDrawable);
 					// .updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
 				}

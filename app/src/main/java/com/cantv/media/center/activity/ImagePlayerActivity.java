@@ -9,6 +9,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Build;
@@ -57,7 +58,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private PowerManager.WakeLock mScreenLock;
     private boolean mAutoPlay = false;
     private LinearLayout mLayout;
-    private TextView mtxtresolution;
     private boolean nflag = true;
     public float screenWidth;
     public float screenHeight;
@@ -66,11 +66,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private LinearLayout mediaimagebar;
     private Runnable mToHideRunnable;
     private boolean mShowing = true;
-    private int ROTATION = 0;
-    private int PREV = 1;
-    private int NEXT = 2;
-    private int AUTO = 3;
-    private int INFO = 4;
     private int POSTION = 5;
     private FocusUtils mFocusUtils;
     private TextView mTvRotation;
@@ -86,20 +81,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private TextView mInfoTime;
     private TextView mInfoUrl;
     private RelativeLayout mHeader;
+    private ImageView mMusic;
+	private AnimationDrawable mAnimationDrawable;
     private static final int DELAYED_TIME = 5 * 1000;
     private final int ARROW_SHOW = 1;
     private final int MENU_SHOW = 2;
-    private final int MSG_UPDATE_NET_SPEED = 0x001;
-    private long mNextTime;
-    private long mDurationTime;
-    private boolean isFirst = true;
     private boolean isFirstFocus = true;
     private boolean isFirstPlayMusic = true;
     private boolean mSizeType = false;
     private boolean isFirstMenu = true;
     private MediaPlayer mMediaPlayer;
-    private String mMusicPath;
-    private boolean isPause = false;
     private int PLAYING_STATUS;
     private int STOP = 0;
     private int PLAYING = 1;
@@ -208,7 +199,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight = (ImageView) findViewById(R.id.media__image_view__right);
         mPosition = (TextView) findViewById(R.id.media__image_tv__position);
         mTotal = (TextView) findViewById(R.id.media__image_tv__total);
-//        mtxtresolution = (TextView) findViewById(R.id.txt_solution);
         mTvRotation = (TextView) findViewById(R.id.media__image_tv__rotation);
         mTvSize = (TextView) findViewById(R.id.media__image_tv__size);
         mTvAuto = (TextView) findViewById(R.id.media__image_tv__auto);
@@ -225,6 +215,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mImageBrowser.setBackgroundColor(Color.BLACK);
         mImageBrowser.layoutOriginal();
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus);
+        mMusic = (ImageView) findViewById(R.id.media_view_music);
+		mMusic.setBackgroundResource(R.drawable.media_music);  
+        mAnimationDrawable = (AnimationDrawable) mMusic.getBackground();  
     }
 
     @Override
@@ -539,12 +532,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoPlay = true;
             getScreenLock().acquire();
         }
+        startMusicAnimation();
         MainThread.runLater(mAutoRunnable, 5000);
     }
 
     private void stopAutoPlay() {
         if (mAutoPlay) {
             mAutoPlay = false;
+            endMusicAnimation();
             MainThread.cancel(mAutoRunnable);
             getScreenLock().release();
         }
@@ -719,6 +714,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (mAutoPlay) {
             stopAutoPlay();
             stopMusic();
+            mMusic.setVisibility(View.GONE);
+            mAnimationDrawable.stop();
         }
         if (mHandler != null) {
             mHandler.removeMessages(ARROW_SHOW);
@@ -829,4 +826,18 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         lastClickTime = time;
         return false;
     }
+    
+    private void startMusicAnimation() {
+		if (!mAnimationDrawable.isRunning()) {
+			mMusic.setVisibility(View.VISIBLE);
+			mAnimationDrawable.start();
+		}
+	}
+
+	private void endMusicAnimation() {
+		if (mAnimationDrawable.isRunning()) {
+			mMusic.setVisibility(View.GONE);
+			mAnimationDrawable.stop();
+		}
+	}
 }

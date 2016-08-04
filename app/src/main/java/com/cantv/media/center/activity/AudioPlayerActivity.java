@@ -264,7 +264,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			}
 			break;
 		case R.id.ib_previous:
-			if (mPlayMode == PlayMode.IN_ORDER && mCurPlayIndex == 0) {
+			if (mCurPlayIndex == 0) {
 				Toast.makeText(AudioPlayerActivity.this, "无上一首", Toast.LENGTH_LONG).show();
 			} else {
 				onPlayPrev();
@@ -272,7 +272,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 			break;
 		case R.id.ib_next:
 			// 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
-			if (mPlayMode == PlayMode.IN_ORDER && mDataList.size() - 1 == mCurPlayIndex) {
+			if (mDataList.size() - 1 == mCurPlayIndex) {
 				Toast.makeText(AudioPlayerActivity.this, "无下一首", Toast.LENGTH_LONG).show();
 			} else {
 				onPlayNext();
@@ -431,7 +431,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
 				@Override
 				public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-					// if current choice is playList, selected subMenuItem should be auto-focused after left-key
+					// if current choice is playList, selected subMenuItem
+					// should be auto-focused after left-key
 					// down
 					if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN && mSelectedMenuPosi == 0) {
 						mMenuDialog.getMenu().openSubMenu(true, mMenuList.get(0).getSelectedChildIndex());

@@ -411,6 +411,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(mReceiver);
+		System.gc();
 	}
 
 	@Override
