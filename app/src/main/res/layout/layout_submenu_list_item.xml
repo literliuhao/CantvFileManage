@@ -3,7 +3,7 @@
           android:layout_width="match_parent"
           android:layout_height="@dimen/px90"
           android:ellipsize="marquee"
-          android:gravity="center_vertical"
+          android:gravity="center"
           android:marqueeRepeatLimit="marquee_forever"
           android:paddingEnd="@dimen/px32"
           android:paddingStart="@dimen/px32"

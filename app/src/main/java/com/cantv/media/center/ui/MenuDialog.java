@@ -254,7 +254,7 @@ public class MenuDialog extends Dialog {
             view.setEnabled(data.isEnabled());
             view.setFocusable(data.isEnabled());
             view.setSelected(data.isSelected());
-            holder.arrowIv.setVisibility(data.getChildrenCount() > 0 ? View.VISIBLE : View.INVISIBLE);
+            holder.arrowIv.setVisibility(data.getChildrenCount() > 0 ? (data.isSelected()?View.VISIBLE:View.INVISIBLE) : View.INVISIBLE );
             holder.titleTv.setText(data.getTitle());
             int type = data.getType();
             if (type == MenuItem.TYPE_LIST) {

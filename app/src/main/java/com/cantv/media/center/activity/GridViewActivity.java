@@ -212,7 +212,6 @@ public class GridViewActivity extends Activity {
 							if (deleteSuccessed) {
 								datas.remove(mDeleteItem);
 								mGridView.mListAdapter.bindData(datas);
-								Log.i("shen", "mDeleteItem:" + mDeleteItem);
 							} else {
 								Toast.makeText(GridViewActivity.this, R.string.deleteFailed, Toast.LENGTH_SHORT).show();
 							}

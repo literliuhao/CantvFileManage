@@ -267,13 +267,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             public void bitmapSize(int width, int height) {
                 mWidth = width;
                 mHeight = height;
-
+                mSizeWidth= width;
+                mSizeHeight = height;
             }
-            
+
             @Override
             public void getSizeSuccessed(int width, int height) {
-            	mSizeWidth=width;
-            	mSizeHeight=height;
             }
         });
     }

@@ -113,10 +113,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
 	@Override
 	protected void onStop() {
-		if (null != mBlurDrawable) {
-			mBlurDrawable.setCallback(null);
-			mBlurDrawable = null;
-		}
+//		if (null != mBlurDrawable) {
+//			mBlurDrawable.setCallback(null);
+//			mBlurDrawable = null;
+//		}
 		unregisterReceiver(mNetChangeReceiver);
 		super.onStop();
 	}
@@ -136,6 +136,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 			mCheckNetAccessTask.cancel(true);
 			mCheckNetAccessTask = null;
 		}
+		
+		if (null != mBlurDrawable) {
+            mBlurDrawable.setCallback(null);
+            mBlurDrawable = null;
+        }
 		super.onDestroy();
 	}
 

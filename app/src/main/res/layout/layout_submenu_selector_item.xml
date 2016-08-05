@@ -11,16 +11,15 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
         android:duplicateParentState="true"
-        android:text="循环播放"
         android:textColor="@color/selector_submenu_select_item_bg"
         android:textSize="@dimen/fontsize_32"/>
 
     <ImageView
         android:id="@+id/iv_selector"
-        android:layout_width="@dimen/px30"
-        android:layout_height="@dimen/px30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/px15"
         android:layout_marginStart="@dimen/px20"
         android:layout_toEndOf="@id/tv_title"
