@@ -1,27 +1,5 @@
 package com.cantv.media.center.activity;
 
-import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.List;
-import java.util.Locale;
-
-import com.cantv.liteplayer.core.ProxyPlayer;
-import com.cantv.media.R;
-import com.cantv.media.center.constants.PlayMode;
-import com.cantv.media.center.data.Audio;
-import com.cantv.media.center.data.LyricInfo;
-import com.cantv.media.center.data.MenuItem;
-import com.cantv.media.center.data.PlayModeMenuItem;
-import com.cantv.media.center.ui.CDView;
-import com.cantv.media.center.ui.CircleProgressBar;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
-import com.cantv.media.center.ui.LyricView;
-import com.cantv.media.center.ui.MenuDialog;
-import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
-import com.cantv.media.center.utils.BitmapUtils;
-import com.cantv.media.center.utils.MediaUtils;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -45,6 +23,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.media.R;
+import com.cantv.media.center.constants.PlayMode;
+import com.cantv.media.center.data.Audio;
+import com.cantv.media.center.data.LyricInfo;
+import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.data.PlayModeMenuItem;
+import com.cantv.media.center.ui.CDView;
+import com.cantv.media.center.ui.CircleProgressBar;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
+import com.cantv.media.center.ui.LyricView;
+import com.cantv.media.center.ui.MenuDialog;
+import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
+import com.cantv.media.center.utils.BitmapUtils;
+import com.cantv.media.center.utils.MediaUtils;
+
+import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Locale;
 
 @SuppressLint("NewApi")
 public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener {
@@ -420,9 +420,15 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 						return false;
 					}
 					mMenuList.get(mSelectedMenuPosi).setSelected(false);
+					
+					View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
+
+                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView,mMenuList.get(mSelectedMenuPosi));
+					
 					mSelectedMenuPosi = position;
 					MenuItem menuItem = mMenuList.get(position);
 					menuItem.setSelected(true);
+					mMenuDialog.getMenuAdapter().updateMenuItem(view,menuItem);
 					mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
 					return false;
 				}
@@ -467,7 +473,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 		for (int i = 0, dataCount = mDataList.size(); i < dataCount; i++) {
 			String url = mDataList.get(i);
 			MenuItem item = new MenuItem(url.substring(url.lastIndexOf("/") + 1));
-			item.setType(MenuItem.TYPE_LIST);
+			item.setType(MenuItem.TYPE_SELECTOR_MARQUEE);
 			playListSubMenuItems.add(item);
 		}
 		playListMenuItem.setChildren(playListSubMenuItems);

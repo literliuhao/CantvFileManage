@@ -1,10 +1,5 @@
 package com.cantv.media.center.activity;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +34,11 @@ import com.cantv.media.center.ui.player.BasePlayer;
 import com.cantv.media.center.ui.player.PlayerController;
 import com.cantv.media.center.ui.player.SrcParser;
 import com.cantv.media.center.utils.MediaUtils;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener {
 	private PowerManager.WakeLock mWakeLock;
@@ -142,14 +142,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 			final int positon = list.get(0).getPosition();
 			mCtrBar.showContinuePaly(positon);
 		}
-		
+
 		if(isSrtExist){
 			parseSrts(srtUrl);
 		}
 
 		if(mMenuDialog != null){
 			MenuItem audioTrackMenuItem = VideoPlayActicity.this.list.get(1);
-			audioTrackMenuItem.setChildren(createAudioTrackList());;
+			audioTrackMenuItem.setChildren(createAudioTrackList());
 			audioTrackMenuItem.setChildSelected(0);
 			View menuItemView = mMenuDialog.getMenu()
 					.findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
@@ -161,13 +161,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 			}
 		}
 	}
-	
+
 	public String checkSrt(){
 		String url = mDataList.get(mCurPlayIndex);
 		final String srt = url.substring(0, url.indexOf(".")) + ".srt";
-         
+
 		File file = new File(srt);
-		
+
 		if(file.exists() && file.canRead()){
 			isSrtExist = true;
 			Log.e("sunyanlong","isSrtExist="+isSrtExist);
@@ -177,10 +177,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		}
 		return srt;
 	}
-	
+
 
 	public void parseSrts(final String srtUrl) {
-		
+
 		new Thread(new Runnable() {
 
 			@Override
@@ -191,7 +191,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		}).start();
 
 	}
-	
+
 	public boolean isSrtExist(){
 		return isSrtExist;
 	}
@@ -370,8 +370,12 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 						return false;
 					}
 					list.get(mSelectedPosi).setSelected(false);
-					list.get(position).setSelected(true);
+					View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosi);
+					mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView,list.get(mSelectedPosi));
 					mSelectedPosi = position;
+					MenuItem menuItem = list.get(position);
+					menuItem.setSelected(true);
+					mMenuDialog.getMenuAdapter().updateMenuItem(view,menuItem);
 					mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
 					return false;
 				}
@@ -408,6 +412,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		case MenuItem.TYPE_SELECTOR:
 			performTypeSelectedEvent(mSubSelectedMenu, position);
 			break;
+        case MenuItem.TYPE_SELECTOR_MARQUEE:
+            performTypeSelectedEvent(mSubSelectedMenu, position);
+            break;
 		}
 
 	}
@@ -438,7 +445,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
 		switch (mSubSelectedMenu.getTitle()) {
 		case MenuConstant.SUBMENU_AUDIOTRACKER_ONE:
-			getProxyPlayer().setMovieAudioTrack(positon);			
+			getProxyPlayer().setMovieAudioTrack(positon);
 			break;
 		case MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL:
 			mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
@@ -489,7 +496,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		for (int i = 0; i < mDataList.size(); i++) {
 			String url = mDataList.get(i);
 			MenuItem item = new MenuItem(mDataList.get(i).substring(url.lastIndexOf("/") + 1));
-			item.setType(MenuItem.TYPE_LIST);
+			item.setType(MenuItem.TYPE_SELECTOR_MARQUEE);
 			playListSubMenuItems.add(item);
 		}
 		playListMenuItem.setChildren(playListSubMenuItems);
@@ -549,8 +556,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		adjustSubtitlesSubMenus.add(new MenuItem(MenuConstant.SUBMENU_ADJUSTSUBTITLE_BACKWORD, MenuItem.TYPE_NORMAL));
 		adjustSubtitleMenuItem.setChildren(adjustSubtitlesSubMenus);
 		menuList.add(adjustSubtitleMenuItem);
-		
-		
+
+
 //		if (list.get(4) != null && "字幕调整".equals(list.get(4).getTitle())) {
 //			list.get(4).setEnabled(isSubTitle);
 //			View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
@@ -558,7 +565,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 //				mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
 //			}
 //		}
-		
+
 
 		return menuList;
 	}

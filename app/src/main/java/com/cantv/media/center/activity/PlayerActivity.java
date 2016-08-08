@@ -205,6 +205,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             runBeforePlay(mFirstPlay);
         } catch (Exception e) {
             e.printStackTrace();
+            finish();
         }
     }
 

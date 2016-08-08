@@ -56,512 +56,491 @@ import jcifs.smb.SmbFile;
 
 public class DeviceShareActivity extends Activity implements OnFocusChangeListener {
 
-	private TextView mNetNameTv;
-	private TextView mNetIpTv;
-	private HorizontalScrollView mScrollView;
-	private LinearLayout mDeviceItemGroup;
-	private DeviceShareItemView mAddDeviceView;
-	private DeviceAddDialog mAddDeviceDialog;
-	private DeviceLoginDialog mLoginDeviceDialog;
-	private LoadingDialog mLoadingDialog;
+    private TextView mNetNameTv;
+    private TextView mNetIpTv;
+    private HorizontalScrollView mScrollView;
+    private LinearLayout mDeviceItemGroup;
+    private DeviceShareItemView mAddDeviceView;
+    private DeviceAddDialog mAddDeviceDialog;
+    private DeviceLoginDialog mLoginDeviceDialog;
+    private LoadingDialog mLoadingDialog;
 
-	private int[] mDeviceViewBgRes = new int[] { R.drawable.bj_01, R.drawable.bj_02, R.drawable.bj_03, R.drawable.bj_04, R.drawable.bj_05, R.drawable.bj_06, R.drawable.bj_07, R.drawable.bj_08 };
-	private LinkedList<DeviceInfo> mDeviceInfos;
-	private LinkedList<DeviceShareItemView> mDeviceViews;
+    private int[] mDeviceViewBgRes = new int[]{R.drawable.bj_01, R.drawable.bj_02, R.drawable.bj_03, R.drawable.bj_04, R.drawable.bj_05, R.drawable.bj_06, R.drawable.bj_07, R.drawable.bj_08};
+    private LinkedList<DeviceInfo> mDeviceInfos;
+    private LinkedList<DeviceShareItemView> mDeviceViews;
 
-	private BroadcastReceiver mNetChangeReceiver;
-	private IntentFilter mNetChangeIntentFilter;
-	private FocusUtils mFocusUtils;
-	private FocusScaleUtils mFocusScaleUtils;
-	private FileServer mFileServer;
-	private CheckNetAccessTask mCheckNetAccessTask;
-	private ScanSambaTask mScanSambaTask;
+    private BroadcastReceiver mNetChangeReceiver;
+    private IntentFilter mNetChangeIntentFilter;
+    private FocusUtils mFocusUtils;
+    private FocusScaleUtils mFocusScaleUtils;
+    private FileServer mFileServer;
+    private CheckNetAccessTask mCheckNetAccessTask;
+    private ScanSambaTask mScanSambaTask;
 
-	private boolean isFirst = true;
-	Drawable mBlurDrawable;
+    private boolean isFirst = true;
+    Drawable mBlurDrawable;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		getWindow().setBackgroundDrawableResource(R.drawable.home_title);
-		getWindow().getDecorView().setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-		setContentView(R.layout.activity_device_share);
-		initUI();
-		initData();
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(R.drawable.home_title);
+        getWindow().getDecorView().setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        setContentView(R.layout.activity_device_share);
+        initUI();
+        initData();
+    }
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		regNetChangeReceiver();
-	}
+    @Override
+    protected void onStart() {
+        super.onStart();
+        regNetChangeReceiver();
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		updatePageNetInfo();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatePageNetInfo();
+    }
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (isFirst && hasFocus) {
-			isFirst = false;
-			mAddDeviceView.requestFocus();
-		}
-	}
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (isFirst && hasFocus) {
+            isFirst = false;
+            mAddDeviceView.requestFocus();
+        }
+    }
 
-	@Override
-	protected void onStop() {
-//		if (null != mBlurDrawable) {
-//			mBlurDrawable.setCallback(null);
-//			mBlurDrawable = null;
-//		}
-		unregisterReceiver(mNetChangeReceiver);
-		super.onStop();
-	}
+    @Override
+    protected void onStop() {
+//        if (null != mBlurDrawable) {
+//            mBlurDrawable.setCallback(null);
+//            mBlurDrawable = null;
+//        }
+        unregisterReceiver(mNetChangeReceiver);
+        super.onStop();
+    }
 
-	@Override
-	protected void onDestroy() {
-		mNetChangeReceiver = null;
-		mNetChangeIntentFilter = null;
-		hideAddDeviceDialog();
-		mAddDeviceDialog = null;
-		hideLoginDeviceDialog();
-		mLoginDeviceDialog = null;
-		hideLoadingDialog();
-		mLoadingDialog = null;
-		mFileServer.release();
-		if (mCheckNetAccessTask != null) {
-			mCheckNetAccessTask.cancel(true);
-			mCheckNetAccessTask = null;
-		}
-		
-		if (null != mBlurDrawable) {
+    @Override
+    protected void onDestroy() {
+        mNetChangeReceiver = null;
+        mNetChangeIntentFilter = null;
+        hideAddDeviceDialog();
+        mAddDeviceDialog = null;
+        hideLoginDeviceDialog();
+        mLoginDeviceDialog = null;
+        hideLoadingDialog();
+        mLoadingDialog = null;
+        mFileServer.release();
+        if (mCheckNetAccessTask != null) {
+            mCheckNetAccessTask.cancel(true);
+            mCheckNetAccessTask = null;
+        }
+        if (null != mBlurDrawable) {
             mBlurDrawable.setCallback(null);
             mBlurDrawable = null;
         }
-		super.onDestroy();
-	}
 
-	private void initUI() {
-		mNetNameTv = (TextView) findViewById(R.id.tv_net_name);
-		mNetIpTv = (TextView) findViewById(R.id.tv_net_ip);
-		mScrollView = (HorizontalScrollView) findViewById(R.id.hsv_device_list);
-		mDeviceItemGroup = (LinearLayout) findViewById(R.id.ll_device_list);
-		mAddDeviceView = (DeviceShareItemView) mDeviceItemGroup.getChildAt(0);
-		mAddDeviceView.setBackgroundResource(getRandomBgRes());
-		mAddDeviceView.setOnFocusChangeListener(this);
-		mAddDeviceView.setOnClickListener(new OnClickListener() {
+        super.onDestroy();
+    }
 
-			@Override
-			public void onClick(View v) {
-				showAddDeviceDialog();
-			}
-		});
-		mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus_full_content);
-		mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
-	}
+    private void initUI() {
+        mNetNameTv = (TextView) findViewById(R.id.tv_net_name);
+        mNetIpTv = (TextView) findViewById(R.id.tv_net_ip);
+        mScrollView = (HorizontalScrollView) findViewById(R.id.hsv_device_list);
+        mDeviceItemGroup = (LinearLayout) findViewById(R.id.ll_device_list);
+        mAddDeviceView = (DeviceShareItemView) mDeviceItemGroup.getChildAt(0);
+        mAddDeviceView.setBackgroundResource(getRandomBgRes());
+        mAddDeviceView.setOnFocusChangeListener(this);
+        mAddDeviceView.setOnClickListener(new OnClickListener() {
 
-	private void initData() {
-		mDeviceInfos = new LinkedList<DeviceInfo>();
-		mDeviceViews = new LinkedList<DeviceShareItemView>();
-		mFileServer = new FileServer();
-		mFileServer.start();
+            @Override
+            public void onClick(View v) {
+                showAddDeviceDialog();
+            }
+        });
+        mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus_full_content);
+        mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
+    }
 
-		String linkHostList = SharedPreferenceUtil.getLinkHostList();
-		if (null != linkHostList && linkHostList.trim().length() > 1) {
-			String[] ipList = linkHostList.split("abc");
-			for (String ip : ipList) {
-				checkIPAccess(ip, true);
-			}
+    private void initData() {
+        mDeviceInfos = new LinkedList<DeviceInfo>();
+        mDeviceViews = new LinkedList<DeviceShareItemView>();
+        mFileServer = new FileServer();
+        mFileServer.start();
 
-		}
-	}
+        String linkHostList = SharedPreferenceUtil.getLinkHostList();
+        if (null != linkHostList && linkHostList.trim().length() > 1) {
+            String[] ipList = linkHostList.split("abc");
+            for (String ip : ipList) {
+                checkIPAccess(ip, true);
+            }
 
-	private void regNetChangeReceiver() {
-		if (mNetChangeReceiver == null) {
-			mNetChangeReceiver = new BroadcastReceiver() {
+        }
+    }
 
-				@Override
-				public void onReceive(Context context, Intent intent) {
-					updatePageNetInfo();
-				}
-			};
-			mNetChangeIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-		}
-		registerReceiver(mNetChangeReceiver, mNetChangeIntentFilter);
-	}
+    private void regNetChangeReceiver() {
+        if (mNetChangeReceiver == null) {
+            mNetChangeReceiver = new BroadcastReceiver() {
 
-	private void updatePageNetInfo() {
-		NetworkInfo netInfo = NetworkUtils.getNetInfo(this);
-		if (netInfo != null && netInfo.isConnected()) {
-			int type = netInfo.getType();
-			if (type == ConnectivityManager.TYPE_WIFI) {
-				mNetNameTv.setText(getString(R.string.net_name) + NetworkUtils.getWifiName(this));
-				mNetIpTv.setText(getString(R.string.ip_) + NetworkUtils.getWiFiIp(this));
-			} else {
-				mNetNameTv.setText(getString(R.string.net_name) + getString(R.string.local_connection));
-				mNetIpTv.setText(getString(R.string.ip_) + NetworkUtils.getEthernetIp(this));
-			}
-		} else {
-			mNetNameTv.setText(getString(R.string.no_connection));
-			mNetIpTv.setText("");
-		}
-	}
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    updatePageNetInfo();
+                }
+            };
+            mNetChangeIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        }
+        registerReceiver(mNetChangeReceiver, mNetChangeIntentFilter);
+    }
 
-	private void addDeviceItemView(final DeviceInfo info) {
-		if (info == null) {
-			return;
-		}
-		final DeviceShareItemView view = new DeviceShareItemView(this);
-		view.setViewType(DeviceShareItemView.TYPE_DEVICE);
-		view.setIp(info.getIp());
-		view.setBackgroundResource(getRandomBgRes());
-		view.setTag(info);
-		view.setOnFocusChangeListener(this);
-		view.setOnClickListener(new OnClickListener() {
+    private void updatePageNetInfo() {
+        NetworkInfo netInfo = NetworkUtils.getNetInfo(this);
+        if (netInfo != null && netInfo.isConnected()) {
+            int type = netInfo.getType();
+            if (type == ConnectivityManager.TYPE_WIFI) {
+                mNetNameTv.setText(getString(R.string.net_name) + NetworkUtils.getWifiName(this));
+                mNetIpTv.setText(getString(R.string.ip_) + NetworkUtils.getWiFiIp(this));
+            } else {
+                mNetNameTv.setText(getString(R.string.net_name) + getString(R.string.local_connection));
+                mNetIpTv.setText(getString(R.string.ip_) + NetworkUtils.getEthernetIp(this));
+            }
+        } else {
+            mNetNameTv.setText(getString(R.string.no_connection));
+            mNetIpTv.setText("");
+        }
+    }
 
-			@Override
-			public void onClick(View v) {
-				showLoginDeviceDialog(info);
-			}
-		});
-		LayoutParams layoutParams = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.px300), getResources().getDimensionPixelSize(R.dimen.px450));
-		layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.px80);
-		mDeviceItemGroup.addView(view, 0, layoutParams);
-		mDeviceInfos.add(info);
-		mDeviceViews.add(view);
-		mDeviceItemGroup.postDelayed(new Runnable() {
+    private void addDeviceItemView(final DeviceInfo info) {
+        if (info == null) {
+            return;
+        }
+        final DeviceShareItemView view = new DeviceShareItemView(this);
+        view.setViewType(DeviceShareItemView.TYPE_DEVICE);
+        view.setIp(info.getIp());
+        view.setBackgroundResource(getRandomBgRes());
+        view.setTag(info);
+        view.setOnFocusChangeListener(this);
+        view.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void run() {
-				view.requestFocus();
-			}
-		}, 500);
+            @Override
+            public void onClick(View v) {
+                showLoginDeviceDialog(info);
+            }
+        });
+        LayoutParams layoutParams = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.px300), getResources().getDimensionPixelSize(R.dimen.px450));
+        layoutParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.px80);
+        mDeviceItemGroup.addView(view, 0, layoutParams);
+        mDeviceInfos.add(info);
+        mDeviceViews.add(view);
+        mDeviceItemGroup.postDelayed(new Runnable() {
 
-		SharedPreferenceUtil.saveLinkHost(info.getIp());
+            @Override
+            public void run() {
+                view.requestFocus();
+            }
+        }, 500);
 
-	}
+        SharedPreferenceUtil.saveLinkHost(info.getIp());
 
-	private int getRandomBgRes() {
-		return mDeviceViewBgRes[new Random().nextInt(mDeviceViewBgRes.length)];
-	}
+    }
 
-	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
-		if (hasFocus) {
-			if (v == mDeviceItemGroup.getChildAt(0)) {
-				mScrollView.smoothScrollTo(0, 0);
-			} else if (v == mDeviceItemGroup.getChildAt(mDeviceItemGroup.getChildCount() - 1)) {
-				mScrollView.smoothScrollTo(v.getLeft() + getResources().getDimensionPixelSize(R.dimen.px15), 0);
-			}
-			mFocusScaleUtils.scaleToLarge(v);
-			mFocusUtils.startMoveFocus(v, true, 1.065F, -1f, 0.5f);
-		} else {
-			mFocusScaleUtils.scaleToNormal(v);
-		}
-	}
+    private int getRandomBgRes() {
+        return mDeviceViewBgRes[new Random().nextInt(mDeviceViewBgRes.length)];
+    }
 
-	// <-- addDevice
-	public void showAddDeviceDialog() {
-		if (mAddDeviceDialog == null) {
-			mAddDeviceDialog = new DeviceAddDialog(this);
-			mAddDeviceDialog.setOnShowListener(new OnShowListener() {
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            if (v == mDeviceItemGroup.getChildAt(0)) {
+                mScrollView.smoothScrollTo(0, 0);
+            } else if (v == mDeviceItemGroup.getChildAt(mDeviceItemGroup.getChildCount() - 1)) {
+                mScrollView.smoothScrollTo(v.getLeft() + getResources().getDimensionPixelSize(R.dimen.px15), 0);
+            }
+            mFocusScaleUtils.scaleToLarge(v);
+            mFocusUtils.startMoveFocus(v, true, 1.065F, -1f, 0.5f);
+        } else {
+            mFocusScaleUtils.scaleToNormal(v);
+        }
+    }
 
-				@Override
-				public void onShow(DialogInterface dialog) {
-					((DeviceAddDialog) dialog).reset();
-					// Bitmap decodeResource =
-					// BitmapFactory.decodeResource(getResources(),
-					// R.drawable.folder_photo);
-					if (null == mBlurDrawable) {
-						mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
-					}
-					((DeviceAddDialog) dialog)
-					// .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
-					// .updateBackground(BitmapUtils.blurBitmap(decodeResource,
-					// DeviceShareActivity.this));
-							.updateBackground(mBlurDrawable);
-					// d.setCallback(null);
-				}
-			});
-			mAddDeviceDialog.setOnIpConfirmedListener(new OnIpConfirmedListener() {
+    // <-- addDevice
+    public void showAddDeviceDialog() {
+        if (mAddDeviceDialog == null) {
+            mAddDeviceDialog = new DeviceAddDialog(this);
+            mAddDeviceDialog.setOnShowListener(new OnShowListener() {
 
-				@Override
-				public void onConfirmed(final String ip) {
-					final String host;
-					if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(host = resolve(ip))) {
-						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.ip_err_tips), Toast.LENGTH_LONG);
-						return;
-					}
-					if (indexOfAddedDevices(host) != -1) {
-						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.devices_has_added), Toast.LENGTH_LONG);
-						return;
-					}
-					// startCheckIpAccess(host, new OnNetCheckCallback() {
-					//
-					// @Override
-					// public void onStartCheck() {
-					// showLoadingDialog();
-					// }
-					//
-					// @Override
-					// public void onGetResult(boolean success) {
-					// hideLoadingDialog();
-					// if (success) {
-					// mAddDeviceDialog.dismiss();
-					// addDeviceItemView(new DeviceInfo(host));
-					// } else {
-					// ToastUtils.showMessage(DeviceShareActivity.this,
-					// getString(R.string.devices_not_found),
-					// Toast.LENGTH_SHORT);
-					// }
-					// }
-					// });
-					checkIPAccess(ip, false);
-				}
-			});
-		}
-		mAddDeviceDialog.show();
-	}
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    ((DeviceAddDialog) dialog).reset();
+                    // Bitmap decodeResource =
+                    // BitmapFactory.decodeResource(getResources(),
+                    // R.drawable.folder_photo);
+                    if (null == mBlurDrawable) {
+                        mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+                    }
+                    ((DeviceAddDialog) dialog)
+                            // .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
+                            // .updateBackground(BitmapUtils.blurBitmap(decodeResource,
+                            // DeviceShareActivity.this));
+                            .updateBackground(mBlurDrawable);
+                }
+            });
+            mAddDeviceDialog.setOnIpConfirmedListener(new OnIpConfirmedListener() {
 
-	public void hideAddDeviceDialog() {
-		if (mAddDeviceDialog != null) {
-			mAddDeviceDialog.dismiss();
-		}
-	}
+                @Override
+                public void onConfirmed(final String ip) {
+                    final String host;
+                    if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(host = resolve(ip))) {
+                        ToastUtils.showMessage(MyApplication.mContext, getString(R.string.ip_err_tips), Toast.LENGTH_LONG);
+                        return;
+                    }
+                    if (indexOfAddedDevices(host) != -1) {
+                        ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_has_added), Toast.LENGTH_LONG);
+                        return;
+                    }
+                    checkIPAccess(ip, false);
+                }
+            });
+        }
+        mAddDeviceDialog.show();
+    }
 
-	protected String resolve(String ip) {
-		ip = ip.replace("\n", "").trim();
-		if (Pattern.matches("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$", ip)) {
-			return ip;
-		}
+    public void hideAddDeviceDialog() {
+        if (mAddDeviceDialog != null) {
+            mAddDeviceDialog.dismiss();
+        }
+    }
 
-		try {
-			return new URL(ip).getHost();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    protected String resolve(String ip) {
+        ip = ip.replace("\n", "").trim();
+        if (Pattern.matches("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$", ip)) {
+            return ip;
+        }
 
-	public static class CheckNetAccessTask extends AsyncTask<String, Void, Boolean> {
+        try {
+            return new URL(ip).getHost();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-		public interface OnNetCheckCallback {
-			public void onStartCheck();
+    public static class CheckNetAccessTask extends AsyncTask<String, Void, Boolean> {
 
-			public void onGetResult(boolean success);
-		}
+        public interface OnNetCheckCallback {
+            public void onStartCheck();
 
-		private OnNetCheckCallback callback;
+            public void onGetResult(boolean success);
+        }
 
-		public CheckNetAccessTask(OnNetCheckCallback callback) {
-			super();
-			this.callback = callback;
-		}
+        private OnNetCheckCallback callback;
 
-		@Override
-		protected void onPreExecute() {
-			if (callback != null) {
-				callback.onStartCheck();
-			}
-		}
+        public CheckNetAccessTask(OnNetCheckCallback callback) {
+            super();
+            this.callback = callback;
+        }
 
-		@Override
-		protected Boolean doInBackground(String... params) {
-			return NetworkUtils.ping(params[0]);
-		}
+        @Override
+        protected void onPreExecute() {
+            if (callback != null) {
+                callback.onStartCheck();
+            }
+        }
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			if (callback != null) {
-				callback.onGetResult(result);
-			}
-		}
-	}
+        @Override
+        protected Boolean doInBackground(String... params) {
+            return NetworkUtils.ping(params[0]);
+        }
 
-	protected int indexOfAddedDevices(String ip) {
-		int index = -1;
-		int i = 0;
-		for (DeviceInfo info : mDeviceInfos) {
-			if (info.getIp().equals(ip)) {
-				index = i;
-				break;
-			}
-			i++;
-		}
-		return index;
-	}
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (callback != null) {
+                callback.onGetResult(result);
+            }
+        }
+    }
 
-	protected void startCheckIpAccess(String ip, OnNetCheckCallback onNetCheckResultCallback) {
-		if (mCheckNetAccessTask != null) {
-			mCheckNetAccessTask.cancel(true);
-			mCheckNetAccessTask = null;
-		}
-		mCheckNetAccessTask = new CheckNetAccessTask(onNetCheckResultCallback);
-		mCheckNetAccessTask.execute(ip);
-	}
+    protected int indexOfAddedDevices(String ip) {
+        int index = -1;
+        int i = 0;
+        for (DeviceInfo info : mDeviceInfos) {
+            if (info.getIp().equals(ip)) {
+                index = i;
+                break;
+            }
+            i++;
+        }
+        return index;
+    }
 
-	// --> addDevice
+    protected void startCheckIpAccess(String ip, OnNetCheckCallback onNetCheckResultCallback) {
+        if (mCheckNetAccessTask != null) {
+            mCheckNetAccessTask.cancel(true);
+            mCheckNetAccessTask = null;
+        }
+        mCheckNetAccessTask = new CheckNetAccessTask(onNetCheckResultCallback);
+        mCheckNetAccessTask.execute(ip);
+    }
 
-	// <-- loginDevice
-	public void showLoginDeviceDialog(final DeviceInfo deviceInfo) {
-		if (mLoginDeviceDialog == null) {
-			mLoginDeviceDialog = new DeviceLoginDialog(this);
-			mLoginDeviceDialog.setOnShowListener(new OnShowListener() {
+    // --> addDevice
 
-				@Override
-				public void onShow(DialogInterface dialog) {
-					((DeviceLoginDialog) dialog).reset();
-					// Bitmap decodeResource =
-					// BitmapFactory.decodeResource(getResources(),
-					// R.drawable.folder_photo);
-					if (null == mBlurDrawable) {
-						mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
-					}
-					((DeviceLoginDialog) dialog)
-					// .updateBackground(BitmapUtils.blurBitmap(getScreenShot(),
-					// DeviceShareActivity.this));
-					// .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
-							.updateBackground(mBlurDrawable);
-					// .updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
-				}
-			});
-			mLoginDeviceDialog.setOnLoginListener(new OnLoginListener() {
+    // <-- loginDevice
+    public void showLoginDeviceDialog(final DeviceInfo deviceInfo) {
+        if (mLoginDeviceDialog == null) {
+            mLoginDeviceDialog = new DeviceLoginDialog(this);
+            mLoginDeviceDialog.setOnShowListener(new OnShowListener() {
 
-				@Override
-				public void onLogin(String userName, String password) {
-					if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
-						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
-						return;
-					}
-					deviceInfo.setUserName(userName.trim());
-					deviceInfo.setPassword(password.trim());
-					String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":").append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
-					deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
-					loginDevice(deviceInfo);
-				}
-			});
-		}
-		mLoginDeviceDialog.refreshData(deviceInfo.getUserName(), deviceInfo.getPassword());
-		mLoginDeviceDialog.show();
-	}
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    ((DeviceLoginDialog) dialog).reset();
+                    // Bitmap decodeResource =
+                    // BitmapFactory.decodeResource(getResources(),
+                    // R.drawable.folder_photo);
+                    if (null == mBlurDrawable) {
+                        mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+                    }
+                    ((DeviceLoginDialog) dialog)
+                            // .updateBackground(BitmapUtils.blurBitmap(getScreenShot(),
+                            // DeviceShareActivity.this));
+//					 .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
+                            .updateBackground(mBlurDrawable);
+                    // .updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
+                }
+            });
+            mLoginDeviceDialog.setOnLoginListener(new OnLoginListener() {
 
-	public void hideLoginDeviceDialog() {
-		if (mLoginDeviceDialog != null) {
-			mLoginDeviceDialog.dismiss();
-		}
-	}
+                @Override
+                public void onLogin(String userName, String password) {
+                    if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
+                        ToastUtils.showMessage(MyApplication.mContext, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
+                        return;
+                    }
+                    deviceInfo.setUserName(userName.trim());
+                    deviceInfo.setPassword(password.trim());
+                    String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":").append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
+                    deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
+                    loginDevice(deviceInfo);
+                }
+            });
+        }
+        mLoginDeviceDialog.refreshData(deviceInfo.getUserName(), deviceInfo.getPassword());
+        mLoginDeviceDialog.show();
+    }
 
-	protected void loginDevice(final DeviceInfo deviceInfo) {
-		if (mScanSambaTask != null) {
-			mScanSambaTask.cancel(true);
-			mScanSambaTask = null;
-		}
-		showLoadingDialog();
-		mScanSambaTask = new ScanSambaTask(false, new IScanFileListener() {
+    public void hideLoginDeviceDialog() {
+        if (mLoginDeviceDialog != null) {
+            mLoginDeviceDialog.dismiss();
+        }
+    }
 
-			@Override
-			public void onSuccess(ArrayList<SmbFile> list) {
-				ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.login_succ), Toast.LENGTH_SHORT);
-				getWindow().getDecorView().postDelayed(new Runnable() {
+    protected void loginDevice(final DeviceInfo deviceInfo) {
+        if (mScanSambaTask != null) {
+            mScanSambaTask.cancel(true);
+            mScanSambaTask = null;
+        }
+        showLoadingDialog();
+        mScanSambaTask = new ScanSambaTask(false, new IScanFileListener() {
 
-					@Override
-					public void run() {
-						hideLoadingDialog();
-						Intent intent = new Intent(DeviceShareActivity.this, GridViewActivity.class);
-						intent.putExtra("type", "share");
-						intent.putExtra("title", deviceInfo.getUserName() + " (" + deviceInfo.getIp() + ")");
-						intent.putExtra("path", deviceInfo.getFileItem().getPath());
-						startActivity(intent);
-					}
-				}, 1000);
-			}
+            @Override
+            public void onSuccess(ArrayList<SmbFile> list) {
+                ToastUtils.showMessage(MyApplication.mContext, getString(R.string.login_succ), Toast.LENGTH_SHORT);
+                getWindow().getDecorView().postDelayed(new Runnable() {
 
-			@Override
-			public void onLoginFailed() {
-				hideLoadingDialog();
-				ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
-			}
+                    @Override
+                    public void run() {
+                        hideLoadingDialog();
+                        Intent intent = new Intent(DeviceShareActivity.this, GridViewActivity.class);
+                        intent.putExtra("type", "share");
+                        intent.putExtra("title", deviceInfo.getUserName() + " (" + deviceInfo.getIp() + ")");
+                        intent.putExtra("path", deviceInfo.getFileItem().getPath());
+                        startActivity(intent);
+                    }
+                }, 1000);
+            }
 
-			@Override
-			public void onException(Throwable ta) {
-				hideLoadingDialog();
-				ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.device_login_failed), Toast.LENGTH_SHORT);
-			}
+            @Override
+            public void onLoginFailed() {
+                hideLoadingDialog();
+                ToastUtils.showMessage(MyApplication.mContext, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
+            }
 
-		});
-		mScanSambaTask.execute(deviceInfo.getFileItem().getPath());
-	}
+            @Override
+            public void onException(Throwable ta) {
+                hideLoadingDialog();
+                ToastUtils.showMessage(MyApplication.mContext, getString(R.string.device_login_failed), Toast.LENGTH_SHORT);
+            }
 
-	// --> loginDevice
+        });
+        mScanSambaTask.execute(deviceInfo.getFileItem().getPath());
+    }
 
-	private void showLoadingDialog() {
-		if (mLoadingDialog == null) {
-			mLoadingDialog = new LoadingDialog(this);
-			mLoadingDialog.setOnCancelListener(new OnCancelListener() {
+    // --> loginDevice
 
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					if (mScanSambaTask != null) {
-						mScanSambaTask.cancel(true);
-					}
-					if (mCheckNetAccessTask != null) {
-						mCheckNetAccessTask.cancel(true);
-					}
-				}
-			});
-		}
-		mLoadingDialog.show();
-	}
+    private void showLoadingDialog() {
+        if (mLoadingDialog == null) {
+            mLoadingDialog = new LoadingDialog(this);
+            mLoadingDialog.setOnCancelListener(new OnCancelListener() {
 
-	private void hideLoadingDialog() {
-		if (mLoadingDialog != null) {
-			mLoadingDialog.dismiss();
-		}
-	}
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    if (mScanSambaTask != null) {
+                        mScanSambaTask.cancel(true);
+                    }
+                    if (mCheckNetAccessTask != null) {
+                        mCheckNetAccessTask.cancel(true);
+                    }
+                }
+            });
+        }
+        mLoadingDialog.show();
+    }
 
-	private Bitmap getScreenShot() {
-		View view = getWindow().getDecorView();
-		view.buildDrawingCache();
-		getWindow().getDecorView().setDrawingCacheEnabled(true);
-		Bitmap bm = Bitmap.createBitmap(view.getDrawingCache());
-		getWindow().getDecorView().setDrawingCacheEnabled(false);
-		view.destroyDrawingCache();
-		return bm;
-		// return getWindow().getDecorView().getDrawingCache();
-	}
+    private void hideLoadingDialog() {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
+    }
 
-	/**
-	 * 链接到指定IP地址
-	 * 
-	 * @param ip
-	 * @param isFirst
-	 */
-	private void checkIPAccess(final String ip, final boolean isFirst) {
-		startCheckIpAccess(ip, new OnNetCheckCallback() {
+    private Bitmap getScreenShot() {
+        View view = getWindow().getDecorView();
+        view.buildDrawingCache();
+        getWindow().getDecorView().setDrawingCacheEnabled(true);
+        Bitmap bm = Bitmap.createBitmap(view.getDrawingCache());
+        getWindow().getDecorView().setDrawingCacheEnabled(false);
+        view.destroyDrawingCache();
+        return bm;
+        // return getWindow().getDecorView().getDrawingCache();
+    }
 
-			@Override
-			public void onStartCheck() {
-				showLoadingDialog();
-			}
+    /**
+     * 链接到指定IP地址
+     *
+     * @param ip
+     * @param isFirst
+     */
+    private void checkIPAccess(final String ip, final boolean isFirst) {
+        startCheckIpAccess(ip, new OnNetCheckCallback() {
 
-			@Override
-			public void onGetResult(boolean success) {
-				hideLoadingDialog();
-				if (success) {
-					if (null != mAddDeviceDialog) {
-						mAddDeviceDialog.dismiss();
-					}
-					addDeviceItemView(new DeviceInfo(ip));
-				} else {
-					if (!isFirst) {
-						ToastUtils.showMessage(DeviceShareActivity.this, getString(R.string.devices_not_found), Toast.LENGTH_SHORT);
-					}
-				}
-			}
-		});
-	}
+            @Override
+            public void onStartCheck() {
+                showLoadingDialog();
+            }
+
+            @Override
+            public void onGetResult(boolean success) {
+                hideLoadingDialog();
+                if (success) {
+                    if (null != mAddDeviceDialog) {
+                        mAddDeviceDialog.dismiss();
+                    }
+                    addDeviceItemView(new DeviceInfo(ip));
+                } else {
+                    if (!isFirst) {
+                        ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_not_found), Toast.LENGTH_SHORT);
+                    }
+                }
+            }
+        });
+    }
 
 }

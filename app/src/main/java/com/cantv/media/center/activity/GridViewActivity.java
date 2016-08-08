@@ -199,9 +199,16 @@ public class GridViewActivity extends Activity {
 						}
 					}
 					mMenuList.get(mSelectedMenuPosi).setSelected(false);
+					
+					View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
+
+                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView,mMenuList.get(mSelectedMenuPosi));
+					
+					
 					mSelectedMenuPosi = position;
 					MenuItem menuItem = mMenuList.get(position);
 					menuItem.setSelected(true);
+					mMenuDialog.getMenuAdapter().updateMenuItem(view,menuItem);
 					mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
 					if (position == 2) {
 						mDeleteItem = mGridView.mSelectItemPosition;

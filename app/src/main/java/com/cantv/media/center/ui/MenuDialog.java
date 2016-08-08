@@ -231,7 +231,7 @@ public class MenuDialog extends Dialog {
                 } else {
                     view = convertView;
                 }
-            } else if (dataType == MenuItem.TYPE_SELECTOR) {
+            } else if (dataType == MenuItem.TYPE_SELECTOR || dataType == MenuItem.TYPE_SELECTOR_MARQUEE) {
                 if (convertView == null) {
                     SubMenuViewHolder holder = new SubMenuViewHolder();
                     view = View.inflate(parent.getContext(), R.layout.layout_submenu_selector_item, null);
@@ -260,7 +260,7 @@ public class MenuDialog extends Dialog {
             if (type == MenuItem.TYPE_LIST) {
                 holder.subTitleTv.setVisibility(View.VISIBLE);
                 holder.subTitleTv.setText(String.format(mStrTemplate, data.getChildrenCount()));
-            } else if (type == MenuItem.TYPE_SELECTOR) {
+            } else if (type == MenuItem.TYPE_SELECTOR || type == MenuItem.TYPE_SELECTOR_MARQUEE) {
                 holder.subTitleTv.setVisibility(View.VISIBLE);
                 MenuItem selectedChild = data.getSelectedChild();
                 holder.subTitleTv.setText(selectedChild != null ? selectedChild.getTitle() : "");
@@ -279,7 +279,7 @@ public class MenuDialog extends Dialog {
                 ListSubMenuViewHolder holder = (ListSubMenuViewHolder) view.getTag(R.id.tag_id_holder_key);
                 holder.titleTv.setText(data.getTitle());
 
-            } else if (dataType == MenuItem.TYPE_SELECTOR) {
+            } else if (dataType == MenuItem.TYPE_SELECTOR || dataType == MenuItem.TYPE_SELECTOR_MARQUEE) {
                 SubMenuViewHolder holder = (SubMenuViewHolder) view.getTag(R.id.tag_id_holder_key);
                 holder.titleTv.setText(data.getTitle());
                 holder.selector.setVisibility(data.isSelected() ? View.VISIBLE : View.INVISIBLE);

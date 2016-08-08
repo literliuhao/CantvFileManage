@@ -7,6 +7,7 @@ public class MenuItem {
     public static final int TYPE_NORMAL = 1;
     public static final int TYPE_LIST = 2;
     public static final int TYPE_SELECTOR = 3;
+    public static final int TYPE_SELECTOR_MARQUEE = 4;
 
     protected String title;
     protected int type = TYPE_NORMAL;
