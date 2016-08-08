@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/px90"
         android:ellipsize="marquee"
         android:gravity="center"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/px_minus_30"
         android:layout_marginTop="@dimen/px15"
-        android:layout_toEndOf="@id/tv_title"
+        android:layout_toRightOf="@id/tv_title"
         android:focusable="false"
         android:scaleType="fitXY"
         android:src="@drawable/menu_ok"/>

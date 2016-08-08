@@ -231,10 +231,20 @@ public class MenuDialog extends Dialog {
                 } else {
                     view = convertView;
                 }
-            } else if (dataType == MenuItem.TYPE_SELECTOR || dataType == MenuItem.TYPE_SELECTOR_MARQUEE) {
+            } else if (dataType == MenuItem.TYPE_SELECTOR) {
                 if (convertView == null) {
                     SubMenuViewHolder holder = new SubMenuViewHolder();
                     view = View.inflate(parent.getContext(), R.layout.layout_submenu_selector_item, null);
+                    holder.titleTv = (TextView) view.findViewById(R.id.tv_title);
+                    holder.selector = (ImageView) view.findViewById(R.id.iv_selector);
+                    view.setTag(R.id.tag_id_holder_key, holder);
+                } else {
+                    view = convertView;
+                }
+            }else if (dataType == MenuItem.TYPE_SELECTOR_MARQUEE) {
+                if (convertView == null) {
+                    SubMenuViewHolder holder = new SubMenuViewHolder();
+                    view = View.inflate(parent.getContext(), R.layout.layout_marquee_selector_item, null);
                     holder.titleTv = (TextView) view.findViewById(R.id.tv_title);
                     holder.selector = (ImageView) view.findViewById(R.id.iv_selector);
                     view.setTag(R.id.tag_id_holder_key, holder);
