@@ -41,5 +41,6 @@
         android:gravity="center_vertical|left"
         android:text="@string/str_noshare"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/px28"/>
+        android:textSize="@dimen/px28"
+        android:visibility="gone"/>
 </FrameLayout>

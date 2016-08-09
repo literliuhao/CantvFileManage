@@ -224,7 +224,18 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
             @Override
             public void onClick(View v) {
-                showLoginDeviceDialog(info);
+                String shareUserInfo = SharedPreferenceUtil.getShareUserInfo();
+                if (!shareUserInfo.equals("")) {
+                    String[] split = shareUserInfo.split("   ");
+                    String ip = split[0];
+                    if (ip.equals(info.getIp())) {
+                        zjLogin(info, split[1], split[2]);
+                    } else {
+                        showLoginDeviceDialog(info);
+                    }
+                } else {
+                    showLoginDeviceDialog(info);
+                }
             }
         });
         LayoutParams layoutParams = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.px300), getResources().getDimensionPixelSize(R.dimen.px450));
@@ -415,17 +426,33 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                         ToastUtils.showMessage(MyApplication.mContext, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
                         return;
                     }
-                    deviceInfo.setUserName(userName.trim());
-                    deviceInfo.setPassword(password.trim());
-                    String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":").append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
-                    deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
-                    loginDevice(deviceInfo);
+//                    deviceInfo.setUserName(userName.trim());
+//                    deviceInfo.setPassword(password.trim());
+//                    String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":").append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
+//                    deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
+//                    loginDevice(deviceInfo);
+
+                    zjLogin(deviceInfo, userName, password);
+
                 }
             });
         }
         mLoginDeviceDialog.refreshData(deviceInfo.getUserName(), deviceInfo.getPassword());
         mLoginDeviceDialog.show();
     }
+
+
+    /**
+     * 不用输入用户名密码,直接登录
+     */
+    private void zjLogin(DeviceInfo deviceInfo, String userName, String password) {
+        deviceInfo.setUserName(userName.trim());
+        deviceInfo.setPassword(password.trim());
+        String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":").append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
+        deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
+        loginDevice(deviceInfo);
+    }
+
 
     public void hideLoginDeviceDialog() {
         if (mLoginDeviceDialog != null) {
@@ -454,6 +481,16 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                         intent.putExtra("title", deviceInfo.getUserName() + " (" + deviceInfo.getIp() + ")");
                         intent.putExtra("path", deviceInfo.getFileItem().getPath());
                         startActivity(intent);
+
+                        if (null != mLoginDeviceDialog) {
+                            mLoginDeviceDialog.dismiss();
+                        }
+
+                        //用空格分开是因为用户名,密码不会有空格
+                        String info = deviceInfo.getIp() + "   " + deviceInfo.getUserName() + "   " + deviceInfo.getPassword();
+
+                        SharedPreferenceUtil.saveShareUserInfo(info);
+
                     }
                 }, 1000);
             }
@@ -461,12 +498,18 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             @Override
             public void onLoginFailed() {
                 hideLoadingDialog();
+                if (null == mLoginDeviceDialog || !mLoginDeviceDialog.isShowing()) {
+                    showLoginDeviceDialog(deviceInfo);
+                }
                 ToastUtils.showMessage(MyApplication.mContext, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
             }
 
             @Override
             public void onException(Throwable ta) {
                 hideLoadingDialog();
+                if (null == mLoginDeviceDialog || !mLoginDeviceDialog.isShowing()) {
+                    showLoginDeviceDialog(deviceInfo);
+                }
                 ToastUtils.showMessage(MyApplication.mContext, getString(R.string.device_login_failed), Toast.LENGTH_SHORT);
             }
 

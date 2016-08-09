@@ -33,408 +33,408 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HomeActivity extends Activity implements OnFocusChangeListener {
-	private static final String TAG = "HomeActivity";
-	private static final String EXTERNAL = "external";
-	private static final int SINGLE_DEVICE = 1;
-	private static final int DOUBLE_DEVICE = 2;
-	private static final int MUTI_DEVICE = 3;
-	private Context mContext;
-	private Timer mTimer;
-	private TimerTask mTimerTask;
-	private FrameLayout mVideoIV;
-	private FrameLayout mImageIV;
-	private FrameLayout mAudioIV;
-	private FrameLayout mAppIV;
-	private FrameLayout mLocalIV;
-	private FrameLayout mShareIV;
-	private FrameLayout mExternalIV;
-	private ImageView mExternalUIV;
-	private FrameLayout mExternalIV1;
-	private ImageView mExternalUIV1;
-	private FrameLayout mExternalIV2;
-	private ImageView mExternalUIV2;
-	private TextView mVideoTV;
-	private TextView mImageTV;
-	private TextView mAudioTV;
-	private TextView mAppTV;
-	private TextView mShareTV;
-	private TextView mLocalFreeTV;
-	private TextView mLocalTotalTV;
-	private TextView mExternalFreeTV;
-	private TextView mExternalTotalTV;
-	private TextView mExternalFreeTV1;
-	private TextView mExternalTotalTV1;
-	private TextView mExternalFreeTV2;
-	private TextView mExternalTotalTV2;
-	private FocusUtils mFocusUtils;
-	private FocusScaleUtils mFocusScaleUtils;
-	private List<String> mUsbRootPaths = new ArrayList<>();
-	private AlertDialog alertDialog = null;
-	private int mNum;
-	private boolean isMounted;
+    private static final String TAG = "HomeActivity";
+    private static final String EXTERNAL = "external";
+    private static final int SINGLE_DEVICE = 1;
+    private static final int DOUBLE_DEVICE = 2;
+    private static final int MUTI_DEVICE = 3;
+    private Context mContext;
+    private Timer mTimer;
+    private TimerTask mTimerTask;
+    private FrameLayout mVideoIV;
+    private FrameLayout mImageIV;
+    private FrameLayout mAudioIV;
+    private FrameLayout mAppIV;
+    private FrameLayout mLocalIV;
+    private FrameLayout mShareIV;
+    private FrameLayout mExternalIV;
+    private ImageView mExternalUIV;
+    private FrameLayout mExternalIV1;
+    private ImageView mExternalUIV1;
+    private FrameLayout mExternalIV2;
+    private ImageView mExternalUIV2;
+    private TextView mVideoTV;
+    private TextView mImageTV;
+    private TextView mAudioTV;
+    private TextView mAppTV;
+    private TextView mShareTV;
+    private TextView mLocalFreeTV;
+    private TextView mLocalTotalTV;
+    private TextView mExternalFreeTV;
+    private TextView mExternalTotalTV;
+    private TextView mExternalFreeTV1;
+    private TextView mExternalTotalTV1;
+    private TextView mExternalFreeTV2;
+    private TextView mExternalTotalTV2;
+    private FocusUtils mFocusUtils;
+    private FocusScaleUtils mFocusScaleUtils;
+    private List<String> mUsbRootPaths = new ArrayList<>();
+    private AlertDialog alertDialog = null;
+    private int mNum;
+    private boolean isMounted;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "onCreate");
-		super.onCreate(savedInstanceState);
-		mContext = this;
-		// requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_home);
-		mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
-		mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
-		mAudioIV = (FrameLayout) findViewById(R.id.imageview_audio_layout);
-		mAppIV = (FrameLayout) findViewById(R.id.imageview_app_layout);
-		mExternalIV = (FrameLayout) findViewById(R.id.layout_external_all);
-		mExternalIV1 = (FrameLayout) findViewById(R.id.layout_external_1);
-		mExternalIV2 = (FrameLayout) findViewById(R.id.layout_external_2);
-		mLocalIV = (FrameLayout) findViewById(R.id.imageview_local_layout);
-		mShareIV = (FrameLayout) findViewById(R.id.imageview_share_layout);
-		mVideoTV = (TextView) findViewById(R.id.textview_video);
-		mImageTV = (TextView) findViewById(R.id.textview_image);
-		mAudioTV = (TextView) findViewById(R.id.textview_audio);
-		mAppTV = (TextView) findViewById(R.id.textview_app);
-		mLocalFreeTV = (TextView) findViewById(R.id.textview_localdiskfree);
-		mLocalTotalTV = (TextView) findViewById(R.id.textview_localdisktotal);
-		mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.image_focus);
-		mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
-		initUSB();
-		mVideoIV.setOnFocusChangeListener(this);
-		mImageIV.setOnFocusChangeListener(this);
-		mAudioIV.setOnFocusChangeListener(this);
-		mAppIV.setOnFocusChangeListener(this);
-		mExternalIV.setOnFocusChangeListener(this);
-		mExternalIV1.setOnFocusChangeListener(this);
-		mExternalIV2.setOnFocusChangeListener(this);
-		mLocalIV.setOnFocusChangeListener(this);
-		mShareIV.setOnFocusChangeListener(this);
-		mVideoIV.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				intent.putExtra("type", "video");
-				if (mUsbRootPaths.size() > 1) {
-					intent.putExtra("toListFlag", "ListFlag");
-				}
-				startActivity(intent);
-			}
-		});
-		mImageIV.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				intent.putExtra("type", "image");
-				if (mUsbRootPaths.size() > 1) {
-					intent.putExtra("toListFlag", "ListFlag");
-				}
-				startActivity(intent);
-			}
-		});
-		mAudioIV.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				intent.putExtra("type", "audio");
-				if (mUsbRootPaths.size() > 1) {
-					intent.putExtra("toListFlag", "ListFlag");
-				}
-				startActivity(intent);
-			}
-		});
-		mAppIV.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				intent.putExtra("type", "app");
-				if (mUsbRootPaths.size() > 1) {
-					intent.putExtra("toListFlag", "ListFlag");
-				}
-				startActivity(intent);
-			}
-		});
-		mLocalIV.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				intent.putExtra("type", "local");
-				startActivity(intent);
-			}
-		});
-		mExternalIV.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				if (mUsbRootPaths.size() > 1) {
-					intent.putExtra("toListFlag", "ListFlag");
-				}
-				intent.putExtra("type", "device1");
-				startActivity(intent);
-			}
-		});
-		mExternalIV1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				intent.putExtra("type", "device1");
-				startActivity(intent);
-			}
-		});
-		mExternalIV2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, GridViewActivity.class);
-				intent.putExtra("type", "device2");
-				intent.putExtra("filePath", mUsbRootPaths.get(1));
-				startActivity(intent);
-			}
-		});
-		mShareIV.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				closeTimer();
-				Intent intent = new Intent(mContext, DeviceShareActivity.class);
-				startActivity(intent);
-			}
-		});
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-		filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-		filter.addAction(Intent.ACTION_MEDIA_REMOVED);
-		filter.addDataScheme("file");
-		registerReceiver(mReceiver, filter);
-		mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
-		mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
-		alertDialog = new AlertDialog.Builder(mContext).create();
-		Intent intentStart = new Intent(this, BootDialogService.class);
-		intentStart.setAction("com.cantv.service.RECEIVER_START");
-		this.startService(intentStart);
-		// showMountedDialog();
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
+        super.onCreate(savedInstanceState);
+        mContext = this;
+        // requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_home);
+        mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
+        mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
+        mAudioIV = (FrameLayout) findViewById(R.id.imageview_audio_layout);
+        mAppIV = (FrameLayout) findViewById(R.id.imageview_app_layout);
+        mExternalIV = (FrameLayout) findViewById(R.id.layout_external_all);
+        mExternalIV1 = (FrameLayout) findViewById(R.id.layout_external_1);
+        mExternalIV2 = (FrameLayout) findViewById(R.id.layout_external_2);
+        mLocalIV = (FrameLayout) findViewById(R.id.imageview_local_layout);
+        mShareIV = (FrameLayout) findViewById(R.id.imageview_share_layout);
+        mVideoTV = (TextView) findViewById(R.id.textview_video);
+        mImageTV = (TextView) findViewById(R.id.textview_image);
+        mAudioTV = (TextView) findViewById(R.id.textview_audio);
+        mAppTV = (TextView) findViewById(R.id.textview_app);
+        mLocalFreeTV = (TextView) findViewById(R.id.textview_localdiskfree);
+        mLocalTotalTV = (TextView) findViewById(R.id.textview_localdisktotal);
+        mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.image_focus);
+        mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
+        initUSB();
+        mVideoIV.setOnFocusChangeListener(this);
+        mImageIV.setOnFocusChangeListener(this);
+        mAudioIV.setOnFocusChangeListener(this);
+        mAppIV.setOnFocusChangeListener(this);
+        mExternalIV.setOnFocusChangeListener(this);
+        mExternalIV1.setOnFocusChangeListener(this);
+        mExternalIV2.setOnFocusChangeListener(this);
+        mLocalIV.setOnFocusChangeListener(this);
+        mShareIV.setOnFocusChangeListener(this);
+        mVideoIV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                intent.putExtra("type", "video");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
+                startActivity(intent);
+            }
+        });
+        mImageIV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                intent.putExtra("type", "image");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
+                startActivity(intent);
+            }
+        });
+        mAudioIV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                intent.putExtra("type", "audio");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
+                startActivity(intent);
+            }
+        });
+        mAppIV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                intent.putExtra("type", "app");
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
+                startActivity(intent);
+            }
+        });
+        mLocalIV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                intent.putExtra("type", "local");
+                startActivity(intent);
+            }
+        });
+        mExternalIV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                if (mUsbRootPaths.size() > 1) {
+                    intent.putExtra("toListFlag", "ListFlag");
+                }
+                intent.putExtra("type", "device1");
+                startActivity(intent);
+            }
+        });
+        mExternalIV1.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                intent.putExtra("type", "device1");
+                startActivity(intent);
+            }
+        });
+        mExternalIV2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, GridViewActivity.class);
+                intent.putExtra("type", "device2");
+                intent.putExtra("filePath", mUsbRootPaths.get(1));
+                startActivity(intent);
+            }
+        });
+        mShareIV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeTimer();
+                Intent intent = new Intent(mContext, DeviceShareActivity.class);
+                startActivity(intent);
+            }
+        });
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+        filter.addDataScheme("file");
+        registerReceiver(mReceiver, filter);
+        mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
+        mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
+        alertDialog = new AlertDialog.Builder(mContext).create();
+        Intent intentStart = new Intent(this, BootDialogService.class);
+        intentStart.setAction("com.cantv.service.RECEIVER_START");
+        this.startService(intentStart);
+        // showMountedDialog();
+    }
 
-	private void initUSB() {
-		mExternalUIV = (ImageView) findViewById(R.id.imageview_external_u);
-		mExternalFreeTV = (TextView) findViewById(R.id.textview_external_free);
-		mExternalTotalTV = (TextView) findViewById(R.id.textview_external_total);
-		mExternalUIV1 = (ImageView) findViewById(R.id.imageview_external_1_u);
-		mExternalUIV2 = (ImageView) findViewById(R.id.imageview_external_2_u);
-		mExternalFreeTV1 = (TextView) findViewById(R.id.textview_external_1_free);
-		mExternalTotalTV1 = (TextView) findViewById(R.id.textview_external_1_total);
-		mExternalFreeTV2 = (TextView) findViewById(R.id.textview_external_2_free);
-		mExternalTotalTV2 = (TextView) findViewById(R.id.textview_external_2_total);
-	}
+    private void initUSB() {
+        mExternalUIV = (ImageView) findViewById(R.id.imageview_external_u);
+        mExternalFreeTV = (TextView) findViewById(R.id.textview_external_free);
+        mExternalTotalTV = (TextView) findViewById(R.id.textview_external_total);
+        mExternalUIV1 = (ImageView) findViewById(R.id.imageview_external_1_u);
+        mExternalUIV2 = (ImageView) findViewById(R.id.imageview_external_2_u);
+        mExternalFreeTV1 = (TextView) findViewById(R.id.textview_external_1_free);
+        mExternalTotalTV1 = (TextView) findViewById(R.id.textview_external_1_total);
+        mExternalFreeTV2 = (TextView) findViewById(R.id.textview_external_2_free);
+        mExternalTotalTV2 = (TextView) findViewById(R.id.textview_external_2_total);
+    }
 
-	private void refreshUI() {
-		mUsbRootPaths = MediaUtils.getCurrPathList();
-		mNum = mUsbRootPaths.size();
-		if (mNum > 0) {
-			isMounted = true;
-		} else {
-			isMounted = false;
-		}
-		Log.w("设备数量~~", mNum + "");
-		if (isMounted) {
-			mExternalTotalTV.setVisibility(View.VISIBLE);
-			if (mNum == DOUBLE_DEVICE) {
-				mExternalIV.setVisibility(View.GONE);
-				mExternalIV1.setVisibility(View.VISIBLE);
-				mExternalIV2.setVisibility(View.VISIBLE);
-				mExternalUIV1.setBackgroundResource(R.drawable.icon_u);
-				mExternalUIV2.setBackgroundResource(R.drawable.icon_u);
-				mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
-				mExternalTotalTV1.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
-				mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
-				mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
-			} else {
-				mExternalIV.setVisibility(View.VISIBLE);
-				mExternalIV1.setVisibility(View.GONE);
-				mExternalIV2.setVisibility(View.GONE);
-				mExternalUIV.setBackgroundResource(R.drawable.icon_u);
-				if (mNum == 1) {
-					mExternalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
-					mExternalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
-				} else {
-					mExternalFreeTV.setText(getString(R.string.str_total) + mNum + getString(R.string.str_devicenum));
-					mExternalTotalTV.setVisibility(View.GONE);
-				}
-			}
-		} else {
-			mExternalIV.setVisibility(View.VISIBLE);
-			mExternalIV1.setVisibility(View.GONE);
-			mExternalIV2.setVisibility(View.GONE);
-			mExternalTotalTV.setVisibility(View.GONE);
-			mExternalFreeTV.setText(R.string.str_nodev);
-			mExternalUIV.setBackgroundResource(R.drawable.icon_nou);
-		}
-	}
+    private void refreshUI() {
+        mUsbRootPaths = MediaUtils.getCurrPathList();
+        mNum = mUsbRootPaths.size();
+        if (mNum > 0) {
+            isMounted = true;
+        } else {
+            isMounted = false;
+        }
+        Log.w("设备数量~~", mNum + "");
+        if (isMounted) {
+            mExternalTotalTV.setVisibility(View.VISIBLE);
+            if (mNum == DOUBLE_DEVICE) {
+                mExternalIV.setVisibility(View.GONE);
+                mExternalIV1.setVisibility(View.VISIBLE);
+                mExternalIV2.setVisibility(View.VISIBLE);
+                mExternalUIV1.setBackgroundResource(R.drawable.icon_u);
+                mExternalUIV2.setBackgroundResource(R.drawable.icon_u);
+                mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
+                mExternalTotalTV1.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+                mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
+                mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
+            } else {
+                mExternalIV.setVisibility(View.VISIBLE);
+                mExternalIV1.setVisibility(View.GONE);
+                mExternalIV2.setVisibility(View.GONE);
+                mExternalUIV.setBackgroundResource(R.drawable.icon_u);
+                if (mNum == 1) {
+                    mExternalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
+                    mExternalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+                } else {
+                    mExternalFreeTV.setText(getString(R.string.str_total) + mNum + getString(R.string.str_devicenum));
+                    mExternalTotalTV.setVisibility(View.GONE);
+                }
+            }
+        } else {
+            mExternalIV.setVisibility(View.VISIBLE);
+            mExternalIV1.setVisibility(View.GONE);
+            mExternalIV2.setVisibility(View.GONE);
+            mExternalTotalTV.setVisibility(View.GONE);
+            mExternalFreeTV.setText(R.string.str_nodev);
+            mExternalUIV.setBackgroundResource(R.drawable.icon_nou);
+        }
+    }
 
-	BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-				// openTimer();
-				sendUSBRefreshMsg();
-			} else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-				closeTimer();
-				sendUSBRefreshMsg();
-			}
-		}
-	};
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+                // openTimer();
+                sendUSBRefreshMsg();
+            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+                closeTimer();
+                sendUSBRefreshMsg();
+            }
+        }
+    };
 
-	private void openTimer() {
-		if (mTimer == null) {
-			mTimer = new Timer(true);
-		}
-		if (mTimerTask == null) {
-			mTimerTask = new TimerTask() {
-				public void run() {
-					refreshMediaCategory();
-				}
-			};
-		}
-		if (mTimer != null && mTimerTask != null) {
-			mTimer.schedule(mTimerTask, 0, 5000);
-		}
-	}
+    private void openTimer() {
+        if (mTimer == null) {
+            mTimer = new Timer(true);
+        }
+        if (mTimerTask == null) {
+            mTimerTask = new TimerTask() {
+                public void run() {
+                    refreshMediaCategory();
+                }
+            };
+        }
+        if (mTimer != null && mTimerTask != null) {
+            mTimer.schedule(mTimerTask, 0, 5000);
+        }
+    }
 
-	private void closeTimer() {
-		if (mTimer != null) {
-			mTimer.cancel();
-			mTimer = null;
-		}
-		if (mTimerTask != null) {
-			mTimerTask = null;
-		}
-	}
+    private void closeTimer() {
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+        if (mTimerTask != null) {
+            mTimerTask = null;
+        }
+    }
 
-	private void sendUSBRefreshMsg() {
-		Message msg = mHandler.obtainMessage();
-		Bundle bundle = new Bundle();
-		bundle.putBoolean("file", false);
-		// bundle.putBoolean("mount", isMounted);
-		msg.setData(bundle);
-		msg.sendToTarget();
-	}
+    private void sendUSBRefreshMsg() {
+        Message msg = mHandler.obtainMessage();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("file", false);
+        // bundle.putBoolean("mount", isMounted);
+        msg.setData(bundle);
+        msg.sendToTarget();
+    }
 
-	private void sendFileRefreshMsg(int video, int image, int audio, int app) {
-		Message msg = mHandler.obtainMessage();
-		Bundle bundle = new Bundle();
-		bundle.putBoolean("file", true);
-		bundle.putInt("video", video);
-		bundle.putInt("image", image);
-		bundle.putInt("audio", audio);
-		bundle.putInt("app", app);
-		msg.setData(bundle);
-		msg.sendToTarget();
-	}
+    private void sendFileRefreshMsg(int video, int image, int audio, int app) {
+        Message msg = mHandler.obtainMessage();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("file", true);
+        bundle.putInt("video", video);
+        bundle.putInt("image", image);
+        bundle.putInt("audio", audio);
+        bundle.putInt("app", app);
+        msg.setData(bundle);
+        msg.sendToTarget();
+    }
 
-	private void refreshMediaCategory() {
-		String[] columns;
-		// 视频文件
-		Uri uri = MediaStore.Video.Media.getContentUri(EXTERNAL);
-		columns = new String[] { MediaStore.Video.Media.TITLE };
-		int video = refreshMediaCategory(FileCategory.Video, columns, uri);
-		// 图片文件
-		uri = MediaStore.Images.Media.getContentUri(EXTERNAL);
-		columns = new String[] { MediaStore.Images.Media.TITLE };
-		int image = refreshMediaCategory(FileCategory.Picture, columns, uri);
-		// 音频文件
-		uri = MediaStore.Audio.Media.getContentUri(EXTERNAL);
-		columns = new String[] { MediaStore.Audio.Media.TITLE };
-		int audio = refreshMediaCategory(FileCategory.Music, columns, uri);
-		// 应用文件
-		uri = MediaStore.Files.getContentUri(EXTERNAL);
-		columns = new String[] { MediaStore.Files.FileColumns.TITLE };
-		int app = refreshMediaCategory(FileCategory.Apk, columns, uri);
-		sendFileRefreshMsg(video, image, audio, app);
-	}
+    private void refreshMediaCategory() {
+        String[] columns;
+        // 视频文件
+        Uri uri = MediaStore.Video.Media.getContentUri(EXTERNAL);
+        columns = new String[]{MediaStore.Video.Media.TITLE};
+        int video = refreshMediaCategory(FileCategory.Video, columns, uri);
+        // 图片文件
+        uri = MediaStore.Images.Media.getContentUri(EXTERNAL);
+        columns = new String[]{MediaStore.Images.Media.TITLE};
+        int image = refreshMediaCategory(FileCategory.Picture, columns, uri);
+        // 音频文件
+        uri = MediaStore.Audio.Media.getContentUri(EXTERNAL);
+        columns = new String[]{MediaStore.Audio.Media.TITLE};
+        int audio = refreshMediaCategory(FileCategory.Music, columns, uri);
+        // 应用文件
+        uri = MediaStore.Files.getContentUri(EXTERNAL);
+        columns = new String[]{MediaStore.Files.FileColumns.TITLE};
+        int app = refreshMediaCategory(FileCategory.Apk, columns, uri);
+        sendFileRefreshMsg(video, image, audio, app);
+    }
 
-	private int refreshMediaCategory(FileCategory fc, String[] columns, Uri uri) {
-		Cursor cursor = mContext.getContentResolver().query(uri, columns, MediaUtils.buildSelectionByCategory(fc), null, null);
-		if (cursor == null) {
-			Log.i(TAG, "fail to query uri:" + uri);
-			return 0;
-		}
-		// cursor.moveToFirst();
-		return cursor.getCount();
-	}
+    private int refreshMediaCategory(FileCategory fc, String[] columns, Uri uri) {
+        Cursor cursor = mContext.getContentResolver().query(uri, columns, MediaUtils.buildSelectionByCategory(fc), null, null);
+        if (cursor == null) {
+            Log.i(TAG, "fail to query uri:" + uri);
+            return 0;
+        }
+        // cursor.moveToFirst();
+        return cursor.getCount();
+    }
 
-	private Handler mHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			String str_total = getString(R.string.str_total);
-			String str_null = getString(R.string.str_null);
-			super.handleMessage(msg);
-			Bundle bundle = msg.getData();
-			if (bundle == null) {
-				return;
-			}
-			if (bundle.getBoolean("file")) {
-				int video = bundle.getInt("video");
-				if (video > 0) {
-					mVideoTV.setText(str_total + video + getString(R.string.str_movienum));
-				} else {
-					mVideoTV.setText(str_null + getString(R.string.str_movie));
-				}
-				int image = bundle.getInt("image");
-				if (image > 0) {
-					mImageTV.setText(str_total + image + getString(R.string.str_photonum));
-				} else {
-					mImageTV.setText(str_null + getString(R.string.str_photo));
-				}
-				int audio = bundle.getInt("audio");
-				if (audio > 0) {
-					mAudioTV.setText(str_total + audio + getString(R.string.str_musicnum));
-				} else {
-					mAudioTV.setText(str_null + getString(R.string.str_music));
-				}
-				int app = bundle.getInt("app");
-				if (app > 0) {
-					mAppTV.setText(str_total + app + getString(R.string.str_appnum));
-				} else {
-					mAppTV.setText(str_null + getString(R.string.str_app));
-				}
-			} else {
-				// boolean mount = bundle.getBoolean("mount");
-				refreshUI();
-			}
-		}
-	};
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            String str_total = getString(R.string.str_total);
+            String str_null = getString(R.string.str_null);
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            if (bundle == null) {
+                return;
+            }
+            if (bundle.getBoolean("file")) {
+                int video = bundle.getInt("video");
+                if (video > 0) {
+                    mVideoTV.setText(str_total + video + getString(R.string.str_movienum));
+                } else {
+                    mVideoTV.setText(str_null + getString(R.string.str_movie));
+                }
+                int image = bundle.getInt("image");
+                if (image > 0) {
+                    mImageTV.setText(str_total + image + getString(R.string.str_photonum));
+                } else {
+                    mImageTV.setText(str_null + getString(R.string.str_photo));
+                }
+                int audio = bundle.getInt("audio");
+                if (audio > 0) {
+                    mAudioTV.setText(str_total + audio + getString(R.string.str_musicnum));
+                } else {
+                    mAudioTV.setText(str_null + getString(R.string.str_music));
+                }
+                int app = bundle.getInt("app");
+                if (app > 0) {
+                    mAppTV.setText(str_total + app + getString(R.string.str_appnum));
+                } else {
+                    mAppTV.setText(str_null + getString(R.string.str_app));
+                }
+            } else {
+                // boolean mount = bundle.getBoolean("mount");
+                refreshUI();
+            }
+        }
+    };
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		unregisterReceiver(mReceiver);
-		System.gc();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+        System.gc();
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		sendUSBRefreshMsg();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sendUSBRefreshMsg();
+    }
 
-	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
-		if (hasFocus) {
-			if (v.getId() == mExternalIV.getId()) {
-				mFocusScaleUtils.scaleToLargeWH(v, 1.03F, 1.06f);
-				mFocusUtils.startMoveFocus(v, null, true, 0.95f, 0.84f, 0f, 0f);
-			} else if (v.getId() == mExternalIV1.getId() || v.getId() == mExternalIV2.getId() || v.getId() == mLocalIV.getId() || v.getId() == mShareIV.getId()) {
-				mFocusScaleUtils.scaleToLargeWH(v, 1.05F, 1.06f);
-				mFocusUtils.startMoveFocus(v, null, true, 0.88f, 0.84f, 0f, 0f);
-			} else {
-				mFocusScaleUtils.scaleToLarge(v);
-				mFocusUtils.startMoveFocus(v, true, 0.90F);
-			}
-		} else {
-			mFocusScaleUtils.scaleToNormal(v);
-		}
-	}
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            if (v.getId() == mExternalIV.getId()) {
+                mFocusScaleUtils.scaleToLargeWH(v, 1.03F, 1.06f);
+                mFocusUtils.startMoveFocus(v, null, true, 0.95f, 0.84f, 0f, 0f);
+            } else if (v.getId() == mExternalIV1.getId() || v.getId() == mExternalIV2.getId() || v.getId() == mLocalIV.getId() || v.getId() == mShareIV.getId()) {
+                mFocusScaleUtils.scaleToLargeWH(v, 1.05F, 1.06f);
+                mFocusUtils.startMoveFocus(v, null, true, 0.88f, 0.84f, 0f, 0f);
+            } else {
+                mFocusScaleUtils.scaleToLarge(v);
+                mFocusUtils.startMoveFocus(v, true, 0.90F);
+            }
+        } else {
+            mFocusScaleUtils.scaleToNormal(v);
+        }
+    }
 }
