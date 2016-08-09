@@ -1,22 +1,5 @@
 package com.cantv.media.center.utils;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.cantv.media.R;
-import com.cantv.media.center.app.MyApplication;
-import com.cantv.media.center.constants.SourceType;
-import com.cantv.media.center.data.Audio;
-import com.cantv.media.center.data.Image;
-import com.cantv.media.center.data.Media;
-import com.cantv.media.center.data.Video;
+
 import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.OperationApplicationException;
@@ -30,30 +13,54 @@ import android.os.Environment;
 import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.data.Audio;
+import com.cantv.media.center.data.Image;
+import com.cantv.media.center.data.Media;
+import com.cantv.media.center.data.Video;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+
 /**
  * Created by yibh on 2016/6/28.
  */
 public class FileUtil {
     private static List<String> unlessFileList = new ArrayList<>();
+
     static {
         unlessFileList.add("");
     }
+
     private static String ANDROID_SECURE = "/mnt/sdcard/.android_secure";
     private static ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+
     /**
      * 获取外存储SD卡路径
      */
     public static String getSdDirectory() {
         return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
+
     /**
      * Sd卡状态 true SD卡正常挂载
      */
     public static boolean isSDCardReady() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
+
     /**
      * 是否是隐藏文件,隐藏文件返回false
      */
@@ -66,6 +73,7 @@ public class FileUtil {
         }
         return true;
     }
+
     /**
      * 是否是隐藏文件,隐藏文件返回false
      */
@@ -83,9 +91,10 @@ public class FileUtil {
         }
         return true;
     }
+
     /**
      * 根据路径获取文件名
-     * 
+     *
      * @param path
      * @return
      */
@@ -104,17 +113,18 @@ public class FileUtil {
         }
         return path.substring(index + 1);
     }
+
     /**
      * 是否是正常常见文件
      */
     public static boolean isNormalFile(String fileName) {
         return !fileName.equals(ANDROID_SECURE);
     }
+
     /**
      * @param file
      * @param filter
-     * @param showOrHidden
-     *            是否显示隐藏文件
+     * @param showOrHidden 是否显示隐藏文件
      * @return
      */
     public static Media getFileInfo(File file, FilenameFilter filter, boolean showOrHidden) {
@@ -165,11 +175,11 @@ public class FileUtil {
         }
         return fileBean;
     }
+
     /**
      * @param file
      * @param filter
-     * @param showOrHidden
-     *            是否显示隐藏文件
+     * @param showOrHidden    是否显示隐藏文件
      * @param proxyPathPrefix
      * @param sharePathPrefix
      * @return
@@ -241,9 +251,10 @@ public class FileUtil {
         }
         return fileBean;
     }
+
     /**
      * 返回指定路径的文件/夹 列表
-     * 
+     *
      * @param path
      * @return
      */
@@ -279,9 +290,10 @@ public class FileUtil {
         }
         return tList;
     }
+
     /**
      * 返回指定路径的文件/夹 列表
-     * 
+     *
      * @param path
      * @param string
      * @param sharePathPrefix
@@ -303,7 +315,7 @@ public class FileUtil {
                 if (FileUtil.isShowFile(childFile)) {
                     Media fileInfo = FileUtil.getSmbFileInfo(childFile, null, false, proxyPathPrefix);
                     if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")) && (!fileInfo.mName.contains("$/"))
-                    ) {
+                            ) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
                             if (fileInfo.fileSize > 1024 * 6) {
@@ -320,9 +332,10 @@ public class FileUtil {
         }
         return tList;
     }
+
     /**
      * 返回指定路径指定类型的文件/夹 列表
-     * 
+     *
      * @param path
      * @param type
      * @return
@@ -345,7 +358,7 @@ public class FileUtil {
                     // 是文件夹或这是指定类型的文件,就加入到集合中
                     SourceType sourceType = type[0];
                     if ((sourceType == fileInfo.mType) ||
-                    // 过滤掉指定2个无卵用的文件夹
+                            // 过滤掉指定2个无卵用的文件夹
                             (addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")))) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
@@ -361,9 +374,10 @@ public class FileUtil {
         }
         return tList;
     }
+
     /**
      * 返回指定路径指定类型的文件/夹 列表
-     * 
+     *
      * @param path
      * @param type
      * @return
@@ -386,7 +400,7 @@ public class FileUtil {
                 // 是文件夹或这是指定类型的文件,就加入到集合中
                 SourceType sourceType = type[0];
                 if ((sourceType == fileInfo.mType) ||
-                // 过滤掉指定2个无卵用的文件夹
+                        // 过滤掉指定2个无卵用的文件夹
                         (addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")))) {
                     // 当文件是图片类型,并且大于10k,才进行显示
                     if (fileInfo.mType == SourceType.PICTURE) {
@@ -401,6 +415,7 @@ public class FileUtil {
         }
         return tList;
     }
+
     /**
      * 计算文件大小 storage, G M K B
      */
@@ -419,14 +434,16 @@ public class FileUtil {
         } else
             return String.format("%d B", size);
     }
+
     /**
      * 获取文件的绝对路径
-     * 
+     *
      * @return
      */
     public static String getFileAbsPath(String path, String name) {
         return path.equals("/") ? path + name : path + File.separator + name;
     }
+
     /**
      * 获取文件类型（后缀名）
      */
@@ -437,9 +454,10 @@ public class FileUtil {
         }
         return "";
     }
+
     /**
      * 获取文件类型
-     * 
+     *
      * @param file
      * @return
      */
@@ -450,22 +468,23 @@ public class FileUtil {
         String extFromFilename = FileUtil.getExtFromFilename(file.getAbsolutePath());
         int fileType = FileCategoryHelper.getFileType(extFromFilename);
         switch (fileType) {
-        case FileCategoryHelper.TYPE_MOIVE:
-            return SourceType.MOIVE;
-        case FileCategoryHelper.TYPE_MUSIC:
-            return SourceType.MUSIC;
-        case FileCategoryHelper.TYPE_PICTURE:
-            return SourceType.PICTURE;
-        case FileCategoryHelper.TYPE_APP:
-            return SourceType.APP;
-        case FileCategoryHelper.TYPE_UNKNOW:
-            return SourceType.UNKNOW;
+            case FileCategoryHelper.TYPE_MOIVE:
+                return SourceType.MOIVE;
+            case FileCategoryHelper.TYPE_MUSIC:
+                return SourceType.MUSIC;
+            case FileCategoryHelper.TYPE_PICTURE:
+                return SourceType.PICTURE;
+            case FileCategoryHelper.TYPE_APP:
+                return SourceType.APP;
+            case FileCategoryHelper.TYPE_UNKNOW:
+                return SourceType.UNKNOW;
         }
         return null;
     }
+
     /**
      * 获取文件类型
-     * 
+     *
      * @param file
      * @return
      */
@@ -481,22 +500,23 @@ public class FileUtil {
         String extFromFilename = FileUtil.getExtFromFilename(file.getPath());
         int fileType = FileCategoryHelper.getFileType(extFromFilename);
         switch (fileType) {
-        case FileCategoryHelper.TYPE_MOIVE:
-            return SourceType.MOIVE;
-        case FileCategoryHelper.TYPE_MUSIC:
-            return SourceType.MUSIC;
-        case FileCategoryHelper.TYPE_PICTURE:
-            return SourceType.PICTURE;
-        case FileCategoryHelper.TYPE_APP:
-            return SourceType.APP;
-        case FileCategoryHelper.TYPE_UNKNOW:
-            return SourceType.UNKNOW;
+            case FileCategoryHelper.TYPE_MOIVE:
+                return SourceType.MOIVE;
+            case FileCategoryHelper.TYPE_MUSIC:
+                return SourceType.MUSIC;
+            case FileCategoryHelper.TYPE_PICTURE:
+                return SourceType.PICTURE;
+            case FileCategoryHelper.TYPE_APP:
+                return SourceType.APP;
+            case FileCategoryHelper.TYPE_UNKNOW:
+                return SourceType.UNKNOW;
         }
         return null;
     }
+
     /**
      * 获取apk图标
-     * 
+     *
      * @param context
      * @param apkPath
      * @return
@@ -516,9 +536,10 @@ public class FileUtil {
         }
         return null;
     }
+
     /**
      * 得到指定文件大小
-     * 
+     *
      * @param file
      * @return
      */
@@ -540,14 +561,13 @@ public class FileUtil {
         }
         return size;
     }
+
     /**
      * 文件排序
-     * 
+     *
      * @param list
-     * @param mode
-     *            如果传递的不是默认模式,就要进行判断是否保存模式成功,在成功后再进行排序,方便下次使用
-     * @param isFirst
-     *            判断是否初次进入,初次进入会进行排序
+     * @param mode    如果传递的不是默认模式,就要进行判断是否保存模式成功,在成功后再进行排序,方便下次使用
+     * @param isFirst 判断是否初次进入,初次进入会进行排序
      */
     public static boolean sortList(List list, int mode, boolean isFirst) {
         if (isFirst) {
@@ -565,6 +585,7 @@ public class FileUtil {
         }
         return false;
     }
+
     protected static void deleteFile(Media f) {
         if (f == null)
             return;
@@ -578,10 +599,11 @@ public class FileUtil {
             }
         }
         if (!f.isDir) {
-            ops.add(ContentProviderOperation.newDelete(getMediaUriFromFilename(f.mName)).withSelection("_data = ?", new String[] { f.mUri }).build());
+            ops.add(ContentProviderOperation.newDelete(getMediaUriFromFilename(f.mName)).withSelection("_data = ?", new String[]{f.mUri}).build());
         }
         file.delete();
     }
+
     /*
      * 从文件名获取Mediauri
      */
@@ -601,6 +623,7 @@ public class FileUtil {
         }
         return uri;
     }
+
     /*
      * 创建异步线程
      */
@@ -628,7 +651,9 @@ public class FileUtil {
             }
         }.execute();
     }
+
     private static ArrayList<Media> mCurFileNameList = new ArrayList<>();
+
     /**
      * 删除文件
      */
@@ -646,20 +671,23 @@ public class FileUtil {
         });
         return true;
     }
+
     private static void copyFileList(Media file) {
         synchronized (mCurFileNameList) {
             mCurFileNameList.clear();
             mCurFileNameList.add(file);
         }
     }
+
     public static void clear() {
         synchronized (mCurFileNameList) {
             mCurFileNameList.clear();
         }
     }
+
     /**
      * 将media中的路径提取出来
-     * 
+     *
      * @param
      * @return
      */
@@ -688,9 +716,10 @@ public class FileUtil {
         }
         return tList;
     }
+
     /**
      * 从集合中取出指定类型的数据,组成新的集合
-     * 
+     *
      * @param fromList
      * @param sourceType
      * @return
@@ -704,9 +733,23 @@ public class FileUtil {
         }
         return arrayList;
     }
+
+    /**
+     * 获取路径
+     * @param fromList
+     * @return
+     */
+    public static ArrayList<String> getListFromList(List<Media> fromList) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (Media media : fromList) {
+            arrayList.add(media.isSharing ? media.sharePath : media.mUri);
+        }
+        return arrayList;
+    }
+
     /**
      * 从集合中取出指定类型的数据,组成新的Media集合
-     * 
+     *
      * @param fromList
      * @param sourceType
      * @return
@@ -720,9 +763,10 @@ public class FileUtil {
         }
         return arrayList;
     }
+
     /**
      * 找出与目标字符串相同的字符串在集合中的索引
-     * 
+     *
      * @param list
      * @param oldPath
      * @return
@@ -735,9 +779,10 @@ public class FileUtil {
         }
         return 0;
     }
+
     /**
      * 找出与目标字符串相同的字符串在集合中的索引
-     * 
+     *
      * @param list
      * @param oldPath
      * @return
@@ -757,6 +802,61 @@ public class FileUtil {
         }
         return 0;
     }
+
+    /**
+     * 判断一个集合中是否包含另外一个集合的值
+     *
+     * @param firstList
+     * @param twoList
+     * @return
+     */
+    public static boolean isListConOtListValue(List<String> firstList, List<String> twoList) {
+        if (null == firstList || null == twoList || firstList.size() == 0 || twoList.size() == 0) {
+            return false;
+        }
+        if (firstList.size() > twoList.size()) {
+            return listConCompare(firstList, twoList);
+
+        } else {
+            return listConCompare(twoList, firstList);
+        }
+    }
+
+    /**
+     * 判断一个集合中是否包含另外一个集合的值,请使用上面的方法
+     *
+     * @param firstList
+     * @param twoList
+     * @return
+     */
+    private static boolean listConCompare(List<String> firstList, List<String> twoList) {
+        for (String st : twoList) {
+            if (firstList.contains(st)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 数组转换成集合
+     *
+     * @param array
+     * @return
+     */
+    public static List<String> arrayToList(String[] array) {
+        ArrayList<String> strings = new ArrayList<>();
+        if (null == array || array.length < 1) {
+            return strings;
+        }
+
+        for (int i = 0; i < array.length; i++) {
+            strings.add(array[i]);
+        }
+        return strings;
+    }
+
+
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
@@ -764,6 +864,7 @@ public class FileUtil {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
     /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */

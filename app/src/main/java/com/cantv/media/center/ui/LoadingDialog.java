@@ -20,14 +20,14 @@ public class LoadingDialog extends Dialog implements OnDismissListener, OnShowLi
 	public LoadingDialog(Context context) {
 		super(context, R.style.dialog_loading);
 		setContentView(R.layout.dialog_loading);
-		mLoadingView = (ImageView) findViewById(R.id.iv_loading);
-		mRotateAnimation = new RotateAnimation(0, -360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-		mRotateAnimation.setInterpolator(new LinearInterpolator());
-		mRotateAnimation.setDuration(600);
-		mRotateAnimation.setFillAfter(true);
-		mRotateAnimation.setRepeatCount(Animation.INFINITE);
-		setOnShowListener(this);
-		setOnDismissListener(this);
+        mLoadingView = (ImageView) findViewById(R.id.iv_loading);
+        mRotateAnimation = new RotateAnimation(0, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+        mRotateAnimation.setInterpolator(new LinearInterpolator());
+        mRotateAnimation.setDuration(800);
+        mRotateAnimation.setFillAfter(true);
+        mRotateAnimation.setRepeatCount(Animation.INFINITE);
+        setOnShowListener(this);
+        setOnDismissListener(this);
 	}
 
 	@Override
