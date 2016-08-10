@@ -82,7 +82,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private TextView mInfoUrl;
     private RelativeLayout mHeader;
     private ImageView mMusic;
-	private AnimationDrawable mAnimationDrawable;
+    private AnimationDrawable mAnimationDrawable;
     private static final int DELAYED_TIME = 5 * 1000;
     private final int ARROW_SHOW = 1;
     private final int MENU_SHOW = 2;
@@ -99,7 +99,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int mWidth;
     private int mHeight;
     private int mSizeWidth;
-	private int mSizeHeight;
+    private int mSizeHeight;
     private Boolean isRotation = false;
 
     private Handler mHandler = new Handler() {
@@ -216,8 +216,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mImageBrowser.layoutOriginal();
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus);
         mMusic = (ImageView) findViewById(R.id.media_view_music);
-		mMusic.setBackgroundResource(R.drawable.media_music);  
-        mAnimationDrawable = (AnimationDrawable) mMusic.getBackground();  
+        mMusic.setBackgroundResource(R.drawable.media_music);
+        mAnimationDrawable = (AnimationDrawable) mMusic.getBackground();
     }
 
     @Override
@@ -230,7 +230,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (index < 0 || index >= getData().size()) {
             return;
         }
-        
+
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
@@ -250,14 +250,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 arrowShow(getData());
 
                 UiUtils.runAfterLayout(mImageBrowser, new Runnable() {
-                	@Override
-                	public void run() {
-                		mImageBrowser.reset();
-                		mImageBrowser.changeReset();
-                		UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
-                	}
+                    @Override
+                    public void run() {
+                        mImageBrowser.reset();
+                        mImageBrowser.changeReset();
+                        UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
+                    }
                 });
-                if (curIndex == getData().size()&& curIndex != 1) {
+                if (curIndex == getData().size() && curIndex != 1) {
                     Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -267,7 +267,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             public void bitmapSize(int width, int height) {
                 mWidth = width;
                 mHeight = height;
-                mSizeWidth= width;
+                mSizeWidth = width;
                 mSizeHeight = height;
             }
 
@@ -481,10 +481,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     nflag = true;
                 }
                 String curFileUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
-                mInfoName.setText(getString(R.string.image_name)+"：" + getData().get(mCurImageIndex).mName);
-                mInfoSize.setText(getString(R.string.image_volume)+"：" + FileUtil.convertStorage(getData().get(mCurImageIndex).fileSize));
-                mInfoUrl.setText(getString(R.string.image_size) +"："+ mSizeWidth + "*" + mSizeHeight);
-                mInfoTime.setText(getString(R.string.image_time) +"："+ DateUtil.onDate2String(new Date(getData().get(mCurImageIndex).modifiedDate), "yyyy-MM-dd HH:mm"));
+                mInfoName.setText(getString(R.string.image_name) + "：" + getData().get(mCurImageIndex).mName);
+                mInfoSize.setText(getString(R.string.image_volume) + "：" + FileUtil.convertStorage(getData().get(mCurImageIndex).fileSize));
+                mInfoUrl.setText(getString(R.string.image_size) + "：" + mSizeWidth + "*" + mSizeHeight);
+                mInfoTime.setText(getString(R.string.image_time) + "：" + DateUtil.onDate2String(new Date(getData().get(mCurImageIndex).modifiedDate), "yyyy-MM-dd HH:mm"));
             }
         });
         mInfo.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -825,18 +825,18 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         lastClickTime = time;
         return false;
     }
-    
-    private void startMusicAnimation() {
-		if (!mAnimationDrawable.isRunning()) {
-			mMusic.setVisibility(View.VISIBLE);
-			mAnimationDrawable.start();
-		}
-	}
 
-	private void endMusicAnimation() {
-		if (mAnimationDrawable.isRunning()) {
-			mMusic.setVisibility(View.GONE);
-			mAnimationDrawable.stop();
-		}
-	}
+    private void startMusicAnimation() {
+        if (!mAnimationDrawable.isRunning()) {
+            mMusic.setVisibility(View.VISIBLE);
+            mAnimationDrawable.start();
+        }
+    }
+
+    private void endMusicAnimation() {
+        if (mAnimationDrawable.isRunning()) {
+            mMusic.setVisibility(View.GONE);
+            mAnimationDrawable.stop();
+        }
+    }
 }

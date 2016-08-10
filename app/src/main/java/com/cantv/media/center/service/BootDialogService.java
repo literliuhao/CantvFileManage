@@ -15,6 +15,8 @@ import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.widgets.CustomDialog;
 
+import java.util.List;
+
 /**
  * Created by liuhao on 16/7/14.
  */
@@ -53,7 +55,14 @@ public class BootDialogService extends Service {
                 SharedPreferenceUtil.saveDevice(path);
                 showMountedDialog();
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                MediaUtils.removeUsbRootPaths(intent.getData().getPath());
+//                MediaUtils.removeUsbRootPaths(intent.getData().getPath());
+                List<String> currPathList = MediaUtils.getCurrPathList();
+                if (currPathList.size()<1){
+                    if (null!=dialog&&dialog.isShowing()){
+                        dialog.dismiss();
+                    }
+                }
+
             }
         }
     };
