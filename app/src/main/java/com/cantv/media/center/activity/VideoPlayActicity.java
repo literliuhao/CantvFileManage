@@ -132,20 +132,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 	@Override
 	protected void runProgressBar() {
 
-		String path = mDataList.get(mCurPlayIndex);
-		String srtUrl = checkSrt();
-		mCtrBar.setPlayDuration();
-		List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
 
-		if (list.size() != 0) {
-			mRecord = list.get(0);
-			final int positon = list.get(0).getPosition();
-			mCtrBar.showContinuePaly(positon);
-		}
-
-		if(isSrtExist){
-			parseSrts(srtUrl);
-		}
 
 		if(mMenuDialog != null){
 			MenuItem audioTrackMenuItem = VideoPlayActicity.this.list.get(1);
@@ -327,7 +314,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 		String[] titles = new String[audioTracks.size()];
 		for (int i = 0; i < audioTracks.size(); i++) {
 			int num = i + 1;
-			titles[i] = "音轨 " + num;
+			titles[i] = "音轨" + num;
 		}
 		return titles;
 	}
@@ -445,6 +432,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
 		switch (mSubSelectedMenu.getTitle()) {
 		case MenuConstant.SUBMENU_AUDIOTRACKER_ONE:
+		case MenuConstant.SUBMENU_AUDIOTRACKER_TWO:
 			getProxyPlayer().setMovieAudioTrack(positon);
 			break;
 		case MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL:

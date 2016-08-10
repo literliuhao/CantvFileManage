@@ -6,20 +6,22 @@
     android:layout_height="match_parent"
     android:background="#00ffffff">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/px200"
-        android:background="@drawable/bg_play_top"
-        >
+        android:background="@drawable/bg_play_top">
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/px1000"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="@dimen/px80"
+            android:layout_marginStart="@dimen/px85"
             android:layout_marginTop="@dimen/px75"
+            android:ellipsize="marquee"
+            android:ems="16"
+            android:singleLine="true"
+            android:textColor="@color/trancolor_80_color"
             android:textSize="@dimen/fontsize_48"/>
 
         <TextView
@@ -38,11 +40,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/px80"
+            android:layout_marginEnd="@dimen/px85"
             android:layout_marginTop="@dimen/px75"
             android:textSize="@dimen/fontsize_48"/>
-
-
     </RelativeLayout>
 
     <LinearLayout
@@ -64,7 +64,7 @@
             android:shadowDy="4"
             android:shadowRadius="10"
             android:textColor="#ffffff"
-            android:textSize="@dimen/fontsize_52"/>
+            android:textSize="@dimen/fontsize_56"/>
 
         <LinearLayout
             android:id="@+id/ll_continue_tips"
@@ -78,8 +78,7 @@
                 android:layout_height="@dimen/px53"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="@dimen/px5"
-                android:background="@drawable/play_continue"
-                />
+                android:background="@drawable/play_continue"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -88,15 +87,14 @@
                 android:layout_marginLeft="@dimen/px15"
                 android:text="按下键可以从头播放"
                 android:textColor="#eeffffff"
-                android:textSize="@dimen/fontsize_46"
-                />
+                android:textSize="@dimen/fontsize_46"/>
         </LinearLayout>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_play"
-        android:layout_width="@dimen/px250"
-        android:layout_height="@dimen/px250"
+        android:layout_width="@dimen/px160"
+        android:layout_height="@dimen/px160"
         android:layout_centerInParent="true"
         android:background="@drawable/play_stop"
         android:visibility="invisible"/>
@@ -108,9 +106,8 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_play_bottom"
         android:paddingBottom="@dimen/px50"
-        android:paddingLeft="@dimen/px90"
-        android:paddingRight="@dimen/px90"
-        >
+        android:paddingEnd="@dimen/px10"
+        android:paddingLeft="@dimen/px10">
 
         <com.cantv.media.center.ui.TimeProgressBar
             android:id="@+id/pb_progress"
@@ -134,9 +131,8 @@
             android:id="@+id/iv_menu"
             android:layout_width="@dimen/px53"
             android:layout_height="@dimen/px53"
-            android:layout_alignStart="@id/pb_progress"
             android:layout_below="@+id/pb_progress"
-            android:layout_marginStart="@dimen/px53"
+            android:layout_marginStart="@dimen/px72"
             android:layout_marginTop="@dimen/px15"
             android:src="@drawable/icon_play_menu"/>
 
@@ -150,7 +146,7 @@
             android:layout_toEndOf="@+id/iv_menu"
             android:gravity="center_vertical"
             android:text="@string/play_tips"
-            android:textColor="@color/white"
+            android:textColor="@color/trancolor_50_color"
             android:textSize="@dimen/fontsize_36"/>
 
         <TextView
@@ -158,13 +154,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/tv_menu"
-            android:layout_alignEnd="@+id/pb_progress"
+            android:layout_alignParentEnd="true"
             android:layout_alignTop="@+id/tv_menu"
-            android:layout_marginEnd="@dimen/px56"
+            android:layout_marginEnd="@dimen/px75"
             android:gravity="center_vertical"
-            android:textColor="@color/white"
+            android:textColor="@color/trancolor_50_color"
             android:textSize="@dimen/fontsize_36"/>
-
     </RelativeLayout>
-
 </RelativeLayout>

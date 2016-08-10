@@ -95,6 +95,7 @@ public class MediaListItemView extends MediaItemView {
 		mTvName.setId(0x559586);
 		mTvName.setTextColor(getResources().getColorStateList(R.color.btn_selector));
 		mTvName.setTextSize(getResources().getDimension(R.dimen.px24));
+		mTvName.setMaxWidth((int)getResources().getDimension(R.dimen.px502));
 		mTvName.setSingleLine(true);
 		LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		tvParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
