@@ -131,9 +131,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
 	@Override
 	protected void runProgressBar() {
-
-
-
 		if(mMenuDialog != null){
 			MenuItem audioTrackMenuItem = VideoPlayActicity.this.list.get(1);
 			audioTrackMenuItem.setChildren(createAudioTrackList());
