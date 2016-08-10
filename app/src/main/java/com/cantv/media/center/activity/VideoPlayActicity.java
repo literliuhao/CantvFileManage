@@ -132,7 +132,20 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 	@Override
 	protected void runProgressBar() {
 
+		String path = mDataList.get(mCurPlayIndex);
+		String srtUrl = checkSrt();
+		mCtrBar.setPlayDuration();
+		List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
 
+		if (list.size() != 0) {
+			mRecord = list.get(0);
+			final int positon = list.get(0).getPosition();
+			mCtrBar.showContinuePaly(positon);
+		}
+
+		if(isSrtExist){
+			parseSrts(srtUrl);
+		}
 
 		if(mMenuDialog != null){
 			MenuItem audioTrackMenuItem = VideoPlayActicity.this.list.get(1);
