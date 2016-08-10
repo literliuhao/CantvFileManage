@@ -1,27 +1,25 @@
 package com.cantv.media.center.activity;
 
+import android.app.Activity;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Bundle;
+
+import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.media.center.constants.PlayMode;
+import com.cantv.media.center.data.Media;
+import com.cantv.media.center.ui.PlayerControllerBar.CoverFlowViewListener;
+import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarContext;
+import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.cantv.liteplayer.core.ProxyPlayer;
-import com.cantv.media.center.constants.PlayMode;
-import com.cantv.media.center.ui.PlayerControllerBar.CoverFlowViewListener;
-import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarContext;
-import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarListener;
-import com.cantv.media.center.utils.MediaUtils;
-
-import android.app.Activity;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.TextUtils;
-
 public abstract class PlayerActivity extends Activity implements PlayerCtrlBarContext, PlayerCtrlBarListener, OnCompletionListener, CoverFlowViewListener {
 
     protected int mDefaultPlayIndex;
-    protected List<String> mDataList;
+    protected List<Media> mDataList;
     private ProxyPlayer mPlayer;
     protected int mCurPlayIndex;
     private boolean mPaused = false;
@@ -33,16 +31,17 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDataList = getIntent().getStringArrayListExtra("data_list");
+        mDataList = getIntent().getParcelableArrayListExtra("data_list");
+        ;
         if (mDataList == null) {
-            mDataList = new ArrayList<String>();
+            mDataList = new ArrayList<>();
         }
 
-        String url = Uri.decode(getIntent().getDataString());
-        if (!TextUtils.isEmpty(url)) {
-            mDataList.clear();
-            mDataList.add(url);
-        }
+//        String url = Uri.decode(getIntent().getDataString());
+//        if (!TextUtils.isEmpty(url)) {
+//            mDataList.clear();
+//            mDataList.add(url);
+//        }
         mDefaultPlayIndex = getIntent().getIntExtra("data_index", 0);
         if (mDefaultPlayIndex >= mDataList.size()) {
             mDefaultPlayIndex = 0;
@@ -76,7 +75,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
     @Override
     public String getPlayerTitle() {
-        return MediaUtils.getFileName(mDataList.get(mCurPlayIndex));
+        return mDataList.get(mCurPlayIndex).mName;
     }
 
     @Override
@@ -186,14 +185,14 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         }
         try {
             index = (index < 0) ? 0 : index;
-            if(index >= mDataList.size()){
+            if (index >= mDataList.size()) {
 //            	mPlayer.release();
 //            	finish();
 //            	return;
-				index = index % mDataList.size();
+                index = index % mDataList.size();
             }
             mCurPlayIndex = index;
-            getProxyPlayer().playMedia(mDataList.get(index), new Runnable() {
+            getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
                 @Override
                 public void run() {
                     getProxyPlayer().start();

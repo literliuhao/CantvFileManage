@@ -1,4 +1,5 @@
 package com.cantv.media.center.utils;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 public class MediaUtils {
     private static final String TAG = "MediaUtils";
     // public static String getUsbRootPath() {
@@ -36,6 +38,7 @@ public class MediaUtils {
     // }
     private static List<String> usbList = new ArrayList<>();
     private static Map<String, Integer> mAduioIconMap = new HashMap<>();
+
     static {
         mAduioIconMap.put("ape", R.drawable.music_ape);
         mAduioIconMap.put("mp3", R.drawable.music_mp3);
@@ -44,9 +47,11 @@ public class MediaUtils {
         mAduioIconMap.put("wav", R.drawable.music_wav);
         mAduioIconMap.put("flac", R.drawable.music_flac);
     }
+
     public static String getLocalPath() {
         return Environment.getExternalStorageDirectory().getPath();
     }
+
     // public static List<String> getUsbRootPaths() {
     // return usbList;
     // }
@@ -55,11 +60,13 @@ public class MediaUtils {
             usbList.add(usbPath);
         }
     }
+
     public static void removeUsbRootPaths(String usbPath) {
         if (usbList.contains(usbPath)) {
             usbList.remove(usbPath);
         }
     }
+
     // public static boolean isExistUSB() {
     // // usbList = runMount();
     // if (usbList != null && usbList.size() > 0) {
@@ -74,6 +81,7 @@ public class MediaUtils {
         // return 0;
         return getCurrPathList().size();
     }
+
     public static String getInternalTotal() {
         // 此方法包含了系统本身的大小,不适合
         // Process mprocess;
@@ -98,7 +106,7 @@ public class MediaUtils {
         // return total;
         /**
          * 获取手机内部总的存储空间,出去系统自身占用空间
-         * 
+         *
          * @return
          */
         // public static long getTotalInternalMemorySize() {
@@ -113,6 +121,7 @@ public class MediaUtils {
         // }
         return total;
     }
+
     public static String getInternalFree() {
         // Process mprocess;
         // BufferedReader mreader;
@@ -138,6 +147,7 @@ public class MediaUtils {
         String total = MediaUtils.getFree(getLocalPath());
         return total;
     }
+
     public static String getTotal(String path) {
         Process mprocess;
         BufferedReader mreader;
@@ -161,6 +171,7 @@ public class MediaUtils {
         }
         return total;
     }
+
     public static String getFree(String path) {
         Process mprocess;
         BufferedReader mreader;
@@ -183,6 +194,7 @@ public class MediaUtils {
         }
         return total;
     }
+
     // private static List<String> runMount() {
     // Set<String> set = new TreeSet<String>();
     // List<String> list = null;
@@ -210,21 +222,25 @@ public class MediaUtils {
     // return list;
     // }
     public static boolean isImage(String filename) {
-        String[] str = { "jpg", "png", "jpeg", "bmp", "gif", "webp", "wbmp" };
+        String[] str = {"jpg", "png", "jpeg", "bmp", "gif", "webp", "wbmp"};
         return isEqualType(filename, str);
     }
+
     public static boolean isVideo(String filename) {
-        String[] str = { "mp4", "avi", "mkv", "mpg", "ts", "3gp", "flv", "mka", "mov", "webm", "m2ts", "vob", "mpeg", "f4v", "rmvb", "wmv", "rm" };
+        String[] str = {"mp4", "avi", "mkv", "mpg", "ts", "3gp", "flv", "mka", "mov", "webm", "m2ts", "vob", "mpeg", "f4v", "rmvb", "wmv", "rm"};
         return isEqualType(filename, str);
     }
+
     public static boolean isAudio(String filename) {
-        String[] str = { "mp3", "aac", "wav", "ogg", "mid", "flac", "ape", "ac3", "wma", "m4a" };
+        String[] str = {"mp3", "aac", "wav", "ogg", "mid", "flac", "ape", "ac3", "wma", "m4a"};
         return isEqualType(filename, str);
     }
+
     public static boolean isApp(String filename) {
-        String[] str = { "apk" };
+        String[] str = {"apk"};
         return isEqualType(filename, str);
     }
+
     public static boolean checkMediaSource(String uri, SourceType source) {
         if (uri.startsWith("."))
             return false;
@@ -240,6 +256,7 @@ public class MediaUtils {
             return source == SourceType.DEVICE;
         }
     }
+
     private static boolean isEqualType(String filename, String[] types) {
         String fileType = filename.substring(filename.lastIndexOf('.') + 1, filename.length());
         for (int i = 0; i < types.length; i++) {
@@ -249,6 +266,7 @@ public class MediaUtils {
         }
         return false;
     }
+
     public static void showMediaDetail(Context context, List<Media> medias, int showIndex) {
         Media curMedia = medias.get(showIndex);
         List<String> mediaFiles = new ArrayList<>();
@@ -276,11 +294,13 @@ public class MediaUtils {
             context.startActivity(mIntent);
         }
     }
+
     public static String getFileName(String filepath) {
         filepath = filepath.replace("\\040", " ");
         String filename = filepath.substring(filepath.lastIndexOf('/') + 1, filepath.length());
         return filename;
     }
+
     public static Bitmap loadBitmap(final Audio audio, final ImageCallBack imageCallBack) {
         final Handler handler = new Handler() {
             public void handleMessage(Message msg) {
@@ -297,9 +317,11 @@ public class MediaUtils {
         }.start();
         return null;
     }
+
     public interface ImageCallBack {
         public void imageLoad(Bitmap bitmap);
     }
+
     public static boolean isEqualDevices(String sourcepath, String targetpath) {
         int index = targetpath.lastIndexOf("/");
         String tem = targetpath.substring(index + 1);
@@ -311,6 +333,7 @@ public class MediaUtils {
         }
         return false;
     }
+
     public static String fileLength(long length) {
         if (length == 0) {
             return "0.00k";
@@ -329,23 +352,25 @@ public class MediaUtils {
         }
         return sizestr;
     }
+
     public static String buildSelectionByCategory(FileCategory cat) {
         String selection = null;
         switch (cat) {
-        case Music:
-            selection = FileColumns.MIME_TYPE + " LIKE 'audio/%'";
-            break;
-        case Theme:
-            selection = FileColumns.DATA + " LIKE '%.mtz'";
-            break;
-        case Apk:
-            selection = FileColumns.DATA + " LIKE '%.apk'";
-            break;
-        default:
-            selection = null;
+            case Music:
+                selection = FileColumns.MIME_TYPE + " LIKE 'audio/%'";
+                break;
+            case Theme:
+                selection = FileColumns.DATA + " LIKE '%.mtz'";
+                break;
+            case Apk:
+                selection = FileColumns.DATA + " LIKE '%.apk'";
+                break;
+            default:
+                selection = null;
         }
         return selection;
     }
+
     public static void openMedia(Context context, String path) {
         try {
             IntentBuilder.viewFile(context, path);
@@ -354,9 +379,10 @@ public class MediaUtils {
             e.printStackTrace();
         }
     }
+
     /**
      * 打开指定的媒体文件
-     * 
+     *
      * @param context
      * @param pathList
      * @param currIndex
@@ -365,9 +391,10 @@ public class MediaUtils {
     public static void openMediaActivity(Context context, ArrayList pathList, int currIndex, SourceType sourceType) {
         openMediaActivity(context, pathList, currIndex, sourceType, true);
     }
+
     /**
      * 打开指定的媒体文件
-     * 
+     *
      * @param context
      * @param pathList
      * @param currIndex
@@ -384,7 +411,7 @@ public class MediaUtils {
             currClass = ImagePlayerActivity.class;
         }
         intent.setClass(context, currClass);
-        if (sourceType == SourceType.PICTURE) {
+        if (sourceType == SourceType.PICTURE || sourceType == SourceType.MUSIC) {
             intent.putParcelableArrayListExtra("data_list", pathList);
         } else {
             intent.putStringArrayListExtra("data_list", pathList);
@@ -393,20 +420,23 @@ public class MediaUtils {
         intent.putExtra("isLocal", isLocal);
         context.startActivity(intent);
     }
+
     /**
      * 根据Audio文件的拓展名,得到对应图标的id
-     * 
+     *
      * @param extensinName
      */
     public static int getAudioIconFromExtensionName(String extensinName) {
         return mAduioIconMap.get(extensinName);
     }
+
     public static void loadPicImg(Context context, String path, ImageView imageView) {
         Glide.with(context).load(path).centerCrop().into(imageView);
     }
+
     /**
      * 获取当前存在的外接存储设备
-     * 
+     *
      * @return
      */
     public static List<String> getCurrPathList() {
@@ -423,4 +453,5 @@ public class MediaUtils {
         }
         return arrayList;
     }
+
 }

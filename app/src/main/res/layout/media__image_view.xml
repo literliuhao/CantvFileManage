@@ -185,7 +185,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <TextView
+        <com.cantv.media.center.widgets.YFocusTextView
             android:id="@+id/media__image_info_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -193,6 +193,7 @@
             android:layout_marginRight="@dimen/px10"
             android:layout_marginTop="@dimen/px10"
             android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:textColor="#7fffffff"
             android:textSize="@dimen/fontsize_32"/>
