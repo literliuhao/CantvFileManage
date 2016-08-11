@@ -411,11 +411,11 @@ public class MediaUtils {
             currClass = ImagePlayerActivity.class;
         }
         intent.setClass(context, currClass);
-        if (sourceType == SourceType.PICTURE || sourceType == SourceType.MUSIC) {
-            intent.putParcelableArrayListExtra("data_list", pathList);
-        } else {
-            intent.putStringArrayListExtra("data_list", pathList);
-        }
+//        if (sourceType == SourceType.PICTURE || sourceType == SourceType.MUSIC) {
+        intent.putParcelableArrayListExtra("data_list", pathList);
+//        } else {
+//            intent.putStringArrayListExtra("data_list", pathList);
+//        }
         intent.putExtra("data_index", currIndex);
         intent.putExtra("isLocal", isLocal);
         context.startActivity(intent);

@@ -356,20 +356,21 @@ public class MediaGridView extends CustomGridView {
     private void openMediaActivity(Media media) {
         ArrayList mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
         int indexFromList = 1;
-        if (media.mType == SourceType.PICTURE || media.mType == SourceType.MUSIC) {
+//        if (media.mType == SourceType.PICTURE || media.mType == SourceType.MUSIC) {
             mediaPathList = FileUtil.getMediaListFromList(mCurrMediaList, media.mType);
             if (media.isSharing) {
                 indexFromList = FileUtil.getMediaIndexFromList(mediaPathList, media.sharePath);
             } else {
                 indexFromList = FileUtil.getMediaIndexFromList(mediaPathList, media.mUri);
             }
-        } else {
-            if (media.isSharing) {
-                indexFromList = FileUtil.getIndexFromList(mediaPathList, media.sharePath);
-            } else {
-                indexFromList = FileUtil.getIndexFromList(mediaPathList, media.mUri);
-            }
-        }
+//        }
+//        else {
+//            if (media.isSharing) {
+//                indexFromList = FileUtil.getIndexFromList(mediaPathList, media.sharePath);
+//            } else {
+//                indexFromList = FileUtil.getIndexFromList(mediaPathList, media.mUri);
+//            }
+//        }
         MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType);
     }
 

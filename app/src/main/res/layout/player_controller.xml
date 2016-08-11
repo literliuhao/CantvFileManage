@@ -11,29 +11,6 @@
         android:layout_height="@dimen/px200"
         android:background="@drawable/bg_play_top">
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="@dimen/px1000"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="@dimen/px85"
-            android:layout_marginTop="@dimen/px75"
-            android:ellipsize="marquee"
-            android:ems="16"
-            android:singleLine="true"
-            android:textColor="@color/trancolor_80_color"
-            android:textSize="@dimen/fontsize_48"/>
-
-        <TextView
-            android:id="@+id/tv_definiton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/tv_name"
-            android:layout_marginStart="@dimen/px60"
-            android:layout_toEndOf="@+id/tv_name"
-            android:gravity="center"
-            android:textSize="@dimen/fontsize_48"
-            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/tv_time"
@@ -43,6 +20,35 @@
             android:layout_marginEnd="@dimen/px85"
             android:layout_marginTop="@dimen/px75"
             android:textSize="@dimen/fontsize_48"/>
+
+
+        <TextView
+            android:id="@+id/tv_definiton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_time"
+            android:layout_marginRight="@dimen/px35"
+            android:layout_toLeftOf="@id/tv_time"
+            android:gravity="center"
+            android:textSize="@dimen/fontsize_48"
+            android:visibility="invisible"/>
+
+        <com.cantv.media.center.widgets.YFocusTextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="@dimen/px35"
+            android:layout_marginStart="@dimen/px85"
+            android:layout_marginTop="@dimen/px75"
+            android:layout_toLeftOf="@id/tv_definiton"
+            android:ellipsize="marquee"
+            android:ems="16"
+            android:singleLine="true"
+            android:textColor="@color/trancolor_80_color"
+            android:textSize="@dimen/fontsize_48"/>
+
+
     </RelativeLayout>
 
     <LinearLayout

@@ -471,8 +471,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         playListMenuItem.setSelected(true);
         List<MenuItem> playListSubMenuItems = new ArrayList<MenuItem>();
         for (int i = 0, dataCount = mDataList.size(); i < dataCount; i++) {
-            String url = mDataList.get(i).isSharing ? mDataList.get(i).sharePath : mDataList.get(i).mUri;
-            MenuItem item = new MenuItem(url.substring(url.lastIndexOf("/") + 1));
+            MenuItem item = new MenuItem(mDataList.get(i).mName);
             item.setType(MenuItem.TYPE_SELECTOR_MARQUEE);
             playListSubMenuItems.add(item);
         }

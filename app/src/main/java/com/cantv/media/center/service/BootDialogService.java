@@ -49,7 +49,7 @@ public class BootDialogService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-            	String path = intent.getData().getPath();
+                String path = intent.getData().getPath();
 //                MediaUtils.addUsbRootPaths(path);
                 //保存路径到本地
                 SharedPreferenceUtil.saveDevice(path);
@@ -57,8 +57,8 @@ public class BootDialogService extends Service {
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 //                MediaUtils.removeUsbRootPaths(intent.getData().getPath());
                 List<String> currPathList = MediaUtils.getCurrPathList();
-                if (currPathList.size()<1){
-                    if (null!=dialog&&dialog.isShowing()){
+                if (currPathList.size() < 1) {
+                    if (null != dialog && dialog.isShowing()) {
                         dialog.dismiss();
                     }
                 }

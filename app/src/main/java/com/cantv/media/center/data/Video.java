@@ -15,6 +15,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import static android.R.attr.id;
+import static com.cantv.media.center.app.MyApplication.mContext;
+
 public class Video extends Media {
 
     public Video(SourceType type, String uri) {
@@ -49,6 +52,11 @@ public class Video extends Media {
         String imagePath = getUri();
         bitmap = ThumbnailUtils.createVideoThumbnail(imagePath, kind);
         bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+
+//        bitmap = MediaStore.Video.Thumbnails.getThumbnail(mContext.getContentResolver(),
+//                id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
+
+
         return bitmap;
 
         // MediaMetadataRetriever mmr = new MediaMetadataRetriever();

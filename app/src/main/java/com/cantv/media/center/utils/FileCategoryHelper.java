@@ -17,8 +17,11 @@ public class FileCategoryHelper {
 
     //设置好对应类型
     static {
-        addItem(new String[]{"mp4", "avi", "mkv", "wmv", "mpg", "ts", "3gp", "flv", "mka", "mov", "webm", "m2ts", "vob", "mpeg", "f4v", "rmvb", "wmv", "rm", "m4v", "3gpp", "3g2", "3gpp2", "asf"}, TYPE_MOIVE);
-        addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp", "wbmp"}, TYPE_PICTURE);
+//        addItem(new String[]{"mp4", "avi", "mkv", "wmv", "mpg", "ts", "3gp", "flv", "mka", "mov", "webm", "m2ts", "vob", "mpeg", "f4v", "rmvb", "wmv", "rm", "m4v", "3gpp", "3g2", "3gpp2", "asf"}, TYPE_MOIVE);
+//        AVI、MOV、ASF、WMV、3GP、FLV、MKV、RAM、RMVB、ts
+        addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts", "mp4"}, TYPE_MOIVE);
+//        BMP、PNG、JPEG、GIF、JPG
+        addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp"}, TYPE_PICTURE);
         addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac"}, TYPE_MUSIC);
         addItem(new String[]{"apk"}, TYPE_APP);
     }
