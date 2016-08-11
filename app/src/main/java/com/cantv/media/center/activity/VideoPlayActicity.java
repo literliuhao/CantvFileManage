@@ -137,6 +137,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayDuration();
         List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
 
+//        String videoProgress = SharedPreferenceUtil.getVideoProgress();
+//        if (!videoProgress.equals("")) {
+//            String[] split = videoProgress.split(",");
+//            if (split[0].equals(path)) {
+//                mCtrBar.showContinuePaly(Integer.parseInt(split[1]));
+//            }
+//
+//        }
+
         if (list.size() != 0) {
             mRecord = list.get(0);
             final int positon = list.get(0).getPosition();
@@ -290,11 +299,19 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         }
 
         String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
-        ;
 
         long position = getPlayerCurPosition();
+//        Log.w("当前进度  ", position + "");
+//        Log.w("总进度  ", getPlayerDuration() + "");
+
+        if (position == 0) {
+            return;
+        }
+
+//        SharedPreferenceUtil.saveVideoProgress(path, (int) position);
+
+        List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
         if (mRecord == null) {
-            List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
             if (list.size() == 0) {
                 VideoPlayer info = new VideoPlayer();
                 info.setName(path);
@@ -317,10 +334,17 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mCtrBar.setFullProgress();
             mCtrBar.removeAllMessage();
         }
-        if (mRecord != null) {
-            DaoOpenHelper.getInstance(this).deleteInfo(mRecord);
+        if (getPlayerDuration() - getPlayerCurPosition() > 100) {
+            storeDuration();
+            if (mCtrBar != null) {
+                mCtrBar.onBackPressed(this);
+            }
+        } else {
+            if (mRecord != null) {
+                DaoOpenHelper.getInstance(this).deleteInfo(mRecord);
+            }
+            super.onCompletion(arg0);
         }
-        super.onCompletion(arg0);
     }
 
     private String[] getCurVideoAudioTracks() {

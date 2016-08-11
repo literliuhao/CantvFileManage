@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnSeekCompleteListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -36,7 +35,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDataList = getIntent().getParcelableArrayListExtra("data_list");
-        String url = Uri.decode(getIntent().getDataString());
+//        String url = Uri.decode(getIntent().getDataString());
 //        if (!TextUtils.isEmpty(url)) {
 //            if (mDataList == null) {
 //                mDataList = new ArrayList<String>();

@@ -248,7 +248,7 @@ public class PlayerController extends RelativeLayout {
         mMovieTimeTv.setText(time2String(0) + " / " + time2String(mDuration));
     }
 
-    @SuppressLint("SimpleDateFormat")
+
     public void showContinuePaly(int position) {
         seekToDuration(position);
 
@@ -256,7 +256,7 @@ public class PlayerController extends RelativeLayout {
         mContinueText.setText("从" + time2String(position) + "开始，继续为您播放");
         isShowTip = true;
         mPlayImage.setVisibility(INVISIBLE);
-        handler.sendEmptyMessageDelayed(CONTINUE_PLAY, 2000);
+        handler.sendEmptyMessageDelayed(CONTINUE_PLAY, 3000);
     }
 
     @SuppressLint("SimpleDateFormat")
