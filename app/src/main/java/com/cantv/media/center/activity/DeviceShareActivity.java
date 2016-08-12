@@ -245,7 +245,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 mAddDeviceView.requestFocus();
                 onFocusChange(mAddDeviceView, true);
             }
-        }, 400);
+        }, 500);
 
         SharedPreferenceUtil.saveLinkHost(info.getIp());
 
