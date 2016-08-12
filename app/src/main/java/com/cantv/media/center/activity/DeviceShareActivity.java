@@ -113,10 +113,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     @Override
     protected void onStop() {
-//        if (null != mBlurDrawable) {
-//            mBlurDrawable.setCallback(null);
-//            mBlurDrawable = null;
-//        }
         unregisterReceiver(mNetChangeReceiver);
         super.onStop();
     }
@@ -164,8 +160,8 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     }
 
     private void initData() {
-        mDeviceInfos = new LinkedList<DeviceInfo>();
-        mDeviceViews = new LinkedList<DeviceShareItemView>();
+        mDeviceInfos = new LinkedList<>();
+        mDeviceViews = new LinkedList<>();
         mFileServer = new FileServer();
         mFileServer.start();
 
@@ -244,12 +240,12 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mDeviceInfos.add(info);
         mDeviceViews.add(view);
         mDeviceItemGroup.postDelayed(new Runnable() {
-
             @Override
             public void run() {
-                view.requestFocus();
+                mAddDeviceView.requestFocus();
+                onFocusChange(mAddDeviceView, true);
             }
-        }, 500);
+        }, 400);
 
         SharedPreferenceUtil.saveLinkHost(info.getIp());
 
@@ -260,7 +256,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     }
 
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {
+    public void onFocusChange(final View v, final boolean hasFocus) {
+
+        if (null == mFocusScaleUtils) {
+            return;
+        }
         if (hasFocus) {
             if (v == mDeviceItemGroup.getChildAt(0)) {
                 mScrollView.smoothScrollTo(0, 0);
@@ -339,9 +339,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     public static class CheckNetAccessTask extends AsyncTask<String, Void, Boolean> {
 
         public interface OnNetCheckCallback {
-            public void onStartCheck();
+            void onStartCheck();
 
-            public void onGetResult(boolean success);
+            void onGetResult(boolean success);
         }
 
         private OnNetCheckCallback callback;
@@ -426,11 +426,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                         ToastUtils.showMessage(MyApplication.mContext, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
                         return;
                     }
-//                    deviceInfo.setUserName(userName.trim());
-//                    deviceInfo.setPassword(password.trim());
-//                    String ipVal = new StringBuilder(deviceInfo.getUserName()).append(":").append(deviceInfo.getPassword()).append("@").append(deviceInfo.getIp()).toString();
-//                    deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
-//                    loginDevice(deviceInfo);
 
                     zjLogin(deviceInfo, userName, password);
 
@@ -552,7 +547,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         getWindow().getDecorView().setDrawingCacheEnabled(false);
         view.destroyDrawingCache();
         return bm;
-        // return getWindow().getDecorView().getDrawingCache();
     }
 
     /**
