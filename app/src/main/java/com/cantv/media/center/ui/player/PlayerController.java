@@ -364,6 +364,7 @@ public class PlayerController extends RelativeLayout {
         mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
             @Override
             public void onSeekComplete(MediaPlayer arg0) {
+                delayHidePlayImgvi();
                 handler.sendEmptyMessageDelayed(PlayerController.CHANG_PLAYIMAGE, 200);
                 handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);
                 if (isSrtExist) {
@@ -371,6 +372,7 @@ public class PlayerController extends RelativeLayout {
                 }
                 mProgressBar.setProgress(mCtrlBarContext.getPlayerCurPosition());
                 mKeyDownRepeatCount = 0;
+
             }
         });
     }
@@ -408,6 +410,9 @@ public class PlayerController extends RelativeLayout {
     ;
 
     private void toggleSeekImgvi(int keyCode) {
+        if(View.INVISIBLE==mPlayImage.getVisibility()&&!isShowTip){
+            mPlayImage.setVisibility(View.VISIBLE);
+        }
         if (KeyEvent.KEYCODE_DPAD_LEFT == keyCode) {
             mPlayImage.setBackgroundResource(R.drawable.play_kt);
         } else if (KeyEvent.KEYCODE_DPAD_RIGHT == keyCode) {
@@ -454,7 +459,7 @@ public class PlayerController extends RelativeLayout {
     private void delayHidePlayImgvi() {
         if (!mCtrlBarContext.isPlayerPaused()) {
             handler.removeMessages(CHANGE_PLAY_VISIBILITY);
-            handler.sendEmptyMessageDelayed(CHANGE_PLAY_VISIBILITY, 1000);
+            handler.sendEmptyMessageDelayed(CHANGE_PLAY_VISIBILITY, 100);
         }
     }
 
