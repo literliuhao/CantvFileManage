@@ -334,7 +334,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mCtrBar.setFullProgress();
             mCtrBar.removeAllMessage();
         }
-        if (getPlayerDuration() - getPlayerCurPosition() > 100) {
+
+        //差值5秒作为间隔
+        if (getPlayerDuration() - getPlayerCurPosition() > 5000) {
             storeDuration();
             if (mCtrBar != null) {
                 mCtrBar.onBackPressed(this);
