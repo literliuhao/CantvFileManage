@@ -149,7 +149,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (list.size() != 0) {
             mRecord = list.get(0);
             final int positon = list.get(0).getPosition();
-            mCtrBar.showContinuePaly(positon);
+            if (positon > 0) {
+                mCtrBar.showContinuePaly(positon);
+            }
         }
 
         if (isSrtExist) {
@@ -303,8 +305,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         long position = getPlayerCurPosition();
 //        Log.w("当前进度  ", position + "");
 //        Log.w("总进度  ", getPlayerDuration() + "");
-
-        if (position == 0) {
+        //当前进度是0或者进度和总时长差距在5秒内就没有意思,不进行保存
+        if (position == 0 || getPlayerDuration() - position < 5000) {
             return;
         }
 
