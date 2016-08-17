@@ -58,6 +58,7 @@ public class MediaGridView extends CustomGridView {
     private boolean autoLoadData = true;
     private DisclaimerDialog mDisclaimerDialog;
     private LoadingDialog mLoadingDialog;
+    private String currentType;
 
     public MediaGridView(Context context, SourceType sourceType) {
         super(context);
@@ -65,6 +66,24 @@ public class MediaGridView extends CustomGridView {
         mActivity = (GridViewActivity) context;
         mLoadingDialog = new LoadingDialog(mContext);
         msSourceType = sourceType;
+        switch (msSourceType){
+            case MOIVE:
+                currentType = "暂无视频";
+                break;
+            case PICTURE:
+                currentType = "暂无图片";
+                break;
+            case MUSIC:
+                currentType = "暂无音频";
+                break;
+            case APP:
+                currentType = "暂无应用";
+                break;
+            default:
+                currentType = "暂无数据";
+                break;
+        }
+        syncType(currentType);
         mListAdapter = new MediaListAdapter(context, new ArrayList<Media>());
         setGridViewSelector(new ColorDrawable(Color.TRANSPARENT));
         setOnItemClickListener(new OnItemClickListener() {
@@ -92,7 +111,7 @@ public class MediaGridView extends CustomGridView {
                     mMediaStack.push(mListAdapter.getData());
                     mListAdapter.bindData(mCurrMediaList);
                     if (mCurrMediaList.size() == 0) {
-                        showNoDataPage();
+                        showNoDataPage(currentType);
                         mActivity.mRTCountView.setVisibility(View.GONE);
                     } else {
                         setTextRTview(1 + "", " / " + mCurrMediaList.size());
@@ -233,7 +252,7 @@ public class MediaGridView extends CustomGridView {
             mListAdapter.bindData(result);
             setAdapter(mListAdapter);
             if (result.size() == 0) {
-                showNoDataPage();
+                showNoDataPage(currentType);
             } else {
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
                 setTextRTview("1", " / " + mCurrMediaList.size());

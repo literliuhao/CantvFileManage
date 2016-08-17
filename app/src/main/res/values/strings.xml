@@ -21,6 +21,9 @@
     <string name="str_menu">按菜单键获取更多功能</string>
     <string name="str_newdevice">发现设备</string>
     <string name="str_nodata">暂无数据</string>
+    <string name="str_novideo">暂无视频</string>
+    <string name="str_nomusic">暂无音频</string>
+    <string name="str_nophoto">暂无图片</string>
     <string name="str_nodev">暂无设备</string>
     <string name="str_noshare">暂无文件共享</string>
     <string name="str_open">打开</string>

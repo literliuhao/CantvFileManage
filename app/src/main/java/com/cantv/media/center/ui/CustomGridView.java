@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -15,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
 import com.app.core.sys.MainThread;
 import com.cantv.media.R;
 @SuppressLint("ResourceAsColor")
@@ -26,6 +26,7 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
     private Runnable mRefreshSelectedViewRunnable;
     private View memptyView;
     private TextView mdata_tip;
+    private TextView textType;
     public CustomGridView(Context context) {
         this(context, null);
     }
@@ -73,6 +74,8 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
         mGridView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         LayoutInflater inflater = LayoutInflater.from(getContext());
         memptyView = inflater.inflate(R.layout.gridview_empty_view, this, false);
+        textType = (TextView) memptyView.findViewById(R.id.data_tip);
+
         mdata_tip = (TextView) findViewById(R.id.data_tip);
         addView(mGridView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(mFocusView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -154,7 +157,16 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
      *
      * @param
      */
+    public void showNoDataPage(String type) {
+        textType.setText(type);
+        mGridView.setEmptyView(memptyView);
+    }
+
     public void showNoDataPage() {
         mGridView.setEmptyView(memptyView);
+    }
+
+    public void syncType(String type){
+        textType.setText(type);
     }
 }
