@@ -5,13 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -424,16 +421,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 if (mAutoPlay) {
                     stopAutoPlay();
-                    pauseMusic();
+                    //pauseMusic();
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     startAutoPlay();
                     if (isFirstPlayMusic) {
                         isFirstPlayMusic = false;
-                        startMusic();
+                        //startMusic();
                     } else {
-                        resumeMusic();
+                        //resumeMusic();
                     }
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_start_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info33);
@@ -523,7 +520,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         int size = getData().size();
         if (curIndex == size) {
             stopAutoPlay();
-            stopMusic();
+            //stopMusic();
             mAutoRunImageView.setImageResource(R.drawable.photo_info3);
             return;
         }
@@ -531,14 +528,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoPlay = true;
             getScreenLock().acquire();
         }
-        startMusicAnimation();
+        //startMusicAnimation();
         MainThread.runLater(mAutoRunnable, 5000);
     }
 
     private void stopAutoPlay() {
         if (mAutoPlay) {
             mAutoPlay = false;
-            endMusicAnimation();
+            //endMusicAnimation();
             MainThread.cancel(mAutoRunnable);
             getScreenLock().release();
         }
@@ -677,7 +674,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             if (!mShowing) {
                 if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
                     stopAutoPlay();
-                    stopMusic();
+                    //stopMusic();
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                     return true;
@@ -712,7 +709,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onDestroy();
         if (mAutoPlay) {
             stopAutoPlay();
-            stopMusic();
+            //stopMusic();
             mMusic.setVisibility(View.GONE);
             mAnimationDrawable.stop();
         }
@@ -755,7 +752,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         view.startAnimation(translateAnimation);
     }
 
-    private void stopMusic() {
+    /*private void stopMusic() {
         stop();
         isFirstPlayMusic = true;
     }
@@ -815,7 +812,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mMediaPlayer = null;
             PLAYING_STATUS = STOP;
         }
-    }
+    }*/
 
     public synchronized static boolean isFastClick() {
         long time = System.currentTimeMillis();
@@ -826,7 +823,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         return false;
     }
 
-    private void startMusicAnimation() {
+   /* private void startMusicAnimation() {
         if (!mAnimationDrawable.isRunning()) {
             mMusic.setVisibility(View.VISIBLE);
             mAnimationDrawable.start();
@@ -838,5 +835,5 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mMusic.setVisibility(View.GONE);
             mAnimationDrawable.stop();
         }
-    }
+    }*/
 }
