@@ -24,6 +24,7 @@ public class ProxyPlayer {
     private LitePlayer mLitePlayer;
     private PlayerStatusInfo mStatusInfo;
     private OnVideoSizeChangedListener mListener = null;
+    private Boolean mRetryPlaye = true;
 
     public void start() {
         getLitePlayer().start();
@@ -107,8 +108,13 @@ public class ProxyPlayer {
         getLitePlayer().setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer arg0) {
-                if (callBack != null) {
-                    callBack.run();
+                try {
+                    Thread.sleep(2000);
+                    if (callBack != null) {
+                        callBack.run();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -122,25 +128,19 @@ public class ProxyPlayer {
     }
 
     public void runOnActivityResume() throws Exception {
-        if (mStatusInfo == null)
-            return;
-        Log.i("liujun33", "runOnActivityResume");
+        if (mStatusInfo == null) return;
         getLitePlayer().setDisplay(mStatusInfo.mHolder);
         setOnCompletionListener(mStatusInfo.mOnCompletionListener);
         getLitePlayer().setOnTimedTextListener(mStatusInfo.mOnTimedTextListener);
         setSubTitleDisplayCallBack(mStatusInfo.mStDisplayCallBack);
-        Log.i("liujun33", "playMedia");
         playMedia(mStatusInfo.mSourceUri, new Runnable() {
             @Override
             public void run() {
-                if (mStatusInfo.mAudioTrackIndex >= 0)
-                    setMovieAudioTrack(mStatusInfo.mAudioTrackIndex);
-                if (mStatusInfo.mVideoSubTitleIndex >= 0)
-                    setMovieSubTitle(mStatusInfo.mVideoSubTitleIndex);
+                if (mStatusInfo.mAudioTrackIndex >= 0) setMovieAudioTrack(mStatusInfo.mAudioTrackIndex);
+                if (mStatusInfo.mVideoSubTitleIndex >= 0) setMovieSubTitle(mStatusInfo.mVideoSubTitleIndex);
                 seekTo(mStatusInfo.mCurrentPosition, new OnSeekCompleteListener() {
                     @Override
                     public void onSeekComplete(MediaPlayer arg0) {
-                        Log.i("liujun33", "SeekComplete");
                         mStatusInfo = null;
                         start();
                     }
@@ -158,11 +158,10 @@ public class ProxyPlayer {
         mLitePlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-
-                Log.w("异常", "卧槽,文件播放发生异常!");
-
-                if (null != mExceptionListener) {
-                    mExceptionListener.ExceHappen();
+                Log.w("异常", "文件播放发生异常!");
+                if (null != mExceptionListener && mRetryPlaye) {
+                    mRetryPlaye = false;
+                    mExceptionListener.RetryPlay();
                 }
                 return false;
             }
@@ -201,6 +200,8 @@ public class ProxyPlayer {
      */
     public interface MediaplayExceptionListener {
         void ExceHappen();
+
+        void RetryPlay();
     }
 
     private MediaplayExceptionListener mExceptionListener;

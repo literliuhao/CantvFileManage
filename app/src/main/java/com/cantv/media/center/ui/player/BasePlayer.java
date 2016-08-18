@@ -61,6 +61,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             public void ExceHappen() {
                 finish();
             }
+
+            @Override
+            public void RetryPlay() {
+                playMedia(mCurPlayIndex);
+            }
         });
 
         return mPlayer;
@@ -195,5 +200,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         } else {
             return "";
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 }
