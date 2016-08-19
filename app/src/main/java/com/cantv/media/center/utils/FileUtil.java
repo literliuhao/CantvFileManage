@@ -450,7 +450,7 @@ public class FileUtil {
     public static String getExtFromFilename(String filename) {
         int dotPosition = filename.lastIndexOf('.');
         if (dotPosition != -1) {
-            return filename.substring(dotPosition + 1);
+            return filename.substring(dotPosition + 1).toLowerCase();
         }
         return "";
     }
