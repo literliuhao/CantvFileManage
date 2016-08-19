@@ -149,7 +149,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (list.size() != 0) {
             mRecord = list.get(0);
             final int positon = list.get(0).getPosition();
-            if (positon > 0) {
+            if (positon > 1000) {
                 mCtrBar.showContinuePaly(positon);
             }
         }

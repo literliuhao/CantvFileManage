@@ -173,9 +173,10 @@ public class GridViewActivity extends Activity {
     }
 
     private void showMenuDialog() {
-        list = createMenuData();
         if (mMenuDialog == null) {
             mMenuDialog = new MenuDialog(this);
+            list = createMenuData();
+            mMenuDialog.setMenuList(list);
             mMenuDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
@@ -229,7 +230,6 @@ public class GridViewActivity extends Activity {
                 }
             });
         }
-        mMenuDialog.setMenuList(list);
         mMenuDialog.show();
     }
 
