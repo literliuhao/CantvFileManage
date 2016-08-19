@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -173,9 +174,11 @@ public class GridViewActivity extends Activity {
     }
 
     private void showMenuDialog() {
-        list = createMenuData();
+
         if (mMenuDialog == null) {
             mMenuDialog = new MenuDialog(this);
+            list = createMenuData();
+            mMenuDialog.setMenuList(list);
             mMenuDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
@@ -208,6 +211,11 @@ public class GridViewActivity extends Activity {
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
                     mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
                     if (position == 2) {
+                        String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
+                        if(FileUtil.isListConOtListValue(FileUtil.getListFromList(mGridView.mListAdapter.getData()), FileUtil.arrayToList(pathList))){
+                            Toast.makeText(getApplicationContext(),"外接设备不能删除",Toast.LENGTH_LONG).show();
+                            return true;
+                        }
                         mDeleteItem = mGridView.mSelectItemPosition;
                         List<Media> datas = mGridView.mListAdapter.getData();
                         if (datas.size() > 0) { // 防止当前目录没有数据,进行删除操作发生异常
@@ -229,7 +237,6 @@ public class GridViewActivity extends Activity {
                 }
             });
         }
-        mMenuDialog.setMenuList(list);
         mMenuDialog.show();
     }
 
@@ -270,7 +277,7 @@ public class GridViewActivity extends Activity {
         Intent intent = getIntent();
         String type = intent.getStringExtra("type");
         String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
-        if (!"share".equalsIgnoreCase(type) && !FileUtil.isListConOtListValue(FileUtil.getListFromList(mGridView.mListAdapter.getData()), FileUtil.arrayToList(pathList))) {
+        if (!"share".equalsIgnoreCase(type) ) {
             deleteMenuItem = new MenuItem(getString(R.string.delete));
             deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
             mMenuList.add(deleteMenuItem);
