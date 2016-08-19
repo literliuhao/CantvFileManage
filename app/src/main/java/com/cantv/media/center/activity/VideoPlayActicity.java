@@ -150,7 +150,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mRecord = list.get(0);
             final int positon = list.get(0).getPosition();
             if (positon > 1000) {
-                mCtrBar.showContinuePaly(positon);
+                if (positon < getPlayerDuration()) {
+                    //当当前时长小于视频总时长时
+                    mCtrBar.showContinuePaly(positon);
+                } else {
+                    //当发生当前时长超过视频总时长时(名称替换可能会造成这种结果,或者其他未知意外情况)
+                    mCtrBar.seekToDuration(0);
+                }
             }
         }
 
