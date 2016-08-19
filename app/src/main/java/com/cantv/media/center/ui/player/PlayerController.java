@@ -250,8 +250,11 @@ public class PlayerController extends RelativeLayout {
 
 
     public void showContinuePaly(int position) {
+        //大于一千毫秒才有意义,否则time2String(position)转化的也是0
+        if (!(position > 1000)) {
+            return;
+        }
         seekToDuration(position);
-
         mContinuePlay.setVisibility(VISIBLE);
         mContinueText.setText("从" + time2String(position) + "开始，继续为您播放");
         isShowTip = true;
@@ -410,7 +413,7 @@ public class PlayerController extends RelativeLayout {
     ;
 
     private void toggleSeekImgvi(int keyCode) {
-        if(View.INVISIBLE==mPlayImage.getVisibility()&&!isShowTip){
+        if (View.INVISIBLE == mPlayImage.getVisibility() && !isShowTip) {
             mPlayImage.setVisibility(View.VISIBLE);
         }
         if (KeyEvent.KEYCODE_DPAD_LEFT == keyCode) {

@@ -59,6 +59,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         mPlayer.onExceptionListener(new ProxyPlayer.MediaplayExceptionListener() {
             @Override
             public void ExceHappen() {
+                getProxyPlayer().release();
                 finish();
             }
 
@@ -75,6 +76,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     public void onCompletion(MediaPlayer arg0) {
         if (mCurPlayIndex == mDataList.size() - 1) {
             Toast.makeText(BasePlayer.this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
+            getProxyPlayer().release();
             finish();
         } else {
             scrollToNext(null);
@@ -164,6 +166,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                 mRecord = list.get(0);
             }
         } catch (Exception e) {
+            getProxyPlayer().release();
             this.finish();
             e.printStackTrace();
         }
@@ -173,11 +176,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         playMedia(mDefaultPlayIndex);
     }
 
-    @Override
-    public void finish() {
-        getProxyPlayer().release();
-        super.finish();
-    }
 
     @Override
     public String getDefinition() {
@@ -205,6 +203,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     @Override
     protected void onStop() {
         super.onStop();
-        finish();
+        mPlayer.stop();
     }
 }

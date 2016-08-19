@@ -236,6 +236,8 @@ public class GridViewActivity extends Activity {
                     }
                 }
             });
+        }else {
+
         }
         mMenuDialog.show();
     }
