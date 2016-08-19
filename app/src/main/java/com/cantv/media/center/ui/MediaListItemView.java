@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -91,13 +92,12 @@ public class MediaListItemView extends MediaItemView {
 		picImageParams.setMargins(FileUtil.dip2px(mContext, 14), 0, 0, 0);
 		mPicImageView.setLayoutParams(picImageParams);
 
-		mTvName = new TextView(context);
+		mTvName = (TextView) LayoutInflater.from(context).inflate(R.layout.marquee_textview, null);
 		mTvName.setId(0x559586);
 		mTvName.setTextColor(getResources().getColorStateList(R.color.btn_selector));
 		mTvName.setTextSize(getResources().getDimension(R.dimen.px24));
-		mTvName.setMaxWidth((int)getResources().getDimension(R.dimen.px502));
 		mTvName.setSingleLine(true);
-		LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		LayoutParams tvParams = new RelativeLayout.LayoutParams((int)getResources().getDimension(R.dimen.px1200), LayoutParams.WRAP_CONTENT);
 		tvParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
 		tvParams.setMargins((int) getResources().getDimension(R.dimen.px30), (int) getResources().getDimension(R.dimen.px60), 0, (int) getResources().getDimension(R.dimen.px10));
 		mTvName.setLayoutParams(tvParams);

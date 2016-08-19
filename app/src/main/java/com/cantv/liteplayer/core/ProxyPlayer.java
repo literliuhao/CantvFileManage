@@ -29,6 +29,9 @@ public class ProxyPlayer {
     public void start() {
         getLitePlayer().start();
     }
+    public void stop() {
+        getLitePlayer().stop();
+    }
 
     public void pause() {
         getLitePlayer().pause();
@@ -108,13 +111,8 @@ public class ProxyPlayer {
         getLitePlayer().setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer arg0) {
-                try {
-                    Thread.sleep(2000);
-                    if (callBack != null) {
-                        callBack.run();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (callBack != null) {
+                    callBack.run();
                 }
             }
         });
@@ -159,10 +157,13 @@ public class ProxyPlayer {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.w("异常", "文件播放发生异常!");
-                if (null != mExceptionListener && mRetryPlaye) {
+                if (null != mExceptionListener && !mRetryPlaye) {
+                    mExceptionListener.ExceHappen();
+                } else if(mRetryPlaye) {
                     mRetryPlaye = false;
                     mExceptionListener.RetryPlay();
                 }
+
                 return false;
             }
         });
