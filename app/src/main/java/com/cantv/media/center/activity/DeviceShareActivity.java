@@ -244,6 +244,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             public void run() {
                 mAddDeviceView.requestFocus();
                 onFocusChange(mAddDeviceView, true);
+                mFocusUtils.hideFocusForStartMove(400);
             }
         }, 500);
 
@@ -570,6 +571,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     if (null != mAddDeviceDialog) {
                         mAddDeviceDialog.dismiss();
                     }
+                    mFocusUtils.hideFocus();
                     addDeviceItemView(new DeviceInfo(ip));
                 } else {
                     if (!isFirst) {
