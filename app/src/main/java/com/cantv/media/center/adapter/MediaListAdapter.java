@@ -78,14 +78,6 @@ public class MediaListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MediaItemView mediaItemView = getItemType(parent);
-
-//        if (mediaItemView instanceof MediaListItemView){
-//
-//            List<String> usbPaths = ((MediaListItemView) ((MediaListItemView) mediaItemView)).getUsbPaths();
-//            if (null==usbPaths){
-//                ((MediaListItemView) mediaItemView).setUsbPaths(MediaUtils.getCurrPathList());
-//            }
-//        }
         mediaItemView.setMediaItem(getItem(position));
 
         return mediaItemView;

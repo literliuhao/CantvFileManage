@@ -43,7 +43,7 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
             public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
                 if (previouslyFocusedRect != null) {
                     previouslyFocusedRect.right = previouslyFocusedRect.left = mLastFocusPoint.x;
-                    return super.requestFocus(direction, previouslyFocusedRect);
+//                    return super.requestFocus(direction, previouslyFocusedRect);
                 }
                 return super.requestFocus(direction, previouslyFocusedRect);
             }
