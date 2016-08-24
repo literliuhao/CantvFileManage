@@ -76,7 +76,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     public void onCompletion(MediaPlayer arg0) {
         if (mCurPlayIndex == mDataList.size() - 1) {
             Toast.makeText(BasePlayer.this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
-            getProxyPlayer().release();
+            getProxyPlayer().stop();
             finish();
         } else {
             scrollToNext(null);
@@ -166,7 +166,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                 mRecord = list.get(0);
             }
         } catch (Exception e) {
-            getProxyPlayer().release();
+            getProxyPlayer().stop();
             this.finish();
             e.printStackTrace();
         }

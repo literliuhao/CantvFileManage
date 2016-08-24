@@ -4,8 +4,6 @@
           android:versionName="1.0">
     <!--android:sharedUserId="android.uid.system"-->
 
-          <!--android:sharedUserId="android.uid.system"-->
-
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="23"/>

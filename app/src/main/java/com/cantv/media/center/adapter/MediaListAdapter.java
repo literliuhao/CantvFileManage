@@ -73,6 +73,7 @@ public class MediaListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MediaItemView mediaItemView = getItemType(parent);
+
         mediaItemView.setMediaItem(getItem(position));
 
         return mediaItemView;
