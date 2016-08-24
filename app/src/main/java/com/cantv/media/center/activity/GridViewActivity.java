@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -143,6 +142,7 @@ public class GridViewActivity extends Activity {
             }
             showMenuDialog();
         }
+
         return super.onKeyDown(keyCode, event);
     }
 
