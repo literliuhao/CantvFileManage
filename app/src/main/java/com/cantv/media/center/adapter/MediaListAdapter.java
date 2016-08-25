@@ -10,6 +10,7 @@ import com.cantv.media.center.ui.MediaGridItemView;
 import com.cantv.media.center.ui.MediaItemView;
 import com.cantv.media.center.ui.MediaListItemView;
 import com.cantv.media.center.ui.MediaOrientation;
+import com.cantv.media.center.utils.MediaUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class MediaListAdapter extends BaseAdapter {
     private List<Media> mMediaList = new ArrayList<Media>();
     private MediaOrientation mStyle = MediaOrientation.THUMBNAIL;
+    private List<String> mUsbRootPaths;
 
     public MediaListAdapter(Context context, List<Media> medialist) {
         bindData(medialist);
@@ -24,6 +26,7 @@ public class MediaListAdapter extends BaseAdapter {
 
     public void bindData(List<Media> medialist) {
         mMediaList = medialist;
+        mUsbRootPaths = MediaUtils.getCurrPathList();
         notifyDataSetChanged();
     }
 
@@ -35,7 +38,9 @@ public class MediaListAdapter extends BaseAdapter {
         MediaItemView mediaItemView;
         switch (mStyle) {
             case LIST:
-                mediaItemView = new MediaListItemView(parent.getContext());
+                MediaListItemView mediaListItemView = new MediaListItemView(parent.getContext());
+                mediaListItemView.setUsbPaths(mUsbRootPaths);
+                mediaItemView = mediaListItemView;
                 break;
             case THUMBNAIL:
                 mediaItemView = new MediaGridItemView(parent.getContext());
@@ -73,7 +78,6 @@ public class MediaListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MediaItemView mediaItemView = getItemType(parent);
-
         mediaItemView.setMediaItem(getItem(position));
 
         return mediaItemView;

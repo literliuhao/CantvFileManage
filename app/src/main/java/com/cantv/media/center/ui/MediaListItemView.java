@@ -3,6 +3,7 @@ package com.cantv.media.center.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,231 +31,250 @@ import java.util.List;
 
 @SuppressLint("NewApi")
 public class MediaListItemView extends MediaItemView {
-	private MediaPicView mImageView;
-	private ImageView mPicImageView;
-	private MediaPicView mBgView;
-	private ImageView mFocusView;
-	private TextView mTvName;
-	private TextView mTvSize;
-	private TextView mTvDate;
-	private NumberDrawable mNumDrawable;
-	private Media mMedia;
-	private boolean isShow = false;
-	// private Drawable mFocusDrawable;
-	private float mAnimateRate = 0;
-	private AlphaAnimation mAnimation = null;
-	private Transformation mDrawingTransform = new Transformation();
-	private Context mContext;
+    private MediaPicView mImageView;
+    private ImageView mPicImageView;
+    private MediaPicView mBgView;
+    private ImageView mFocusView;
+    private TextView mTvName;
+    private TextView mTvSize;
+    private TextView mTvDate;
+    private NumberDrawable mNumDrawable;
+    private Media mMedia;
+    private boolean isShow = false;
+    // private Drawable mFocusDrawable;
+    private float mAnimateRate = 0;
+    private AlphaAnimation mAnimation = null;
+    private Transformation mDrawingTransform = new Transformation();
+    private Context mContext;
+    private List<String> usbRootPaths;
 
-	public MediaListItemView(Context context) {
-		this(context, null);
-	}
+    public MediaListItemView(Context context) {
+        this(context, null);
+    }
 
-	public MediaListItemView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public MediaListItemView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	@SuppressLint("ResourceAsColor")
-	public MediaListItemView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		RelativeLayout relativeLayout = new RelativeLayout(context);
-		relativeLayout.setPadding((int) getResources().getDimension(R.dimen.px40), 0, 0, 0);
-		int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px1764);
-		int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px220);
-		RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
-		relativeLayout.setLayoutParams(relativeLayoutParams);
-		mContext = context;
-		mNumDrawable = new NumberDrawable(context);
-		setWillNotDraw(false);
-		setFocusable(false);
-		mFocusView = new ImageView(context);
-		LayoutParams mFocusParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.px220));
-		mFocusParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
-		mFocusView.setLayoutParams(mFocusParams);
-		mBgView = new MediaPicView(context);
-		mBgView.setId(0x559584);
-		mBgView.setPicStretch(PicStretch.SCALE_CROP);
-		LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
-		mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
-		mBgView.setLayoutParams(mediaParams);
-		mImageView = new MediaPicView(context);
 
-		mImageView.setPicStretch(PicStretch.SCALE_CROP);
-		LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
-		imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
-		imageParams.setMargins(FileUtil.dip2px(mContext, 14), 0, 0, 0);
-		mImageView.setLayoutParams(imageParams);
+    @SuppressLint("ResourceAsColor")
+    public MediaListItemView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        RelativeLayout relativeLayout = new RelativeLayout(context);
+        relativeLayout.setPadding((int) getResources().getDimension(R.dimen.px40), 0, 0, 0);
+        int relativeLayoutWidth = (int) getResources().getDimension(R.dimen.px1764);
+        int relativeLayoutHeight = (int) getResources().getDimension(R.dimen.px220);
+        RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(relativeLayoutWidth, relativeLayoutHeight);
+        relativeLayout.setLayoutParams(relativeLayoutParams);
+        mContext = context;
+        mNumDrawable = new NumberDrawable(context);
+        setWillNotDraw(false);
+        setFocusable(false);
+        mFocusView = new ImageView(context);
+        LayoutParams mFocusParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.px220));
+        mFocusParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        mFocusView.setLayoutParams(mFocusParams);
+        mBgView = new MediaPicView(context);
+        mBgView.setId(0x559584);
+        mBgView.setPicStretch(PicStretch.SCALE_CROP);
+        LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
+        mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        mBgView.setLayoutParams(mediaParams);
+        mImageView = new MediaPicView(context);
 
-		mPicImageView = new ImageView(context);
-		LayoutParams picImageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
-		picImageParams.addRule(RelativeLayout.CENTER_VERTICAL);
-		picImageParams.setMargins(FileUtil.dip2px(mContext, 14), 0, 0, 0);
-		mPicImageView.setLayoutParams(picImageParams);
+        mImageView.setPicStretch(PicStretch.SCALE_CROP);
+        LayoutParams imageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
+        imageParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        imageParams.setMargins(FileUtil.dip2px(mContext, 14), 0, 0, 0);
+        mImageView.setLayoutParams(imageParams);
 
-		mTvName = (TextView) LayoutInflater.from(context).inflate(R.layout.marquee_textview, null);
-		mTvName.setId(0x559586);
-		mTvName.setTextColor(getResources().getColorStateList(R.color.btn_selector));
-		mTvName.setTextSize(getResources().getDimension(R.dimen.px24));
-		mTvName.setSingleLine(true);
-		LayoutParams tvParams = new RelativeLayout.LayoutParams((int)getResources().getDimension(R.dimen.px1200), LayoutParams.WRAP_CONTENT);
-		tvParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
-		tvParams.setMargins((int) getResources().getDimension(R.dimen.px30), (int) getResources().getDimension(R.dimen.px60), 0, (int) getResources().getDimension(R.dimen.px10));
-		mTvName.setLayoutParams(tvParams);
-		mTvSize = new TextView(context);
-		mTvSize.setId(0x559585);
-		mTvSize.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
-		mTvSize.setTextSize(getResources().getDimension(R.dimen.px18));
-		LayoutParams tvSizeParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		tvSizeParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
-		tvSizeParams.addRule(RelativeLayout.BELOW, mTvName.getId());
-		tvSizeParams.setMargins((int) getResources().getDimension(R.dimen.px30), 0, 0, 0);
-		mTvSize.setLayoutParams(tvSizeParams);
-		mTvDate = new TextView(context);
-		mTvDate.setTextSize(getResources().getDimension(R.dimen.px18));
-		mTvDate.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
-		LayoutParams tvDateParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		tvDateParams.addRule(RelativeLayout.RIGHT_OF, mTvSize.getId());
-		tvDateParams.addRule(RelativeLayout.BELOW, mTvName.getId());
-		tvDateParams.addRule(RelativeLayout.ALIGN_BASELINE, mTvSize.getId());
-		tvDateParams.setMargins((int) getResources().getDimension(R.dimen.px27), 0, 0, 0);
-		mTvDate.setLayoutParams(tvDateParams);
-		relativeLayout.addView(mFocusView);
-		relativeLayout.addView(mBgView);
-		relativeLayout.addView(mImageView);
-		relativeLayout.addView(mPicImageView);
-		relativeLayout.addView(mTvName);
-		relativeLayout.addView(mTvSize);
-		relativeLayout.addView(mTvDate);
-		addView(relativeLayout);
-	}
+        mPicImageView = new ImageView(context);
+        LayoutParams picImageParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px160), (int) getResources().getDimension(R.dimen.px90));
+        picImageParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        picImageParams.setMargins(FileUtil.dip2px(mContext, 14), 0, 0, 0);
+        mPicImageView.setLayoutParams(picImageParams);
 
-	public ImageView getFocusImage() {
-		return mFocusView;
-	}
+        mTvName = (TextView) LayoutInflater.from(context).inflate(R.layout.marquee_textview, null);
+//        mTvName=new TextView(mContext);
+//        mTvName.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+//        mTvName.setMarqueeRepeatLimit(-1);
+//        mTvName.setSingleLine(true);
+        mTvName.setId(0x559586);
+        mTvName.setTextColor(getResources().getColorStateList(R.color.btn_selector));
+        mTvName.setTextSize(getResources().getDimension(R.dimen.px24));
+        mTvName.setSingleLine(true);
+        LayoutParams tvParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px1200), LayoutParams.WRAP_CONTENT);
+        tvParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
+        tvParams.setMargins((int) getResources().getDimension(R.dimen.px30), (int) getResources().getDimension(R.dimen.px60), 0, (int) getResources().getDimension(R.dimen.px10));
+        mTvName.setLayoutParams(tvParams);
+        mTvSize = new TextView(context);
+        mTvSize.setId(0x559585);
+        mTvSize.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
+        mTvSize.setTextSize(getResources().getDimension(R.dimen.px18));
+        LayoutParams tvSizeParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        tvSizeParams.addRule(RelativeLayout.RIGHT_OF, mBgView.getId());
+        tvSizeParams.addRule(RelativeLayout.BELOW, mTvName.getId());
+        tvSizeParams.setMargins((int) getResources().getDimension(R.dimen.px30), 0, 0, 0);
+        mTvSize.setLayoutParams(tvSizeParams);
+        mTvDate = new TextView(context);
+        mTvDate.setTextSize(getResources().getDimension(R.dimen.px18));
+        mTvDate.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
+        LayoutParams tvDateParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        tvDateParams.addRule(RelativeLayout.RIGHT_OF, mTvSize.getId());
+        tvDateParams.addRule(RelativeLayout.BELOW, mTvName.getId());
+        tvDateParams.addRule(RelativeLayout.ALIGN_BASELINE, mTvSize.getId());
+        tvDateParams.setMargins((int) getResources().getDimension(R.dimen.px27), 0, 0, 0);
+        mTvDate.setLayoutParams(tvDateParams);
+        relativeLayout.addView(mFocusView);
+        relativeLayout.addView(mBgView);
+        relativeLayout.addView(mImageView);
+        relativeLayout.addView(mPicImageView);
+        relativeLayout.addView(mTvName);
+        relativeLayout.addView(mTvSize);
+        relativeLayout.addView(mTvDate);
+        addView(relativeLayout);
+    }
 
-	public void setMediaItem(Media media) {
-		mMedia = media;
-		mTvName.setText(media.getName());
-		List<String> usbRootPaths = MediaUtils.getCurrPathList();
-		mTvDate.setVisibility(VISIBLE);
-		// 当是文件类型,并且不是外接设备的根目录(根目录是默认1970时间,无意义)
-		if ((mMedia.mType == SourceType.FOLDER) && !usbRootPaths.contains(mMedia.mUri)) {
-			mTvSize.setVisibility(GONE);
-		} else {
-			mTvSize.setVisibility(VISIBLE);
-			// 设置根目录大小
-			if (usbRootPaths.contains(mMedia.mUri)) {
-				mTvDate.setVisibility(GONE);
-				String free = MediaUtils.getFree(mMedia.mUri); // 可用大小
-				String total = MediaUtils.getTotal(mMedia.mUri); // 总大小
-				mTvSize.setText("总大小: " + total + "  可用大小: " + free);
-			} else {
-				mTvSize.setText("大小: " + MediaUtils.fileLength(media.getFileSize()));
-			}
-		}
-		mTvDate.setText("日期: " + DateUtil.onDate2String(new Date(media.modifiedDate), "yyyy.MM.dd HH:mm"));
-		mNumDrawable.setNum(media.getSubMediasCount());
-		LayoutParams mediaParams;
-		switch (media.getMediaFormat()) {
-		case IMAGE:
+    public ImageView getFocusImage() {
+        return mFocusView;
+    }
 
-			String path = "";
-			if (media.isSharing) {
-				path = media.sharePath;
-			} else {
-				path = media.mUri;
-			}
-			MediaUtils.loadPicImg(mContext, path, mPicImageView);
+    public void setMediaItem(final Media media) {
+        mMedia = media;
+        mTvName.setText(media.getName());
+//        mTvName.requestFocus();
+        mTvDate.setVisibility(VISIBLE);
+        // 当是文件类型,并且不是外接设备的根目录(根目录是默认1970时间,无意义)
+        if ((mMedia.mType == SourceType.FOLDER) && !usbRootPaths.contains(mMedia.mUri)) {
+            mTvSize.setVisibility(GONE);
+        } else {
+            mTvSize.setVisibility(VISIBLE);
+            // 设置根目录大小
+            if (usbRootPaths.contains(mMedia.mUri)) {
+                mTvDate.setVisibility(GONE);
+                String free = MediaUtils.getFree(mMedia.mUri); // 可用大小
+                String total = MediaUtils.getTotal(mMedia.mUri); // 总大小
+                mTvSize.setText("总大小: " + total + "  可用大小: " + free);
+            } else {
+                mTvSize.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTvSize.setText("大小: " + MediaUtils.fileLength(media.getFileSize()));
+                    }
+                });
+            }
+        }
+        mTvDate.setText("日期: " + DateUtil.onDate2String(new Date(media.modifiedDate), "yyyy.MM.dd HH:mm"));
+        mNumDrawable.setNum(media.getSubMediasCount());
+        LayoutParams mediaParams;
+        switch (media.getMediaFormat()) {
+            case IMAGE:
 
-			mBgView.setBackground(media);
-			break;
-		case AUDIO:
-			mBgView.setBackground(media);
-			break;
-		case VIDEO:
-			if (!media.isSharing) {
-				mImageView.setMedia(media);
-			}
-			mBgView.setBackground(media);
-			break;
-		case APP:
-			Drawable apkIcon = FileUtil.getApkIcon(mContext, media.mUri);
-			mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px165), (int) getResources().getDimension(R.dimen.px160));
-			mediaParams.setMargins((int) getResources().getDimension(R.dimen.px10), 0, 0, 0);
-			mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
-			mBgView.setLayoutParams(mediaParams);
-			mBgView.setBackground(media);
-			if (null != apkIcon) {
-				mBgView.setDefaultPic(apkIcon);
-			}
-			break;
-		case FOLDER:
-			mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
-			mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
-			mBgView.setLayoutParams(mediaParams);
-			mBgView.setDefaultPic(R.drawable.folder_wj);
-			break;
-		case UNKNOW:
-			mBgView.setDefaultPic(R.drawable.ic_other_filetype);
-		default:
-			break;
-		}
-	}
+                String path = "";
+                if (media.isSharing) {
+                    path = media.sharePath;
+                } else {
+                    path = media.mUri;
+                }
+                MediaUtils.loadPicImg(mContext, path, mPicImageView);
 
-	@Override
-	public void setSelected(boolean selected) {
-		super.setSelected(selected);
-		animateSelection(selected);
-	}
+                mBgView.setBackground(media);
+                break;
+            case AUDIO:
+                mBgView.setBackground(media);
+                break;
+            case VIDEO:
+                if (!media.isSharing) {
+                    mImageView.setMedia(media);
+                }
+                mBgView.setBackground(media);
+                break;
+            case APP:
+                Drawable apkIcon = FileUtil.getApkIcon(mContext, media.mUri);
+                mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px165), (int) getResources().getDimension(R.dimen.px160));
+                mediaParams.setMargins((int) getResources().getDimension(R.dimen.px10), 0, 0, 0);
+                mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                mBgView.setLayoutParams(mediaParams);
+                mBgView.setBackground(media);
+                if (null != apkIcon) {
+                    mBgView.setDefaultPic(apkIcon);
+                }
+                break;
+            case FOLDER:
+                mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
+                mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                mBgView.setLayoutParams(mediaParams);
+                mBgView.setDefaultPic(R.drawable.folder_wj);
+                break;
+            case UNKNOW:
+                mBgView.setDefaultPic(R.drawable.ic_other_filetype);
+            default:
+                break;
+        }
+    }
 
-	void animateView(final float from, final float to) {
-		mAnimation = new AlphaAnimation(from, to);
-		mAnimation.setDuration(1000);
-		mAnimation.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+        animateSelection(selected);
+    }
 
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
+    void animateView(final float from, final float to) {
+        mAnimation = new AlphaAnimation(from, to);
+        mAnimation.setDuration(1000);
+        mAnimation.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
 
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				if (isSelected())
-					animateView(to, from);
-			}
-		});
-	}
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
 
-	boolean needReDraw() {
-		long currentTime = AnimationUtils.currentAnimationTimeMillis();
-		if (mAnimation != null && mAnimation.hasEnded() == false) {
-			if (mAnimation.hasStarted() == false)
-				mAnimation.setStartTime(currentTime);
-			mAnimation.getTransformation(currentTime, mDrawingTransform);
-			mAnimateRate = mDrawingTransform.getAlpha();
-			return true;
-		}
-		return false;
-	}
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (isSelected())
+                    animateView(to, from);
+            }
+        });
+    }
 
-	void animateSelection(boolean select) {
-		if (select) {
-			animateView(0, 1);
-			isShow = true;
-			// mTvName.setEllipsize(TruncateAt.MARQUEE);
-			// mTvName.setHorizontallyScrolling(true);
-			// mTvName.setMarqueeRepeatLimit(-1);
-		} else {
-			if (mAnimation != null) {
-				mAnimation.cancel();
-				mAnimation = null;
-			}
-			isShow = false;
-		}
-		mAnimateRate = 0;
-		invalidate();
-	}
+    boolean needReDraw() {
+        long currentTime = AnimationUtils.currentAnimationTimeMillis();
+        if (mAnimation != null && mAnimation.hasEnded() == false) {
+            if (mAnimation.hasStarted() == false)
+                mAnimation.setStartTime(currentTime);
+            mAnimation.getTransformation(currentTime, mDrawingTransform);
+            mAnimateRate = mDrawingTransform.getAlpha();
+            return true;
+        }
+        return false;
+    }
+
+    void animateSelection(boolean select) {
+        if (select) {
+            animateView(0, 1);
+            isShow = true;
+            // mTvName.setEllipsize(TruncateAt.MARQUEE);
+            // mTvName.setHorizontallyScrolling(true);
+            // mTvName.setMarqueeRepeatLimit(-1);
+        } else {
+            if (mAnimation != null) {
+                mAnimation.cancel();
+                mAnimation = null;
+            }
+            isShow = false;
+        }
+        mAnimateRate = 0;
+        invalidate();
+    }
+
+    public void setUsbPaths(List<String> usbRootPas){
+        this.usbRootPaths =usbRootPas;
+    }
+
+    public List<String > getUsbPaths(){
+        return usbRootPaths;
+    }
 }
