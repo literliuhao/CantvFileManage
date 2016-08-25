@@ -307,36 +307,32 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             //等比例全屏
             //图片宽高大于屏幕时
             if (currentW > screenWidth || currentH > screenHeight) {
-                if (!isRotation) {
-                    if(currentW > screenWidth && currentH > screenHeight){
+                if (currentW > screenWidth && currentH > screenHeight) {
+                    if (!isRotation) {
                         if ((currentW - screenWidth) < (currentH - screenHeight)) {
                             return screenWidth / currentW;
                         } else {
                             return screenHeight / currentH;
                         }
-                    }else if(currentW > screenWidth){
-                        return screenWidth / currentW;
-                    }else if(currentH > screenHeight){
-                        return screenHeight / currentH;
-                    }else{
-                        if ((currentW - screenWidth) < (currentH - screenHeight)) {
-                            return screenWidth / currentW;
-                        } else {
-                            return screenHeight / currentH;
-                        }
-                    }
-                } else {
-                    if(currentW > screenWidth && currentH > screenHeight){
+                    } else {
                         if ((currentW - screenWidth) > (currentH - screenHeight)) {
                             return screenWidth / currentW;
                         } else {
                             return screenHeight / currentH;
                         }
-                    }else if(currentW > screenWidth){
-                        return screenWidth / currentW;
-                    }else if(currentH > screenHeight){
-                        return screenHeight / currentH;
-                    }else{
+                    }
+                } else if (currentW > screenWidth) {
+                    return screenWidth / currentW;
+                } else if (currentH > screenHeight) {
+                    return screenHeight / currentH;
+                } else {
+                    if (!isRotation) {
+                        if ((currentW - screenWidth) < (currentH - screenHeight)) {
+                            return screenWidth / currentW;
+                        } else {
+                            return screenHeight / currentH;
+                        }
+                    } else {
                         if ((currentW - screenWidth) > (currentH - screenHeight)) {
                             return screenWidth / currentW;
                         } else {
