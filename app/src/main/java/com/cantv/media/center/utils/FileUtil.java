@@ -38,14 +38,18 @@ import jcifs.smb.SmbFile;
  * Created by yibh on 2016/6/28.
  */
 public class FileUtil {
-    private static List<String> unlessFileList = new ArrayList<>();
+    //保存不需要显示文件的文件名
+    private static List<String> uselessFileList = new ArrayList<>();
 
     static {
-        unlessFileList.add("");
+        String[] uselessStr = {"LOST.DIR", "System Volume Information"};
+        for (String s : uselessStr) {
+            uselessFileList.add(s);
+        }
     }
 
     private static String ANDROID_SECURE = "/mnt/sdcard/.android_secure";
-    private static ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+    private static ArrayList<ContentProviderOperation> ops = new ArrayList<>();
 
     /**
      * 获取外存储SD卡路径
@@ -150,25 +154,7 @@ public class FileUtil {
         fileBean.isDir = file.isDirectory();
         fileBean.mUri = file.getPath();
         // 文件夹时计算出总的下一级文件/夹数量
-        if (fileBean.isDir) {
-            // int fileCount = 0; // 子级目录文件/夹数量
-            // File[] files = file.listFiles(filter);
-            // if (files == null) {
-            // return null;
-            // }
-            //
-            // for (File childFile : files) {
-            // // 文件是非隐藏文件或者已经规定显示隐藏文件时,并且文件是正常文件时执行下一步操作
-            // if ((!childFile.isHidden() || showOrHidden)
-            // && FileUtil.isNormalFile(childFile.getAbsolutePath())) {
-            // fileCount++;
-            // Media media = new Media(FileUtil.getFileType(childFile),
-            // childFile.getAbsolutePath());
-            // fileBean.mSubMedias.add(media);
-            // }
-            // }
-            // fileBean.childCount = fileCount;
-            // fileBean.fileSize = getFileSize(file);
+        if (fileBean.isDir) { //层级可能过深,不建议计算文件夹容量大小
         } else {
             // 文件大小
             fileBean.fileSize = file.length();
@@ -181,7 +167,6 @@ public class FileUtil {
      * @param filter
      * @param showOrHidden    是否显示隐藏文件
      * @param proxyPathPrefix
-     * @param sharePathPrefix
      * @return
      */
     public static Media getSmbFileInfo(SmbFile file, FilenameFilter filter, boolean showOrHidden, String proxyPathPrefix) {
@@ -205,7 +190,6 @@ public class FileUtil {
             // 有些是没有时间的,就成了默认时间1970,所以重新设置了时间
             if (DateUtil.onDate2String(new Date(file.lastModified()), "yyyy.MM.dd").equals("1970.01.01")) {
                 fileBean.modifiedDate = new Date().getTime() - 3600000;
-                ;
             } else {
                 fileBean.modifiedDate = file.lastModified();
             }
@@ -223,24 +207,6 @@ public class FileUtil {
         }
         // 文件夹时计算出总的下一级文件/夹数量
         if (fileBean.isDir) {
-            // int fileCount = 0; // 子级目录文件/夹数量
-            // File[] files = file.listFiles(filter);
-            // if (files == null) {
-            // return null;
-            // }
-            //
-            // for (File childFile : files) {
-            // // 文件是非隐藏文件或者已经规定显示隐藏文件时,并且文件是正常文件时执行下一步操作
-            // if ((!childFile.isHidden() || showOrHidden)
-            // && FileUtil.isNormalFile(childFile.getAbsolutePath())) {
-            // fileCount++;
-            // Media media = new Media(FileUtil.getFileType(childFile),
-            // childFile.getAbsolutePath());
-            // fileBean.mSubMedias.add(media);
-            // }
-            // }
-            // fileBean.childCount = fileCount;
-            // fileBean.fileSize = getFileSize(file);
         } else {
             // 文件大小
             try {
@@ -273,7 +239,7 @@ public class FileUtil {
                 // 是常见文件,并且是非隐藏文件
                 if (FileUtil.isShowFile(childFile)) {
                     Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
-                    if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information"))) {
+                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName)) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
                             if (fileInfo.fileSize > 1024 * 6) {
@@ -295,8 +261,7 @@ public class FileUtil {
      * 返回指定路径的文件/夹 列表
      *
      * @param path
-     * @param string
-     * @param sharePathPrefix
+     * @param proxyPathPrefix
      * @return
      */
     public static List<Media> getSmbFileList(String path, String proxyPathPrefix) {
@@ -314,7 +279,7 @@ public class FileUtil {
                 // 是常见文件,并且是非隐藏文件
                 if (FileUtil.isShowFile(childFile)) {
                     Media fileInfo = FileUtil.getSmbFileInfo(childFile, null, false, proxyPathPrefix);
-                    if (null != fileInfo && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")) && (!fileInfo.mName.contains("$/"))
+                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && (!fileInfo.mName.contains("$/"))
                             ) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
@@ -358,8 +323,8 @@ public class FileUtil {
                     // 是文件夹或这是指定类型的文件,就加入到集合中
                     SourceType sourceType = type[0];
                     if ((sourceType == fileInfo.mType) ||
-                            // 过滤掉指定2个无卵用的文件夹
-                            (addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")))) {
+                            // 过滤掉指定2个无用的文件夹
+                            (addFolder && fileInfo.isDir && !uselessFileList.contains(fileInfo.mName))) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
                             if (fileInfo.fileSize > 1024 * 6) {
@@ -401,7 +366,7 @@ public class FileUtil {
                 SourceType sourceType = type[0];
                 if ((sourceType == fileInfo.mType) ||
                         // 过滤掉指定2个无卵用的文件夹
-                        (addFolder && fileInfo.isDir && (!fileInfo.mName.equals("LOST.DIR")) && (!fileInfo.mName.equals("System Volume Information")))) {
+                        (addFolder && fileInfo.isDir && !uselessFileList.contains(fileInfo.mName))) {
                     // 当文件是图片类型,并且大于10k,才进行显示
                     if (fileInfo.mType == SourceType.PICTURE) {
                         if (fileInfo.fileSize > 1024 * 6) {
@@ -736,6 +701,7 @@ public class FileUtil {
 
     /**
      * 获取路径
+     *
      * @param fromList
      * @return
      */

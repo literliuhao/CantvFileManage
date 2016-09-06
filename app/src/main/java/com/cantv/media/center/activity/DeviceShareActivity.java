@@ -210,6 +210,12 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         if (info == null) {
             return;
         }
+
+        boolean b = SharedPreferenceUtil.saveLinkHost(info.getIp());
+        if (b){
+            Toast.makeText(MyApplication.getContext(),"IP保存成功",Toast.LENGTH_SHORT).show();
+        }
+
         final DeviceShareItemView view = new DeviceShareItemView(this);
         view.setViewType(DeviceShareItemView.TYPE_DEVICE);
         view.setIp(info.getIp());
@@ -248,10 +254,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
         }, 500);
 
-        boolean b = SharedPreferenceUtil.saveLinkHost(info.getIp());
-        if (b){
-            Toast.makeText(MyApplication.getContext(),"IP保存成功",Toast.LENGTH_SHORT).show();
-        }
+
 
     }
 

@@ -1,13 +1,13 @@
 package com.cantv.media.center.utils;
 
-import com.cantv.media.R;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.cantv.media.R;
 
 /**
  * Toast工具类

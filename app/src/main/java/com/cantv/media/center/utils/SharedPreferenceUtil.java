@@ -11,7 +11,6 @@ import com.cantv.media.center.app.MyApplication;
 
 public class SharedPreferenceUtil {
 
-    private static final String VIDEO_CURR_PROGRESS_FLAG = "video_progress_flag";
     private static final String SHARE_USER_INFO_FLAG = "share_info";
     private static final String SHARE_IP_TAG = "share_ip";
     private static final String DEVICES_TAG = "devices_flag2";
@@ -132,8 +131,8 @@ public class SharedPreferenceUtil {
             stringBuilder.append("abc").append(host);
             mEditor.putString(SHARE_IP_TAG, stringBuilder.toString());
             return commitInfo(mEditor);
-        }else {
-            return false;
+        } else {
+            return true;
         }
     }
 
@@ -165,23 +164,5 @@ public class SharedPreferenceUtil {
         return mSp.getString(SHARE_USER_INFO_FLAG, "");
     }
 
-    /**
-     * 保存视频播放进度
-     *
-     * @param progress
-     */
-    public static void saveVideoProgress(String path,int progress) {
-        mEditor.putString(VIDEO_CURR_PROGRESS_FLAG, path+","+progress);
-        applyInfo(mEditor);
-    }
-
-    /**
-     * 获取保存的视频进度
-     *
-     * @return
-     */
-    public static String  getVideoProgress() {
-        return mSp.getString(VIDEO_CURR_PROGRESS_FLAG, "");
-    }
 
 }

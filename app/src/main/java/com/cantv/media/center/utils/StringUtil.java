@@ -7,8 +7,6 @@ import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
 import android.widget.TextView;
 
-import com.cantv.media.R;
-
 /**
  * Created by yibh on 2016/7/21.
  */
