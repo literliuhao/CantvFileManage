@@ -125,13 +125,15 @@ public class SharedPreferenceUtil {
      *
      * @param host
      */
-    public static void saveLinkHost(String host) {
+    public static boolean saveLinkHost(String host) {
         String linkHostList = getLinkHostList();
         if (!linkHostList.contains(host)) {
             StringBuilder stringBuilder = new StringBuilder(linkHostList);
             stringBuilder.append("abc").append(host);
             mEditor.putString(SHARE_IP_TAG, stringBuilder.toString());
-            applyInfo(mEditor);
+            return commitInfo(mEditor);
+        }else {
+            return false;
         }
     }
 

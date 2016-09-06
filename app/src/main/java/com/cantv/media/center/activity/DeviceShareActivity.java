@@ -248,7 +248,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
         }, 500);
 
-        SharedPreferenceUtil.saveLinkHost(info.getIp());
+        boolean b = SharedPreferenceUtil.saveLinkHost(info.getIp());
+        if (b){
+            Toast.makeText(MyApplication.getContext(),"IP保存成功",Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -400,39 +403,39 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     public void showLoginDeviceDialog(final DeviceInfo deviceInfo) {
         if (mLoginDeviceDialog == null) {
             mLoginDeviceDialog = new DeviceLoginDialog(this);
-            mLoginDeviceDialog.setOnShowListener(new OnShowListener() {
-
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    ((DeviceLoginDialog) dialog).reset();
-                    // Bitmap decodeResource =
-                    // BitmapFactory.decodeResource(getResources(),
-                    // R.drawable.folder_photo);
-                    if (null == mBlurDrawable) {
-                        mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
-                    }
-                    ((DeviceLoginDialog) dialog)
-                            // .updateBackground(BitmapUtils.blurBitmap(getScreenShot(),
-                            // DeviceShareActivity.this));
-//					 .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
-                            .updateBackground(mBlurDrawable);
-                    // .updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
-                }
-            });
-            mLoginDeviceDialog.setOnLoginListener(new OnLoginListener() {
-
-                @Override
-                public void onLogin(String userName, String password) {
-                    if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
-                        ToastUtils.showMessage(MyApplication.mContext, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
-                        return;
-                    }
-
-                    zjLogin(deviceInfo, userName, password);
-
-                }
-            });
         }
+        mLoginDeviceDialog.setOnShowListener(new OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialog) {
+                ((DeviceLoginDialog) dialog).reset();
+                // Bitmap decodeResource =
+                // BitmapFactory.decodeResource(getResources(),
+                // R.drawable.folder_photo);
+                if (null == mBlurDrawable) {
+                    mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+                }
+                ((DeviceLoginDialog) dialog)
+                        // .updateBackground(BitmapUtils.blurBitmap(getScreenShot(),
+                        // DeviceShareActivity.this));
+//					 .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
+                        .updateBackground(mBlurDrawable);
+                // .updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
+            }
+        });
+        mLoginDeviceDialog.setOnLoginListener(new OnLoginListener() {
+
+            @Override
+            public void onLogin(String userName, String password) {
+                if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
+                    ToastUtils.showMessage(MyApplication.mContext, getString(R.string.username_pwd_err), Toast.LENGTH_SHORT);
+                    return;
+                }
+
+                zjLogin(deviceInfo, userName, password);
+
+            }
+        });
         mLoginDeviceDialog.refreshData(deviceInfo.getUserName(), deviceInfo.getPassword());
         mLoginDeviceDialog.show();
     }
