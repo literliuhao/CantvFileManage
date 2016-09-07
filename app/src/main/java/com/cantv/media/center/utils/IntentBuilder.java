@@ -1,8 +1,6 @@
 package com.cantv.media.center.utils;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -14,10 +12,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class IntentBuilder {
+    //不能安装应用标记
+    public static Boolean flag = true;
+
     public static void viewFile(final Context context, final String filePath) {
         String type = getMimeType(filePath);
 
-        if (!TextUtils.isEmpty(type) && !TextUtils.equals(type, "*/*")) {
+        if (!TextUtils.isEmpty(type) && !TextUtils.equals(type, "*/*") && flag) {
 //        	try{
             /**设置intent的file与MimeType */
             Intent intent = new Intent();

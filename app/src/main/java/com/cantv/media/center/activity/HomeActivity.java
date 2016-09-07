@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -25,6 +26,7 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.service.BootDialogService;
+import com.cantv.media.center.utils.IntentBuilder;
 import com.cantv.media.center.utils.MediaUtils;
 
 import java.util.ArrayList;
@@ -72,6 +74,11 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private AlertDialog alertDialog = null;
     private int mNum;
     private boolean isMounted;
+    private Boolean isIN = false;
+    private List<Integer> keyList = null;
+    private List<Integer> dynamicList = null;
+    private final int VALUE = 7;
+    private final String PRIVATEKEY = "8!9!10!11!12!13";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +105,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
         initUSB();
+        initKey(PRIVATEKEY);
         mVideoIV.setOnFocusChangeListener(this);
         mImageIV.setOnFocusChangeListener(this);
         mAudioIV.setOnFocusChangeListener(this);
@@ -216,6 +224,14 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         intentStart.setAction("com.cantv.service.RECEIVER_START");
         this.startService(intentStart);
         // showMountedDialog();
+    }
+
+    private void initKey(String PRIVATEKEY) {
+        keyList = new ArrayList<>();
+        String[] stringKEYS = PRIVATEKEY.split("!");
+        for (int i = 0; i < stringKEYS.length; i++) {
+            keyList.add(Integer.valueOf(stringKEYS[i]));
+        }
     }
 
     private void initUSB() {
@@ -435,6 +451,42 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             }
         } else {
             mFocusScaleUtils.scaleToNormal(v);
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == VALUE) {
+            isIN = true;
+            dynamicList = new ArrayList<>();
+            dynamicList.addAll(keyList);
+        } else if (isIN) {
+            Log.i("onKeyDown", keyCode + "");
+            String status = verify(keyCode);
+            if (status.equals("break")) {
+                isIN = false;
+            } else if (status.equals("true")) {
+                isIN = false;
+                if(IntentBuilder.flag){
+                    IntentBuilder.flag = false;
+                }else{
+                    IntentBuilder.flag = true;
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private String verify(int keyCode) {
+        if (dynamicList.get(0) == keyCode) {
+            dynamicList.remove(0);
+            if (dynamicList.size() > 0) {
+                return "continue";
+            } else {
+                return "true";
+            }
+        } else {
+            return "break";
         }
     }
 }
