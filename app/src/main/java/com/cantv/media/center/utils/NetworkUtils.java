@@ -1,15 +1,5 @@
 package com.cantv.media.center.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
-
-import org.apache.http.conn.util.InetAddressUtils;
-
 import android.app.Service;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -17,6 +7,16 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+
+import org.apache.http.conn.util.InetAddressUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 public class NetworkUtils {
 	

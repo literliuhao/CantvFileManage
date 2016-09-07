@@ -85,7 +85,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         mContext = this;
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
         mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
         mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
@@ -377,7 +376,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             Log.i(TAG, "fail to query uri:" + uri);
             return 0;
         }
-        // cursor.moveToFirst();
         return cursor.getCount();
     }
 
@@ -417,7 +415,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                     mAppTV.setText(str_null + getString(R.string.str_app));
                 }
             } else {
-                // boolean mount = bundle.getBoolean("mount");
                 refreshUI();
             }
         }
