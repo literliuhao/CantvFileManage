@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.storage.StorageManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,6 +31,8 @@ import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -243,11 +246,11 @@ public class GridViewActivity extends Activity {
     }
 
     private List<MenuItem> createMenuData() {
-        mMenuList = new ArrayList<MenuItem>();
+        mMenuList = new ArrayList<>();
         sortListMenuItem = new MenuItem(getString(R.string.sort));
         sortListMenuItem.setType(MenuItem.TYPE_SELECTOR);
         sortListMenuItem.setSelected(true);
-        sortListSubMenuItems = new ArrayList<MenuItem>();
+        sortListSubMenuItems = new ArrayList<>();
         sortMenuItem = new MenuItem(getString(R.string.sort_date), MenuItem.TYPE_SELECTOR);
         sortListSubMenuItems.add(sortMenuItem);
         sortListSubMenuItems.add(new MenuItem(getString(R.string.sort_filesize), MenuItem.TYPE_SELECTOR));
@@ -278,7 +281,6 @@ public class GridViewActivity extends Activity {
         mMenuList.add(viewModeMenuItem);
         Intent intent = getIntent();
         String type = intent.getStringExtra("type");
-        String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
         if (!"share".equalsIgnoreCase(type)) {
             deleteMenuItem = new MenuItem(getString(R.string.delete));
             deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
@@ -356,53 +358,14 @@ public class GridViewActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 // 有新设备插入
-                openRootDir();
+                updateSDMounted();
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // 移除设备
-                openRootDir();
+                updateSDMounted();
             }
         }
     };
 
-    /**
-     * 到根目录: 适用在当前处于外接设备目录
-     */
-    private void openRootDir() {
-        if (!isExternal) {
-            return;
-        }
-        String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
-        List<Media> mediaes = new ArrayList<>();
-
-        for (String s : pathList) {
-            if (null == s || s.trim().equals("")) {
-                continue;
-            }
-
-            // 获取路径对应设备的总容量
-            if (null != MediaUtils.getTotal(s)) {
-                File file = new File(s);
-                Media fileInfo = FileUtil.getFileInfo(file, null, false);
-                mediaes.add(fileInfo);
-            }
-        }
-
-        // 清除记录的上级目录
-        mGridView.mMediaStack.clear();
-        mGridView.mPosStack.clear();
-        mGridView.mCurrMediaList = mediaes;
-        mGridView.mListAdapter.bindData(mediaes);
-        if (mediaes.size() < 1) {
-            mRTCountView.setVisibility(View.GONE);
-            mGridView.showNoDataPage();
-        } else {
-            mRTCountView.setVisibility(View.VISIBLE);
-            mGridView.setTextRTview(mGridView.mSelectItemPosition + 1 + " / ", mediaes.size() + "");
-        }
-        if (null != mMenuDialog && mMenuDialog.isShowing()) {
-            mMenuDialog.dismiss();
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -418,5 +381,77 @@ public class GridViewActivity extends Activity {
         getWindow().getDecorView().setDrawingCacheEnabled(true);
         return getWindow().getDecorView().getDrawingCache();
     }
+
+
+    private void updateSDMounted() {
+
+        if (!isExternal) { //不是外接设备就不用往下走了
+            return;
+        }
+
+        final List<Media> mediaes = new ArrayList<>();
+
+        //通过反射获取到路径的挂载状态
+        StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
+        try {
+            Method getVolumList = StorageManager.class.getMethod("getVolumeList", null);
+            getVolumList.setAccessible(true);
+            Object[] results = (Object[]) getVolumList.invoke(sm, null);
+            System.out.println("results:" + results.length);
+            Method getState = sm.getClass().getMethod("getVolumeState", String.class);
+
+            final String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
+            for (String path : pathList) {
+                if (path.trim().equals("")) { //去除异常路径,否则下面会出错
+                    continue;
+                }
+                System.out.println("path:" + path);
+                String state = (String) getState.invoke(sm, path);
+                System.out.println("state:" + state + " path:" + path);
+                if (state.equals("mounted")) {
+                    File file = new File(path);
+                    Media fileInfo = FileUtil.getFileInfo(file, null, false);
+                    mediaes.add(fileInfo);
+                }
+
+            }
+
+            updateRootUI(mediaes);
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 更新外接设备列表
+     *
+     * @param mediaList
+     */
+    private void updateRootUI(List<Media> mediaList) {
+        // 清除记录的上级目录
+        mGridView.mMediaStack.clear();
+        mGridView.mPosStack.clear();
+        mGridView.mCurrMediaList = mediaList;
+        mGridView.mListAdapter.bindData(mediaList);
+        if (mediaList.size() < 1) {
+            mRTCountView.setVisibility(View.GONE);
+            mGridView.showNoDataPage();
+        } else {
+            mRTCountView.setVisibility(View.VISIBLE);
+            mGridView.setTextRTview(mGridView.mSelectItemPosition + 1 + " / ", mediaList.size() + "");
+        }
+        if (null != mMenuDialog && mMenuDialog.isShowing()) {
+            mMenuDialog.dismiss();
+        }
+    }
+
 
 }
