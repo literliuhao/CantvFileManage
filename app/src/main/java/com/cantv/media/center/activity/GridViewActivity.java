@@ -194,13 +194,13 @@ public class GridViewActivity extends Activity {
                 public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
                     if (position != 2) {
                         if (mSelectedMenuPosi == position) {
-                            return ;
+                            return;
                         }
                     }
-                    if(position==2){
+                    if (position == 2) {
                         mMenuDialog.closeSubMenuItem();
                     }
-                    if(position!=2){
+                    if (position != 2) {
                         mMenuDialog.openSubMenuItem();
                     }
                     mMenuList.get(mSelectedMenuPosi).setSelected(false);
@@ -384,12 +384,9 @@ public class GridViewActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 //先为了判断是否处在外接设备列表根目录
-                List<Media> data = mGridView.mListAdapter.getData();
-                if (null != data && data.size() > 0) {
-                    if (SharedPreferenceUtil.getDevicesPath().contains(data.get(0).mUri)){
-                        // 有新设备插入
-                        updateSDMounted();
-                    }
+                if (mGridView.mMediaStack.isEmpty()) {
+                    // 有新设备插入
+                    updateSDMounted();
                 }
 
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
@@ -449,7 +446,23 @@ public class GridViewActivity extends Activity {
 
             }
 
-            updateRootUI(mediaes);
+            boolean isUpdate = true;
+            if (! mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
+
+                //获取上一级的某个路径,然后和依然存在的外设路径比较,不用当前集合(当前集合可能没有内容)
+                Media parentMed = mGridView.mMediaStack.get(0).get(0);
+
+                for (Media media : mediaes) {
+                    if (parentMed.mUri.contains(media.mUri)) {
+                        isUpdate = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isUpdate) {
+                updateRootUI(mediaes);
+            }
 
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

@@ -265,10 +265,14 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
-                        mExternalTotalTV1.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
-                        mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
-                        mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
+                        try { //外接存储设备移出过快可能出现集合越界异常
+                            mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
+                            mExternalTotalTV1.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+                            mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
+                            mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             } else {

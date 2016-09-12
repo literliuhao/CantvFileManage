@@ -3,6 +3,7 @@ package com.cantv.media.center.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.animation.AlphaAnimation;
@@ -149,9 +150,14 @@ public class MediaListItemView extends MediaItemView {
             // 设置根目录大小
             if (usbRootPaths.contains(mMedia.mUri)) {
                 mTvDate.setVisibility(GONE);
-                String free = MediaUtils.getFree(mMedia.mUri); // 可用大小
-                String total = MediaUtils.getTotal(mMedia.mUri); // 总大小
-                mTvSize.setText("总大小: " + total + "  可用大小: " + free);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        String free = MediaUtils.getFree(mMedia.mUri); // 可用大小
+                        String total = MediaUtils.getTotal(mMedia.mUri); // 总大小
+                        mTvSize.setText("总大小: " + total + "  可用大小: " + free);
+                    }
+                });
             } else {
                 mTvSize.post(new Runnable() {
                     @Override

@@ -38,8 +38,8 @@ public class MediaGridView extends CustomGridView {
     private static final String TAG = "MediaGridView";
     private MediaLoaderTask mTask;
     public MediaListAdapter mListAdapter;
-    public Stack<Integer> mPosStack = new Stack<Integer>();
-    public Stack<List<Media>> mMediaStack = new Stack<List<Media>>();// 记录上一级目录结构
+    public Stack<Integer> mPosStack = new Stack<>();
+    public Stack<List<Media>> mMediaStack = new Stack<>();// 记录上一级目录结构
     private String devicePath;
     private SourceType msSourceType;
     private boolean misShowProcess = false;
