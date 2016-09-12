@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
@@ -60,7 +61,11 @@ public class ImageFrameView extends FrameLayout {
         this.mLoadingImgListener = loadingImgListener;
         showProgressBar();
         mImageView.setVisibility(View.GONE);
+        loadImage(imageUri);
+    }
 
+    public void loadImage(final String imageUri){
+        Log.i("playImage",imageUri);
         Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -81,6 +86,13 @@ public class ImageFrameView extends FrameLayout {
                     mBitmap = null;
                     resource = null;
                 }
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                Log.i("playImage","onLoadFailed......................");
+                loadImage(imageUri);
             }
         });
     }
@@ -103,7 +115,7 @@ public class ImageFrameView extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = mImgOrginWidth;
         int height = mImgOrginHeight;
-        Log.i("liujun4", "width====" + width + "---height====" + height);
+//        Log.i("liujun4", "width====" + width + "---height====" + height);
         if (width == 0 || height == 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         } else {

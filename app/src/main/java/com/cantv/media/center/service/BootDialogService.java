@@ -39,7 +39,6 @@ public class BootDialogService extends Service {
         filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_REMOVED);
-//        filter.addAction("com.cantv.service.MEDIA_MOUNTED");
         filter.addDataScheme("file");
         registerReceiver(mReceiver, filter);
         return START_REDELIVER_INTENT;

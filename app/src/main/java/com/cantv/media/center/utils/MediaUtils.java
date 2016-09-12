@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cantv.liteplayer.core.interfaces.ICallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.AudioPlayerActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MediaUtils {
     private static final String TAG = "MediaUtils";
@@ -38,6 +41,8 @@ public class MediaUtils {
     // }
     private static List<String> usbList = new ArrayList<>();
     private static Map<String, Integer> mAduioIconMap = new HashMap<>();
+    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private static ICallBack mCallBack;
 
     static {
         mAduioIconMap.put("ape", R.drawable.music_ape);
@@ -50,6 +55,7 @@ public class MediaUtils {
 
     public static String getLocalPath() {
         return Environment.getExternalStorageDirectory().getPath();
+//        return "/storage/emulated";
     }
 
     // public static List<String> getUsbRootPaths() {
@@ -83,67 +89,11 @@ public class MediaUtils {
     }
 
     public static String getInternalTotal() {
-        // 此方法包含了系统本身的大小,不适合
-        // Process mprocess;
-        // BufferedReader mreader;
-        // String temp;
-        // String total = null;
-        // Runtime runtime = Runtime.getRuntime();
-        // try {
-        // mprocess = runtime.exec("df");
-        // mreader = new BufferedReader(new
-        // InputStreamReader(mprocess.getInputStream()));
-        // while ((temp = mreader.readLine()) != null) {
-        // if (temp.contains("/data")) {
-        // total = temp.split("\\s+")[1];
-        // }
-        // }
-        // mreader.close();
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // } finally {
-        // }
-        // return total;
-        /**
-         * 获取手机内部总的存储空间,出去系统自身占用空间
-         *
-         * @return
-         */
-        // public static long getTotalInternalMemorySize() {
-        // String path2 = Environment.getExternalStorageDirectory().getPath();
-        String total = MediaUtils.getTotal(getLocalPath());
-        // File path = new File(path2);
-        // // File path = Environment.getDataDirectory();
-        // StatFs stat = new StatFs(path.getPath());
-        // long blockSize = stat.getBlockSize();
-        // long totalBlocks = stat.getBlockCount();
-        // return FileUtil.convertStorage(totalBlocks * blockSize);
-        // }
+        String total = getTotal(getLocalPath());
         return total;
     }
 
     public static String getInternalFree() {
-        // Process mprocess;
-        // BufferedReader mreader;
-        // String temp;
-        // String total = null;
-        // Runtime runtime = Runtime.getRuntime();
-        // try {
-        // mprocess = runtime.exec("df");
-        // mreader = new BufferedReader(new
-        // InputStreamReader(mprocess.getInputStream()));
-        // while ((temp = mreader.readLine()) != null) {
-        // if (temp.contains("/data")) {
-        // total = temp.split("\\s+")[3];
-        // }
-        // }
-        // mreader.close();
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // } finally {
-        // }
-        // return total;
-        // String path2 = Environment.getExternalStorageDirectory().getPath();
         String total = MediaUtils.getFree(getLocalPath());
         return total;
     }
@@ -165,11 +115,71 @@ public class MediaUtils {
                 }
             }
             mreader.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
         }
         return total;
+    }
+
+    public static void getTotal(final String path, ICallBack callBack) {
+        mCallBack = callBack;
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                Process mprocess;
+                BufferedReader mreader;
+                String command = "df";
+                String temp;
+                String total = null;
+                Runtime runtime = Runtime.getRuntime();
+                try {
+                    // command += path;
+                    mprocess = runtime.exec(command);
+                    mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
+                    while ((temp = mreader.readLine()) != null) {
+                        if (temp.contains(path)) {
+                            total = temp.split("\\s+")[1];
+                        }
+                    }
+                    mreader.close();
+                    mCallBack.onSuccess(total);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                }
+            }
+        });
+    }
+
+    public static void getFree(final String path, ICallBack callBack) {
+        mCallBack = callBack;
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                Process mprocess;
+                BufferedReader mreader;
+                String temp;
+                String total = null;
+                Runtime runtime = Runtime.getRuntime();
+                try {
+                    mprocess = runtime.exec("df");
+                    mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
+                    while ((temp = mreader.readLine()) != null) {
+                        if (temp.contains(path)) {
+                            total = temp.split("\\s+")[3];
+                            break;
+                        }
+                    }
+                    mreader.close();
+                    mCallBack.onSuccess(total);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                }
+            }
+        });
     }
 
     public static String getFree(String path) {
@@ -188,6 +198,7 @@ public class MediaUtils {
                 }
             }
             mreader.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -242,14 +253,10 @@ public class MediaUtils {
     }
 
     public static boolean checkMediaSource(String uri, SourceType source) {
-        if (uri.startsWith("."))
-            return false;
-        if (isImage(uri))
-            return source == SourceType.PICTURE;
-        if (isVideo(uri))
-            return source == SourceType.MOIVE;
-        if (isAudio(uri))
-            return source == SourceType.MUSIC;
+        if (uri.startsWith(".")) return false;
+        if (isImage(uri)) return source == SourceType.PICTURE;
+        if (isVideo(uri)) return source == SourceType.MOIVE;
+        if (isAudio(uri)) return source == SourceType.MUSIC;
         if (isApp(uri)) {
             return source == SourceType.APP;
         } else {

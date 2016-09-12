@@ -464,9 +464,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 isIN = false;
             } else if (status.equals("true")) {
                 isIN = false;
-                if(IntentBuilder.flag){
+                if (IntentBuilder.flag) {
                     IntentBuilder.flag = false;
-                }else{
+                } else {
                     IntentBuilder.flag = true;
                 }
             }
