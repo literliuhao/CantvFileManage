@@ -357,9 +357,16 @@ public class GridViewActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                // 有新设备插入
-                updateSDMounted();
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+                //先为了判断是否处在外接设备列表根目录
+                List<Media> data = mGridView.mListAdapter.getData();
+                if (null != data && data.size() > 0) {
+                    if (SharedPreferenceUtil.getDevicesPath().contains(data.get(0).mUri)){
+                        // 有新设备插入
+                        updateSDMounted();
+                    }
+                }
+
+            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
                 // 移除设备
                 updateSDMounted();
             }
@@ -394,15 +401,15 @@ public class GridViewActivity extends Activity {
         //通过反射获取到路径的挂载状态
         StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
         try {
-            Method getVolumList = StorageManager.class.getMethod("getVolumeList", null);
+            Method getVolumList = StorageManager.class.getMethod("getVolumeList");
             getVolumList.setAccessible(true);
-            Object[] results = (Object[]) getVolumList.invoke(sm, null);
+            Object[] results = (Object[]) getVolumList.invoke(sm);
             System.out.println("results:" + results.length);
             Method getState = sm.getClass().getMethod("getVolumeState", String.class);
 
             final String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
             for (String path : pathList) {
-                if (path.trim().equals("")) { //去除异常路径,否则下面会出错
+                if (null != path && path.trim().equals("")) { //去除异常路径,否则下面会出错
                     continue;
                 }
                 System.out.println("path:" + path);
