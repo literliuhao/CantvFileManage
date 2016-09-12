@@ -20,6 +20,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.ui.DoubleColumnMenu;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.MediaGridView;
 import com.cantv.media.center.ui.MediaOrientation;
@@ -188,18 +189,19 @@ public class GridViewActivity extends Activity {
                     mGridView.setDefaultStyle();
                 }
             });
-            mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
+            mMenuDialog.setOnItemFocusChangeListener(new DoubleColumnMenu.OnItemFocusChangeListener() {
                 @Override
-                public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
-                    subMenuClick(position);
-                }
-
-                @Override
-                public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
+                public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
                     if (position != 2) {
                         if (mSelectedMenuPosi == position) {
-                            return false;
+                            return ;
                         }
+                    }
+                    if(position==2){
+                        mMenuDialog.closeSubMenuItem();
+                    }
+                    if(position!=2){
+                        mMenuDialog.openSubMenuItem();
                     }
                     mMenuList.get(mSelectedMenuPosi).setSelected(false);
 
@@ -213,6 +215,29 @@ public class GridViewActivity extends Activity {
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
                     mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+
+                }
+
+                @Override
+                public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
+
+                }
+            });
+
+            mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
+                    subMenuClick(position);
+                }
+
+                @Override
+                public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
+                    if (position != 2) {
+                        if (mSelectedMenuPosi == position) {
+                            return false;
+                        }
+                    }
+
                     if (position == 2) {
                         String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
                         if (FileUtil.isListConOtListValue(FileUtil.getListFromList(mGridView.mListAdapter.getData()), FileUtil.arrayToList(pathList))) {
@@ -237,6 +262,7 @@ public class GridViewActivity extends Activity {
                     } else {
                         return false;
                     }
+                    //return false;
                 }
             });
         } else {

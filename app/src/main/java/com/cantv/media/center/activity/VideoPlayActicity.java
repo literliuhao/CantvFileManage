@@ -24,6 +24,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
+import com.cantv.media.center.ui.DoubleColumnMenu;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.ExternalSurfaceView;
@@ -372,6 +373,28 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mMenuDialog = new MenuDialog(this);
             list = createMenuData();
             mMenuDialog.setMenuList(list);
+            mMenuDialog.setOnItemFocusChangeListener(new DoubleColumnMenu.OnItemFocusChangeListener() {
+                @Override
+                public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
+                    if (mSelectedPosi == position) {
+                        return ;
+                    }
+                    list.get(mSelectedPosi).setSelected(false);
+                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosi);
+                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, list.get(mSelectedPosi));
+                    mSelectedPosi = position;
+                    MenuItem menuItem = list.get(position);
+                    menuItem.setSelected(true);
+                    mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
+                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    return ;
+                }
+
+                @Override
+                public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
+
+                }
+            });
             mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
 
                 @Override
@@ -404,14 +427,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     if (mSelectedPosi == position) {
                         return false;
                     }
-                    list.get(mSelectedPosi).setSelected(false);
-                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosi);
-                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, list.get(mSelectedPosi));
-                    mSelectedPosi = position;
-                    MenuItem menuItem = list.get(position);
-                    menuItem.setSelected(true);
-                    mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
-                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
                     return false;
                 }
             });

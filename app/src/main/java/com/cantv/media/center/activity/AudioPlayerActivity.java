@@ -33,6 +33,7 @@ import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.PlayModeMenuItem;
 import com.cantv.media.center.ui.CDView;
 import com.cantv.media.center.ui.CircleProgressBar;
+import com.cantv.media.center.ui.DoubleColumnMenu;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.LyricView;
@@ -350,6 +351,31 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 mMenuList = createMenuData();
             }
             mMenuDialog.setMenuList(mMenuList);
+            mMenuDialog.setOnItemFocusChangeListener(new DoubleColumnMenu.OnItemFocusChangeListener() {
+                @Override
+                public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
+                    if (mSelectedMenuPosi == position) {
+                        return ;
+                    }
+                    mMenuList.get(mSelectedMenuPosi).setSelected(false);
+
+                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
+
+                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, mMenuList.get(mSelectedMenuPosi));
+
+                    mSelectedMenuPosi = position;
+                    MenuItem menuItem = mMenuList.get(position);
+                    menuItem.setSelected(true);
+                    mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
+                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    return ;
+                }
+
+                @Override
+                public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
+
+                }
+            });
             mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
 
                 @Override
@@ -419,17 +445,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     if (mSelectedMenuPosi == position) {
                         return false;
                     }
-                    mMenuList.get(mSelectedMenuPosi).setSelected(false);
-
-                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
-
-                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, mMenuList.get(mSelectedMenuPosi));
-
-                    mSelectedMenuPosi = position;
-                    MenuItem menuItem = mMenuList.get(position);
-                    menuItem.setSelected(true);
-                    mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
-                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
                     return false;
                 }
             });
