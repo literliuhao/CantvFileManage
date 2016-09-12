@@ -582,11 +582,11 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
             @Override
             public void onClick(View v) {
                 mMenuSelectedPosi = position;
-                animateMenuSelectView(v);
+//                animateMenuSelectView(v);
                 if (mItemClickListener != null && mItemClickListener.onMenuItemClick(mMenuContainer, v, position)) {
                     return;
                 }
-                openSubMenu(false);
+                //openSubMenu(false);
             }
         });
         newView.setOnKeyListener(new OnKeyListener() {
@@ -609,6 +609,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mMenuFocusTmpPosi = position;
+                    mMenuSelectedPosi = position;
+                    animateMenuSelectView(v);
+                    //openSubMenu(true);
                     animateFocusView(v, true, null);
                 }
                 if (mFocusChangeListener != null) {
@@ -717,7 +720,7 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
                     return false;
                 }
                 if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                    closeSubMenu();
+                    //closeSubMenu();
                     mMenuContainer.setFocusable(true);
                     mMenuContainer.requestFocus();
                     return true;
