@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -38,16 +36,12 @@ import java.util.Stack;
 @SuppressLint("ResourceAsColor")
 public class MediaGridView extends CustomGridView {
     private static final String TAG = "MediaGridView";
-    private static final int UPDATE_UI = 0;
     private MediaLoaderTask mTask;
     public MediaListAdapter mListAdapter;
     public Stack<Integer> mPosStack = new Stack<Integer>();
     public Stack<List<Media>> mMediaStack = new Stack<List<Media>>();// 记录上一级目录结构
-    private List<Media> mMediaes;
     private String devicePath;
     private SourceType msSourceType;
-    private UpdateMediaDataShow mUpdateMediaDataShow;
-    public int mindex;
     private boolean misShowProcess = false;
     private int mfirst = 0;
     private Context mContext;
@@ -66,7 +60,7 @@ public class MediaGridView extends CustomGridView {
         mActivity = (GridViewActivity) context;
         mLoadingDialog = new LoadingDialog(mContext);
         msSourceType = sourceType;
-        switch (msSourceType){
+        switch (msSourceType) {
             case MOIVE:
                 currentType = "暂无视频";
                 break;
@@ -84,14 +78,14 @@ public class MediaGridView extends CustomGridView {
                 break;
         }
         syncType(currentType);
-        mListAdapter = new MediaListAdapter(context, new ArrayList<Media>());
+        mListAdapter = new MediaListAdapter(context, mCurrMediaList);
         setGridViewSelector(new ColorDrawable(Color.TRANSPARENT));
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // 1,如果是文件夹则继续显示下级列表
                 // 2,如果是文件则全屏显示
-                final Media item = (Media) mListAdapter.getItem(position);
+                final Media item = mListAdapter.getItem(position);
                 if (item.isDir) {
                     if (msSourceType == SourceType.SHARE) {
                         try {
@@ -229,7 +223,7 @@ public class MediaGridView extends CustomGridView {
         };
 
         MediaLoaderTask(SourceType sourceType) {
-            mMediaes = new ArrayList<Media>();
+            mMediaes = new ArrayList<>();
             mSourceType = sourceType;
         }
 
@@ -333,13 +327,6 @@ public class MediaGridView extends CustomGridView {
         }
     }
 
-    public void setUpdateMediaDataShowListener(UpdateMediaDataShow listener) {
-        mUpdateMediaDataShow = listener;
-    }
-
-    public interface UpdateMediaDataShow {
-        void updateData(boolean isHasData);
-    }
 
     protected void showProgressBar(String message) {
 
@@ -351,21 +338,6 @@ public class MediaGridView extends CustomGridView {
         mLoadingDialog.dismiss();
     }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case UPDATE_UI:
-                    if (mMediaes != null) {
-                        mListAdapter.bindData(mMediaes);
-                        setAdapter(mListAdapter);
-                    }
-                default:
-                    break;
-            }
-        }
-    };
 
     /**
      * 打开指定媒体文件
@@ -375,21 +347,12 @@ public class MediaGridView extends CustomGridView {
     private void openMediaActivity(Media media) {
         ArrayList mediaPathList = FileUtil.getListFromList(mCurrMediaList, media.mType);
         int indexFromList = 1;
-//        if (media.mType == SourceType.PICTURE || media.mType == SourceType.MUSIC) {
-            mediaPathList = FileUtil.getMediaListFromList(mCurrMediaList, media.mType);
-            if (media.isSharing) {
-                indexFromList = FileUtil.getMediaIndexFromList(mediaPathList, media.sharePath);
-            } else {
-                indexFromList = FileUtil.getMediaIndexFromList(mediaPathList, media.mUri);
-            }
-//        }
-//        else {
-//            if (media.isSharing) {
-//                indexFromList = FileUtil.getIndexFromList(mediaPathList, media.sharePath);
-//            } else {
-//                indexFromList = FileUtil.getIndexFromList(mediaPathList, media.mUri);
-//            }
-//        }
+        mediaPathList = FileUtil.getMediaListFromList(mCurrMediaList, media.mType);
+        if (media.isSharing) {
+            indexFromList = FileUtil.getMediaIndexFromList(mediaPathList, media.sharePath);
+        } else {
+            indexFromList = FileUtil.getMediaIndexFromList(mediaPathList, media.mUri);
+        }
         MediaUtils.openMediaActivity(mContext, mediaPathList, indexFromList, media.mType);
     }
 

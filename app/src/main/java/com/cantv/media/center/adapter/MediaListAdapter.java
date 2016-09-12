@@ -21,7 +21,8 @@ public class MediaListAdapter extends BaseAdapter {
     private List<String> mUsbRootPaths;
 
     public MediaListAdapter(Context context, List<Media> medialist) {
-        bindData(medialist);
+//        bindData(medialist);
+        mMediaList = medialist;
     }
 
     public void bindData(List<Media> medialist) {

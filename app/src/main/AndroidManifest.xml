@@ -31,7 +31,7 @@
         android:allowBackup="true"
         android:icon="@drawable/app_icon"
         android:label="@string/str_filemanager"
-        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         <activity
             android:name="com.cantv.media.center.activity.HomeActivity"
             android:label="@string/str_filemanager"
