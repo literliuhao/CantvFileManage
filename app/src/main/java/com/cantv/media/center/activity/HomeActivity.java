@@ -262,18 +262,28 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 mExternalIV2.setVisibility(View.VISIBLE);
                 mExternalUIV1.setBackgroundResource(R.drawable.icon_u);
                 mExternalUIV2.setBackgroundResource(R.drawable.icon_u);
-                mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
-                mExternalTotalTV1.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
-                mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
-                mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
+                        mExternalTotalTV1.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+                        mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(1)));
+                        mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(1)));
+                    }
+                });
             } else {
                 mExternalIV.setVisibility(View.VISIBLE);
                 mExternalIV1.setVisibility(View.GONE);
                 mExternalIV2.setVisibility(View.GONE);
                 mExternalUIV.setBackgroundResource(R.drawable.icon_u);
                 if (mNum == 1) {
-                    mExternalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
-                    mExternalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mExternalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getFree(mUsbRootPaths.get(0)));
+                            mExternalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getTotal(mUsbRootPaths.get(0)));
+                        }
+                    });
                 } else {
                     mExternalFreeTV.setText(getString(R.string.str_total) + mNum + getString(R.string.str_devicenum));
                     mExternalTotalTV.setVisibility(View.GONE);

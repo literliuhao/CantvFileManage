@@ -255,8 +255,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     }
                 });
                 if (curIndex == getData().size() && curIndex != 1) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
-                    return;
+                    if(!mAutoPlay){
+                        Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
             }
 
@@ -443,10 +445,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
                 int curIndex = mCurImageIndex + 1;
                 int size = getData().size();
-                if (curIndex == size) {
+                /*if (curIndex == size) {
                     Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
                     return;
-                }
+                }*/
                 if (mAutoPlay) {
                     stopAutoPlay();
                     //pauseMusic();
@@ -546,12 +548,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private void startAutoPlay() {
         int curIndex = mCurImageIndex + 1;
         int size = getData().size();
-        if (curIndex == size) {
+        /*if (curIndex == size) {
             stopAutoPlay();
             //stopMusic();
             mAutoRunImageView.setImageResource(R.drawable.photo_info3);
             return;
-        }
+        }*/
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();

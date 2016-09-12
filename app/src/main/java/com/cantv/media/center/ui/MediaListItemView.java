@@ -149,14 +149,9 @@ public class MediaListItemView extends MediaItemView {
             // 设置根目录大小
             if (usbRootPaths.contains(mMedia.mUri)) {
                 mTvDate.setVisibility(GONE);
-                mTvSize.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        String free = MediaUtils.getFree(mMedia.mUri); // 可用大小
-                        String total = MediaUtils.getTotal(mMedia.mUri); // 总大小
-                        mTvSize.setText("总大小: " + total + "  可用大小: " + free);
-                    }
-                });
+                String free = MediaUtils.getFree(mMedia.mUri); // 可用大小
+                String total = MediaUtils.getTotal(mMedia.mUri); // 总大小
+                mTvSize.setText("总大小: " + total + "  可用大小: " + free);
             } else {
                 mTvSize.post(new Runnable() {
                     @Override
@@ -271,11 +266,11 @@ public class MediaListItemView extends MediaItemView {
         invalidate();
     }
 
-    public void setUsbPaths(List<String> usbRootPas){
-        this.usbRootPaths =usbRootPas;
+    public void setUsbPaths(List<String> usbRootPas) {
+        this.usbRootPaths = usbRootPas;
     }
 
-    public List<String > getUsbPaths(){
+    public List<String> getUsbPaths() {
         return usbRootPaths;
     }
 }

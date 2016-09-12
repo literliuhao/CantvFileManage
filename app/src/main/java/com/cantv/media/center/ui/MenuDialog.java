@@ -326,4 +326,11 @@ public class MenuDialog extends Dialog {
             TextView titleTv;
         }
     }
+
+    public void openSubMenuItem(){
+        mMenuView.openSubMenu(false);
+    }
+    public void closeSubMenuItem(){
+        mMenuView.closeSubMenu();
+    }
 }

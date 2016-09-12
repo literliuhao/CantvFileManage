@@ -20,6 +20,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.ui.DoubleColumnMenu;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.MediaGridView;
 import com.cantv.media.center.ui.MediaOrientation;
@@ -188,18 +189,19 @@ public class GridViewActivity extends Activity {
                     mGridView.setDefaultStyle();
                 }
             });
-            mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
+            mMenuDialog.setOnItemFocusChangeListener(new DoubleColumnMenu.OnItemFocusChangeListener() {
                 @Override
-                public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
-                    subMenuClick(position);
-                }
-
-                @Override
-                public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
+                public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
                     if (position != 2) {
                         if (mSelectedMenuPosi == position) {
-                            return false;
+                            return ;
                         }
+                    }
+                    if(position==2){
+                        mMenuDialog.closeSubMenuItem();
+                    }
+                    if(position!=2){
+                        mMenuDialog.openSubMenuItem();
                     }
                     mMenuList.get(mSelectedMenuPosi).setSelected(false);
 
@@ -213,6 +215,29 @@ public class GridViewActivity extends Activity {
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
                     mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+
+                }
+
+                @Override
+                public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
+
+                }
+            });
+
+            mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
+                    subMenuClick(position);
+                }
+
+                @Override
+                public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
+                    if (position != 2) {
+                        if (mSelectedMenuPosi == position) {
+                            return false;
+                        }
+                    }
+
                     if (position == 2) {
                         String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
                         if (FileUtil.isListConOtListValue(FileUtil.getListFromList(mGridView.mListAdapter.getData()), FileUtil.arrayToList(pathList))) {
@@ -237,6 +262,7 @@ public class GridViewActivity extends Activity {
                     } else {
                         return false;
                     }
+                    //return false;
                 }
             });
         } else {
@@ -357,9 +383,16 @@ public class GridViewActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                // 有新设备插入
-                updateSDMounted();
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+                //先为了判断是否处在外接设备列表根目录
+                List<Media> data = mGridView.mListAdapter.getData();
+                if (null != data && data.size() > 0) {
+                    if (SharedPreferenceUtil.getDevicesPath().contains(data.get(0).mUri)){
+                        // 有新设备插入
+                        updateSDMounted();
+                    }
+                }
+
+            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
                 // 移除设备
                 updateSDMounted();
             }
@@ -394,15 +427,15 @@ public class GridViewActivity extends Activity {
         //通过反射获取到路径的挂载状态
         StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
         try {
-            Method getVolumList = StorageManager.class.getMethod("getVolumeList", null);
+            Method getVolumList = StorageManager.class.getMethod("getVolumeList");
             getVolumList.setAccessible(true);
-            Object[] results = (Object[]) getVolumList.invoke(sm, null);
+            Object[] results = (Object[]) getVolumList.invoke(sm);
             System.out.println("results:" + results.length);
             Method getState = sm.getClass().getMethod("getVolumeState", String.class);
 
             final String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
             for (String path : pathList) {
-                if (path.trim().equals("")) { //去除异常路径,否则下面会出错
+                if (null != path && path.trim().equals("")) { //去除异常路径,否则下面会出错
                     continue;
                 }
                 System.out.println("path:" + path);
