@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StatFs;
 import android.provider.MediaStore.Files.FileColumns;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -89,12 +90,12 @@ public class MediaUtils {
     }
 
     public static String getInternalTotal() {
-        String total = getTotal(getLocalPath());
+        String total = getRealTotalSize(getLocalPath());
         return total;
     }
 
     public static String getInternalFree() {
-        String total = MediaUtils.getFree(getLocalPath());
+        String total = MediaUtils.getRealFreeSize(getLocalPath());
         return total;
     }
 
@@ -459,6 +460,50 @@ public class MediaUtils {
             }
         }
         return arrayList;
+    }
+
+
+    /**
+     * 获取指定外接设备的可用空间,实测比上面getFree方法靠谱一些
+     *
+     * @param path
+     * @return
+     */
+    public static String getRealFreeSize(String path) {
+
+        StatFs stat = new StatFs(path); // 创建StatFs对象
+
+        long blockSize = stat.getBlockSize(); // 获取block的size
+        float totalBlocks = stat.getBlockCount(); // 获取block的总数
+
+        long mToalBytes = (long) (blockSize * totalBlocks);
+        long availableBlocks = stat.getAvailableBlocks(); // 获取可用块大小
+
+
+        long mUsedBytes = (long) ((totalBlocks - availableBlocks) * blockSize);
+        long mFreeBytes = mToalBytes - mUsedBytes;
+
+
+        return FileUtil.convertStorage(mFreeBytes);
+    }
+
+
+    /**
+     * 获取指定外接设备的总空间大小
+     *
+     * @param path
+     * @return
+     */
+    public static String getRealTotalSize(String path) {
+
+        StatFs stat = new StatFs(path); // 创建StatFs对象
+
+        long blockSize = stat.getBlockSize(); // 获取block的size
+        float totalBlocks = stat.getBlockCount(); // 获取block的总数
+
+        long mToalBytes = (long) (blockSize * totalBlocks);
+
+        return FileUtil.convertStorage(mToalBytes);
     }
 
 }

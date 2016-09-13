@@ -381,23 +381,28 @@ public class FileUtil {
         return tList;
     }
 
+    public static final long SIZE_KB = 1024L;
+    public static final long SIZE_MB = 1024 * 1024L;
+    public static final long SIZE_GB = 1024L * 1024L * 1024L;
     /**
-     * 计算文件大小 storage, G M K B
+     * 计算文件大小
      */
     public static String convertStorage(long size) {
-        long kb = 1024;
-        long mb = kb * 1024;
-        long gb = mb * 1024;
-        if (size >= gb) {
-            return String.format("%.1f GB", (float) size / gb);
-        } else if (size >= mb) {
-            float f = (float) size / mb;
-            return String.format(f > 100 ? "%.0f MB" : "%.1f MB", f);
-        } else if (size >= kb) {
-            float f = (float) size / kb;
-            return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
-        } else
-            return String.format("%d B", size);
+
+        if (size < SIZE_KB) {
+            return size + "B";
+        }
+
+        if (size < SIZE_MB) {
+            return Math.round(size * 100.0 / SIZE_KB) / 100.0 + "KB";
+        }
+
+        if (size < SIZE_GB) {
+            return Math.round(size * 100.0 / SIZE_MB) / 100.0 + "MB";
+        }
+
+        return Math.round(size * 100.0 / SIZE_GB) / 100.0 + "G";
+
     }
 
     /**
