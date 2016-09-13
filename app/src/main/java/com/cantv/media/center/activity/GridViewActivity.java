@@ -60,6 +60,7 @@ public class GridViewActivity extends Activity {
     public TextView mRTCountView; // 显示数量和当前选中position
     public int mCurrGridStyle; // 记录当前是什么排列方式
     private ConfirmDialog mConfirmDialog;
+    private boolean mClickDelete = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -188,7 +189,12 @@ public class GridViewActivity extends Activity {
             mMenuDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    mGridView.setDefaultStyle();
+                    if(mClickDelete){
+                        mClickDelete = false;
+                        mGridView.setStyleFocus(R.drawable.unfocus);
+                    }else{
+                        mGridView.setDefaultStyle();
+                    }
                 }
             });
             mMenuDialog.setOnItemFocusChangeListener(new DoubleColumnMenu.OnItemFocusChangeListener() {
@@ -246,10 +252,11 @@ public class GridViewActivity extends Activity {
                             Toast.makeText(getApplicationContext(), "外接设备不能删除", Toast.LENGTH_LONG).show();
                             return true;
                         }
+                        mClickDelete = true;
                         mDeleteItem = mGridView.mSelectItemPosition;
                         List<Media> datas = mGridView.mListAdapter.getData();
                         mMenuDialog.dismiss();
-                        hideFocus();
+                        //hideFocus();
                         deleteItem(datas);
                         return true;
                     } else {
@@ -396,6 +403,7 @@ public class GridViewActivity extends Activity {
             mGridView.fileServer.release();
         }
         unregisterReceiver(mReceiver);
+        mConfirmDialog = null;
         super.onDestroy();
     }
 
@@ -498,6 +506,12 @@ public class GridViewActivity extends Activity {
     private void deleteItem(final List<Media> datas){
         if (mConfirmDialog == null) {
             mConfirmDialog = new ConfirmDialog(this);
+            mConfirmDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    mGridView.setDefaultStyle();
+                }
+            });
             mConfirmDialog.setOnClickableListener(new ConfirmDialog.OnClickableListener() {
                 @Override
                 public void onConfirmClickable() {
@@ -532,22 +546,4 @@ public class GridViewActivity extends Activity {
         }
     }
 
-    /**
-     * 隐藏焦点框
-     */
-    private void hideFocusFrame() {
-        if (null == mMenuDialog || !mMenuDialog.isShowing()) {
-            mGridView.setStyleFocus(R.drawable.unfocus);
-        } else {
-            mGridView.setDefaultStyle();
-        }
-    }
-
-    private void hideFocus() {
-        if (null == mConfirmDialog || !mConfirmDialog.isShowing()) {
-            mGridView.setStyleFocus(R.drawable.unfocus);
-        } else {
-            mGridView.setDefaultStyle();
-        }
-    }
 }
