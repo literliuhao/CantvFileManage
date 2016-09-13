@@ -377,7 +377,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 @Override
                 public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
                     if (mSelectedPosi == position) {
-                        return ;
+                        return;
                     }
                     list.get(mSelectedPosi).setSelected(false);
                     View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosi);
@@ -387,7 +387,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
                     mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
-                    return ;
+                    return;
                 }
 
                 @Override
@@ -430,24 +430,25 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     return false;
                 }
             });
-        }
-        mMenuDialog.setOnItemKeyEventListener(new OnKeyEventListener() {
+            mMenuDialog.setOnItemKeyEventListener(new OnKeyEventListener() {
 
-            @Override
-            public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN
-                        && mSelectedPosi == 0) {
-                    mMenuDialog.getMenu().openSubMenu(true, list.get(0).getSelectedChildIndex());
-                    return true;
+                @Override
+                public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN
+                            && mSelectedPosi == 0) {
+                        mMenuDialog.getMenu().openSubMenu(true, list.get(0).getSelectedChildIndex());
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
 
-            @Override
-            public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-                return false;
-            }
-        });
+                @Override
+                public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+                    return false;
+                }
+            });
+            mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedChildIndex());
+        }
         mMenuDialog.show();
     }
 

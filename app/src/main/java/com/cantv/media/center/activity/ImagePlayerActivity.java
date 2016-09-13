@@ -390,6 +390,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
                 markRotation();
                 mImageBrowser.changeRotation();
+                mSizeType = false;
+                mTvSize.setText(getString(R.string.image_full_screen));
             }
         });
         mRotation.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -445,22 +447,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
                 int curIndex = mCurImageIndex + 1;
                 int size = getData().size();
-                /*if (curIndex == size) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
-                    return;
-                }*/
                 if (mAutoPlay) {
                     stopAutoPlay();
-                    //pauseMusic();
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     startAutoPlay();
                     if (isFirstPlayMusic) {
                         isFirstPlayMusic = false;
-                        //startMusic();
                     } else {
-                        //resumeMusic();
                     }
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_start_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info33);
@@ -554,6 +549,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoRunImageView.setImageResource(R.drawable.photo_info3);
             return;
         }*/
+        mImageBrowser.setSoundEffectsEnabled(false);
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
@@ -689,6 +685,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 markRotation();
                 mImageBrowser.changeRotation();
+                mSizeType = false;
+                mTvSize.setText(getString(R.string.image_full_screen));
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -697,6 +695,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 markRotation();
                 mImageBrowser.changeUpRotation();
+                mSizeType = false;
+                mTvSize.setText(getString(R.string.image_full_screen));
                 return true;
             }
         }
