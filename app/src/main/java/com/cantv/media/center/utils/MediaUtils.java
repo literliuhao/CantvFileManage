@@ -154,85 +154,85 @@ public class MediaUtils {
         });
     }
 
-    public static void getFree(final String path, ICallBack callBack) {
-        mCallBack = callBack;
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                Process mprocess;
-                BufferedReader mreader;
-                String temp;
-                String total = null;
-                Runtime runtime = Runtime.getRuntime();
-                try {
-                    mprocess = runtime.exec("df");
-                    mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
-                    while ((temp = mreader.readLine()) != null) {
-                        if (temp.contains(path)) {
-                            total = temp.split("\\s+")[3];
-                            break;
-                        }
-                    }
-                    mreader.close();
-                    mCallBack.onSuccess(total);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                }
-            }
-        });
-    }
+//    public static void getFree(final String path, ICallBack callBack) {
+//        mCallBack = callBack;
+//        executorService.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                Process mprocess;
+//                BufferedReader mreader;
+//                String temp;
+//                String total = null;
+//                Runtime runtime = Runtime.getRuntime();
+//                try {
+//                    mprocess = runtime.exec("df");
+//                    mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
+//                    while ((temp = mreader.readLine()) != null) {
+//                        if (temp.contains(path)) {
+//                            total = temp.split("\\s+")[3];
+//                            break;
+//                        }
+//                    }
+//                    mreader.close();
+//                    mCallBack.onSuccess(total);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                }
+//            }
+//        });
+//    }
 
-    public static String getFree(String path) {
-        Process mprocess;
-        BufferedReader mreader;
-        String temp;
-        String total = null;
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            mprocess = runtime.exec("df");
-            mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
-            while ((temp = mreader.readLine()) != null) {
-                if (temp.contains(path)) {
-                    total = temp.split("\\s+")[3];
-                    break;
-                }
-            }
-            mreader.close();
+//    public static String getFree(String path) {
+//        Process mprocess;
+//        BufferedReader mreader;
+//        String temp;
+//        String total = null;
+//        Runtime runtime = Runtime.getRuntime();
+//        try {
+//            mprocess = runtime.exec("df");
+//            mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
+//            while ((temp = mreader.readLine()) != null) {
+//                if (temp.contains(path)) {
+//                    total = temp.split("\\s+")[3];
+//                    break;
+//                }
+//            }
+//            mreader.close();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//        }
+//        return total;
+//    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-        }
-        return total;
-    }
-
-    // private static List<String> runMount() {
-    // Set<String> set = new TreeSet<String>();
-    // List<String> list = null;
-    // Process mprocess;
-    // BufferedReader mreader;
-    // String temp;
-    // Runtime runtime = Runtime.getRuntime();
-    // try {
-    // mprocess = runtime.exec("mount");
-    // mreader = new BufferedReader(new
-    // InputStreamReader(mprocess.getInputStream()));
-    // while ((temp = mreader.readLine()) != null) {
-    // if (temp.contains("/dev/block/vold/8:")) {
-    // String usbpath = temp.split(" ")[1];
-    // Log.i("mount","usbpath >>>>> " + usbpath);
-    // set.add(usbpath);
-    // }
-    // }
-    // mreader.close();
-    // list = new ArrayList<String>(set);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // } finally {
-    // }
-    // return list;
-    // }
+//     private static List<String> runMount() {
+//     Set<String> set = new TreeSet<String>();
+//     List<String> list = null;
+//     Process mprocess;
+//     BufferedReader mreader;
+//     String temp;
+//     Runtime runtime = Runtime.getRuntime();
+//     try {
+//     mprocess = runtime.exec("mount");
+//     mreader = new BufferedReader(new
+//     InputStreamReader(mprocess.getInputStream()));
+//     while ((temp = mreader.readLine()) != null) {
+//     if (temp.contains("/dev/block/vold/8:")) {
+//     String usbpath = temp.split(" ")[1];
+//     Log.i("mount","usbpath >>>>> " + usbpath);
+//     set.add(usbpath);
+//     }
+//     }
+//     mreader.close();
+//     list = new ArrayList<String>(set);
+//     } catch (IOException e) {
+//     e.printStackTrace();
+//     } finally {
+//     }
+//     return list;
+//     }
     public static boolean isImage(String filename) {
         String[] str = {"jpg", "png", "jpeg", "bmp", "gif", "webp", "wbmp"};
         return isEqualType(filename, str);
