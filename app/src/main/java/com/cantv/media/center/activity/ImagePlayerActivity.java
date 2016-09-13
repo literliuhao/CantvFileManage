@@ -452,6 +452,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
+                    mImageBrowser.setSoundEffectsEnabled(false);
                     startAutoPlay();
                     if (isFirstPlayMusic) {
                         isFirstPlayMusic = false;
@@ -549,7 +550,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoRunImageView.setImageResource(R.drawable.photo_info3);
             return;
         }*/
-        mImageBrowser.setSoundEffectsEnabled(false);
+//        mImageBrowser.setSoundEffectsEnabled(false);
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
@@ -562,6 +563,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (mAutoPlay) {
             mAutoPlay = false;
             //endMusicAnimation();
+            mImageBrowser.setSoundEffectsEnabled(true);
             MainThread.cancel(mAutoRunnable);
             getScreenLock().release();
         }
