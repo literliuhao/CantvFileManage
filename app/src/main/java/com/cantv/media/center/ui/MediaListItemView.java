@@ -153,8 +153,8 @@ public class MediaListItemView extends MediaItemView {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        String free = MediaUtils.getFree(mMedia.mUri); // 可用大小
-                        String total = MediaUtils.getTotal(mMedia.mUri); // 总大小
+                        String free = MediaUtils.getRealFreeSize(mMedia.mUri); // 可用大小
+                        String total = MediaUtils.getRealTotalSize(mMedia.mUri); // 总大小
                         mTvSize.setText("总大小: " + total + "  可用大小: " + free);
                     }
                 });

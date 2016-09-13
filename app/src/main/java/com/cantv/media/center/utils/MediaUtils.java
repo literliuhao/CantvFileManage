@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StatFs;
 import android.provider.MediaStore.Files.FileColumns;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -89,12 +90,12 @@ public class MediaUtils {
     }
 
     public static String getInternalTotal() {
-        String total = getTotal(getLocalPath());
+        String total = getRealTotalSize(getLocalPath());
         return total;
     }
 
     public static String getInternalFree() {
-        String total = MediaUtils.getFree(getLocalPath());
+        String total = MediaUtils.getRealFreeSize(getLocalPath());
         return total;
     }
 
@@ -153,85 +154,85 @@ public class MediaUtils {
         });
     }
 
-    public static void getFree(final String path, ICallBack callBack) {
-        mCallBack = callBack;
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                Process mprocess;
-                BufferedReader mreader;
-                String temp;
-                String total = null;
-                Runtime runtime = Runtime.getRuntime();
-                try {
-                    mprocess = runtime.exec("df");
-                    mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
-                    while ((temp = mreader.readLine()) != null) {
-                        if (temp.contains(path)) {
-                            total = temp.split("\\s+")[3];
-                            break;
-                        }
-                    }
-                    mreader.close();
-                    mCallBack.onSuccess(total);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                }
-            }
-        });
-    }
+//    public static void getFree(final String path, ICallBack callBack) {
+//        mCallBack = callBack;
+//        executorService.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                Process mprocess;
+//                BufferedReader mreader;
+//                String temp;
+//                String total = null;
+//                Runtime runtime = Runtime.getRuntime();
+//                try {
+//                    mprocess = runtime.exec("df");
+//                    mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
+//                    while ((temp = mreader.readLine()) != null) {
+//                        if (temp.contains(path)) {
+//                            total = temp.split("\\s+")[3];
+//                            break;
+//                        }
+//                    }
+//                    mreader.close();
+//                    mCallBack.onSuccess(total);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                }
+//            }
+//        });
+//    }
 
-    public static String getFree(String path) {
-        Process mprocess;
-        BufferedReader mreader;
-        String temp;
-        String total = null;
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            mprocess = runtime.exec("df");
-            mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
-            while ((temp = mreader.readLine()) != null) {
-                if (temp.contains(path)) {
-                    total = temp.split("\\s+")[3];
-                    break;
-                }
-            }
-            mreader.close();
+//    public static String getFree(String path) {
+//        Process mprocess;
+//        BufferedReader mreader;
+//        String temp;
+//        String total = null;
+//        Runtime runtime = Runtime.getRuntime();
+//        try {
+//            mprocess = runtime.exec("df");
+//            mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
+//            while ((temp = mreader.readLine()) != null) {
+//                if (temp.contains(path)) {
+//                    total = temp.split("\\s+")[3];
+//                    break;
+//                }
+//            }
+//            mreader.close();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//        }
+//        return total;
+//    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-        }
-        return total;
-    }
-
-    // private static List<String> runMount() {
-    // Set<String> set = new TreeSet<String>();
-    // List<String> list = null;
-    // Process mprocess;
-    // BufferedReader mreader;
-    // String temp;
-    // Runtime runtime = Runtime.getRuntime();
-    // try {
-    // mprocess = runtime.exec("mount");
-    // mreader = new BufferedReader(new
-    // InputStreamReader(mprocess.getInputStream()));
-    // while ((temp = mreader.readLine()) != null) {
-    // if (temp.contains("/dev/block/vold/8:")) {
-    // String usbpath = temp.split(" ")[1];
-    // Log.i("mount","usbpath >>>>> " + usbpath);
-    // set.add(usbpath);
-    // }
-    // }
-    // mreader.close();
-    // list = new ArrayList<String>(set);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // } finally {
-    // }
-    // return list;
-    // }
+//     private static List<String> runMount() {
+//     Set<String> set = new TreeSet<String>();
+//     List<String> list = null;
+//     Process mprocess;
+//     BufferedReader mreader;
+//     String temp;
+//     Runtime runtime = Runtime.getRuntime();
+//     try {
+//     mprocess = runtime.exec("mount");
+//     mreader = new BufferedReader(new
+//     InputStreamReader(mprocess.getInputStream()));
+//     while ((temp = mreader.readLine()) != null) {
+//     if (temp.contains("/dev/block/vold/8:")) {
+//     String usbpath = temp.split(" ")[1];
+//     Log.i("mount","usbpath >>>>> " + usbpath);
+//     set.add(usbpath);
+//     }
+//     }
+//     mreader.close();
+//     list = new ArrayList<String>(set);
+//     } catch (IOException e) {
+//     e.printStackTrace();
+//     } finally {
+//     }
+//     return list;
+//     }
     public static boolean isImage(String filename) {
         String[] str = {"jpg", "png", "jpeg", "bmp", "gif", "webp", "wbmp"};
         return isEqualType(filename, str);
@@ -459,6 +460,50 @@ public class MediaUtils {
             }
         }
         return arrayList;
+    }
+
+
+    /**
+     * 获取指定外接设备的可用空间,实测比上面getFree方法靠谱一些
+     *
+     * @param path
+     * @return
+     */
+    public static String getRealFreeSize(String path) {
+
+        StatFs stat = new StatFs(path); // 创建StatFs对象
+
+        long blockSize = stat.getBlockSize(); // 获取block的size
+        float totalBlocks = stat.getBlockCount(); // 获取block的总数
+
+        long mToalBytes = (long) (blockSize * totalBlocks);
+        long availableBlocks = stat.getAvailableBlocks(); // 获取可用块大小
+
+
+        long mUsedBytes = (long) ((totalBlocks - availableBlocks) * blockSize);
+        long mFreeBytes = mToalBytes - mUsedBytes;
+
+
+        return FileUtil.convertStorage(mFreeBytes);
+    }
+
+
+    /**
+     * 获取指定外接设备的总空间大小
+     *
+     * @param path
+     * @return
+     */
+    public static String getRealTotalSize(String path) {
+
+        StatFs stat = new StatFs(path); // 创建StatFs对象
+
+        long blockSize = stat.getBlockSize(); // 获取block的size
+        float totalBlocks = stat.getBlockCount(); // 获取block的总数
+
+        long mToalBytes = (long) (blockSize * totalBlocks);
+
+        return FileUtil.convertStorage(mToalBytes);
     }
 
 }
