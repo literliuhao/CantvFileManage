@@ -2,6 +2,7 @@
 <resources>
 
     <color name="transparent">#00000000</color>
+    <color name="per90_white">#e6FFFFFF</color>
     <color name="per80_white">#CCFFFFFF</color>
     <color name="per50_white">#7FFFFFFF</color>
     <color name="per40_white">#66FFFFFF</color>

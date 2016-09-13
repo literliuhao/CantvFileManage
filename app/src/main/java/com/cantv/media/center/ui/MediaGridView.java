@@ -121,23 +121,6 @@ public class MediaGridView extends CustomGridView {
                         } else {
                             if (mDisclaimerDialog == null) {
                                 mDisclaimerDialog = new DisclaimerDialog(mActivity);
-                                /*
-                                 * mDisclaimerDialog.setOnShowListener(new
-								 * OnShowListener() {
-								 * 
-								 * @Override public void onShow(DialogInterface
-								 * dialog) { ((DisclaimerDialog)
-								 * dialog).reset(); ((DisclaimerDialog) dialog)
-								 * .updateBackground(BitmapUtils.blurBitmap(
-								 * BitmapFactory
-								 * .decodeResource(getResources(),R.
-								 * drawable.home_devices_background),
-								 * GridViewActivity.context));
-								 * //BitmapUtils.blurBitmap
-								 * (BitmapFactory.decodeResource
-								 * (getResources(),R
-								 * .drawable.home_devices_background) } });
-								 */
                                 mDisclaimerDialog.setOnClickableListener(new OnClickableListener() {
                                     @Override
                                     public void onConfirmClickable() {

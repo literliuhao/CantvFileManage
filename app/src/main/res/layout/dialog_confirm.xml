@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="@dimen/px856"
+        android:layout_height="@dimen/px590"
+        android:layout_marginBottom="@dimen/px245"
+        android:layout_marginEnd="@dimen/px532"
+        android:layout_marginStart="@dimen/px532"
+        android:layout_marginTop="@dimen/px245"
+        android:background="@drawable/home_devices_background_new">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/px50"
+            android:text="删除提示"
+            android:textColor="@color/per90_white"
+            android:textSize="@dimen/px40" />
+		<LinearLayout 
+		    android:id="@+id/et_text"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/px120"
+            android:layout_marginTop="@dimen/px80"
+            android:layout_below="@id/tv_title"
+            android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/et_text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="您确定要删除此文件吗？"
+            android:textColor="@color/per90_white"
+            android:textSize="@dimen/px34" />
+        
+		</LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/px196"
+            android:layout_below="@id/et_text"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="@dimen/px316"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_normal_text"
+                android:text="确定"
+                android:textColor="@color/per90_white"
+                android:textSize="@dimen/px34" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="@dimen/px316"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/px24"
+                android:background="@drawable/btn_normal_text"
+                android:text="@string/str_cancel"
+                android:textColor="@color/per90_white"
+                android:textSize="@dimen/px34"
+                android:layout_weight="7" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

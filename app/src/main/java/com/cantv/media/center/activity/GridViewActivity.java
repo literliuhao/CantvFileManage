@@ -20,6 +20,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.ui.ConfirmDialog;
 import com.cantv.media.center.ui.DoubleColumnMenu;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.MediaGridView;
@@ -58,6 +59,7 @@ public class GridViewActivity extends Activity {
     public boolean isExternal; // 记录当前是否处于外接设备,true:处于外接设备(通过USB接口接入)
     public TextView mRTCountView; // 显示数量和当前选中position
     public int mCurrGridStyle; // 记录当前是什么排列方式
+    private ConfirmDialog mConfirmDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -246,18 +248,9 @@ public class GridViewActivity extends Activity {
                         }
                         mDeleteItem = mGridView.mSelectItemPosition;
                         List<Media> datas = mGridView.mListAdapter.getData();
-                        if (datas.size() > 0) { // 防止当前目录没有数据,进行删除操作发生异常
-                            Media media = datas.get(mDeleteItem);
-                            boolean deleteSuccessed = FileUtil.delete(media);
-                            if (deleteSuccessed) {
-                                datas.remove(mDeleteItem);
-                                mGridView.mListAdapter.bindData(datas);
-                            } else {
-                                Toast.makeText(GridViewActivity.this, R.string.deleteFailed, Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(GridViewActivity.this, R.string.null_data, Toast.LENGTH_SHORT).show();
-                        }
+                        mMenuDialog.dismiss();
+                        hideFocus();
+                        deleteItem(datas);
                         return true;
                     } else {
                         return false;
@@ -499,5 +492,62 @@ public class GridViewActivity extends Activity {
         }
     }
 
+    /**
+     * 删除弹框
+     */
+    private void deleteItem(final List<Media> datas){
+        if (mConfirmDialog == null) {
+            mConfirmDialog = new ConfirmDialog(this);
+            mConfirmDialog.setOnClickableListener(new ConfirmDialog.OnClickableListener() {
+                @Override
+                public void onConfirmClickable() {
+                    removeItem(datas);
+                }
 
+                @Override
+                public void onCancelClickable() {
+                    return;
+                }
+            });
+        }
+        mConfirmDialog.show();
+    }
+
+    /**
+     * 删除实现
+     * @param datas
+     */
+    private void removeItem(List<Media> datas) {
+        if (datas.size() > 0) { // 防止当前目录没有数据,进行删除操作发生异常
+            Media media = datas.get(mDeleteItem);
+            boolean deleteSuccessed = FileUtil.delete(media);
+            if (deleteSuccessed) {
+                datas.remove(mDeleteItem);
+                mGridView.mListAdapter.bindData(datas);
+            } else {
+                Toast.makeText(GridViewActivity.this, R.string.deleteFailed, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(GridViewActivity.this, R.string.null_data, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 隐藏焦点框
+     */
+    private void hideFocusFrame() {
+        if (null == mMenuDialog || !mMenuDialog.isShowing()) {
+            mGridView.setStyleFocus(R.drawable.unfocus);
+        } else {
+            mGridView.setDefaultStyle();
+        }
+    }
+
+    private void hideFocus() {
+        if (null == mConfirmDialog || !mConfirmDialog.isShowing()) {
+            mGridView.setStyleFocus(R.drawable.unfocus);
+        } else {
+            mGridView.setDefaultStyle();
+        }
+    }
 }
