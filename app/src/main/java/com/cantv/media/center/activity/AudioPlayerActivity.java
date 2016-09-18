@@ -97,9 +97,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mContentBg = (ImageView) findViewById(R.id.iv_bg);
         mProgressBar = (CircleProgressBar) findViewById(R.id.pb_circle);
         mCDView = (CDView) findViewById(R.id.v_cd);
-        mCurrProgressTv = (TextView) findViewById(R.id.tv_curr_progress);
         mDurationTv = (TextView) findViewById(R.id.tv_duration);
-        mCurrProgressTv = (TextView) findViewById(R.id.tv_curr_progress);
         mCurrProgressTv = (TextView) findViewById(R.id.tv_curr_progress);
         mNoLyricLayout = (RelativeLayout) findViewById(R.id.rl_nolyric);
         mTitleTv = (TextView) findViewById(R.id.tv_title);
@@ -574,6 +572,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
         mProgressBar.setProgress(0);
         mCDView.setImageBitmap(null);
+        mContentBg.setBackgroundResource(0);
+        mContentBg.setImageResource(0);
+        mCurrProgressTv.setText("");
+        mDurationTv.setText("");
         mLyricView.setVisibility(View.INVISIBLE);
         mNoLyricLayout.setVisibility(View.INVISIBLE);
         mLyricView.setLyricInfo(null);

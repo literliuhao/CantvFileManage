@@ -83,7 +83,9 @@ public class Audio extends Media {
             op.inDither = true;
             op.outWidth = width;
             op.outHeight = height;
-            bitmap = BitmapFactory.decodeByteArray(embedPic, 0, embedPic.length);
+            if (null != embedPic && embedPic.length > 0) {
+                bitmap = BitmapFactory.decodeByteArray(embedPic, 0, embedPic.length);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
