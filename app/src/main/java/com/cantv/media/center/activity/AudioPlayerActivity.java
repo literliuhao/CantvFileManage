@@ -326,6 +326,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         ProxyPlayer player = getProxyPlayer();
         int duration = player.getDuration();
         mProgressBar.setMax(duration);
+        setmPaused(false);  //暂停时,在列表中播放别的曲目,这个参数可能不准确
+        mHandler.sendEmptyMessage(0);   //避免没有进度
         mDurationTv.setText(" / " + formatTime(duration));
     }
 

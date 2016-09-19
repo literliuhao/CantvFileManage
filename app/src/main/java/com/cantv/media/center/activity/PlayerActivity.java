@@ -212,4 +212,11 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
     protected abstract void runBeforePlay(boolean isFirst);
 
+    /**
+     * 设置当前是否暂停,有这个需求(播放音频中有用到)
+     * @param mPaused
+     */
+    public void setmPaused(boolean mPaused) {
+        this.mPaused = mPaused;
+    }
 }
