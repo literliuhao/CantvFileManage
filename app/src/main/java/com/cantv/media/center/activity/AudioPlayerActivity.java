@@ -353,7 +353,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 @Override
                 public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
                     if (mSelectedMenuPosi == position) {
-                        return ;
+                        return;
                     }
                     mMenuList.get(mSelectedMenuPosi).setSelected(false);
 
@@ -366,7 +366,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
                     mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
-                    return ;
+                    return;
                 }
 
                 @Override
