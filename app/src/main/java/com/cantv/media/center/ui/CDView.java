@@ -74,7 +74,7 @@ public class CDView extends ImageView {
         mRotateAnim.setRepeatMode(ObjectAnimator.RESTART);
         mRotateAnim.setRepeatCount(ObjectAnimator.INFINITE);
         mRotateAnim.setInterpolator(new LinearInterpolator());
-        mRotateAnim.setDuration(5000);
+        mRotateAnim.setDuration(18000);
         mRotateAnim.addUpdateListener(new AnimatorUpdateListener() {
 
             @Override
