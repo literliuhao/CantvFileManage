@@ -83,7 +83,7 @@ public class ImageFrameView extends FrameLayout {
 //                    if ((mImgOrginWidth >= (int) mActivity.screenWidth) && (mImgOrginHeight >= (int) mActivity.screenHeight)) {
 //                        getRealWH(imageUri, mLoadingImgListener);
 //                    } else {
-                        mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
+                    mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
 //                    }
                 }
 
