@@ -64,12 +64,12 @@ public class ImageFrameView extends FrameLayout {
         loadImage(imageUri);
     }
 
-    public void loadImage(final String imageUri){
-        Log.i("playImage",imageUri);
-        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
+    public void loadImage(final String imageUri) {
+        Log.i("playImage", imageUri);
+        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth, (int) mActivity.screenHeight) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                Bitmap bitmap = getBitmap(resource, (int)mActivity.screenWidth, (int)mActivity.screenHeight);
+                Bitmap bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
                 mImgOrginWidth = resource.getWidth();
                 mImgOrginHeight = resource.getHeight();
                 mBitmap = bitmap;
@@ -79,7 +79,12 @@ public class ImageFrameView extends FrameLayout {
 
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccessed();
-                    mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
+//                    //大图处理过的图片经过比率进行缩小后无法获取实际尺寸,所以经过二次获取(有内存溢出风险)
+//                    if ((mImgOrginWidth >= (int) mActivity.screenWidth) && (mImgOrginHeight >= (int) mActivity.screenHeight)) {
+//                        getRealWH(imageUri, mLoadingImgListener);
+//                    } else {
+                        mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
+//                    }
                 }
 
                 if (mBitmap != null && !mBitmap.isRecycled()) {
@@ -91,8 +96,29 @@ public class ImageFrameView extends FrameLayout {
             @Override
             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                 super.onLoadFailed(e, errorDrawable);
-                Log.i("playImage","onLoadFailed......................");
+                Log.i("playImage", "onLoadFailed......................");
                 loadImage(imageUri);
+            }
+        });
+    }
+
+    /**
+     * 获取大于屏幕尺寸图片的实际尺寸
+     *
+     * @param imageUri
+     * @param mLoadingImgListener
+     */
+    private void getRealWH(String imageUri, final onLoadingImgListener mLoadingImgListener) {
+
+        Glide.with(mContext).load(imageUri).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                mLoadingImgListener.bitmapSize(bitmap.getWidth(), bitmap.getHeight());
+                Log.w("W / H ", bitmap.getWidth() + "   " + bitmap.getHeight());
+                if (null != bitmap) {
+                    bitmap.recycle();
+                    bitmap = null;
+                }
             }
         });
     }

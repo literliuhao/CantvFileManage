@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -255,7 +256,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     }
                 });
                 if (curIndex == getData().size() && curIndex != 1) {
-                    if(!mAutoPlay){
+                    if (!mAutoPlay) {
                         Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
                         return;
                     }
@@ -296,7 +297,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         //实际大小
         if (!isFullSize) {
             if (currentW > screenWidth || currentH > screenHeight) {
-                if (currentW - screenWidth > currentH - screenHeight) {
+                if (currentW > screenWidth && currentH > screenHeight) {
+                    //取最大的进行缩放
+                    return currentW / screenWidth > currentH / screenHeight ? currentW / screenWidth : currentH / screenHeight;
+                } else if (currentW > screenWidth) {
                     return currentW / screenWidth;
                 } else {
                     return currentH / screenHeight;
@@ -309,15 +313,18 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             //等比例全屏
             //图片宽高大于屏幕时
             if (currentW > screenWidth || currentH > screenHeight) {
+                //图片实际宽高都大于屏幕宽高
                 if (currentW > screenWidth && currentH > screenHeight) {
                     if (!isRotation) {
-                        if ((currentW - screenWidth) < (currentH - screenHeight)) {
-                            return screenWidth / currentW;
-                        } else {
+                        if ((currentW / screenWidth) < (currentH / screenHeight)) {
+                            Log.w("scrWidth / currentW ", screenWidth / currentW + "");
                             return screenHeight / currentH;
+                        } else {
+                            Log.w("scrHeight / currentH ", screenHeight / currentH + "");
+                            return screenWidth / currentW;
                         }
                     } else {
-                        if ((currentW - screenWidth) > (currentH - screenHeight)) {
+                        if ((currentW / screenWidth) > (currentH / screenHeight)) {
                             return screenWidth / currentW;
                         } else {
                             return screenHeight / currentH;
@@ -325,26 +332,30 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     }
                 } else if (currentW > screenWidth) {
                     return screenWidth / currentW;
-                } else if (currentH > screenHeight) {
-                    return screenHeight / currentH;
-                } else {
-                    if (!isRotation) {
-                        if ((currentW - screenWidth) < (currentH - screenHeight)) {
-                            return screenWidth / currentW;
-                        } else {
-                            return screenHeight / currentH;
-                        }
-                    } else {
-                        if ((currentW - screenWidth) > (currentH - screenHeight)) {
-                            return screenWidth / currentW;
-                        } else {
-                            return screenHeight / currentH;
-                        }
-                    }
                 }
+                //  (currentH > screenHeight)
+                else {
+                    return screenHeight / currentH;
+                }
+
+//                else {
+//                    if (!isRotation) {
+//                        if ((currentW - screenWidth) < (currentH - screenHeight)) {
+//                            return screenWidth / currentW;
+//                        } else {
+//                            return screenHeight / currentH;
+//                        }
+//                    } else {
+//                        if ((currentW - screenWidth) > (currentH - screenHeight)) {
+//                            return screenWidth / currentW;
+//                        } else {
+//                            return screenHeight / currentH;
+//                        }
+//                    }
+//                }
             } else {
                 //屏幕大于图片宽高时
-                if ((screenWidth - currentW) > (screenHeight - currentH)) {
+                if ((screenWidth / currentW) > (screenHeight / currentH)) {
                     return screenHeight / currentH;
                 } else {
                     return screenWidth / currentW;
