@@ -74,7 +74,7 @@ public class CDView extends ImageView {
         mRotateAnim.setRepeatMode(ObjectAnimator.RESTART);
         mRotateAnim.setRepeatCount(ObjectAnimator.INFINITE);
         mRotateAnim.setInterpolator(new LinearInterpolator());
-        mRotateAnim.setDuration(5000);
+        mRotateAnim.setDuration(18000);
         mRotateAnim.addUpdateListener(new AnimatorUpdateListener() {
 
             @Override
@@ -185,7 +185,7 @@ public class CDView extends ImageView {
     public void stopRotate() {
         isRotate = false;
         mRotateAnim.cancel();
-//        mRotateAnim.removeAllUpdateListeners();   //这个还是不要的好,因为再开始就没有监听,就不会重绘了
+        mRotateAnim.removeAllUpdateListeners();
     }
 
     @Override
