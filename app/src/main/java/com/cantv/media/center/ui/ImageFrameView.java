@@ -69,13 +69,13 @@ public class ImageFrameView extends FrameLayout {
 
     public void loadImage(final String imageUri) {
         Log.i("playImage", imageUri);
-
+        //计算本地图片的实际宽高
         if (!imageUri.startsWith(ShareUrl_FLAG)) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             Bitmap bitmap = BitmapFactory.decodeFile(imageUri, options);
-            callbackW = options.outHeight;
-            callbackH = options.outWidth;
+            callbackH = options.outHeight;
+            callbackW = options.outWidth;
             if (null != bitmap) {
                 bitmap.recycle();
                 bitmap = null;

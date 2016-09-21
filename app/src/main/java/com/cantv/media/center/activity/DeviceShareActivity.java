@@ -285,41 +285,41 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     public void showAddDeviceDialog() {
         if (mAddDeviceDialog == null) {
             mAddDeviceDialog = new DeviceAddDialog(this);
-            mAddDeviceDialog.setOnShowListener(new OnShowListener() {
-
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    ((DeviceAddDialog) dialog).reset();
-                    // Bitmap decodeResource =
-                    // BitmapFactory.decodeResource(getResources(),
-                    // R.drawable.folder_photo);
-                    if (null == mBlurDrawable) {
-                        mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
-                    }
-                    ((DeviceAddDialog) dialog)
-                            // .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
-                            // .updateBackground(BitmapUtils.blurBitmap(decodeResource,
-                            // DeviceShareActivity.this));
-                            .updateBackground(mBlurDrawable);
-                }
-            });
-            mAddDeviceDialog.setOnIpConfirmedListener(new OnIpConfirmedListener() {
-
-                @Override
-                public void onConfirmed(final String ip) {
-                    final String host;
-                    if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(host = resolve(ip))) {
-                        ToastUtils.showMessage(MyApplication.mContext, getString(R.string.ip_err_tips), Toast.LENGTH_LONG);
-                        return;
-                    }
-                    if (indexOfAddedDevices(host) != -1) {
-                        ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_has_added), Toast.LENGTH_LONG);
-                        return;
-                    }
-                    checkIPAccess(ip, false);
-                }
-            });
         }
+        mAddDeviceDialog.setOnShowListener(new OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialog) {
+                ((DeviceAddDialog) dialog).reset();
+                // Bitmap decodeResource =
+                // BitmapFactory.decodeResource(getResources(),
+                // R.drawable.folder_photo);
+                if (null == mBlurDrawable) {
+                    mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+                }
+                ((DeviceAddDialog) dialog)
+                        // .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
+                        // .updateBackground(BitmapUtils.blurBitmap(decodeResource,
+                        // DeviceShareActivity.this));
+                        .updateBackground(mBlurDrawable);
+            }
+        });
+        mAddDeviceDialog.setOnIpConfirmedListener(new OnIpConfirmedListener() {
+
+            @Override
+            public void onConfirmed(final String ip) {
+                final String host;
+                if (TextUtils.isEmpty(ip) || TextUtils.isEmpty(host = resolve(ip))) {
+                    ToastUtils.showMessage(MyApplication.mContext, getString(R.string.ip_err_tips), Toast.LENGTH_LONG);
+                    return;
+                }
+                if (indexOfAddedDevices(host) != -1) {
+                    ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_has_added), Toast.LENGTH_LONG);
+                    return;
+                }
+                checkIPAccess(ip, false);
+            }
+        });
         mAddDeviceDialog.show();
     }
 
