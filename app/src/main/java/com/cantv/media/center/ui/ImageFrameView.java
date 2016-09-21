@@ -37,6 +37,7 @@ public class ImageFrameView extends FrameLayout {
     private ImagePlayerActivity mActivity;
     private int callbackW;
     private int callbackH;
+    private String ShareUrl_FLAG = "http://";
 
     public ImageFrameView(Context context) {
         super(context);
@@ -69,23 +70,28 @@ public class ImageFrameView extends FrameLayout {
     public void loadImage(final String imageUri) {
         Log.i("playImage", imageUri);
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        Bitmap bitmap = BitmapFactory.decodeFile(imageUri, options);
-        callbackW = options.outHeight;
-        callbackH = options.outWidth;
-        if (null != bitmap) {
-            bitmap.recycle();
-            bitmap = null;
+        if (!imageUri.startsWith(ShareUrl_FLAG)) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            Bitmap bitmap = BitmapFactory.decodeFile(imageUri, options);
+            callbackW = options.outHeight;
+            callbackH = options.outWidth;
+            if (null != bitmap) {
+                bitmap.recycle();
+                bitmap = null;
+            }
         }
 
         //加50是为了防止刚好是屏幕的整数倍,出现获取处理后的图片宽高正好和屏幕的宽高相同而出现不能缩放(也有可能碰到是加完后数据的整数倍)
         Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                Bitmap bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
                 mImgOrginWidth = resource.getWidth();
                 mImgOrginHeight = resource.getHeight();
+                Bitmap bitmap = null;
+                if (mImgOrginHeight != (int) mActivity.screenWidth && mImgOrginWidth != (int) mActivity.screenHeight) {
+                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
+                }
                 mBitmap = bitmap;
                 mImageView.setImageBitmap(mBitmap);
                 dismissProgressBar();
@@ -93,12 +99,8 @@ public class ImageFrameView extends FrameLayout {
 
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccessed();
-//                    //大图处理过的图片经过比率进行缩小后无法获取实际尺寸,所以经过二次获取(有内存溢出风险)
-//                    if ((mImgOrginWidth >= (int) mActivity.screenWidth) && (mImgOrginHeight >= (int) mActivity.screenHeight)) {
-//                        getRealWH(imageUri, mLoadingImgListener);
-//                    } else {
 //                    mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
-                    mLoadingImgListener.bitmapSize(callbackW, callbackH);
+                    mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
 //                    }
                 }
 
@@ -117,26 +119,6 @@ public class ImageFrameView extends FrameLayout {
         });
     }
 
-    /**
-     * 获取大于屏幕尺寸图片的实际尺寸
-     *
-     * @param imageUri
-     * @param mLoadingImgListener
-     */
-    private void getRealWH(String imageUri, final onLoadingImgListener mLoadingImgListener) {
-
-        Glide.with(mContext).load(imageUri).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                mLoadingImgListener.bitmapSize(bitmap.getWidth(), bitmap.getHeight());
-                Log.w("W / H ", bitmap.getWidth() + "   " + bitmap.getHeight());
-                if (null != bitmap) {
-                    bitmap.recycle();
-                    bitmap = null;
-                }
-            }
-        });
-    }
 
     public static Bitmap getBitmap(Bitmap bitmap, int screenWidth, int screenHight) {
         int w = bitmap.getWidth();
@@ -274,5 +256,15 @@ public class ImageFrameView extends FrameLayout {
     public interface NotifyParentUpdate {
         void update();
     }
+
+    /**
+     * author: yibh
+     * Date: 2016/9/21  17:19 .
+     * 加载图片
+     */
+    private void yLoadBitmap() {
+
+    }
+
 
 }
