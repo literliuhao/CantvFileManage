@@ -99,9 +99,7 @@ public class ImageFrameView extends FrameLayout {
 
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccessed();
-//                    mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
                     mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
-//                    }
                 }
 
                 if (mBitmap != null && !mBitmap.isRecycled()) {
@@ -256,15 +254,5 @@ public class ImageFrameView extends FrameLayout {
     public interface NotifyParentUpdate {
         void update();
     }
-
-    /**
-     * author: yibh
-     * Date: 2016/9/21  17:19 .
-     * 加载图片
-     */
-    private void yLoadBitmap() {
-
-    }
-
 
 }
