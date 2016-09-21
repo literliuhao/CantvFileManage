@@ -52,7 +52,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     @Override
     protected void onPause() {
         super.onPause();
-        if (mInitDone) getProxyPlayer().runOnActivityPause();
+//        if (mInitDone) getProxyPlayer().runOnActivityPause();
     }
 
     @Override
@@ -60,7 +60,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         super.onResume();
         try {
             if (mInitDone) {
-                getProxyPlayer().runOnActivityResume();
+//                getProxyPlayer().runOnActivityResume();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,7 +139,8 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     public void onPlayerPlayOrPause() {
         mPaused = !mPaused;
         if (mPaused) getProxyPlayer().pause();
-        else getProxyPlayer().start();
+        else
+            getProxyPlayer().start();
     }
 
     @Override
@@ -214,6 +215,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
     /**
      * 设置当前是否暂停,有这个需求(播放音频中有用到)
+     *
      * @param mPaused
      */
     public void setmPaused(boolean mPaused) {

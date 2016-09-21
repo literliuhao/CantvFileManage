@@ -152,7 +152,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
                 @Override
                 public void run() {
-                    getProxyPlayer().start();
+//                    getProxyPlayer().start();
                     runAfterPlay(mFistPlay);
                     mPlayer.setOnCompletionListener(BasePlayer.this);
                     mFistPlay = false;

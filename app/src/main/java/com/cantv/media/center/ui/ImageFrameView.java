@@ -35,6 +35,8 @@ public class ImageFrameView extends FrameLayout {
     private NotifyParentUpdate mNotifyParentUpdate;
     private Context mContext;
     private ImagePlayerActivity mActivity;
+    private int callbackW;
+    private int callbackH;
 
     public ImageFrameView(Context context) {
         super(context);
@@ -66,6 +68,17 @@ public class ImageFrameView extends FrameLayout {
 
     public void loadImage(final String imageUri) {
         Log.i("playImage", imageUri);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeFile(imageUri, options);
+        callbackW = options.outHeight;
+        callbackH = options.outWidth;
+        if (null != bitmap) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+
         //加50是为了防止刚好是屏幕的整数倍,出现获取处理后的图片宽高正好和屏幕的宽高相同而出现不能缩放(也有可能碰到是加完后数据的整数倍)
         Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
             @Override
@@ -84,7 +97,8 @@ public class ImageFrameView extends FrameLayout {
 //                    if ((mImgOrginWidth >= (int) mActivity.screenWidth) && (mImgOrginHeight >= (int) mActivity.screenHeight)) {
 //                        getRealWH(imageUri, mLoadingImgListener);
 //                    } else {
-                    mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
+//                    mLoadingImgListener.bitmapSize(resource.getWidth(), resource.getHeight());
+                    mLoadingImgListener.bitmapSize(callbackW, callbackH);
 //                    }
                 }
 
@@ -130,10 +144,15 @@ public class ImageFrameView extends FrameLayout {
         Matrix matrix = new Matrix();
         float scale = (float) screenWidth / w;
         matrix.postScale(scale, scale);
-        Bitmap bmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
-        if (bitmap != null && !bitmap.equals(bmp) && !bitmap.isRecycled()) {
-            bitmap.recycle();
-            bitmap = null;
+        Bitmap bmp = null;
+        try {
+            bmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
+            if (bitmap != null && !bitmap.equals(bmp) && !bitmap.isRecycled()) {
+                bitmap.recycle();
+                bitmap = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return bmp;
     }

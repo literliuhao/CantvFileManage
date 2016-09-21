@@ -159,6 +159,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     mCtrBar.seekToDuration(0);
                 }
             }
+        } else {
+            mCtrBar.seekToDuration(0);  //数据库中没有保存过
         }
 
         if (isSrtExist) {
