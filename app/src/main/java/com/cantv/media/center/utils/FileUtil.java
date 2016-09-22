@@ -226,6 +226,9 @@ public class FileUtil {
      */
     public static List<Media> getFileList(String path) {
         List<Media> tList = new ArrayList<>();
+        if (null == path) {
+            return tList;
+        }
         try {
             File file = new File(path);
             if (!file.exists() || !file.isDirectory()) {
@@ -384,6 +387,7 @@ public class FileUtil {
     public static final long SIZE_KB = 1024L;
     public static final long SIZE_MB = 1024 * 1024L;
     public static final long SIZE_GB = 1024L * 1024L * 1024L;
+
     /**
      * 计算文件大小
      */

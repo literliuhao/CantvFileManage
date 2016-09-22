@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
-import com.cantv.media.center.activity.DeviceShareActivity.CheckNetAccessTask.OnNetCheckCallback;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.DeviceInfo;
 import com.cantv.media.center.ui.DeviceAddDialog;
@@ -49,6 +48,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -168,9 +168,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         String linkHostList = SharedPreferenceUtil.getLinkHostList();
         if (null != linkHostList && linkHostList.trim().length() > 1) {
             String[] ipList = linkHostList.split("abc");
+            List<String> ips = new ArrayList<>();
             for (String ip : ipList) {
-                checkIPAccess(ip, true);
+                ips.add(ip);
             }
+            checkIPAccess(ips, true);
 
         }
     }
@@ -212,8 +214,8 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         }
 
         boolean b = SharedPreferenceUtil.saveLinkHost(info.getIp());
-        if (b){
-            Toast.makeText(MyApplication.getContext(),"IP保存成功",Toast.LENGTH_SHORT).show();
+        if (b) {
+            Toast.makeText(MyApplication.getContext(), "IP保存成功", Toast.LENGTH_SHORT).show();
         }
 
         final DeviceShareItemView view = new DeviceShareItemView(this);
@@ -253,7 +255,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 mFocusUtils.hideFocusForStartMove(400);
             }
         }, 500);
-
 
 
     }
@@ -317,7 +318,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_has_added), Toast.LENGTH_LONG);
                     return;
                 }
-                checkIPAccess(ip, false);
+                List<String> strings = new ArrayList<>();
+                strings.add(ip);
+                checkIPAccess(strings, false);
             }
         });
         mAddDeviceDialog.show();
@@ -343,35 +346,48 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         return null;
     }
 
-    public static class CheckNetAccessTask extends AsyncTask<String, Void, Boolean> {
+    public interface OnNetCheckCallback {
+        void onStartCheck();
 
-        public interface OnNetCheckCallback {
-            void onStartCheck();
+        void onGetResult(List<String> ips);
+    }
 
-            void onGetResult(boolean success);
-        }
+    public class CheckNetAccessTask extends AsyncTask<Void, Void, List<String>> {
 
         private OnNetCheckCallback callback;
+        private List<String> mIPList;
 
-        public CheckNetAccessTask(OnNetCheckCallback callback) {
-            super();
+        public CheckNetAccessTask(OnNetCheckCallback callback, List<String> ipList) {
             this.callback = callback;
+            this.mIPList = ipList;
         }
 
         @Override
         protected void onPreExecute() {
+            super.onPreExecute();
             if (callback != null) {
                 callback.onStartCheck();
             }
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
-            return NetworkUtils.ping(params[0]);
+        protected List<String> doInBackground(Void... params) {
+            ArrayList<String> strings = new ArrayList<>();
+            for (String ip : mIPList) {
+                if (null == ip && ip.trim().equals("")) {
+                    continue;
+                }
+                if (NetworkUtils.ping(ip)) {
+                    strings.add(ip);
+                }
+            }
+
+            return strings;
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(List<String> result) {
+            super.onPostExecute(result);
             if (callback != null) {
                 callback.onGetResult(result);
             }
@@ -391,13 +407,13 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         return index;
     }
 
-    protected void startCheckIpAccess(String ip, OnNetCheckCallback onNetCheckResultCallback) {
+    protected void startCheckIpAccess(List<String> ipList, OnNetCheckCallback onNetCheckResultCallback) {
         if (mCheckNetAccessTask != null) {
             mCheckNetAccessTask.cancel(true);
             mCheckNetAccessTask = null;
         }
-        mCheckNetAccessTask = new CheckNetAccessTask(onNetCheckResultCallback);
-        mCheckNetAccessTask.execute(ip);
+        mCheckNetAccessTask = new CheckNetAccessTask(onNetCheckResultCallback, ipList);
+        mCheckNetAccessTask.execute();
     }
 
     // --> addDevice
@@ -559,11 +575,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     /**
      * 链接到指定IP地址
      *
-     * @param ip
+     * @param ips
      * @param isFirst
      */
-    private void checkIPAccess(final String ip, final boolean isFirst) {
-        startCheckIpAccess(ip, new OnNetCheckCallback() {
+    private void checkIPAccess(final List<String> ips, final boolean isFirst) {
+        startCheckIpAccess(ips, new OnNetCheckCallback() {
 
             @Override
             public void onStartCheck() {
@@ -571,19 +587,21 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
 
             @Override
-            public void onGetResult(boolean success) {
-                hideLoadingDialog();
-                if (success) {
+            public void onGetResult(List<String> resultIPs) {
+                if (resultIPs.size() > 0) {
                     if (null != mAddDeviceDialog) {
                         mAddDeviceDialog.dismiss();
                     }
                     mFocusUtils.hideFocus();
-                    addDeviceItemView(new DeviceInfo(ip));
+                    for (String ip : resultIPs) {
+                        addDeviceItemView(new DeviceInfo(ip));
+                    }
                 } else {
                     if (!isFirst) {
                         ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_not_found), Toast.LENGTH_SHORT);
                     }
                 }
+                hideLoadingDialog();
             }
         });
     }
