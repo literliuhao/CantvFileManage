@@ -259,7 +259,7 @@ public class PlayerController extends RelativeLayout {
         mContinueText.setText("从" + time2String(position) + "开始，继续为您播放");
         isShowTip = true;
         mPlayImage.setVisibility(INVISIBLE);
-        handler.sendEmptyMessageDelayed(CONTINUE_PLAY, 3000);
+        handler.sendEmptyMessageDelayed(CONTINUE_PLAY, 5000);
     }
 
     @SuppressLint("SimpleDateFormat")

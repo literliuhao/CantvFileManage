@@ -138,15 +138,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayDuration();
         List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
 
-//        String videoProgress = SharedPreferenceUtil.getVideoProgress();
-//        if (!videoProgress.equals("")) {
-//            String[] split = videoProgress.split(",");
-//            if (split[0].equals(path)) {
-//                mCtrBar.showContinuePaly(Integer.parseInt(split[1]));
-//            }
-//
-//        }
-
         if (list.size() != 0) {
             mRecord = list.get(0);
             final int positon = list.get(0).getPosition();
