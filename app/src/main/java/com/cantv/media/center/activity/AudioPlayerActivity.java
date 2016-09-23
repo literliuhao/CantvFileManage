@@ -199,6 +199,22 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     @Override
+    protected void onResume() {
+        if (!ismManualPaused()) {
+            mCDView.startRotate();
+            mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        mCDView.pauseRotate();
+        mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
+        super.onPause();
+    }
+
+    @Override
     protected void onStop() {
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
@@ -253,12 +269,16 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     if (mHandler != null) {
                         mHandler.removeCallbacksAndMessages(null);
                     }
+
+                    setmManualPaused(true);
                     mCDView.pauseRotate();
                     mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
                 } else {
                     if (mHandler != null) {
                         mHandler.sendEmptyMessage(0);
                     }
+
+                    setmManualPaused(false);
                     mCDView.startRotate();
                     mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
                 }
@@ -290,6 +310,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     @Override
     protected void runBeforePlay(boolean isFirst) {
         resetUI();
+        setmManualPaused(false);
         mCDView.startRotate();
         if (mDataList.size() > 0) {
             String uri = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
