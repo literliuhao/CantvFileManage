@@ -96,6 +96,10 @@ public class LyricParser {
         while (matcher.find()) {
             if (lyricStr == null) {
                 String[] splitData = pattern.split(line);
+                if(splitData == null || splitData.length != 2){
+                    //忽略无效的单行歌词
+                    return;
+                }
                 lyricStr = splitData[splitData.length - 1];
             }
 

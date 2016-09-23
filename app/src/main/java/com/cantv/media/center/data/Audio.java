@@ -104,7 +104,7 @@ public class Audio extends Media {
         Cursor cursor = null;
         try {
             //查询数据库，参数分别为（路径，要查询的列名，条件语句，条件参数，排序）
-            cursor = resolver.query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+            cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
             if (cursor != null) {
                 while (cursor.moveToNext()) {
                     String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
@@ -126,23 +126,9 @@ public class Audio extends Media {
     }
 
     public static String getAudioSinger(String uri) {
-        String singer = "";
-        ContentResolver resolver = MyApplication.getContext().getContentResolver();
-        Cursor cursor = null;
-        try {
-            //查询数据库，参数分别为（路径，要查询的列名，条件语句，条件参数，排序）
-            cursor = resolver.query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, null, MediaStore.Audio.Media.DATA + " = ? ", new String[]{uri}, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-            if (cursor != null && cursor.moveToFirst()) {
-                singer = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return singer;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uri);
+        return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
     }
 
     public static LyricInfo getAudioLyric(String uri) {

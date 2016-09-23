@@ -209,10 +209,10 @@ public class LyricView extends View {
         // draw focus post-Lines
         drawDistanceY = 0;
         for (int postLine = mFocusedLineIndex + 1, lineCount = mLyricInfo.getLyrics().size(); postLine < lineCount; postLine++) {
-            if (drawDistanceY > mMaxBottomDrawDist) {
-                // avoid draw unvisible area.
-                break;
-            }
+//            if (drawDistanceY > mMaxBottomDrawDist) {
+//                // avoid draw unvisible area.
+//                break;
+//            }
             if (mGradientInfo.postFocusOffsetY < 0 && postLine == mDestLineIndex) {
                 mPaint.setColor(mGradientInfo.textColor);
                 mPaint.setTextSize(mTextSize + mGradientInfo.textSizeOffset);
