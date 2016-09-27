@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.storage.StorageManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
@@ -189,10 +191,10 @@ public class GridViewActivity extends Activity {
             mMenuDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    if(mClickDelete){
+                    if (mClickDelete) {
                         mClickDelete = false;
                         mGridView.setStyleFocus(R.drawable.unfocus);
-                    }else{
+                    } else {
                         mGridView.setDefaultStyle();
                     }
                 }
@@ -448,7 +450,7 @@ public class GridViewActivity extends Activity {
             }
 
             boolean isUpdate = true;
-            if (! mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
+            if (!mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
 
                 //获取上一级的某个路径,然后和依然存在的外设路径比较,不用当前集合(当前集合可能没有内容)
                 Media parentMed = mGridView.mMediaStack.get(0).get(0);
@@ -503,47 +505,70 @@ public class GridViewActivity extends Activity {
     /**
      * 删除弹框
      */
-    private void deleteItem(final List<Media> datas){
+    private void deleteItem(final List<Media> datas) {
         if (mConfirmDialog == null) {
             mConfirmDialog = new ConfirmDialog(this);
-            mConfirmDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    mGridView.setDefaultStyle();
-                }
-            });
-            mConfirmDialog.setOnClickableListener(new ConfirmDialog.OnClickableListener() {
-                @Override
-                public void onConfirmClickable() {
-                    removeItem(datas);
-                }
-
-                @Override
-                public void onCancelClickable() {
-                    return;
-                }
-            });
         }
+        mConfirmDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mGridView.setDefaultStyle();
+            }
+        });
+        mConfirmDialog.setOnClickableListener(new ConfirmDialog.OnClickableListener() {
+            @Override
+            public void onConfirmClickable() {
+                removeItem(datas);
+            }
+
+            @Override
+            public void onCancelClickable() {
+                return;
+            }
+        });
         mConfirmDialog.show();
     }
 
     /**
      * 删除实现
+     *
      * @param datas
      */
     private void removeItem(List<Media> datas) {
         if (datas.size() > 0) { // 防止当前目录没有数据,进行删除操作发生异常
             Media media = datas.get(mDeleteItem);
-            boolean deleteSuccessed = FileUtil.delete(media);
-            if (deleteSuccessed) {
-                datas.remove(mDeleteItem);
-                mGridView.mListAdapter.bindData(datas);
-            } else {
-                Toast.makeText(GridViewActivity.this, R.string.deleteFailed, Toast.LENGTH_SHORT).show();
-            }
+            delete(datas, media);
         } else {
             Toast.makeText(GridViewActivity.this, R.string.null_data, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * 删除文件
+     */
+    public void delete(final List<Media> datas, Media media) {
+        Log.w("路径", media.isSharing ? media.sharePath : media.mUri);
+        FileUtil.copyFileList(media);
+        FileUtil.asnycExecute(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                for (final Media f : FileUtil.mCurFileNameList) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (FileUtil.deleteFile(f)) {
+                                datas.remove(mDeleteItem);
+                                mGridView.mListAdapter.bindData(datas);
+                            } else {
+                                Toast.makeText(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+                FileUtil.clear();
+            }
+        });
     }
 
 }

@@ -159,12 +159,7 @@ public class MediaListItemView extends MediaItemView {
                     }
                 });
             } else {
-                mTvSize.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTvSize.setText("大小: " + MediaUtils.fileLength(media.getFileSize()));
-                    }
-                });
+                mTvSize.setText("大小: " + FileUtil.convertStorage(media.fileSize));
             }
         }
         mTvDate.setText("日期: " + DateUtil.onDate2String(new Date(media.modifiedDate), "yyyy.MM.dd HH:mm"));

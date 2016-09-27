@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 
 import com.cantv.media.center.app.MyApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yibh on 2016/7/6.
  */
@@ -73,17 +76,42 @@ public class SharedPreferenceUtil {
         }
     }
 
+
+    private static List<String> defaultDevices = new ArrayList<>();
+
+    /**
+     * author: yibh
+     * Date: 2016/9/26  19:34 .
+     * 添加默认地址,减少初始无设备的问题
+     */
+    static {
+        //电视
+        defaultDevices.add("/mnt/usb/sda1");
+        defaultDevices.add("/mnt/usb/sdb1");
+        defaultDevices.add("/mnt/usb/sdc1");
+        defaultDevices.add("/mnt/usb/sdd1");
+        defaultDevices.add("/mnt/usb/sde1");
+        //z1
+        defaultDevices.add("/storage/udisk0");
+        defaultDevices.add("/storage/udisk1");
+        defaultDevices.add("/storage/udisk2");
+        defaultDevices.add("/storage/udisk3");
+        defaultDevices.add("/storage/udisk4");
+    }
+
     /**
      * 保存设备地址
      *
      * @param path
      */
     public static void saveDevice(String path) {
+        if (defaultDevices.contains(path)) {
+            return;
+        }
         String devicesPath = getDevicesPath();
-
         if (!devicesPath.contains(path)) {
             StringBuilder stringBuilder = new StringBuilder(devicesPath);
-            stringBuilder.append("abc").append(path);
+            stringBuilder.append(path).append("abc");
             mEditor.putString(DEVICES_TAG, stringBuilder.toString());
             applyInfo(mEditor);
         }
@@ -93,7 +121,11 @@ public class SharedPreferenceUtil {
      * 获取设备地址
      */
     public static String getDevicesPath() {
-        return mSp.getString(DEVICES_TAG, "");
+        StringBuilder pathBuilder = new StringBuilder();
+        for (String path : defaultDevices) {
+            pathBuilder.append(path).append("abc");
+        }
+        return pathBuilder + mSp.getString(DEVICES_TAG, "");
     }
 
     /**

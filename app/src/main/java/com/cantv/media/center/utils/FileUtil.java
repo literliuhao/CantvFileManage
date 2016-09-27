@@ -560,9 +560,10 @@ public class FileUtil {
         return false;
     }
 
-    protected static void deleteFile(Media f) {
-        if (f == null)
-            return;
+    public static boolean deleteFile(Media f) {
+        if (f == null) {
+            return false;
+        }
         File file = new File(f.mUri);
         boolean directory = file.isDirectory();
         if (directory) {
@@ -575,7 +576,7 @@ public class FileUtil {
         if (!f.isDir) {
             ops.add(ContentProviderOperation.newDelete(getMediaUriFromFilename(f.mName)).withSelection("_data = ?", new String[]{f.mUri}).build());
         }
-        file.delete();
+        return file.delete();
     }
 
     /*
@@ -601,7 +602,7 @@ public class FileUtil {
     /*
      * 创建异步线程
      */
-    private static void asnycExecute(Runnable r) {
+    public static void asnycExecute(Runnable r) {
         final Runnable _r = r;
         new AsyncTask() {
             @Override
@@ -626,12 +627,13 @@ public class FileUtil {
         }.execute();
     }
 
-    private static ArrayList<Media> mCurFileNameList = new ArrayList<>();
+    public static ArrayList<Media> mCurFileNameList = new ArrayList<>();
 
     /**
-     * 删除文件
+     * 删除文件,不太容易回调结果,暂时不用
      */
     public static boolean delete(Media media) {
+        Log.w("路径", media.isSharing ? media.sharePath : media.mUri);
         copyFileList(media);
         asnycExecute(new Runnable() {
             @Override
@@ -646,7 +648,7 @@ public class FileUtil {
         return true;
     }
 
-    private static void copyFileList(Media file) {
+    public static void copyFileList(Media file) {
         synchronized (mCurFileNameList) {
             mCurFileNameList.clear();
             mCurFileNameList.add(file);
