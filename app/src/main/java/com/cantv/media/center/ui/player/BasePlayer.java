@@ -35,14 +35,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDataList = getIntent().getParcelableArrayListExtra("data_list");
-//        String url = Uri.decode(getIntent().getDataString());
-//        if (!TextUtils.isEmpty(url)) {
-//            if (mDataList == null) {
-//                mDataList = new ArrayList<String>();
-//            }
-//            mDataList.clear();
-//            mDataList.add(url);
-//        }
         mDefaultPlayIndex = getIntent().getIntExtra("data_index", 0);
         if (mDataList == null) {
             mDefaultPlayIndex = 0;

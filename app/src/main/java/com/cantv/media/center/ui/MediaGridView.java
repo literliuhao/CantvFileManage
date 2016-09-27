@@ -58,7 +58,7 @@ public class MediaGridView extends CustomGridView {
         super(context);
         mContext = context;
         mActivity = (GridViewActivity) context;
-        mLoadingDialog = new LoadingDialog(mContext);
+        mLoadingDialog = new LoadingDialog(mActivity);
         msSourceType = sourceType;
         switch (msSourceType) {
             case MOIVE:

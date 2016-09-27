@@ -112,7 +112,6 @@ public class PlayerController extends RelativeLayout {
                     mContinuePlay.setVisibility(INVISIBLE);
 
                     break;
-
                 case CHANG_SRT:
                     ((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
                     handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);

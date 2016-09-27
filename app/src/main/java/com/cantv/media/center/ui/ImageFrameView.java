@@ -1,6 +1,7 @@
 package com.cantv.media.center.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -43,7 +45,7 @@ public class ImageFrameView extends FrameLayout {
         super(context);
         mContext = context;
         this.mActivity = (ImagePlayerActivity) context;
-        mLoadingDialog = new LoadingDialog(mContext);
+        mLoadingDialog = new LoadingDialog(mActivity);
         mImageView = new ImageView(context);
         addView(mImageView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, Gravity.CENTER));
     }
@@ -255,4 +257,11 @@ public class ImageFrameView extends FrameLayout {
         void update();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            mActivity.finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }
