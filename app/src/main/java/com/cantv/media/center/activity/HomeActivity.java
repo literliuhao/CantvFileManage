@@ -77,8 +77,8 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private Boolean isIN = false;
     private List<Integer> keyList = null;
     private List<Integer> dynamicList = null;
-    private final int VALUE = 7;
-    private final String PRIVATEKEY = "8!9!10!11!12!13";
+    private final int VALUE = 82;
+    private final String PRIVATEKEY = "19!20!19!20";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -471,12 +471,12 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.i("onKeyDown", keyCode + "");
         if (keyCode == VALUE) {
             isIN = true;
             dynamicList = new ArrayList<>();
             dynamicList.addAll(keyList);
         } else if (isIN) {
-            Log.i("onKeyDown", keyCode + "");
             String status = verify(keyCode);
             if (status.equals("break")) {
                 isIN = false;

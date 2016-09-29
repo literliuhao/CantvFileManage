@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class IntentBuilder {
     //不能安装应用标记
-    public static Boolean flag = true;
+    public static Boolean flag = false;
 
     public static void viewFile(final Context context, final String filePath) {
         String type = getMimeType(filePath);
