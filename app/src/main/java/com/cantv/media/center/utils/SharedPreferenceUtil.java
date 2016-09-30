@@ -86,22 +86,22 @@ public class SharedPreferenceUtil {
      * 添加默认地址,减少初始无设备的问题
      */
     static {
-        //        //z1
-//        defaultDevices.add("/storage/udisk0");
-//        defaultDevices.add("/storage/udisk1");
-        String hzStart="/storage/udisk";
-        for (int i=0;i<6;i++){
-            defaultDevices.add(hzStart+i);
+        //z1
+//      defaultDevices.add("/storage/udisk0");
+//      defaultDevices.add("/storage/udisk1");
+        String hzStart = "/storage/udisk";
+        for (int i = 0; i < 6; i++) {
+            defaultDevices.add(hzStart + i);
         }
 
-        //电视
-//        defaultDevices.add("/mnt/usb/sda1");
-//        defaultDevices.add("/mnt/usb/sdb1");
-        String[] dsPaths = new String[]{"a", "b", "c", "d", "e", "f"};
+        //电视,实际硬盘中可能序号并不是按顺序来的(如:sdb1,sdb3,sdb5,sda1,sdb1,sdd1)
+//      defaultDevices.add("/mnt/usb/sda1");
+//      defaultDevices.add("/mnt/usb/sdb1");
+        String[] dsPaths = new String[]{"a", "b", "c", "d", "e", "f", "g"};
         String dsStart = "/mnt/usb/sd";
         for (int i = 0; i < dsPaths.length; i++) {
             defaultDevices.add(dsStart + dsPaths[i] + 1);
-            for (int j = 2; j < 7; j++) {
+            for (int j = 2; j < 10; j++) {   //可能存在移动硬盘分区的情况
                 defaultDevices.add(dsStart + dsPaths[i] + j);
             }
         }
