@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.cantv.media.center.app.MyApplication;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,18 +86,26 @@ public class SharedPreferenceUtil {
      * 添加默认地址,减少初始无设备的问题
      */
     static {
+        //        //z1
+//        defaultDevices.add("/storage/udisk0");
+//        defaultDevices.add("/storage/udisk1");
+        String hzStart="/storage/udisk";
+        for (int i=0;i<6;i++){
+            defaultDevices.add(hzStart+i);
+        }
+
         //电视
-        defaultDevices.add("/mnt/usb/sda1");
-        defaultDevices.add("/mnt/usb/sdb1");
-        defaultDevices.add("/mnt/usb/sdc1");
-        defaultDevices.add("/mnt/usb/sdd1");
-        defaultDevices.add("/mnt/usb/sde1");
-        //z1
-        defaultDevices.add("/storage/udisk0");
-        defaultDevices.add("/storage/udisk1");
-        defaultDevices.add("/storage/udisk2");
-        defaultDevices.add("/storage/udisk3");
-        defaultDevices.add("/storage/udisk4");
+//        defaultDevices.add("/mnt/usb/sda1");
+//        defaultDevices.add("/mnt/usb/sdb1");
+        String[] dsPaths = new String[]{"a", "b", "c", "d", "e", "f"};
+        String dsStart = "/mnt/usb/sd";
+        for (int i = 0; i < dsPaths.length; i++) {
+            defaultDevices.add(dsStart + dsPaths[i] + 1);
+            for (int j = 2; j < 7; j++) {
+                defaultDevices.add(dsStart + dsPaths[i] + j);
+            }
+        }
+
     }
 
     /**

@@ -34,7 +34,7 @@ public class ActivityDialog extends Activity {
         window.setContentView(R.layout.dialog_mounted);
         window.setBackgroundDrawableResource(R.color.transparent);
         final FocusUtils focusUtils = new FocusUtils(this, window.getDecorView(), R.drawable.focus);
-        ImageView dialogImage = (ImageView) window.findViewById(R.id.dialog_image);
+        View dialogImage = window.findViewById(R.id.dialog_image);
         dialogImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,7 +46,7 @@ public class ActivityDialog extends Activity {
                 startActivity(intent);
             }
         });
-        ImageView dialogVideo = (ImageView) window.findViewById(R.id.dialog_video);
+        View dialogVideo = window.findViewById(R.id.dialog_video);
         dialogVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,7 +58,7 @@ public class ActivityDialog extends Activity {
                 startActivity(intent);
             }
         });
-        ImageView dialogAudio = (ImageView) window.findViewById(R.id.dialog_audio);
+        View dialogAudio = window.findViewById(R.id.dialog_audio);
         dialogAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +70,7 @@ public class ActivityDialog extends Activity {
                 startActivity(intent);
             }
         });
-        ImageView dialogFile = (ImageView) window.findViewById(R.id.dialog_file);
+        View dialogFile = window.findViewById(R.id.dialog_file);
         dialogFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
