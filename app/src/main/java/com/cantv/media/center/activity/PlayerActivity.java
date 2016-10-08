@@ -37,11 +37,6 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             mDataList = new ArrayList<>();
         }
 
-//        String url = Uri.decode(getIntent().getDataString());
-//        if (!TextUtils.isEmpty(url)) {
-//            mDataList.clear();
-//            mDataList.add(url);
-//        }
         mDefaultPlayIndex = getIntent().getIntExtra("data_index", 0);
         if (mDefaultPlayIndex >= mDataList.size()) {
             mDefaultPlayIndex = 0;
@@ -50,11 +45,16 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
         if (!(mAutoPaused && mManualPaused)) {   //界面不可见时都要停止播放(已经暂停就不用再执行)
-            if (mInitDone) getProxyPlayer().runOnActivityPause();
+            if (mInitDone) {
+                if (null != getProxyPlayer()) {
+//                    getProxyPlayer().stop();
+                    getProxyPlayer().release();
+                }
+            }
         }
+        super.onStop();
     }
 
     @Override
@@ -73,8 +73,10 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
     @Override
     public void finish() {
+        if (null != getProxyPlayer() && getProxyPlayer().isPlaying()) {
+            getProxyPlayer().stop();
+        }
         super.finish();
-        getProxyPlayer().release();
     }
 
     @Override
