@@ -504,8 +504,8 @@ public class MediaUtils {
 
         StatFs stat = new StatFs(path); // 创建StatFs对象
 
-        long blockSize = stat.getBlockSize(); // 获取block的size
-        float totalBlocks = stat.getBlockCount(); // 获取block的总数
+        long blockSize = stat.getBlockSizeLong(); // 获取block的size
+        float totalBlocks = stat.getBlockCountLong(); // 获取block的总数
 
         long mToalBytes = (long) (blockSize * totalBlocks);
 

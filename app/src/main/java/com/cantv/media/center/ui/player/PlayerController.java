@@ -288,7 +288,6 @@ public class PlayerController extends RelativeLayout {
             case KeyEvent.KEYCODE_ENTER:
                 if (!isShowTip) {
                     togglePlayImgvi();
-//                    mPlayImage.setVisibility(VISIBLE);
                     mCtrlBarListener.onPlayerPlayOrPause();
                     delayHidePlayImgvi();
                 }
@@ -450,7 +449,6 @@ public class PlayerController extends RelativeLayout {
 
     private void togglePlayImgvi() {
         if (mCtrlBarContext.isPlayerPaused()) {
-            mPlayImage.setBackgroundResource(R.drawable.play_stop);
             handler.removeMessages(CHANGE_PLAY_VISIBILITY);
             handler.sendEmptyMessageDelayed(CHANGE_PLAY_VISIBILITY, 1000);
         } else {
