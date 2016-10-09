@@ -174,7 +174,7 @@ public class MediaGridView extends CustomGridView {
 
     public void asyncLoadData() {
         if (mTask != null && mTask.getStatus() != AsyncTask.Status.RUNNING) {
-            mTask.execute();
+            mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             mTask = null;
         }
     }

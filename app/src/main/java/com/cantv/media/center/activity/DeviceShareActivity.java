@@ -114,7 +114,20 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     @Override
     protected void onStop() {
         unregisterReceiver(mNetChangeReceiver);
+//        if (null!=mScanSambaTask) {
+//            mScanSambaTask.cancel(true);
+//        }
         super.onStop();
+    }
+
+    @Override
+    public void finish() {
+        if (null!=mScanSambaTask) {
+            mScanSambaTask.cancel(true);
+            mScanSambaTask=null;
+//            mScanSambaTask.
+        }
+        super.finish();
     }
 
     @Override
@@ -169,6 +182,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         if (null != linkHostList && linkHostList.trim().length() > 1) {
             String[] ipList = linkHostList.split("abc");
             List<String> ips = new ArrayList<>();
+            ips.add("192.168.1.1");
+            ips.add("192.168.1.2");
+            ips.add("192.168.1.3");
+            ips.add("192.168.1.4");
+            ips.add("192.168.1.5");
             for (String ip : ipList) {
                 ips.add(ip);
             }
@@ -532,7 +550,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
 
         });
-        mScanSambaTask.execute(deviceInfo.getFileItem().getPath());
+        mScanSambaTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,deviceInfo.getFileItem().getPath());
     }
 
     // --> loginDevice
