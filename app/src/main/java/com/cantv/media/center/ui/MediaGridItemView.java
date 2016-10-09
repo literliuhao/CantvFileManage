@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cantv.media.R;
 import com.cantv.media.center.constants.PicStretch;
 import com.cantv.media.center.data.Media;
@@ -64,7 +63,7 @@ public class MediaGridItemView extends MediaItemView {
 		mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
 		mFocusView.setLayoutParams(mFocusParams);
 		mBgView = new MediaPicView(context);
-		mBgView.setId(0x559589);
+		mBgView.setId(R.id.bg_grid_background);
 		mBgView.setPicStretch(PicStretch.SCALE_CROP);
 		RelativeLayout.LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
 		mediaParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
