@@ -99,8 +99,8 @@
         android:layout_width="@dimen/px160"
         android:layout_height="@dimen/px160"
         android:layout_centerInParent="true"
-        android:background="@drawable/play_stop"
         android:visibility="invisible"/>
+        <!--android:background="@drawable/play_stop"-->
 
     <RelativeLayout
         android:id="@+id/rl_progress"

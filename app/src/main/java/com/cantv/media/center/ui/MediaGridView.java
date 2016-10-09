@@ -174,7 +174,7 @@ public class MediaGridView extends CustomGridView {
 
     public void asyncLoadData() {
         if (mTask != null && mTask.getStatus() != AsyncTask.Status.RUNNING) {
-            mTask.execute();
+            mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             mTask = null;
         }
     }
@@ -194,17 +194,6 @@ public class MediaGridView extends CustomGridView {
     private class MediaLoaderTask extends AsyncTask<Void, Void, List<Media>> {
         private List<Media> mMediaes;
         private SourceType mSourceType;
-        private long mTime = System.currentTimeMillis();
-        private Collator mCollator = Collator.getInstance(Locale.CHINESE);
-        private Comparator mMediaSort = new Comparator<Media>() {
-            @Override
-            public int compare(Media arg0, Media arg1) {
-                boolean one = arg0.isCollection();
-                boolean two = arg1.isCollection();
-                return one == two ? mCollator.compare(arg0.getName(), arg1.getName()) : (one ? 1 : -1);
-            }
-        };
-
         MediaLoaderTask(SourceType sourceType) {
             mMediaes = new ArrayList<>();
             mSourceType = sourceType;

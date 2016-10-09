@@ -8,7 +8,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
+import android.os.storage.StorageManager;
 import android.provider.MediaStore.Files.FileColumns;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.activity.AudioPlayerActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.activity.VideoPlayActicity;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.constants.MediaFormat;
 import com.cantv.media.center.constants.SourceType;
@@ -25,8 +28,11 @@ import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.Media;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -207,7 +213,7 @@ public class MediaUtils {
 //        return total;
 //    }
 
-//     private static List<String> runMount() {
+    //     private static List<String> runMount() {
 //     Set<String> set = new TreeSet<String>();
 //     List<String> list = null;
 //     Process mprocess;
@@ -442,25 +448,25 @@ public class MediaUtils {
         Glide.with(context).load(path).centerCrop().into(imageView);
     }
 
-    /**
-     * 获取当前存在的外接存储设备
-     *
-     * @return
-     */
-    public static List<String> getCurrPathList() {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
-        for (String s : pathList) {
-            if (null == s || s.trim().equals("")) {
-                continue;
-            }
-            // 获取路径对应设备的总容量
-            if (null != MediaUtils.getTotal(s)) {
-                arrayList.add(s);
-            }
-        }
-        return arrayList;
-    }
+//    /**
+//     * 获取当前存在的外接存储设备
+//     *
+//     * @return
+//     */
+//    public static List<String> getCurrPathList() {
+//        ArrayList<String> arrayList = new ArrayList<String>();
+//        String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
+//        for (String s : pathList) {
+//            if (null == s || s.trim().equals("")) {
+//                continue;
+//            }
+//            // 获取路径对应设备的总容量
+//            if (null != MediaUtils.getTotal(s)) {
+//                arrayList.add(s);
+//            }
+//        }
+//        return arrayList;
+//    }
 
 
     /**
@@ -473,11 +479,11 @@ public class MediaUtils {
 
         StatFs stat = new StatFs(path); // 创建StatFs对象
 
-        long blockSize = stat.getBlockSize(); // 获取block的size
-        float totalBlocks = stat.getBlockCount(); // 获取block的总数
+        long blockSize = stat.getBlockSizeLong(); // 获取block的size
+        float totalBlocks = stat.getBlockCountLong(); // 获取block的总数
 
         long mToalBytes = (long) (blockSize * totalBlocks);
-        long availableBlocks = stat.getAvailableBlocks(); // 获取可用块大小
+        long availableBlocks = stat.getAvailableBlocksLong(); // 获取可用块大小
 
 
         long mUsedBytes = (long) ((totalBlocks - availableBlocks) * blockSize);
@@ -498,12 +504,58 @@ public class MediaUtils {
 
         StatFs stat = new StatFs(path); // 创建StatFs对象
 
-        long blockSize = stat.getBlockSize(); // 获取block的size
-        float totalBlocks = stat.getBlockCount(); // 获取block的总数
+        long blockSize = stat.getBlockSizeLong(); // 获取block的size
+        float totalBlocks = stat.getBlockCountLong(); // 获取block的总数
 
         long mToalBytes = (long) (blockSize * totalBlocks);
 
         return FileUtil.convertStorage(mToalBytes);
+    }
+
+    /**
+     * author: yibh
+     * Date: 2016/9/30  11:34 .
+     * 获取到处于挂载状态的路径
+     */
+    public static List<String> getCurrPathList() {
+        ArrayList<String> currPathList = new ArrayList<>();
+        try {
+            //通过反射获取到路径的挂载状态
+            StorageManager sm = (StorageManager) (MyApplication.getContext().getSystemService(Context.STORAGE_SERVICE));
+            Method getVolumList = StorageManager.class.getMethod("getVolumeList");
+            getVolumList.setAccessible(true);
+            Object[] results = (Object[]) getVolumList.invoke(sm);
+            System.out.println("results:" + results.length);
+            Method getState = sm.getClass().getMethod("getVolumeState", String.class);
+
+            final String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
+            for (String path : pathList) {
+                if (null != path && path.trim().equals("")) { //去除异常路径,否则下面会出错
+                    continue;
+                }
+                if (!(new File(path).exists())) {
+                    continue;
+                }
+                System.out.println("path:" + path);
+//                Log.w("路径 ", path);
+                String state = "";
+                state = (String) getState.invoke(sm, path);
+                System.out.println("state:" + state + " path:" + path);
+                if (state.equals("mounted")) {  //将挂载状态的路径保存
+                    currPathList.add(path);
+                }
+
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return currPathList;
+
     }
 
 }

@@ -421,61 +421,34 @@ public class GridViewActivity extends Activity {
         if (!isExternal) { //不是外接设备就不用往下走了
             return;
         }
-
         final List<Media> mediaes = new ArrayList<>();
-
-        //通过反射获取到路径的挂载状态
-        StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
-        try {
-            Method getVolumList = StorageManager.class.getMethod("getVolumeList");
-            getVolumList.setAccessible(true);
-            Object[] results = (Object[]) getVolumList.invoke(sm);
-            System.out.println("results:" + results.length);
-            Method getState = sm.getClass().getMethod("getVolumeState", String.class);
-
-            final String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
-            for (String path : pathList) {
-                if (null != path && path.trim().equals("")) { //去除异常路径,否则下面会出错
-                    continue;
-                }
-                System.out.println("path:" + path);
-                String state = (String) getState.invoke(sm, path);
-                System.out.println("state:" + state + " path:" + path);
-                if (state.equals("mounted")) {
-                    File file = new File(path);
-                    Media fileInfo = FileUtil.getFileInfo(file, null, false);
-                    mediaes.add(fileInfo);
-                }
-
-            }
-
-            boolean isUpdate = true;
-            if (!mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
-
-                //获取上一级的某个路径,然后和依然存在的外设路径比较,不用当前集合(当前集合可能没有内容)
-                Media parentMed = mGridView.mMediaStack.get(0).get(0);
-
-                for (Media media : mediaes) {
-                    if (parentMed.mUri.contains(media.mUri)) {
-                        isUpdate = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isUpdate) {
-                updateRootUI(mediaes);
-            }
-
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<String> currPathList = MediaUtils.getCurrPathList();
+        for (String path : currPathList) {
+            File file = new File(path);
+            Media fileInfo = FileUtil.getFileInfo(file, null, false);
+            mediaes.add(fileInfo);
         }
+
+        boolean isUpdate = true;
+        if (!mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
+
+            //获取上一级的某个路径,然后和依然存在的外设路径比较,不用当前集合(当前集合可能没有内容)
+            Media parentMed = mGridView.mMediaStack.get(0).get(0);
+
+            for (Media media : mediaes) {
+                if (parentMed.mUri.contains(media.mUri)) {
+                    isUpdate = false;
+                    break;
+                }
+            }
+        }
+
+        if (isUpdate)
+
+        {
+            updateRootUI(mediaes);
+        }
+
 
     }
 
