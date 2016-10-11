@@ -26,11 +26,8 @@ import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.FileServer.OnInitlizedListener;
 
 import java.io.File;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 
 @SuppressLint("ResourceAsColor")
@@ -53,6 +50,9 @@ public class MediaGridView extends CustomGridView {
     private DisclaimerDialog mDisclaimerDialog;
     private LoadingDialog mLoadingDialog;
     private String currentType;
+    //不能安装应用标记
+    public static Boolean flag = false;
+    private ApkDialog apkDialog = null;
 
     public MediaGridView(Context context, SourceType sourceType) {
         super(context);
@@ -115,25 +115,36 @@ public class MediaGridView extends CustomGridView {
                     openMediaActivity(item);
                 } else {
                     if (item.mType == SourceType.APP) {
-                        int disclaimer = SharedPreferenceUtil.getDisclaimer();
-                        if (disclaimer == 1) {
-                            MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
-                        } else {
-                            if (mDisclaimerDialog == null) {
-                                mDisclaimerDialog = new DisclaimerDialog(mActivity);
-                                mDisclaimerDialog.setOnClickableListener(new OnClickableListener() {
-                                    @Override
-                                    public void onConfirmClickable() {
-                                        MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
-                                    }
+                        if (flag) {
+                            int disclaimer = SharedPreferenceUtil.getDisclaimer();
+                            if (disclaimer == 1) {
+                                MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
+                            } else {
+                                if (mDisclaimerDialog == null) {
+                                    mDisclaimerDialog = new DisclaimerDialog(mActivity);
+                                    mDisclaimerDialog.setOnClickableListener(new OnClickableListener() {
+                                        @Override
+                                        public void onConfirmClickable() {
+                                            MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
+                                        }
 
-                                    @Override
-                                    public void onCancelClickable() {
-                                        return;
-                                    }
-                                });
+                                        @Override
+                                        public void onCancelClickable() {
+                                            return;
+                                        }
+                                    });
+                                }
+                                mDisclaimerDialog.show();
                             }
-                            mDisclaimerDialog.show();
+                        } else {
+                            apkDialog = new ApkDialog(mActivity);
+                            apkDialog.setOnClickableListener(new ApkDialog.OnClickableListener() {
+                                @Override
+                                public void onConfirmClickable() {
+                                    apkDialog.dismiss();
+                                }
+                            });
+                            apkDialog.show();
                         }
                     } else {
                         MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
@@ -194,6 +205,7 @@ public class MediaGridView extends CustomGridView {
     private class MediaLoaderTask extends AsyncTask<Void, Void, List<Media>> {
         private List<Media> mMediaes;
         private SourceType mSourceType;
+
         MediaLoaderTask(SourceType sourceType) {
             mMediaes = new ArrayList<>();
             mSourceType = sourceType;
@@ -299,7 +311,6 @@ public class MediaGridView extends CustomGridView {
         }
     }
 
-
     protected void showProgressBar(String message) {
 
         mLoadingDialog.show();
@@ -309,7 +320,6 @@ public class MediaGridView extends CustomGridView {
 
         mLoadingDialog.dismiss();
     }
-
 
     /**
      * 打开指定媒体文件

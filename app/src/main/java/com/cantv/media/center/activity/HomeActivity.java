@@ -26,7 +26,7 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.service.BootDialogService;
-import com.cantv.media.center.utils.IntentBuilder;
+import com.cantv.media.center.ui.MediaGridView;
 import com.cantv.media.center.utils.MediaUtils;
 
 import java.util.ArrayList;
@@ -482,10 +482,10 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 isIN = false;
             } else if (status.equals("true")) {
                 isIN = false;
-                if (IntentBuilder.flag) {
-                    IntentBuilder.flag = false;
+                if (MediaGridView.flag) {
+                    MediaGridView.flag = false;
                 } else {
-                    IntentBuilder.flag = true;
+                    MediaGridView.flag = true;
                 }
             }
         }

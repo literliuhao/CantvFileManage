@@ -10,7 +10,6 @@ import android.os.Message;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.provider.MediaStore.Files.FileColumns;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -468,7 +467,6 @@ public class MediaUtils {
 //        return arrayList;
 //    }
 
-
     /**
      * 获取指定外接设备的可用空间,实测比上面getFree方法靠谱一些
      *
@@ -485,14 +483,11 @@ public class MediaUtils {
         long mToalBytes = (long) (blockSize * totalBlocks);
         long availableBlocks = stat.getAvailableBlocksLong(); // 获取可用块大小
 
-
         long mUsedBytes = (long) ((totalBlocks - availableBlocks) * blockSize);
         long mFreeBytes = mToalBytes - mUsedBytes;
 
-
         return FileUtil.convertStorage(mFreeBytes);
     }
-
 
     /**
      * 获取指定外接设备的总空间大小
