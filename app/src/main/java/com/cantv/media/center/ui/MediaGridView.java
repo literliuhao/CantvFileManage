@@ -26,11 +26,8 @@ import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.FileServer.OnInitlizedListener;
 
 import java.io.File;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 
 @SuppressLint("ResourceAsColor")
