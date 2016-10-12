@@ -536,7 +536,7 @@ public class MediaUtils {
                 String state = "";
                 state = (String) getState.invoke(sm, path);
                 System.out.println("state:" + state + " path:" + path);
-                if (state.equals("mounted")) {  //将挂载状态的路径保存
+                if (state.equals("mounted") && (!currPathList.contains(path))) {  //将挂载状态的路径保存
                     currPathList.add(path);
                 }
 

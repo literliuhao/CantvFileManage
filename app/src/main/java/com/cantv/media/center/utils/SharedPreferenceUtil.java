@@ -114,15 +114,13 @@ public class SharedPreferenceUtil {
      * @param path
      */
     public static void saveDevice(String path) {
-        if (defaultDevices.contains(path)) {
-            return;
-        }
-        String devicesPath = getDevicesPath();
-        if (!devicesPath.contains(path)) {
-            StringBuilder stringBuilder = new StringBuilder(devicesPath);
-            stringBuilder.append(path).append("abc");
-            mEditor.putString(DEVICES_TAG, stringBuilder.toString());
-            applyInfo(mEditor);
+        if (!defaultDevices.contains(path.trim())) {
+            if (!mSp.getString(DEVICES_TAG, "").contains(path.trim())) {
+                StringBuilder stringBuilder = new StringBuilder(mSp.getString(DEVICES_TAG, ""));
+                stringBuilder.append(path).append("abc");
+                mEditor.putString(DEVICES_TAG, stringBuilder.toString());
+                applyInfo(mEditor);
+            }
         }
     }
 
