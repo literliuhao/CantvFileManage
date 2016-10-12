@@ -71,6 +71,8 @@ public class PlayerController extends RelativeLayout {
 
     private int mKeyDownRepeatCount = 0;
 
+    private boolean preIsPause;   //快进/退之前是否处于暂停状态
+
     private static final String TAG = "PlayerController";
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -84,9 +86,10 @@ public class PlayerController extends RelativeLayout {
 
                 case CHANG_PLAYIMAGE:
                     if (mCtrlBarContext.isPlayerPaused()) {
+                        mPlayImage.setVisibility(VISIBLE);
                         mPlayImage.setBackgroundResource(R.drawable.play_play);
                     } else {
-                        mPlayImage.setBackgroundResource(R.drawable.play_stop);
+//                        mPlayImage.setBackgroundResource(R.drawable.play_stop);
                     }
                     break;
 
@@ -288,7 +291,6 @@ public class PlayerController extends RelativeLayout {
             case KeyEvent.KEYCODE_ENTER:
                 if (!isShowTip) {
                     togglePlayImgvi();
-                    mPlayImage.setVisibility(VISIBLE);
                     mCtrlBarListener.onPlayerPlayOrPause();
                     delayHidePlayImgvi();
                 }
@@ -297,6 +299,7 @@ public class PlayerController extends RelativeLayout {
 
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_DPAD_RIGHT:
+                preIsPause = mCtrlBarContext.isPlayerPaused();
                 handler.removeMessages(CHANG_PLAYIMAGE);
                 mProgressBar.setSecondProgressEnable(true);
                 handler.removeMessages(SEEK_DURATION);
@@ -374,9 +377,19 @@ public class PlayerController extends RelativeLayout {
                 }
                 mProgressBar.setProgress(mCtrlBarContext.getPlayerCurPosition());
                 mKeyDownRepeatCount = 0;
-
             }
         });
+
+        if (preIsPause) {    //之前是暂停状态就依然保持暂停
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCtrlBarListener.onPlayerPlayOrPause();
+                    handler.sendEmptyMessage(PlayerController.CHANG_PLAYIMAGE);
+                }
+            }, 200);
+        }
+
     }
 
     public void removeAllMessage() {
@@ -450,11 +463,11 @@ public class PlayerController extends RelativeLayout {
 
     private void togglePlayImgvi() {
         if (mCtrlBarContext.isPlayerPaused()) {
-            mPlayImage.setBackgroundResource(R.drawable.play_stop);
             handler.removeMessages(CHANGE_PLAY_VISIBILITY);
             handler.sendEmptyMessageDelayed(CHANGE_PLAY_VISIBILITY, 1000);
         } else {
             mPlayImage.setBackgroundResource(R.drawable.play_play);
+            mPlayImage.setVisibility(VISIBLE);
         }
     }
 

@@ -209,8 +209,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onPause() {
-        mCDView.pauseRotate();
-        mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
+//        mCDView.pauseRotate();
+//        mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
         super.onPause();
     }
 

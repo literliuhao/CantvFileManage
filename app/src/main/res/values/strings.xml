@@ -136,8 +136,10 @@
     <string name="image_menu_movie">幻灯片</string>
     <string name="image_menu_info">图片信息</string>
     <string name="disclaimer_title">免责声明</string>
+    <string name="disclaimer_install">安装声明</string>
     <string name="disclaimer_text1">按照国家相关政策规定，本机已经禁止安装第三方软</string>
     <string name="disclaimer_text2">件，第三方软件不保证能兼容和适用于所有Android平台和</string>
     <string name="disclaimer_text3">系统，有可能引起冲突和导致不可预测的问题出现，请自行</string>
     <string name="disclaimer_text4">承担使用第三方软件而导致的风险和后果。</string>
+    <string name="disclaimer_apk">按照国家相关政策规定，本机已经禁止安装第三方软件。</string>
 </resources>

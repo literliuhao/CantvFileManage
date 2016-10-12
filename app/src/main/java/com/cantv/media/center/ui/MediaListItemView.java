@@ -73,7 +73,7 @@ public class MediaListItemView extends MediaItemView {
         mFocusParams.addRule(RelativeLayout.CENTER_VERTICAL);
         mFocusView.setLayoutParams(mFocusParams);
         mBgView = new MediaPicView(context);
-        mBgView.setId(0x559584);
+        mBgView.setId(R.id.bg_list_background);
         mBgView.setPicStretch(PicStretch.SCALE_CROP);
         LayoutParams mediaParams = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.px200), (int) getResources().getDimension(R.dimen.px155));
         mediaParams.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -97,7 +97,7 @@ public class MediaListItemView extends MediaItemView {
 //        mTvName.setEllipsize(TextUtils.TruncateAt.MARQUEE);
 //        mTvName.setMarqueeRepeatLimit(-1);
 //        mTvName.setSingleLine(true);
-        mTvName.setId(0x559586);
+        mTvName.setId(R.id.bg_list_name);
         mTvName.setTextColor(getResources().getColorStateList(R.color.btn_selector));
         mTvName.setTextSize(getResources().getDimension(R.dimen.px24));
         mTvName.setSingleLine(true);
@@ -106,7 +106,7 @@ public class MediaListItemView extends MediaItemView {
         tvParams.setMargins((int) getResources().getDimension(R.dimen.px30), (int) getResources().getDimension(R.dimen.px60), 0, (int) getResources().getDimension(R.dimen.px10));
         mTvName.setLayoutParams(tvParams);
         mTvSize = new TextView(context);
-        mTvSize.setId(0x559585);
+        mTvSize.setId(R.id.bg_list_size);
         mTvSize.setTextColor(getResources().getColorStateList(R.color.list_item_font_selector));
         mTvSize.setTextSize(getResources().getDimension(R.dimen.px18));
         LayoutParams tvSizeParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
