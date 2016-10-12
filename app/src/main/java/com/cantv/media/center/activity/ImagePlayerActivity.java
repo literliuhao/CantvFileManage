@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -99,6 +100,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int mSizeWidth;
     private int mSizeHeight;
     private Boolean isRotation = false;
+    private AudioManager mAudioManager;
+    private int mCurrentVolume;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -129,6 +132,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         setContentView(R.layout.media__image_view);
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+        mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
         initView();
         showImage(indexOfDefaultPlay(), null);
         initViewClickEvent();
@@ -464,6 +468,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     mImageBrowser.setSoundEffectsEnabled(false);
+                    mCurrentVolume = mAudioManager.getStreamVolume( AudioManager.STREAM_SYSTEM );
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,0,0);
                     startAutoPlay();
                     if (isFirstPlayMusic) {
                         isFirstPlayMusic = false;
@@ -552,6 +558,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         return mScreenLock;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopAutoPlay();
+        mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+    }
+
     private void startAutoPlay() {
         int curIndex = mCurImageIndex + 1;
         int size = getData().size();
@@ -561,7 +574,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoRunImageView.setImageResource(R.drawable.photo_info3);
             return;
         }*/
-//        mImageBrowser.setSoundEffectsEnabled(false);
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
@@ -575,6 +587,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoPlay = false;
             //endMusicAnimation();
             mImageBrowser.setSoundEffectsEnabled(true);
+            mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,mCurrentVolume,0);
             MainThread.cancel(mAutoRunnable);
             getScreenLock().release();
         }
