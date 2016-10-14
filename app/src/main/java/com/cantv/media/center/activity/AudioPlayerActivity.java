@@ -10,6 +10,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -80,6 +81,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private StringBuilder mFormatBuilder;
 
     private MenuItem playModeMenuItem;
+
+    private static final int UNDATE_UI = -1;  //更新UI
+    private String mUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,8 +185,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.setCurrTime(currentPosition);
                         }
                     }
+                    sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
                 }
-                sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
             }
 
         };
@@ -313,27 +317,45 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         setmManualPaused(false);
         mCDView.startRotate();
         if (mDataList.size() > 0) {
-            String uri = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
+            mUri = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
             mTitleTv.setText(mDataList.get(mCurPlayIndex).mName);
-            String singer = Audio.getAudioSinger(uri);
+            String singer = Audio.getAudioSinger(mUri);
             if (!TextUtils.isEmpty(singer)) {
                 mSingerTv.setText(getString(R.string.singer) + singer);
             }
-            Bitmap icon = Audio.getAudioPicture(uri, 800, 800);
-            if (icon != null) {
-                mCDView.setImageBitmap(icon);
-                mContentBg.setBackground(BitmapUtils.blurBitmap(icon, this));
-                mContentBg.setImageResource(R.color.per40_black);
-            }
-            mLyricInfo = Audio.getAudioLyric(uri);
-            if (mLyricInfo == null) {
-                showLyric = false;
-                showNoLyricView();
-            } else {
-                showLyric = true;
-                showLyricView();
-                mLyricView.setLyricInfo(mLyricInfo);
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
+                    if (icon != null) {
+                        //耗时操作,在主线程中执行
+                        final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCDView.setImageBitmap(icon);
+                                mContentBg.setBackground(drawable);
+                                mContentBg.setImageResource(R.color.per40_black);
+                            }
+                        });
+                    }
+
+                    mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
+                    if (mLyricInfo == null) {
+                        showLyric = false;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showNoLyricView();
+                            }
+                        });
+                    } else {
+                        showLyric = true;
+                        showLyricView();
+                        mLyricView.setLyricInfo(mLyricInfo);
+                    }
+                }
+            }).start();
         }
     }
 

@@ -49,8 +49,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         if (!(mAutoPaused && mManualPaused)) {   //界面不可见时都要停止播放(已经暂停就不用再执行)
             if (mInitDone) {
                 if (null != getProxyPlayer()) {
-//                    getProxyPlayer().stop();
-                    getProxyPlayer().release();
+                    getProxyPlayer().runOnActivityPause();
                 }
             }
         }
