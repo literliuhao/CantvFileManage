@@ -8,18 +8,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cantv.media.center.activity.ImagePlayerActivity;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.ImageUtils;
 
 import java.io.File;
@@ -61,6 +64,17 @@ public class ImageFrameView extends FrameLayout {
     private onLoadingImgListener mLoadingImgListener;
 
     public void playImage(final String imageUri, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                File imageFile = new File(imageUri);
+                if (!imageFile.exists()) {
+                    Toast.makeText(MyApplication.getContext(), "文件不存在或设备已移除", Toast.LENGTH_LONG).show();
+                    mActivity.finish();
+                    return;
+                }
+            }
+        }, 500);
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
         this.mLoadingImgListener = loadingImgListener;
