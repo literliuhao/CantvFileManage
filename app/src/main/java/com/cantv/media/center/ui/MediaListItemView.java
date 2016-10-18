@@ -137,7 +137,7 @@ public class MediaListItemView extends MediaItemView {
         return mFocusView;
     }
 
-    public void setMediaItem(final Media media) {
+    public void setMediaItem(final Media media, int position) {
         mMedia = media;
         mTvName.setText(media.getName());
 //        mTvName.requestFocus();

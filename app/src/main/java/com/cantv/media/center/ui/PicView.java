@@ -192,7 +192,7 @@ public class PicView extends ImageView {
                             if (picBitmap == null && cacheSlot != null) {
                                 picBitmap = cacheSlot.getValue();
                             }
-                            if (cacheSlot != null) mPicCache.releaseSlot(cacheSlot);
+//                            if (cacheSlot != null) mPicCache.releaseSlot(cacheSlot);
                             saveBitmap(picBitmap);
                             picBitmap = tuneBitmap(picBitmap);
                             final Bitmap resultBitmap = picBitmap;

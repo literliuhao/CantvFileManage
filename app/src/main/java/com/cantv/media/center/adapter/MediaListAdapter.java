@@ -19,6 +19,7 @@ public class MediaListAdapter extends BaseAdapter {
     private List<Media> mMediaList = new ArrayList<Media>();
     private MediaOrientation mStyle = MediaOrientation.THUMBNAIL;
     private List<String> mUsbRootPaths;
+    private int mCurrent = 0;
 
     public MediaListAdapter(Context context, List<Media> medialist) {
 //        bindData(medialist);
@@ -79,7 +80,7 @@ public class MediaListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MediaItemView mediaItemView = getItemType(parent);
-        mediaItemView.setMediaItem(getItem(position));
+        mediaItemView.setMediaItem(getItem(position),position);
 
         return mediaItemView;
     }
