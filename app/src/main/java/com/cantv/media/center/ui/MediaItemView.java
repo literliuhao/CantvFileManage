@@ -24,7 +24,7 @@ public abstract class MediaItemView extends RelativeLayout {
 
     abstract ImageView getFocusImage();
 
-    public abstract void setMediaItem(Media media);
+    public abstract void setMediaItem(Media media, int position);
 
     abstract void animateView(final float from, final float to);
 
