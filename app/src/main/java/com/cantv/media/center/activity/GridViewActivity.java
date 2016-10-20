@@ -443,9 +443,7 @@ public class GridViewActivity extends Activity {
             }
         }
 
-        if (isUpdate)
-
-        {
+        if (isUpdate) {
             updateRootUI(mediaes);
         }
 

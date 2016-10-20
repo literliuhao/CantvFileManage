@@ -66,22 +66,25 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     public void onCompletion(MediaPlayer arg0) {
-        if (mCurPlayIndex == mDataList.size() - 1) {
-            Toast.makeText(BasePlayer.this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
-            getProxyPlayer().stop();
-            finish();
-        } else {
+        //循环播放
+//        if (mCurPlayIndex == mDataList.size() - 1) {
+//            Toast.makeText(BasePlayer.this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
+//            getProxyPlayer().stop();
+//            finish();
+//        } else
+        {
             scrollToNext(null);
         }
     }
 
     @Override
     public boolean scrollToNext(OnCompletionListener listener) {
-        if (mCurPlayIndex == mDataList.size() - 1) {
-            Toast.makeText(this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        mCurPlayIndex++;
+//        if (mCurPlayIndex == mDataList.size() - 1) {
+//            Toast.makeText(this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
+        //循环播放
+        mCurPlayIndex = ++mCurPlayIndex % mDataList.size();
         mPlayer.setOnCompletionListener(listener);
         playMedia(mCurPlayIndex);
         return true;

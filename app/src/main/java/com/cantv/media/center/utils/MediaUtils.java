@@ -517,10 +517,10 @@ public class MediaUtils {
         try {
             //通过反射获取到路径的挂载状态
             StorageManager sm = (StorageManager) (MyApplication.getContext().getSystemService(Context.STORAGE_SERVICE));
-            Method getVolumList = StorageManager.class.getMethod("getVolumeList");
-            getVolumList.setAccessible(true);
-            Object[] results = (Object[]) getVolumList.invoke(sm);
-            System.out.println("results:" + results.length);
+//            Method getVolumList = StorageManager.class.getMethod("getVolumeList");
+//            getVolumList.setAccessible(true);
+//            Object[] results = (Object[]) getVolumList.invoke(sm);
+//            System.out.println("results:" + results.length);
             Method getState = sm.getClass().getMethod("getVolumeState", String.class);
 
             final String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
