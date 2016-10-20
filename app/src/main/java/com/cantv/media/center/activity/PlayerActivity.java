@@ -236,4 +236,9 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         this.mManualPaused = mManualPaused;
     }
 
+    @Override
+    protected void onDestroy() {
+        getProxyPlayer().release();
+        super.onDestroy();
+    }
 }

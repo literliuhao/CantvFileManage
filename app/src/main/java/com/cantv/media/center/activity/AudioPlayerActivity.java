@@ -319,7 +319,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         if (mDataList.size() > 0) {
             mUri = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
             mTitleTv.setText(mDataList.get(mCurPlayIndex).mName);
-            String singer = Audio.getAudioSinger(mUri);
+            String singer = mDataList.get(mCurPlayIndex).isSharing ? "" : Audio.getAudioSinger(mUri);
             if (!TextUtils.isEmpty(singer)) {
                 mSingerTv.setText(getString(R.string.singer) + singer);
             }

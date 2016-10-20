@@ -438,6 +438,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         }
     };
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -469,9 +470,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         }
     }
 
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i("onKeyDown", keyCode + "");
         if (keyCode == VALUE) {
             isIN = true;
             dynamicList = new ArrayList<>();
