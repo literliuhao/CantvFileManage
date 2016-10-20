@@ -2,6 +2,7 @@ package com.cantv.media.center.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -266,6 +267,28 @@ public class MenuDialog extends Dialog {
             view.setSelected(data.isSelected());
             holder.arrowIv.setVisibility(data.getChildrenCount() > 0 ? (data.isSelected()?View.VISIBLE:View.INVISIBLE) : View.INVISIBLE );
             holder.titleTv.setText(data.getTitle());
+            int type = data.getType();
+            if (type == MenuItem.TYPE_LIST) {
+                holder.subTitleTv.setVisibility(View.VISIBLE);
+                holder.subTitleTv.setText(String.format(mStrTemplate, data.getChildrenCount()));
+            } else if (type == MenuItem.TYPE_SELECTOR || type == MenuItem.TYPE_SELECTOR_MARQUEE) {
+                holder.subTitleTv.setVisibility(View.VISIBLE);
+                MenuItem selectedChild = data.getSelectedChild();
+                holder.subTitleTv.setText(selectedChild != null ? selectedChild.getTitle() : "");
+            } else {
+                holder.subTitleTv.setVisibility(View.GONE);
+                holder.subTitleTv.setText("");
+            }
+        }
+
+        public void updateVideoMenuItem(View view, MenuItem data,boolean change) {
+            MenuViewHolder holder = (MenuViewHolder) view.getTag(R.id.tag_id_holder_key);
+            view.setEnabled(data.isEnabled());
+            view.setFocusable(data.isEnabled());
+            view.setSelected(data.isSelected());
+            holder.arrowIv.setVisibility(data.getChildrenCount() > 0 ? (data.isSelected()?View.VISIBLE:View.INVISIBLE) : View.INVISIBLE );
+            holder.titleTv.setText(data.getTitle());
+            holder.titleTv.setTextColor(change?Color.GRAY:0xCCFFFFFF);
             int type = data.getType();
             if (type == MenuItem.TYPE_LIST) {
                 holder.subTitleTv.setVisibility(View.VISIBLE);

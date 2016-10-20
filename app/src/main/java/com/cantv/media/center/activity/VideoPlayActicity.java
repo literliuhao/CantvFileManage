@@ -509,9 +509,11 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 mSubTitle.setText("");
                 if (list.get(4) != null && "字幕调整".equals(list.get(4).getTitle())) {
                     list.get(4).setEnabled(isSubTitle);
+
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
                     if (oldSubMenuItemView != null) {
                         mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
+                        mMenuDialog.getMenuAdapter().updateVideoMenuItem(oldSubMenuItemView, list.get(4),true);
                     }
                 }
                 break;
@@ -523,6 +525,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
                     if (oldSubMenuItemView != null) {
                         mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
+                        mMenuDialog.getMenuAdapter().updateVideoMenuItem(oldSubMenuItemView, list.get(4),false);
                     }
                 }
                 break;
@@ -634,6 +637,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mTimeReceiver != null) {
             unregisterReceiver(mTimeReceiver);
         }
+
     }
 
     private void registerTimeReceiver() {

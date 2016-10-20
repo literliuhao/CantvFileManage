@@ -137,7 +137,7 @@ public class MediaListItemView extends MediaItemView {
         return mFocusView;
     }
 
-    public void setMediaItem(final Media media) {
+    public void setMediaItem(final Media media, int position) {
         mMedia = media;
         mTvName.setText(media.getName());
 //        mTvName.requestFocus();
@@ -182,9 +182,9 @@ public class MediaListItemView extends MediaItemView {
                 mBgView.setBackground(media);
                 break;
             case VIDEO:
-                if (!media.isSharing) {
-                    mImageView.setMedia(media);
-                }
+//                if (!media.isSharing) {
+//                    mImageView.setMedia(media);
+//                }
                 mBgView.setBackground(media);
                 break;
             case APP:
