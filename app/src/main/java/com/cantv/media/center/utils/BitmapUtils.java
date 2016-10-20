@@ -53,16 +53,22 @@ public class BitmapUtils {
 		blurScript.setInput(allIn);
 		blurScript.forEach(allOut);
 
-		// Copy the final bitmap created by the out Allocation to the outBitmap
-		allOut.copyTo(bitmap);
+		try {
+			//TODO 这里有可能发生异常 android.renderscript.RSIllegalArgumentException
+			// Copy the final bitmap created by the out Allocation to the outBitmap
+			allOut.copyTo(bitmap);
 
-		// recycle the original bitmap
-		// bitmap.recycle();
+			// recycle the original bitmap
+			// bitmap.recycle();
 
-		// After finishing everything, we destroy the Renderscript.
-		rs.destroy();
+			// After finishing everything, we destroy the Renderscript.
+			rs.destroy();
 
-		return new BitmapDrawable(ctx.getResources(), bitmap);
+			return new BitmapDrawable(ctx.getResources(), bitmap);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private static Bitmap compress(Bitmap image) {
