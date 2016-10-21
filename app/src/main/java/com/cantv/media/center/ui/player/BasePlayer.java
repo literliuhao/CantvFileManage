@@ -197,7 +197,8 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     protected void onStop() {
-        getProxyPlayer().pause();
+//        getProxyPlayer().pause();
+        getProxyPlayer().release();
         super.onStop();
     }
 }

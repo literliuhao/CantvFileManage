@@ -1,6 +1,8 @@
 package com.cantv.media.center.utils;
 
+import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.pm.ApplicationInfo;
@@ -610,21 +612,10 @@ public class FileUtil {
                 synchronized (mCurFileNameList) {
                     _r.run();
                 }
-                try {
-                    MyApplication.mContext.getContentResolver().applyBatch(MediaStore.AUTHORITY, ops);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (OperationApplicationException e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                }
-                // if (moperationListener != null) {
-                // moperationListener.onFinish();
-                // }
                 ops.clear();
                 return null;
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static ArrayList<Media> mCurFileNameList = new ArrayList<>();
