@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 
 import com.cantv.media.center.app.MyApplication;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +103,10 @@ public class SharedPreferenceUtil {
             for (int j = 2; j < 10; j++) {   //可能存在移动硬盘分区的情况
                 defaultDevices.add(dsStart + dsPaths[i] + j);
             }
+        }
+        dsStart = "/mnt/sda";
+        for (int i = 0; i <= 9; i++) {
+            defaultDevices.add(dsStart + i);
         }
 
     }
