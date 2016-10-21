@@ -625,9 +625,6 @@ public class FileUtil {
                         return null;
                     }
                 }
-                // if (moperationListener != null) {
-                // moperationListener.onFinish();
-                // }
                 ops.clear();
                 return null;
             }
