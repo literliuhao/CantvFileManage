@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.RemoteException;
 import android.provider.MediaStore;
@@ -612,6 +613,21 @@ public class FileUtil {
                 synchronized (mCurFileNameList) {
                     _r.run();
                 }
+                if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT_WATCH)) {
+                    try {
+                        MyApplication.mContext.getContentResolver().applyBatch(MediaStore.AUTHORITY, ops);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        return null;
+                    } catch (OperationApplicationException e) {
+                        // TODO: handle exception
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+                // if (moperationListener != null) {
+                // moperationListener.onFinish();
+                // }
                 ops.clear();
                 return null;
             }
