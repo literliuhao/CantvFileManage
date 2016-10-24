@@ -50,19 +50,18 @@ android {
         abortOnError false
     }
 
-    applicationVariants.all{ variant->
-        variant.outputs.each { output->
+    applicationVariants.all { variant ->
+        //修改生成的apk名字
+        variant.outputs.each { output ->
             def oldFile = output.outputFile
-            def newName = '';
-            if(variant.buildType.name.equals('release')){
-                // APK输出文件名规则：aiyou-版本名-市场-release.apk
-                def releaseApkName = 'mediaCenter-release.apk'
-                // appReleaseDir对应local.properties里面定义的路径，再加上日期（格式：201503011230）文件夹
-                output.outputFile = new File(appReleaseDir + '/' + releaseTime(), releaseApkName)
-            }
-            if(variant.buildType.name.equals('beta')){
-            }
-            if(variant.buildType.name.equals('debug')){
+            if (variant.buildType.name in ['release']) {
+                def releaseApkName = 'mediaCenter_v' + variant.versionCode + "_" + getDateTime() + ".apk";
+                if (project.hasProperty("appReleaseDir")) {
+                    File releasePath = new File(project.property("appReleaseDir"), getDate());
+                    output.outputFile = new File(releasePath, releaseApkName);
+                } else {
+                    output.outputFile = new File(oldFile.parent, releaseApkName)
+                }
             }
         }
     }
@@ -90,22 +89,4 @@ def formatDateTime(String format) {
 }
 def formatVersionCodeString(int versionCode) {
     versionCode.toString().toCharArray().join('.').toString()
-}
-
-android {
-    applicationVariants.all { variant ->
-        //修改生成的apk名字
-        variant.outputs.each { output ->
-            def oldFile = output.outputFile
-            if (variant.buildType.name in ['release']) {
-                def releaseApkName = 'mediaCenter_v' + variant.versionCode + "_" + getDateTime() + ".apk";
-                if (project.hasProperty("appReleaseDir")) {
-                    File releasePath = new File(project.property("appReleaseDir"), getDate());
-                    output.outputFile = new File(releasePath, releaseApkName);
-                } else {
-                    output.outputFile = new File(oldFile.parent, releaseApkName)
-                }
-            }
-        }
-    }
 }
