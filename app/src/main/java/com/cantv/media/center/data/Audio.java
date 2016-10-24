@@ -88,6 +88,7 @@ public class Audio extends Media {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         } finally {
             try {
                 retriever.release();

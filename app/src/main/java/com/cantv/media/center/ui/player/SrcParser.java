@@ -88,7 +88,7 @@ public class SrcParser {
 				if (sb.containsTime(timeInMillis)) {
 					srt = sb.getSrt();
 					break;
-				}else if(sb.upTime(timeInMillis)){
+				}else if(sb.lessTime(timeInMillis)){
 					break;
 				}
 			}

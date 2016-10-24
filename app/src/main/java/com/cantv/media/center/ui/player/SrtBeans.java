@@ -136,7 +136,7 @@ public class SrtBeans implements Comparable<Long> {
 	 * @param timeInMillis
 	 * @return
 	 */
-	public boolean upTime(long timeInMillis) {
+	public boolean lessTime(long timeInMillis) {
 		if (!timeInitialized) {
 			synchronized (SrtBeans.class) {
 				if (!timeInitialized) {
@@ -160,7 +160,7 @@ public class SrtBeans implements Comparable<Long> {
 				}
 			}
 		}
-		if (timeInMillis > endTime) {
+		if (timeInMillis < endTime) {
 			return true;
 		}
 		return false;
