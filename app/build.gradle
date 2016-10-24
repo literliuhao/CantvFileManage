@@ -1,8 +1,29 @@
 apply plugin: 'com.android.application'
 
+ext.appReleaseDir = ""
+def loadProperties() {
+    def proFile = file("../local.properties")
+    Properties p = new Properties()
+    proFile.withInputStream { stream->
+        p.load(stream)
+    }
+    appReleaseDir = p.appReleaseDir
+}
+
+loadProperties()
+
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.3"
+
+    signingConfigs {
+        config {
+            keyAlias 'CANTV'
+            keyPassword 'cantv2016'
+            storeFile file('/home/devuser/keystore/CANTV.keystore')
+            storePassword 'cantv2016'
+        }
+    }
 
     defaultConfig {
         applicationId "com.cantv.media"
@@ -12,12 +33,37 @@ android {
             sourceCompatibility JavaVersion.VERSION_1_7
             targetCompatibility JavaVersion.VERSION_1_7
         }
+        signingConfig signingConfigs.config
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+    productFlavors {
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    applicationVariants.all{ variant->
+        variant.outputs.each { output->
+            def oldFile = output.outputFile
+            def newName = '';
+            if(variant.buildType.name.equals('release')){
+                // APK输出文件名规则：aiyou-版本名-市场-release.apk
+                def releaseApkName = 'mediaCenter-release.apk'
+                // appReleaseDir对应local.properties里面定义的路径，再加上日期（格式：201503011230）文件夹
+                output.outputFile = new File(appReleaseDir + '/' + releaseTime(), releaseApkName)
+            }
+            if(variant.buildType.name.equals('beta')){
+            }
+            if(variant.buildType.name.equals('debug')){
+            }
         }
     }
 }
