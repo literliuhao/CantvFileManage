@@ -31,3 +31,35 @@ dependencies {
     compile files('libs/greendao-1.3.7.jar')
     compile files('libs/jcifs-1.3.17.jar')
 }
+
+
+def getDate() {
+    return formatDateTime('yyyyMMdd');
+}
+def getDateTime() {
+    return formatDateTime('yyyyMMddHHmmss')
+}
+def formatDateTime(String format) {
+    return new Date().format(format)
+}
+def formatVersionCodeString(int versionCode) {
+    versionCode.toString().toCharArray().join('.').toString()
+}
+
+android {
+    applicationVariants.all { variant ->
+        //修改生成的apk名字
+        variant.outputs.each { output ->
+            def oldFile = output.outputFile
+            if (variant.buildType.name in ['release']) {
+                def releaseApkName = 'mediaCenter_v' + variant.versionCode + "_" + getDateTime() + ".apk";
+                if (project.hasProperty("appReleaseDir")) {
+                    File releasePath = new File(project.property("appReleaseDir"), getDate());
+                    output.outputFile = new File(releasePath, releaseApkName);
+                } else {
+                    output.outputFile = new File(oldFile.parent, releaseApkName)
+                }
+            }
+        }
+    }
+}
