@@ -20,7 +20,7 @@ android {
         config {
             keyAlias 'CANTV'
             keyPassword 'cantv2016'
-            storeFile file('/home/devuser/keystore/CANTV.keystore')
+            storeFile file('/home/devuser/keystore/can.jks')
             storePassword 'cantv2016'
         }
     }
