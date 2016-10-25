@@ -511,9 +511,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 }
             });
         }
-        mMenuList.get(0).setChildSelected(mCurPlayIndex);
-        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
-        mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
+        if (mSelectedMenuPosi==0) {
+            mMenuList.get(0).setChildSelected(mCurPlayIndex);
+            mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+            mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
+        }
         mMenuDialog.show();
     }
 
