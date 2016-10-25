@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cantv.media"
           android:versionCode="133"
-          android:sharedUserId="android.uid.system"
           android:versionName="20161020-v1.3.3">
+<!--android:sharedUserId="android.uid.system"-->
 
 
     <uses-sdk
@@ -35,8 +35,7 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         <activity
             android:name="com.cantv.media.center.activity.HomeActivity"
-            android:label="@string/str_filemanager"
-            android:launchMode="singleTask">
+            android:label="@string/str_filemanager">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
