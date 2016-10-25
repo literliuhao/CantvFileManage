@@ -15,6 +15,8 @@ import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public abstract class PlayerActivity extends Activity implements PlayerCtrlBarContext, PlayerCtrlBarListener, OnCompletionListener, CoverFlowViewListener {
 
@@ -62,7 +64,16 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         try {
             if (mInitDone) {
                 if (!mManualPaused) {   //没有手动执行停止就执行开始,手动停止,就手动开始
-                    getProxyPlayer().runOnActivityResume();
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            try {
+                                getProxyPlayer().runOnActivityResume();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },1000);
                 }
             }
         } catch (Exception e) {
