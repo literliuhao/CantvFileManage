@@ -63,15 +63,17 @@ public class ImageFrameView extends FrameLayout {
 
     private onLoadingImgListener mLoadingImgListener;
 
-    public void playImage(final String imageUri, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
+    public void playImage(final String imageUri, final boolean isSharing, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                File imageFile = new File(imageUri);
-                if (!imageFile.exists()) {
-                    Toast.makeText(MyApplication.getContext(), "文件不存在或设备已移除", Toast.LENGTH_LONG).show();
-                    mActivity.finish();
-                    return;
+                if (!isSharing) {
+                    File imageFile = new File(imageUri);
+                    if (!imageFile.exists()) {
+                        Toast.makeText(MyApplication.getContext(), "文件不存在或设备已移除", Toast.LENGTH_LONG).show();
+                        mActivity.finish();
+                        return;
+                    }
                 }
             }
         }, 500);

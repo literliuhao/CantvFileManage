@@ -615,6 +615,7 @@ public class FileUtil {
                 }
                 if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT_WATCH)) {
                     try {
+                        //TODO 5.0以下系统可能出错
                         MyApplication.mContext.getContentResolver().applyBatch(MediaStore.AUTHORITY, ops);
                     } catch (RemoteException e) {
                         e.printStackTrace();

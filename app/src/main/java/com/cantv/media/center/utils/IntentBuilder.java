@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.cantv.media.center.data.Media;
 
@@ -23,6 +24,7 @@ public class IntentBuilder {
                 intent.setDataAndType(Uri.fromFile(new File(filePath)), type);
                 context.startActivity(intent);
             } catch (Exception e) {
+                Toast.makeText(context, "未安装相关应用", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
