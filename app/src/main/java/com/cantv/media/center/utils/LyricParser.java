@@ -33,6 +33,7 @@ public class LyricParser {
     public static LyricInfo parseFromFile(File file) {
 
         InputStream is = null;
+        FileInputStream fis = null;
         try {
             is = new FileInputStream(file);
             String chartName = "";
@@ -59,7 +60,8 @@ public class LyricParser {
                 chartName = "GBK";
             }
             //此处直接传is会导致歌词不显示
-            return parseFromStream(new FileInputStream(file), chartName);
+            fis = new FileInputStream(file);
+            return parseFromStream(fis, chartName);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -68,6 +70,13 @@ public class LyricParser {
             if (is != null) {
                 try {
                     is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fis != null) {
+                try {
+                    fis.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
