@@ -56,12 +56,7 @@ android {
             def oldFile = output.outputFile
             if (variant.buildType.name in ['release']) {
                 def releaseApkName = 'mediaCenter_v' + variant.versionCode + "_" + getDateTime() + ".apk";
-                if (project.hasProperty("appReleaseDir")) {
-                    File releasePath = new File(project.property("appReleaseDir"), getDate());
-                    output.outputFile = new File(oldFile.parent, releaseApkName);
-                } else {
-                    output.outputFile = new File(oldFile.parent, releaseApkName)
-                }
+                output.outputFile = new File(oldFile.parent, releaseApkName);
             }
         }
     }
