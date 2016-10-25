@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
@@ -160,10 +161,16 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             } else {
                 mRecord = list.get(0);
             }
+        } catch (IllegalStateException e) {
+            getProxyPlayer().stop();
+            this.finish();
+            e.printStackTrace();
+            Toast.makeText(MyApplication.getContext(), "请确认文件存在或去除文件中特殊字符!", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             getProxyPlayer().stop();
             this.finish();
             e.printStackTrace();
+            Toast.makeText(MyApplication.getContext(), "请确认文件存在或去除文件中特殊字符!", Toast.LENGTH_LONG).show();
         }
     }
 
