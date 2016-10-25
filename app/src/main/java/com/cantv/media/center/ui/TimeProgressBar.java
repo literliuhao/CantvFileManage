@@ -1,8 +1,5 @@
 package com.cantv.media.center.ui;
 
-import java.util.Formatter;
-import java.util.Locale;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -12,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.NinePatch;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.graphics.Path.Direction;
 import android.graphics.RectF;
@@ -21,6 +19,9 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.cantv.media.R;
+
+import java.util.Formatter;
+import java.util.Locale;
 
 public class TimeProgressBar extends View {
 
@@ -235,6 +236,7 @@ public class TimeProgressBar extends View {
 		canvas.save();
 		canvas.translate(mBarOffsetX, mBarOffsetY);
 		canvas.clipPath(mBarClipPath);
+		canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
 		// draw bg
 		mPaint.setColor(mBgStrokeColor);
 		mPaint.setStyle(Paint.Style.STROKE);

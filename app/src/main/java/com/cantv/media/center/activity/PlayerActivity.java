@@ -71,6 +71,11 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
     public void finish() {
         if (null != getProxyPlayer() && getProxyPlayer().isPlaying()) {
             getProxyPlayer().stop();
