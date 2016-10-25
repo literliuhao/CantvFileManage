@@ -58,7 +58,7 @@ android {
                 def releaseApkName = 'mediaCenter_v' + variant.versionCode + "_" + getDateTime() + ".apk";
                 if (project.hasProperty("appReleaseDir")) {
                     File releasePath = new File(project.property("appReleaseDir"), getDate());
-                    output.outputFile = new File(releasePath, releaseApkName);
+                    output.outputFile = new File(oldFile.parent, releaseApkName);
                 } else {
                     output.outputFile = new File(oldFile.parent, releaseApkName)
                 }
@@ -86,7 +86,4 @@ def getDateTime() {
 }
 def formatDateTime(String format) {
     return new Date().format(format)
-}
-def formatVersionCodeString(int versionCode) {
-    versionCode.toString().toCharArray().join('.').toString()
 }
