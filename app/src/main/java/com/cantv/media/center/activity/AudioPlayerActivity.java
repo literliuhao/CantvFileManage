@@ -351,8 +351,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         });
                     } else {
                         showLyric = true;
-                        showLyricView();
-                        mLyricView.setLyricInfo(mLyricInfo);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showLyricView();
+                                mLyricView.setLyricInfo(mLyricInfo);
+                            }
+                        });
                     }
                 }
             }).start();
