@@ -20,6 +20,7 @@ import com.cantv.liteplayer.core.subtitle.SubTitle;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.ToastUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -110,8 +111,15 @@ public class ProxyPlayer {
 
     public void playMedia(String uri, final Runnable callBack) throws Exception {
         getLitePlayer().reset();
-        getLitePlayer().setDataSource(uri);
-        getLitePlayer().prepareAsync();
+        byte[] bytes = uri.getBytes();
+        String s = new String(bytes, "UTF-8");
+        getLitePlayer().setDataSource(s);
+        try {
+            getLitePlayer().prepareAsync();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Log.w("有异常存在", "文件播放发生异常...!");
+        }
         getLitePlayer().setOnPreparedListener(new OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer arg0) {
@@ -170,7 +178,7 @@ public class ProxyPlayer {
                     if (null != mExceptionListener) {
                         mExceptionListener.RetryPlay();
                     } else {
-                        Toast.makeText(MyApplication.getContext(), "播放发生异常!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyApplication.getContext(), "播放发生异常!", Toast.LENGTH_LONG).show();
                     }
                 }
 

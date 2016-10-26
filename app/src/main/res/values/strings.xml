@@ -125,6 +125,7 @@
     <string name="image_full_screen">等比全屏</string>
     <string name="image_real_size">实际尺寸</string>
     <string name="image_last_photo">已经是最后一张</string>
+    <string name="image_start_photo">第一张</string>
     <string name="image_start_play">开始幻灯片播放</string>
     <string name="image_end_play">结束幻灯片播放</string>
     <string name="image_name">图片名称</string>

@@ -351,8 +351,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         });
                     } else {
                         showLyric = true;
-                        showLyricView();
-                        mLyricView.setLyricInfo(mLyricInfo);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showLyricView();
+                                mLyricView.setLyricInfo(mLyricInfo);
+                            }
+                        });
                     }
                 }
             }).start();
@@ -510,6 +515,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     return false;
                 }
             });
+        }
+        if (mSelectedMenuPosi==0) {
+            mMenuList.get(0).setChildSelected(mCurPlayIndex);
+            mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
         }
         mMenuDialog.show();
