@@ -441,9 +441,11 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 }
             });
         }
-        list.get(0).setChildSelected(mCurPlayIndex);
-        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
-        mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedChildIndex());
+        if (mSelectedPosi==0) {
+            list.get(0).setChildSelected(mCurPlayIndex);
+            mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+            mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedChildIndex());
+        }
         mMenuDialog.show();
     }
 

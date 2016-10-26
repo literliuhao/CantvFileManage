@@ -35,8 +35,7 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         <activity
             android:name="com.cantv.media.center.activity.HomeActivity"
-            android:label="@string/str_filemanager"
-            android:launchMode="singleTask">
+            android:label="@string/str_filemanager">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
