@@ -55,7 +55,7 @@ android {
         variant.outputs.each { output ->
             def oldFile = output.outputFile
             if (variant.buildType.name in ['release']) {
-                def releaseApkName = 'mediaCenter_v' + variant.versionCode + ".apk";
+                def releaseApkName = 'mediaCenter.apk';
                 output.outputFile = new File(oldFile.parent+"/release", releaseApkName);
             }
         }
