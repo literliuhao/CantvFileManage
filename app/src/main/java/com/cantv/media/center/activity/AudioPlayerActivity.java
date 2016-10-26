@@ -260,7 +260,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     private void initData() {
-        muUITask = new LoadingMuUITask();
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
     }
@@ -327,6 +326,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             if (!TextUtils.isEmpty(singer)) {
                 mSingerTv.setText(getString(R.string.singer) + singer);
             }
+            if (null != muUITask) {    //先取消之前
+                muUITask.cancel(true);
+                muUITask = null;
+            }
+            muUITask = new LoadingMuUITask();
             muUITask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
@@ -483,7 +487,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 }
             });
         }
-        if (mSelectedMenuPosi==0) {
+        if (mSelectedMenuPosi == 0) {
             mMenuList.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
@@ -670,6 +674,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
      * 设置背景
      */
     private void loadUI() {
+        //有些机器可能出现内存溢出
         final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
         if (icon != null) {
             //耗时操作,在主线程中执行
