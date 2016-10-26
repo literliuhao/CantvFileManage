@@ -440,6 +440,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     return false;
                 }
             });
+        }
+        if (mSelectedPosi==0) {
+            list.get(0).setChildSelected(mCurPlayIndex);
+            mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedChildIndex());
         }
         mMenuDialog.show();
@@ -513,7 +517,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
                     if (oldSubMenuItemView != null) {
                         mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
-                        mMenuDialog.getMenuAdapter().updateVideoMenuItem(oldSubMenuItemView, list.get(4),true);
+                        mMenuDialog.getMenuAdapter().updateVideoMenuItem(oldSubMenuItemView, list.get(4), true);
                     }
                 }
                 break;
@@ -525,7 +529,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
                     if (oldSubMenuItemView != null) {
                         mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
-                        mMenuDialog.getMenuAdapter().updateVideoMenuItem(oldSubMenuItemView, list.get(4),false);
+                        mMenuDialog.getMenuAdapter().updateVideoMenuItem(oldSubMenuItemView, list.get(4), false);
                     }
                 }
                 break;
