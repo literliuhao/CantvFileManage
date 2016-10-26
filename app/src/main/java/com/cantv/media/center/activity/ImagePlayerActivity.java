@@ -237,6 +237,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (mToast != null) {
             mToast.cancel();
         }
+        //修复OS-1578加载图片翻页过程屏幕上多处会显示“白斑”
+        mHeader.setVisibility(View.INVISIBLE);
+        mArrowLeft.setVisibility(View.GONE);
+        mArrowRight.setVisibility(View.GONE);
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
