@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -84,6 +85,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private static final int UNDATE_UI = -1;  //更新UI
     private String mUri;
+    private LoadingMuUITask muUITask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,6 +231,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     @Override
     protected void onDestroy() {
         unregisterReceiver(mUsbChangeReceiver);
+        muUITask.cancel(true);
         releaseWakeLock();
         mUsbChangeReceiver = null;
         mUsbFilter = null;
@@ -257,6 +260,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     private void initData() {
+        muUITask = new LoadingMuUITask();
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
     }
@@ -323,44 +327,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             if (!TextUtils.isEmpty(singer)) {
                 mSingerTv.setText(getString(R.string.singer) + singer);
             }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
-                    if (icon != null) {
-                        //耗时操作,在主线程中执行
-                        final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mCDView.setImageBitmap(icon);
-                                mContentBg.setBackground(drawable);
-                                mContentBg.setImageResource(R.color.per40_black);
-                            }
-                        });
-                    }
-
-                    mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
-                    if (mLyricInfo == null) {
-                        showLyric = false;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showNoLyricView();
-                            }
-                        });
-                    } else {
-                        showLyric = true;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showLyricView();
-                                mLyricView.setLyricInfo(mLyricInfo);
-                            }
-                        });
-                    }
-                }
-            }).start();
+            muUITask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -679,6 +646,64 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             if (menuItemView != null) {
                 mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
             }
+        }
+    }
+
+    /**
+     * author: yibh
+     * Date: 2016/10/26  17:26 .
+     * 加载音频文件内的背景图,使用异步加载,在未加载出来时退出界面,取消加载.
+     */
+    class LoadingMuUITask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            loadUI();
+            return null;
+        }
+
+    }
+
+    /**
+     * 设置背景
+     */
+    private void loadUI() {
+        final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
+        if (icon != null) {
+            //耗时操作,在主线程中执行
+            final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != mCDView) {
+                        mCDView.setImageBitmap(icon);
+                    }
+                    if (null != mContentBg) {
+                        mContentBg.setBackground(drawable);
+                        mContentBg.setImageResource(R.color.per40_black);
+                    }
+                }
+            });
+        }
+
+        mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
+        if (mLyricInfo == null) {
+            showLyric = false;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showNoLyricView();
+                }
+            });
+        } else {
+            showLyric = true;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showLyricView();
+                    mLyricView.setLyricInfo(mLyricInfo);
+                }
+            });
         }
     }
 
