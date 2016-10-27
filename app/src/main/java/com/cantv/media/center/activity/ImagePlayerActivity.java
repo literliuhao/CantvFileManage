@@ -32,6 +32,7 @@ import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
@@ -142,7 +143,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         toHideRunnable();
         registerReceiver();
         toHideView();
-
+        MyApplication.addActivity(this);
     }
 
     private void toHideRunnable() {
@@ -789,6 +790,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }
+        MyApplication.removeActivity(this);
     }
 
     @SuppressLint("NewApi")

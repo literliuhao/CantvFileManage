@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.PlayMode;
 import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.LyricInfo;
@@ -91,6 +92,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupLayout();
+        MyApplication.addActivity(this);
         holdWakeLock();
         initData();
         regUsbChangeReceiver();
@@ -241,6 +243,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mCDView.stopRotate();
         mCDView = null;
         super.onDestroy();
+        MyApplication.removeActivity(this);
     }
 
     @SuppressWarnings("deprecation")

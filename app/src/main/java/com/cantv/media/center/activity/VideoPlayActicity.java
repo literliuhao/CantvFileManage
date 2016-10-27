@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
@@ -69,6 +70,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         acquireWakeLock();// 禁止屏保弹出
         initView();
         registerTimeReceiver();
+        MyApplication.addActivity(this);
     }
 
     private void initView() {
@@ -641,7 +643,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mTimeReceiver != null) {
             unregisterReceiver(mTimeReceiver);
         }
-
+        MyApplication.removeActivity(this);
     }
 
     private void registerTimeReceiver() {
