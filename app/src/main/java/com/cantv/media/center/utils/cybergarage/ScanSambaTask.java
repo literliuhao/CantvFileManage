@@ -10,6 +10,12 @@ import java.util.Locale;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
+/**
+ * author: yibh
+ * Date: 2016/10/26  15:15 .
+ * 可能存在只有用户名,没有设置密码的情况,暂时不知道如何做,下面是api
+ * https://jcifs.samba.org/src/docs/api/jcifs/smb/SmbFile.html
+ */
 public class ScanSambaTask extends AsyncTask<String, Void, ArrayList<SmbFile>> {
 
     private boolean scanFiles;

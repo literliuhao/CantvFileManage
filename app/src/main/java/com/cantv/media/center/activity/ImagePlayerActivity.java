@@ -32,6 +32,7 @@ import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
@@ -142,7 +143,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         toHideRunnable();
         registerReceiver();
         toHideView();
-
+        MyApplication.addActivity(this);
     }
 
     private void toHideRunnable() {
@@ -237,6 +238,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (mToast != null) {
             mToast.cancel();
         }
+        //修复OS-1578加载图片翻页过程屏幕上多处会显示“白斑”
+        mHeader.setVisibility(View.INVISIBLE);
+        mArrowLeft.setVisibility(View.GONE);
+        mArrowRight.setVisibility(View.GONE);
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
@@ -785,6 +790,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }
+        MyApplication.removeActivity(this);
     }
 
     @SuppressLint("NewApi")
