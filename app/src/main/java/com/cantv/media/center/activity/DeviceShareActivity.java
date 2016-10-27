@@ -119,9 +119,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     @Override
     public void finish() {
-        if (null!=mScanSambaTask) {
+        if (null != mScanSambaTask) {
             mScanSambaTask.cancel(true);
-            mScanSambaTask=null;
+            mScanSambaTask = null;
         }
         super.finish();
     }
@@ -541,7 +541,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
 
         });
-        mScanSambaTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,deviceInfo.getFileItem().getPath());
+        mScanSambaTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, deviceInfo.getFileItem().getPath());
     }
 
     // --> loginDevice
