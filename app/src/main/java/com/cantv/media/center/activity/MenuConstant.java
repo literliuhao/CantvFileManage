@@ -2,8 +2,7 @@ package com.cantv.media.center.activity;
 
 public class MenuConstant {
 
-    public static final String SUBMENU_AUDIOTRACKER_ONE = "音轨1";
-    public static final String SUBMENU_AUDIOTRACKER_TWO = "音轨2";
+    public static final String SUBMENU_AUDIOTRACKER = "音轨";
 
     public static final String SUBMENU_IMAGESCALE_ORIGINAL = "原始比例";
     public static final String SUBMENU_IMAGESCALE_FULL = "全屏播放";
