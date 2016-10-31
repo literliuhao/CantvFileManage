@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
+import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.MenuItem;
@@ -42,7 +43,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener {
+public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener,StDisplayCallBack {
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -103,6 +104,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         });
 
         getProxyPlayer().setOnVideoSizeChangedListener(this);
+        getProxyPlayer().setSubTitleDisplayCallBack(this);
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
@@ -278,6 +280,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mSubTitle.setText("");
     }
 
+    //字幕修改
     public void setSrts(int time) {
 
         if (!isSubTitle) {
@@ -443,7 +446,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 }
             });
         }
-        if (mSelectedPosi==0) {
+        if (mSelectedPosi == 0) {
             list.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedChildIndex());
@@ -493,11 +496,12 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     private void performTypeSelectedEvent(MenuItem mSubSelectedMenu, int positon) {
 
+        //修复切换多个音轨无变化
+        if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_AUDIOTRACKER)) {
+            getProxyPlayer().setMovieAudioTrack(positon);
+            return;
+        }
         switch (mSubSelectedMenu.getTitle()) {
-            case MenuConstant.SUBMENU_AUDIOTRACKER_ONE:
-            case MenuConstant.SUBMENU_AUDIOTRACKER_TWO:
-                getProxyPlayer().setMovieAudioTrack(positon);
-                break;
             case MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL:
                 mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
                 break;
@@ -652,6 +656,22 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mTimeFilter.addAction(Intent.ACTION_TIME_TICK);
         registerReceiver(mTimeReceiver, mTimeFilter);
     }
+
+
+    //内置字幕监听，现在可以支持内置、外挂字幕了
+    @Override
+    public void onSubTitleChanging() {
+
+    }
+
+    @Override
+    public void showSubTitleText(String text) {
+        //如果同时打开两个字幕则会显示重复，所打开外挂后内置字幕默认为关闭状态
+        if(!isSubTitle){
+            mSubTitle.setText(text);
+        }
+    }
+    //内置字幕监听，现在可以支持内置、外挂字幕了
 
     class TimeReceiver extends BroadcastReceiver {
 
