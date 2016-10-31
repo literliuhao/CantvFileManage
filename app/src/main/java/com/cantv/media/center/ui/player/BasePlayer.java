@@ -27,6 +27,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected int mCurPlayIndex;
     private boolean mFistPlay = true;
     protected VideoPlayer mRecord;
+    private boolean setVideoStop;   //为了解决OS-1677,回到主页视频会重试播放的异常
 
     protected abstract void runAfterPlay(boolean isFirst);
 
@@ -58,7 +59,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
             @Override
             public void RetryPlay() {
-                playMedia(mCurPlayIndex);
+                if (!setVideoStop) {
+                    playMedia(mCurPlayIndex);
+                }else {
+                    setVideoStop = !setVideoStop;
+                }
             }
         });
 
@@ -148,7 +153,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
                 @Override
                 public void run() {
-//                    getProxyPlayer().start();
                     runAfterPlay(mFistPlay);
                     mPlayer.setOnCompletionListener(BasePlayer.this);
                     mFistPlay = false;
@@ -204,7 +208,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     protected void onStop() {
-//        getProxyPlayer().pause();
+        setVideoStop = true;
+        if (getProxyPlayer().isPlaying()) {
+            getProxyPlayer().stop();
+        }
+        getProxyPlayer().reset();
         getProxyPlayer().release();
         super.onStop();
     }

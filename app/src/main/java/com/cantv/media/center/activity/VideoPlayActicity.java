@@ -446,7 +446,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 }
             });
         }
-        if (mSelectedPosi==0) {
+        if (mSelectedPosi == 0) {
             list.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedChildIndex());
@@ -496,11 +496,12 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     private void performTypeSelectedEvent(MenuItem mSubSelectedMenu, int positon) {
 
+        //修复切换多个音轨无变化
+        if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_AUDIOTRACKER)) {
+            getProxyPlayer().setMovieAudioTrack(positon);
+            return;
+        }
         switch (mSubSelectedMenu.getTitle()) {
-            case MenuConstant.SUBMENU_AUDIOTRACKER_ONE:
-            case MenuConstant.SUBMENU_AUDIOTRACKER_TWO:
-                getProxyPlayer().setMovieAudioTrack(positon);
-                break;
             case MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL:
                 mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
                 break;

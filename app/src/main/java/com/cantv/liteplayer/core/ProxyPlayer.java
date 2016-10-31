@@ -122,7 +122,8 @@ public class ProxyPlayer {
         }
         getLitePlayer().setOnPreparedListener(new OnPreparedListener() {
             @Override
-            public void onPrepared(MediaPlayer arg0) {
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
                 if (callBack != null) {
                     callBack.run();
                 }
@@ -227,6 +228,10 @@ public class ProxyPlayer {
 
     public void onExceptionListener(MediaplayExceptionListener exceptionListener) {
         this.mExceptionListener = exceptionListener;
+    }
+
+    public void reset(){
+        getLitePlayer().reset();
     }
 
 }
