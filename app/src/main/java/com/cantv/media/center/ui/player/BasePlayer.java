@@ -19,7 +19,7 @@ import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener {
+public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener, MediaPlayer.OnTimedTextListener {
 
     protected List<Media> mDataList;
     protected int mDefaultPlayIndex;
@@ -61,7 +61,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             public void RetryPlay() {
                 if (!setVideoStop) {
                     playMedia(mCurPlayIndex);
-                }else {
+                } else {
                     setVideoStop = !setVideoStop;
                 }
             }
@@ -73,22 +73,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     @Override
     public void onCompletion(MediaPlayer arg0) {
         //循环播放
-//        if (mCurPlayIndex == mDataList.size() - 1) {
-//            Toast.makeText(BasePlayer.this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
-//            getProxyPlayer().stop();
-//            finish();
-//        } else
-        {
-            scrollToNext(null);
-        }
+        scrollToNext(null);
     }
 
     @Override
     public boolean scrollToNext(OnCompletionListener listener) {
-//        if (mCurPlayIndex == mDataList.size() - 1) {
-//            Toast.makeText(this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
         //循环播放
         mCurPlayIndex = ++mCurPlayIndex % mDataList.size();
         mPlayer.setOnCompletionListener(listener);
@@ -111,10 +100,8 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     public void onPlayerPlayOrPause() {
-        if (!isPlayerPaused())
-            getProxyPlayer().pause();
-        else
-            getProxyPlayer().start();
+        if (!isPlayerPaused()) getProxyPlayer().pause();
+        else getProxyPlayer().start();
     }
 
     @Override
@@ -145,15 +132,20 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected void playMedia(int index) {
         if (mPlayer != null) {
             mPlayer.setOnCompletionListener(null);
+            mPlayer.setOnTimedTextListener(null);
         }
         try {
             index = (index < 0) ? mDataList.size() - 1 : index;
             index = (index >= mDataList.size()) ? 0 : index;
             mCurPlayIndex = index;
-            getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
+            final String url = mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri;
+            getProxyPlayer().playMedia(url, new Runnable() {
                 @Override
                 public void run() {
                     runAfterPlay(mFistPlay);
+                    //添加内置字幕监听
+                    mPlayer.addText(url, BasePlayer.this);
+                    //添加内置字幕监听
                     mPlayer.setOnCompletionListener(BasePlayer.this);
                     mFistPlay = false;
                     runProgressBar();
@@ -181,7 +173,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected void playDefualt() {
         playMedia(mDefaultPlayIndex);
     }
-
 
     @Override
     public String getDefinition() {

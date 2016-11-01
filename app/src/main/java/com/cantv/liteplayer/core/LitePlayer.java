@@ -126,4 +126,6 @@ public class LitePlayer extends MediaPlayer {
         super.setDataSource(path);
         mStatusInfo.mSourceUri = path;
     }
+
+
 }

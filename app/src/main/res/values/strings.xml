@@ -143,4 +143,7 @@
     <string name="disclaimer_text3">系统，有可能引起冲突和导致不可预测的问题出现，请自行</string>
     <string name="disclaimer_text4">承担使用第三方软件而导致的风险和后果。</string>
     <string name="disclaimer_apk">按照国家相关政策规定，本机已经禁止安装第三方软件。</string>
+    <string name="disclaimer_apkinfo">您的设备已设置为拒绝安装未知来源的应用。</string>
+    <string name="disclaimer_setting">设置</string>
+    <string name="disclaimer_cancel">取消</string>
 </resources>
