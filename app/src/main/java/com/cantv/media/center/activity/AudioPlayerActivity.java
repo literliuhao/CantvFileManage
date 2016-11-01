@@ -389,7 +389,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     MenuItem menuItem = mMenuList.get(position);
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
-                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    //修复菜单焦点问题
+                    if (position == 0) {
+                        mMenuList.get(0).setChildSelected(mCurPlayIndex);
+                        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    }else{
+                        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    }
                     return;
                 }
 
