@@ -50,6 +50,8 @@ public class LyricParser {
             bis.reset();
             if (first3bytes[0] == (byte) 0xEF && first3bytes[1] == (byte) 0xBB && first3bytes[2] == (byte) 0xBF) {// utf-8
                 chartName = "UTF-8";
+            } else if (first3bytes[0] == (byte) 91 && first3bytes[1] == (byte) 116 && first3bytes[2] == (byte) 105) {//utf-8无bom编码
+                chartName = "UTF-8";
             } else if (first3bytes[0] == (byte) 0xFF && first3bytes[1] == (byte) 0xFE) {
                 chartName = "unicode";
             } else if (first3bytes[0] == (byte) 0xFE && first3bytes[1] == (byte) 0xFF) {
