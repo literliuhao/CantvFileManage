@@ -381,7 +381,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     MenuItem menuItem = list.get(position);
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
-                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    //修复菜单焦点问题
+                    if (position == 0) {
+                        list.get(0).setChildSelected(mCurPlayIndex);
+                        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    }else{
+                        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    }
                     return;
                 }
 
