@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnTimedTextListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
+import android.media.TimedText;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
@@ -20,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
-import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.MenuItem;
@@ -43,7 +44,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener,StDisplayCallBack {
+public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener,OnTimedTextListener{
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -104,7 +105,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         });
 
         getProxyPlayer().setOnVideoSizeChangedListener(this);
-        getProxyPlayer().setSubTitleDisplayCallBack(this);
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
@@ -113,6 +113,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void runAfterPlay(boolean isFirst) {
+        //解决内置字幕切换后不消失
+        initSrts();
+        //解决内置字幕切换后不消失
         getProxyPlayer().setMovieSubTitle(0);
         getProxyPlayer().setMovieAudioTrack(0);
         mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
@@ -166,8 +169,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             MenuItem audioTrackMenuItem = VideoPlayActicity.this.list.get(1);
             audioTrackMenuItem.setChildren(createAudioTrackList());
             audioTrackMenuItem.setChildSelected(0);
-            View menuItemView = mMenuDialog.getMenu()
-                    .findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
+            View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
             if (menuItemView != null) {
                 mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, audioTrackMenuItem);
             }
@@ -192,7 +194,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         }
         return srt;
     }
-
 
     public void parseSrts(final String srtUrl) {
 
@@ -399,21 +400,16 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
                     MenuItem menuItemData = list.get(mSelectedPosi);
                     int lastSelectPosi = menuItemData.setChildSelected(position);
-                    View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(
-                            MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
+                    View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
                     if (oldSubMenuItemView != null) {
-                        mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView,
-                                menuItemData.getChildAt(lastSelectPosi));
+                        mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(lastSelectPosi));
                     }
 
-                    View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(
-                            MenuAdapter.TAG_SUB_MENU_VIEW + position);
+                    View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + position);
                     if (subMenuItemView != null) {
-                        mMenuDialog.getMenuAdapter()
-                                .updateSubMenuItem(subMenuItemView, menuItemData.getSelectedChild());
+                        mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView, menuItemData.getSelectedChild());
                     }
-                    View menuItemView = mMenuDialog.getMenu()
-                            .findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosi);
+                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosi);
                     if (menuItemView != null) {
                         mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
                     }
@@ -432,8 +428,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
                 @Override
                 public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-                    if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN
-                            && mSelectedPosi == 0) {
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN && mSelectedPosi == 0) {
                         mMenuDialog.getMenu().openSubMenu(true, list.get(0).getSelectedChildIndex());
                         return true;
                     }
@@ -580,8 +575,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         // 画面比例
         MenuItem imageScaleMenuItem = new MenuItem("画面比例", MenuItem.TYPE_SELECTOR);
-        MenuItem imageScaleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL,
-                MenuItem.TYPE_SELECTOR);
+        MenuItem imageScaleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL, MenuItem.TYPE_SELECTOR);
         imageScaleMenuItem.setSelectedChild(imageScaleSubMenuOriginal);
         imageScaleSubMenuOriginal.setSelected(true);
         List<MenuItem> imageScaleMenuItems = new ArrayList<MenuItem>();
@@ -594,12 +588,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         // 载入字母
         MenuItem subtitlesLoadingMenuItem = new MenuItem("载入字幕", MenuItem.TYPE_SELECTOR);
-        MenuItem subtitlesLoadingSubMenuItemOpen = new MenuItem(MenuConstant.SUBMENU_LOADINGSUBTITLE_OPEN,
-                MenuItem.TYPE_SELECTOR);
+        MenuItem subtitlesLoadingSubMenuItemOpen = new MenuItem(MenuConstant.SUBMENU_LOADINGSUBTITLE_OPEN, MenuItem.TYPE_SELECTOR);
         subtitlesLoadingSubMenuItemOpen.setSelected(true);
         subtitlesLoadingMenuItem.setSelectedChild(subtitlesLoadingSubMenuItemOpen);
-        MenuItem subtitlesLoadingSubMenuItemColse = new MenuItem(MenuConstant.SUBMENU_LOADINGSUBTITLE_CLOSE,
-                MenuItem.TYPE_SELECTOR);
+        MenuItem subtitlesLoadingSubMenuItemColse = new MenuItem(MenuConstant.SUBMENU_LOADINGSUBTITLE_CLOSE, MenuItem.TYPE_SELECTOR);
         List<MenuItem> subtitlseLoadintMenus = new ArrayList<MenuItem>();
         subtitlseLoadintMenus.add(subtitlesLoadingSubMenuItemOpen);
         subtitlseLoadintMenus.add(subtitlesLoadingSubMenuItemColse);
@@ -613,16 +605,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         adjustSubtitlesSubMenus.add(new MenuItem(MenuConstant.SUBMENU_ADJUSTSUBTITLE_BACKWORD, MenuItem.TYPE_NORMAL));
         adjustSubtitleMenuItem.setChildren(adjustSubtitlesSubMenus);
         menuList.add(adjustSubtitleMenuItem);
-
-
-//		if (list.get(4) != null && "字幕调整".equals(list.get(4).getTitle())) {
-//			list.get(4).setEnabled(isSubTitle);
-//			View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
-//			if (oldSubMenuItemView != null) {
-//				mMenuDialog.getMenuAdapter().updateMenuItem(oldSubMenuItemView, list.get(4));
-//			}
-//		}
-
 
         return menuList;
     }
@@ -657,18 +639,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         registerReceiver(mTimeReceiver, mTimeFilter);
     }
 
-
     //内置字幕监听，现在可以支持内置、外挂字幕了
     @Override
-    public void onSubTitleChanging() {
-
-    }
-
-    @Override
-    public void showSubTitleText(String text) {
+    public void onTimedText(MediaPlayer mp, TimedText text) {
+        if(null == text){
+            return;
+        }
         //如果同时打开两个字幕则会显示重复，所打开外挂后内置字幕默认为关闭状态
-        if(!isSubTitle){
-            mSubTitle.setText(text);
+        if (!isSubTitle) {
+            mSubTitle.setText(text.getText());
         }
     }
     //内置字幕监听，现在可以支持内置、外挂字幕了
