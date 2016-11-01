@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
+import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.MenuItem;
@@ -42,7 +43,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener {
+public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener,StDisplayCallBack {
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -103,6 +104,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         });
 
         getProxyPlayer().setOnVideoSizeChangedListener(this);
+        getProxyPlayer().setSubTitleDisplayCallBack(this);
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
@@ -278,6 +280,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mSubTitle.setText("");
     }
 
+    //字幕修改
     public void setSrts(int time) {
 
         if (!isSubTitle) {
@@ -659,6 +662,22 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mTimeFilter.addAction(Intent.ACTION_TIME_TICK);
         registerReceiver(mTimeReceiver, mTimeFilter);
     }
+
+
+    //内置字幕监听，现在可以支持内置、外挂字幕了
+    @Override
+    public void onSubTitleChanging() {
+
+    }
+
+    @Override
+    public void showSubTitleText(String text) {
+        //如果同时打开两个字幕则会显示重复，所打开外挂后内置字幕默认为关闭状态
+        if(!isSubTitle){
+            mSubTitle.setText(text);
+        }
+    }
+    //内置字幕监听，现在可以支持内置、外挂字幕了
 
     class TimeReceiver extends BroadcastReceiver {
 
