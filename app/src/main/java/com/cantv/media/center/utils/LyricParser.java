@@ -44,13 +44,14 @@ public class LyricParser {
              */
             BufferedInputStream bis = new BufferedInputStream(is);
             bis.mark(4);
-            byte[] first3bytes = new byte[3];
+            byte[] first3bytes = new byte[5];
             //找到文档的前三个字节并自动判断文档类型。
             bis.read(first3bytes);
             bis.reset();
             if (first3bytes[0] == (byte) 0xEF && first3bytes[1] == (byte) 0xBB && first3bytes[2] == (byte) 0xBF) {// utf-8
                 chartName = "UTF-8";
-            } else if (first3bytes[0] == (byte) 91 && first3bytes[1] == (byte) 116 && first3bytes[2] == (byte) 105) {//utf-8无bom编码
+            } else if (first3bytes[0] == (byte) 91 && first3bytes[1] == (byte) 116 && first3bytes[2] == (byte) 105 && first3bytes[4] == (byte) 48) {//utf-8无bom编码
+                //本来只比较前三个,发现GBK格式的可能和这个存在相同的情况,通过比较发现第5个字节不同 〒▽〒
                 chartName = "UTF-8";
             } else if (first3bytes[0] == (byte) 0xFF && first3bytes[1] == (byte) 0xFE) {
                 chartName = "unicode";
