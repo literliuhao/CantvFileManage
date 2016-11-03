@@ -180,7 +180,7 @@ public class ProxyPlayer {
                     if (null != mExceptionListener) {
                         mExceptionListener.RetryPlay();
                     } else {
-                        Toast.makeText(MyApplication.getContext(), "播放发生异常!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyApplication.getContext(), "播放可能发生异常!", Toast.LENGTH_SHORT).show();
                     }
                 }
 

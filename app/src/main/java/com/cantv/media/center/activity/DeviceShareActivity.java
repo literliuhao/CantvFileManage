@@ -88,6 +88,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         setContentView(R.layout.activity_device_share);
         initUI();
         initData();
+        MyApplication.addActivity(this);
     }
 
     @Override
@@ -145,7 +146,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             mBlurDrawable.setCallback(null);
             mBlurDrawable = null;
         }
-
+        MyApplication.removeActivity(this);
         super.onDestroy();
     }
 

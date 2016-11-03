@@ -388,7 +388,7 @@ public class MediaUtils {
         try {
             IntentBuilder.viewFile(context, path);
         } catch (Exception e) {
-            Toast.makeText(context, "未安装相关应用", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "系统不支持该格式文件", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
