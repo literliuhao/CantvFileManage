@@ -316,8 +316,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             return;
         }
 
-//        SharedPreferenceUtil.saveVideoProgress(path, (int) position);
-
         List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
         if (mRecord == null) {
             if (list.size() == 0) {

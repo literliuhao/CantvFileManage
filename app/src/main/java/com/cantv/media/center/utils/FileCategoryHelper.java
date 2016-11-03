@@ -15,14 +15,12 @@ public class FileCategoryHelper {
     private static HashMap<String, Integer> mfileExtToType = new HashMap<>();
 
 
-    //设置好对应类型
+    //2016-11-03修改
+    //第三方 音频、视频、图片格式增加，此文件只能不减
     static {
-//        addItem(new String[]{"mp4", "avi", "mkv", "wmv", "mpg", "ts", "3gp", "flv", "mka", "mov", "webm", "m2ts", "vob", "mpeg", "f4v", "rmvb", "wmv", "rm", "m4v", "3gpp", "3g2", "3gpp2", "asf"}, TYPE_MOIVE);
-//        AVI、MOV、ASF、WMV、3GP、FLV、MKV、RAM、RMVB、ts
-        addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts", "mp4"}, TYPE_MOIVE);
-//        BMP、PNG、JPEG、GIF、JPG
+        addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts","mp4", "mpeg", "dat", "vob", "mpg", "trp", "tp", "m2ts", "webm"}, TYPE_MOIVE);
         addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp"}, TYPE_PICTURE);
-        addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac"}, TYPE_MUSIC);
+        addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac", "aac", "mka", "m4a", "ra"}, TYPE_MUSIC);
         addItem(new String[]{"apk"}, TYPE_APP);
     }
 

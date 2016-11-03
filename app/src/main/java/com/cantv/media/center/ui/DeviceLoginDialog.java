@@ -127,7 +127,7 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mFocusUtils.startMoveFocus(v, true, 1.4f, 30f, 0);
+                        mFocusUtils.startMoveFocus(v, true, 1.6f, 28f, 0);
                     }
                 }, 100);
             } else if (v == mConfirmBtn || v == mCancelBtn) {
@@ -135,7 +135,7 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mFocusUtils.startMoveFocus(v, null, true, 0.97f, 0.91f, 0f, -8f);
+                        mFocusUtils.startMoveFocus(v, null, true, 0.97f, 0.91f, 0f, -4f);
                     }
                 }, 100);
             }
