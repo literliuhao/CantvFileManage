@@ -15,7 +15,8 @@ public class FileCategoryHelper {
     private static HashMap<String, Integer> mfileExtToType = new HashMap<>();
 
 
-    //设置好对应类型
+    //2016-11-03修改
+    //第三方 音频、视频、图片格式增加，此文件只能不减
     static {
         addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts","mp4", "mpeg", "dat", "vob", "mpg", "trp", "tp", "m2ts", "webm"}, TYPE_MOIVE);
         addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp"}, TYPE_PICTURE);
