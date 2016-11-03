@@ -2,7 +2,7 @@
           package="com.cantv.media"
           android:versionCode="137"
           android:versionName="20161101-v1.3.7">
-    <!--android:sharedUserId="android.uid.system"-->
+          <!--android:sharedUserId="android.uid.system"-->
 
 
     <uses-sdk
