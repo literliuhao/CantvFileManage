@@ -44,7 +44,7 @@ public class MyApplication extends Application {
      * Date: 2016/10/27  16:21 .
      * 将存的Activity都关闭
      */
-    public static void onFinishThreeActivity() {
+    public static void onFinishActivity() {
         for (int i = 0; i < activityList.size(); i++) {
             activityList.get(i).finish();
         }

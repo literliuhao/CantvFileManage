@@ -87,7 +87,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_home);
-        MyApplication.onFinishThreeActivity();
+        MyApplication.onFinishActivity();
         mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
         mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
         mAudioIV = (FrameLayout) findViewById(R.id.imageview_audio_layout);

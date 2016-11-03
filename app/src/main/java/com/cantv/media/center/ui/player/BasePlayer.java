@@ -161,12 +161,10 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             getProxyPlayer().stop();
             this.finish();
             e.printStackTrace();
-            Toast.makeText(MyApplication.getContext(), "请确认文件存在或去除文件中特殊字符!", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             getProxyPlayer().stop();
             this.finish();
             e.printStackTrace();
-            Toast.makeText(MyApplication.getContext(), "请确认文件存在或去除文件中特殊字符!", Toast.LENGTH_LONG).show();
         }
     }
 
