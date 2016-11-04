@@ -242,6 +242,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mHeader.setVisibility(View.INVISIBLE);
         mArrowLeft.setVisibility(View.GONE);
         mArrowRight.setVisibility(View.GONE);
+        mPosition.setText("");
+        mTotal.setText("");
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
