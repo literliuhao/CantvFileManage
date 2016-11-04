@@ -86,6 +86,7 @@ public class MediaGridItemView extends MediaItemView {
 
         // 从xml里添加这个TextView是为了轮播的时候两边有渐变效果,动态添加则没有
         mTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.marquee_textview, null);
+        
         mTextView.setTextColor(getResources().getColorStateList(R.color.btn_selector));
         mTextView.setTextSize(getResources().getDimension(R.dimen.px22));
         RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
