@@ -189,8 +189,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.setCurrTime(currentPosition);
                         }
                     }
-                    sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
                 }
+                sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
             }
 
         };
@@ -212,6 +212,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mCDView.startRotate();
             mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
         }
+//        if (mHandler == null) {
+//            initHandler();
+//        }
+//        mHandler.removeCallbacksAndMessages(null);
+//        mHandler.sendEmptyMessage(0);
         super.onResume();
     }
 
@@ -393,7 +398,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     if (position == 0) {
                         mMenuList.get(0).setChildSelected(mCurPlayIndex);
                         mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
-                    }else{
+                    } else {
                         mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
                     }
                     return;
