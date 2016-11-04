@@ -157,10 +157,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             } else {
                 mRecord = list.get(0);
             }
-        } catch (IllegalStateException e) {
-            getProxyPlayer().stop();
-            this.finish();
-            e.printStackTrace();
         } catch (Exception e) {
             Toast.makeText(MyApplication.mContext, "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
             getProxyPlayer().stop();
