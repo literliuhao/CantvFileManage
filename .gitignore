@@ -1,6 +1,5 @@
 *.iml
 .gradle
-/local.properties
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store
@@ -9,3 +8,4 @@
 .idea
 app/build
 *.keystore
+/local.properties
