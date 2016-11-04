@@ -1,7 +1,6 @@
 package com.cantv.media.center.ui;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -43,6 +41,7 @@ public class ImageFrameView extends FrameLayout {
     private int callbackW;
     private int callbackH;
     private String ShareUrl_FLAG = "http://";
+    private int loadError = 0;
 
     public ImageFrameView(Context context) {
         super(context);
@@ -129,12 +128,20 @@ public class ImageFrameView extends FrameLayout {
             @Override
             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                 super.onLoadFailed(e, errorDrawable);
-                Log.i("playImage", "onLoadFailed......................");
-                loadImage(imageUri);
+                //解决图片加载不出来的情况下，页面一直处于加载中
+                //重试3次后弹出异常提示
+                if (loadError >= 3) {
+                    Toast.makeText(MyApplication.getContext(), "载入图片发生异常，请重试", Toast.LENGTH_LONG).show();
+                    loadError = 0;
+                    mActivity.finish();
+                } else {
+                    loadImage(imageUri);
+                    loadError++;
+                }
+                //解决图片加载不出来的情况下，页面一直处于加载中
             }
         });
     }
-
 
     public static Bitmap getBitmap(Bitmap bitmap, int screenWidth, int screenHight) {
         int w = bitmap.getWidth();
