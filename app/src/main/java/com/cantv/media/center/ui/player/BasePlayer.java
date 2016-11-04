@@ -16,8 +16,6 @@ import com.cantv.media.center.ui.player.PlayerController.CoverFlowViewListener;
 import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarContext;
 import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarListener;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,12 +161,8 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             getProxyPlayer().stop();
             this.finish();
             e.printStackTrace();
-        } catch (IOException e) {
-            getProxyPlayer().stop();
-            Toast.makeText(MyApplication.mContext, "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
-            this.finish();
-            e.printStackTrace();
         } catch (Exception e) {
+            Toast.makeText(MyApplication.mContext, "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
             getProxyPlayer().stop();
             this.finish();
             e.printStackTrace();
