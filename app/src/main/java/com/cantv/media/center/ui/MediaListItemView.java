@@ -183,9 +183,9 @@ public class MediaListItemView extends MediaItemView {
                 break;
             case VIDEO:
                 //第三方默认为开始视频截图
-                if (!media.isSharing) {
-                    mImageView.setMedia(media);
-                }
+//                if (!media.isSharing) {
+//                    mImageView.setMedia(media);
+//                }
                 //第三方默认为开始视频截图
                 mBgView.setBackground(media);
                 break;

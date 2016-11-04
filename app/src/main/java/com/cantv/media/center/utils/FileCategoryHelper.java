@@ -16,11 +16,17 @@ public class FileCategoryHelper {
 
 
     //2016-11-03修改
-    //第三方 音频、视频、图片格式增加，此文件只能不减
     static {
-        addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts","mp4", "mpeg", "dat", "vob", "mpg", "trp", "tp", "m2ts", "webm"}, TYPE_MOIVE);
+        //第三方版本规则：音频、视频、图片格式增加，此文件只能不减
+//        addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts","mp4", "mpeg", "dat", "vob", "mpg", "trp", "tp", "m2ts", "webm"}, TYPE_MOIVE);
+//        addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp"}, TYPE_PICTURE);
+//        addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac", "aac", "mka", "m4a", "ra"}, TYPE_MUSIC);
+//        addItem(new String[]{"apk"}, TYPE_APP);
+
+        //内部通用版本规则
+        addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts", "mp4"}, TYPE_MOIVE);
         addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp"}, TYPE_PICTURE);
-        addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac", "aac", "mka", "m4a", "ra"}, TYPE_MUSIC);
+        addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac"}, TYPE_MUSIC);
         addItem(new String[]{"apk"}, TYPE_APP);
     }
 
