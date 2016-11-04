@@ -6,6 +6,7 @@
     android:ellipsize="marquee"
     android:focusableInTouchMode="true"
     android:marqueeRepeatLimit="marquee_forever"
+    android:textSize="@dimen/px30"
     android:singleLine="true"
  
     />

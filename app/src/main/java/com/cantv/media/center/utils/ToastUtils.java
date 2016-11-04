@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,7 +79,7 @@ public class ToastUtils {
 								mTextView.setBackgroundResource(R.drawable.shape_toast);
 								mTextView.setTextColor(Color.WHITE);
 								mTextView.setPadding(left, up, left, up);
-								mTextView.setTextSize(fontSize);
+								mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
 							}
 							mTextView.setText(msg);
 							mToast.setDuration(len);

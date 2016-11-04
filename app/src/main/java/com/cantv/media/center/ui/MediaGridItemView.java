@@ -88,7 +88,6 @@ public class MediaGridItemView extends MediaItemView {
         mTextView = (TextView) LayoutInflater.from(context).inflate(R.layout.marquee_textview, null);
         
         mTextView.setTextColor(getResources().getColorStateList(R.color.btn_selector));
-        mTextView.setTextSize(getResources().getDimension(R.dimen.px22));
         RelativeLayout.LayoutParams tvParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         tvParams.addRule(RelativeLayout.BELOW, mBgView.getId());
         tvParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
