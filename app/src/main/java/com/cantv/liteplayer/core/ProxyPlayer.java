@@ -205,14 +205,16 @@ public class ProxyPlayer {
 
             TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
             int chiTrack = 0;
+            boolean isFind = false;
             if (trackInfos != null && trackInfos.length > 0) {
                 for (int i = 0; i < trackInfos.length; i++) {
                     TrackInfo info = trackInfos[i];
                     if (info.getLanguage().equals("chi")) {
+                        isFind = true;
                         chiTrack = i;
                     }
                 }
-                getLitePlayer().selectTrack(chiTrack);
+                if (isFind) getLitePlayer().selectTrack(chiTrack);
             }
             getLitePlayer().setOnTimedTextListener(listener);
 
