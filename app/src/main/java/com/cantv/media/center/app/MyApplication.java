@@ -11,12 +11,14 @@ public class MyApplication extends Application {
     public static Context mContext;
     //目前只为了存GridViewActivity,播放视频/音频/图片的Activity,为了解决0S/1439问题
     private static List<Activity> activityList;
+    public static List<Activity> mHomeActivityList;    //存HomeActivity
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
         activityList = new ArrayList<>();
+        mHomeActivityList = new ArrayList<>();
     }
 
     public static Context getContext() {
@@ -49,6 +51,16 @@ public class MyApplication extends Application {
             activityList.get(i).finish();
         }
         activityList.clear();
+    }
+
+    public static void addHomeActivity(Activity homeAc) {
+        if (!mHomeActivityList.contains(homeAc)) {
+            mHomeActivityList.add(homeAc);
+        }
+    }
+
+    public static void removeHomeActivity() {
+        mHomeActivityList.clear();
     }
 
 }
