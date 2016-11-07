@@ -26,7 +26,7 @@ public class ProxyPlayer {
     private LitePlayer mLitePlayer;
     private PlayerStatusInfo mStatusInfo;
     private OnVideoSizeChangedListener mListener = null;
-    private Boolean mRetryPlaye = true;
+    public Boolean mRetryPlaye = true;
 
     public void start() {
         getLitePlayer().start();
@@ -180,7 +180,7 @@ public class ProxyPlayer {
                     if (null != mExceptionListener) {
                         mExceptionListener.RetryPlay();
                     } else {
-                        Toast.makeText(MyApplication.getContext(), "播放可能发生异常!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyApplication.getContext(), "不支持当前文件格式文件!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
