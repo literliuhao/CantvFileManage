@@ -150,8 +150,10 @@ public class ProxyPlayer {
         playMedia(mStatusInfo.mSourceUri, new Runnable() {
             @Override
             public void run() {
-                if (mStatusInfo.mAudioTrackIndex >= 0) setMovieAudioTrack(mStatusInfo.mAudioTrackIndex);
-                if (mStatusInfo.mVideoSubTitleIndex >= 0) setMovieSubTitle(mStatusInfo.mVideoSubTitleIndex);
+                if (mStatusInfo.mAudioTrackIndex >= 0)
+                    setMovieAudioTrack(mStatusInfo.mAudioTrackIndex);
+                if (mStatusInfo.mVideoSubTitleIndex >= 0)
+                    setMovieSubTitle(mStatusInfo.mVideoSubTitleIndex);
                 seekTo(mStatusInfo.mCurrentPosition, new OnSeekCompleteListener() {
                     @Override
                     public void onSeekComplete(MediaPlayer arg0) {
@@ -180,7 +182,7 @@ public class ProxyPlayer {
                     if (null != mExceptionListener) {
                         mExceptionListener.RetryPlay();
                     } else {
-                        Toast.makeText(MyApplication.getContext(), "不支持当前文件格式文件!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -192,6 +194,7 @@ public class ProxyPlayer {
 
     /**
      * 内置字幕方法，默认返回中文字幕
+     *
      * @param srtPath
      * @param listener
      */
@@ -205,7 +208,7 @@ public class ProxyPlayer {
             if (trackInfos != null && trackInfos.length > 0) {
                 for (int i = 0; i < trackInfos.length; i++) {
                     TrackInfo info = trackInfos[i];
-                    if(info.getLanguage().equals("chi")){
+                    if (info.getLanguage().equals("chi")) {
                         chiTrack = i;
                     }
                 }

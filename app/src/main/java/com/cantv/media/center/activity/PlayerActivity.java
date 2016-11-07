@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.PlayMode;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.PlayerControllerBar.CoverFlowViewListener;
@@ -73,7 +75,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
                                 e.printStackTrace();
                             }
                         }
-                    },1000);
+                    }, 1000);
                 }
             }
         } catch (Exception e) {
@@ -190,6 +192,20 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             mPlayer = new ProxyPlayer();
             mPlayer.setOnCompletionListener(this);
         }
+
+        mPlayer.onExceptionListener(new ProxyPlayer.MediaplayExceptionListener() {
+            @Override
+            public void ExceHappen() {
+                getProxyPlayer().release();
+                Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void RetryPlay() {
+            }
+        });
+
         return mPlayer;
     }
 
