@@ -146,4 +146,5 @@
     <string name="disclaimer_apkinfo">您的设备已设置为拒绝安装未知来源的应用。</string>
     <string name="disclaimer_setting">设置</string>
     <string name="disclaimer_cancel">取消</string>
+    <string name="home_version">版本：</string>
 </resources>

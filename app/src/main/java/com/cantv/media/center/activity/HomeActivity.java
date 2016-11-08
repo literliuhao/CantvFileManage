@@ -28,6 +28,7 @@ import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.service.BootDialogService;
 import com.cantv.media.center.ui.MediaGridView;
+import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private TextView mShareTV;
     private TextView mLocalFreeTV;
     private TextView mLocalTotalTV;
+    private TextView mVersion;
     private TextView mExternalFreeTV;
     private TextView mExternalTotalTV;
     private TextView mExternalFreeTV1;
@@ -88,6 +90,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mContext = this;
         setContentView(R.layout.activity_home);
         MyApplication.onFinishActivity();
+        MyApplication.addHomeActivity(this);
         mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
         mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
         mAudioIV = (FrameLayout) findViewById(R.id.imageview_audio_layout);
@@ -103,6 +106,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mAppTV = (TextView) findViewById(R.id.textview_app);
         mLocalFreeTV = (TextView) findViewById(R.id.textview_localdiskfree);
         mLocalTotalTV = (TextView) findViewById(R.id.textview_localdisktotal);
+        mVersion = (TextView) findViewById(R.id.tv_version);
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
         initUSB();
@@ -220,6 +224,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         registerReceiver(mReceiver, filter);
         mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
+        mVersion.setText(FileUtil.getVersionName(this));
         alertDialog = new AlertDialog.Builder(mContext).create();
         Intent intentStart = new Intent(this, BootDialogService.class);
         intentStart.setAction("com.cantv.service.RECEIVER_START");
@@ -445,6 +450,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
+        MyApplication.removeHomeActivity();
         System.gc();
     }
 

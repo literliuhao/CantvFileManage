@@ -10,11 +10,13 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.renderscript.RenderScript;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,6 +45,7 @@ import com.cantv.media.center.ui.LyricView;
 import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
 import com.cantv.media.center.utils.BitmapUtils;
+import com.cantv.media.center.utils.FastBlurUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
 import java.util.ArrayList;
@@ -212,11 +215,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mCDView.startRotate();
             mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
         }
-//        if (mHandler == null) {
-//            initHandler();
-//        }
-//        mHandler.removeCallbacksAndMessages(null);
-//        mHandler.sendEmptyMessage(0);
         super.onResume();
     }
 
@@ -692,7 +690,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
         if (icon != null) {
             //耗时操作,在主线程中执行
-            final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
+//            final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
+            final Bitmap bitmap = FastBlurUtil.toBlur(icon, 6);
+            final BitmapDrawable drawable = new BitmapDrawable(MyApplication.getContext().getResources(),bitmap);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -700,6 +700,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         mCDView.setImageBitmap(icon);
                     }
                     if (null != mContentBg) {
+//                        mContentBg.setImageBitmap(drawable);
                         mContentBg.setBackground(drawable);
                         mContentBg.setImageResource(R.color.per40_black);
                     }

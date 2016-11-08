@@ -11,12 +11,14 @@ public class MyApplication extends Application {
     public static Context mContext;
     //目前只为了存GridViewActivity,播放视频/音频/图片的Activity,为了解决0S/1439问题
     private static List<Activity> activityList;
+    public static List<Activity> mHomeActivityList;    //存HomeActivity
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
         activityList = new ArrayList<>();
+        mHomeActivityList = new ArrayList<>();
     }
 
     public static Context getContext() {
@@ -49,6 +51,21 @@ public class MyApplication extends Application {
             activityList.get(i).finish();
         }
         activityList.clear();
+    }
+
+    /**
+     * 修复:0S-1439,播放本地视频时按主页键退出，此时点击进入应用模块中的
+     * 图片、视频、音乐均会续播之前播放的视频，点击进入“文件管理”再按返回键退出也会进入续播页面
+     * @param homeAc
+     */
+    public static void addHomeActivity(Activity homeAc) {
+        if (!mHomeActivityList.contains(homeAc)) {
+            mHomeActivityList.add(homeAc);
+        }
+    }
+
+    public static void removeHomeActivity() {
+        mHomeActivityList.clear();
     }
 
 }

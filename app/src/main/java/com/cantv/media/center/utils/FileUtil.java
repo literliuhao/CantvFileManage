@@ -1,8 +1,6 @@
 package com.cantv.media.center.utils;
 
-import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.pm.ApplicationInfo;
@@ -17,6 +15,7 @@ import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Audio;
@@ -285,8 +284,7 @@ public class FileUtil {
                 // 是常见文件,并且是非隐藏文件
                 if (FileUtil.isShowFile(childFile)) {
                     Media fileInfo = FileUtil.getSmbFileInfo(childFile, null, false, proxyPathPrefix);
-                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && (!fileInfo.mName.contains("$/"))
-                            ) {
+                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && (!fileInfo.mName.contains("$/"))) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
                             if (fileInfo.fileSize > 1024 * 6) {
@@ -512,6 +510,23 @@ public class FileUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * 获取版本号
+     *
+     * @return 当前应用的版本号
+     */
+    public static String getVersionName(Context context) {
+        String version = null;
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            version = info.versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return context.getString(R.string.home_version) + version;
     }
 
     /**
@@ -837,7 +852,6 @@ public class FileUtil {
         }
         return strings;
     }
-
 
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
