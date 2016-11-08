@@ -51,12 +51,25 @@ android {
     }
 
     applicationVariants.all { variant ->
+//        //修改生成的apk名字
+//        variant.outputs.each { output ->
+//            def oldFile = output.outputFile
+//            if (variant.buildType.name in ['release']) {
+//                def releaseApkName = 'mediaCenter_v' + variant.versionCode + ".apk";
+//                output.outputFile = new File(oldFile.parent+"/release", releaseApkName);
+//            }
+//        }
         //修改生成的apk名字
         variant.outputs.each { output ->
             def oldFile = output.outputFile
             if (variant.buildType.name in ['release']) {
-                def releaseApkName = 'mediaCenter_v' + variant.versionCode + ".apk";
-                output.outputFile = new File(oldFile.parent+"/release", releaseApkName);
+                def releaseApkName = 'CantvFileManager_v' + variant.versionCode + ".apk";
+                if (project.hasProperty("appReleaseDir")) {
+                    File releasePath = new File(project.property("appReleaseDir"), getDate());
+                    output.outputFile = new File(releasePath, releaseApkName);
+                } else {
+                    output.outputFile = new File(oldFile.parent, releaseApkName)
+                }
             }
         }
     }
