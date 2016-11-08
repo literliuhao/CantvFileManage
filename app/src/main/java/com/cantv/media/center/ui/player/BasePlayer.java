@@ -60,6 +60,9 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             @Override
             public void RetryPlay() {
                 if (!setVideoStop) {
+                    if (null != mPlayer) {
+                        mPlayer.mRetryPlaye = false;
+                    }
                     playMedia(mCurPlayIndex);
                 } else {
                     setVideoStop = !setVideoStop;
@@ -149,6 +152,9 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                     mPlayer.setOnCompletionListener(BasePlayer.this);
                     mFistPlay = false;
                     runProgressBar();
+                    if (null != mPlayer) {
+                        mPlayer.mRetryPlaye = true;
+                    }
                 }
             });
             List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri);

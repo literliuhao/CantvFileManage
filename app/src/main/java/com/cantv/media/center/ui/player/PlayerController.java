@@ -289,6 +289,7 @@ public class PlayerController extends RelativeLayout {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                 if (!isShowTip) {
                     togglePlayImgvi();
                     mCtrlBarListener.onPlayerPlayOrPause();
