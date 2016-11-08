@@ -241,6 +241,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             });
             runBeforePlay(mFirstPlay);
         } catch (Exception e) {
+            Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
             finish();
         }
