@@ -1,16 +1,18 @@
 apply plugin: 'com.android.application'
 
-ext.appReleaseDir = ""
-def loadProperties() {
-    def proFile = file("../local.properties")
-    Properties p = new Properties()
-    proFile.withInputStream { stream->
-        p.load(stream)
-    }
-    appReleaseDir = p.appReleaseDir
-}
-
-loadProperties()
+//ext.appReleaseDir = ""
+//def loadProperties() {
+//    def proFile = file("../local.properties")
+//    Properties p = new Properties()
+//    proFile.withInputStream { stream->
+//        p.load(stream)
+//    }
+//    appReleaseDir = p.appReleaseDir
+//}
+//
+//loadProperties()
+ext.SIGN_CONFIG_FILE = ['sign_828.properties'] // 签名配置文件
+apply from: 'sign.gradle' // 自动签名配置，勿删
 
 android {
     compileSdkVersion 22
