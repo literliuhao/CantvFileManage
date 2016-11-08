@@ -6,8 +6,8 @@ import android.view.SurfaceView;
 
 public class ExternalSurfaceView extends SurfaceView {
     private ShowType mType;
-    private float mWidth_height = 0.5625f;
-
+//    private float mWidth_height = 0.5625f;
+    private float mWidth_height = 1.7778f;
     public ExternalSurfaceView(Context context) {
         this(context, null);
     }
