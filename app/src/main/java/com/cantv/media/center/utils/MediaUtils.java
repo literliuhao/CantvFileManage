@@ -440,7 +440,11 @@ public class MediaUtils {
      * @param extensinName
      */
     public static int getAudioIconFromExtensionName(String extensinName) {
-        return mAduioIconMap.get(extensinName);
+        if (mAduioIconMap.containsKey(extensinName)) {
+            return mAduioIconMap.get(extensinName);
+        } else {
+            return mAduioIconMap.get("mp3");
+        }
     }
 
     public static void loadPicImg(Context context, String path, ImageView imageView) {

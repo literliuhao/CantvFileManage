@@ -47,7 +47,7 @@ public class BitmapUtils {
 		Allocation allOut = allIn;
 
 		// Set the radius of the blur
-		blurScript.setRadius(10.f);
+		blurScript.setRadius(10.0f);
 
 		// Perform the Renderscript
 		blurScript.setInput(allIn);
