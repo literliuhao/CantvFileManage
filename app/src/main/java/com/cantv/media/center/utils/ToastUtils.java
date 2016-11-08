@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,6 @@ public class ToastUtils {
 	 * Toast发送消息，默认Toast.LENGTH_LONG
 	 * 
 	 * @param act
-	 * @param msg
 	 */
 	public static void showMessageLong(final Context act, int resId) {
 		showMessage(act, act.getResources().getString(resId), Toast.LENGTH_LONG);
@@ -59,6 +59,11 @@ public class ToastUtils {
 		if (mToast != null) {
 			mToast.cancel();
 		}
+		//适配分辨率
+		final int left = (int) act.getResources().getDimension(R.dimen.px50);
+		final int up = (int) act.getResources().getDimension(R.dimen.px50);
+		final int fontSize = (int) act.getResources().getDimension(R.dimen.px30);
+
 		new Thread(new Runnable() {
 			public void run() {
 				mHandler.post(new Runnable() {
@@ -73,8 +78,8 @@ public class ToastUtils {
 								mTextView = new TextView(act);
 								mTextView.setBackgroundResource(R.drawable.shape_toast);
 								mTextView.setTextColor(Color.WHITE);
-								mTextView.setPadding(50, 30, 50, 30);
-								mTextView.setTextSize(30);
+								mTextView.setPadding(left, up, left, up);
+								mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
 							}
 							mTextView.setText(msg);
 							mToast.setDuration(len);

@@ -32,6 +32,7 @@ import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
@@ -102,6 +103,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private Boolean isRotation = false;
     private AudioManager mAudioManager;
     private int mCurrentVolume;
+    private Toast mToast = null;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -132,7 +134,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         setContentView(R.layout.media__image_view);
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         screenHeight = getWindowManager().getDefaultDisplay().getHeight();
-        mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         initView();
         showImage(indexOfDefaultPlay(), null);
         initViewClickEvent();
@@ -141,7 +143,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         toHideRunnable();
         registerReceiver();
         toHideView();
-
+        MyApplication.addActivity(this);
     }
 
     private void toHideRunnable() {
@@ -233,10 +235,20 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             return;
         }
 
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        //修复OS-1578加载图片翻页过程屏幕上多处会显示“白斑”
+        mHeader.setVisibility(View.INVISIBLE);
+        mArrowLeft.setVisibility(View.GONE);
+        mArrowRight.setVisibility(View.GONE);
+        mPosition.setText("");
+        mTotal.setText("");
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
-        mFrameView.playImage(url, onfinish, new onLoadingImgListener() {
+        boolean isSharing = getData().get(index).isSharing;
+        mFrameView.playImage(url, isSharing, onfinish, new onLoadingImgListener() {
             @Override
             public void loadSuccessed() {
                 if (isFirstMenu) {
@@ -259,10 +271,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
                     }
                 });
-                if (curIndex == getData().size() && curIndex != 1) {
-                    if (!mAutoPlay) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG).show();
-                        return;
+                if (!mAutoPlay) {
+                    if (curIndex == getData().size() && curIndex != 1) {
+                        mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG);
+                        mToast.show();
+                    } else if (curIndex == 1 && getData().size() > 1) {
+                        mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
+                        mToast.show();
                     }
                 }
             }
@@ -468,8 +483,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
                     mImageBrowser.setSoundEffectsEnabled(false);
-                    mCurrentVolume = mAudioManager.getStreamVolume( AudioManager.STREAM_SYSTEM );
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,0,0);
+                    mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
                     startAutoPlay();
                     if (isFirstPlayMusic) {
                         isFirstPlayMusic = false;
@@ -587,7 +602,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoPlay = false;
             //endMusicAnimation();
             mImageBrowser.setSoundEffectsEnabled(true);
-            mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,mCurrentVolume,0);
+            mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
             MainThread.cancel(mAutoRunnable);
             getScreenLock().release();
         }
@@ -777,6 +792,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }
+        MyApplication.removeActivity(this);
     }
 
     @SuppressLint("NewApi")

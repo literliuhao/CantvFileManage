@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.PlayMode;
 import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.LyricInfo;
@@ -84,11 +86,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private static final int UNDATE_UI = -1;  //更新UI
     private String mUri;
+    private LoadingMuUITask muUITask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupLayout();
+        MyApplication.addActivity(this);
         holdWakeLock();
         initData();
         regUsbChangeReceiver();
@@ -185,8 +189,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.setCurrTime(currentPosition);
                         }
                     }
-                    sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
                 }
+                sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
             }
 
         };
@@ -208,6 +212,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mCDView.startRotate();
             mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
         }
+//        if (mHandler == null) {
+//            initHandler();
+//        }
+//        mHandler.removeCallbacksAndMessages(null);
+//        mHandler.sendEmptyMessage(0);
         super.onResume();
     }
 
@@ -229,6 +238,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     @Override
     protected void onDestroy() {
         unregisterReceiver(mUsbChangeReceiver);
+        muUITask.cancel(true);
         releaseWakeLock();
         mUsbChangeReceiver = null;
         mUsbFilter = null;
@@ -238,6 +248,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mCDView.stopRotate();
         mCDView = null;
         super.onDestroy();
+        MyApplication.removeActivity(this);
     }
 
     @SuppressWarnings("deprecation")
@@ -323,39 +334,12 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             if (!TextUtils.isEmpty(singer)) {
                 mSingerTv.setText(getString(R.string.singer) + singer);
             }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
-                    if (icon != null) {
-                        //耗时操作,在主线程中执行
-                        final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mCDView.setImageBitmap(icon);
-                                mContentBg.setBackground(drawable);
-                                mContentBg.setImageResource(R.color.per40_black);
-                            }
-                        });
-                    }
-
-                    mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
-                    if (mLyricInfo == null) {
-                        showLyric = false;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showNoLyricView();
-                            }
-                        });
-                    } else {
-                        showLyric = true;
-                        showLyricView();
-                        mLyricView.setLyricInfo(mLyricInfo);
-                    }
-                }
-            }).start();
+            if (null != muUITask) {    //先取消之前
+                muUITask.cancel(true);
+                muUITask = null;
+            }
+            muUITask = new LoadingMuUITask();
+            muUITask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -410,7 +394,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     MenuItem menuItem = mMenuList.get(position);
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
-                    mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    //修复菜单焦点问题
+                    if (position == 0) {
+                        mMenuList.get(0).setChildSelected(mCurPlayIndex);
+                        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    } else {
+                        mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+                    }
                     return;
                 }
 
@@ -510,6 +500,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     return false;
                 }
             });
+        }
+        if (mSelectedMenuPosi == 0) {
+            mMenuList.get(0).setChildSelected(mCurPlayIndex);
+            mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
         }
         mMenuDialog.show();
@@ -672,6 +666,65 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             if (menuItemView != null) {
                 mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
             }
+        }
+    }
+
+    /**
+     * author: yibh
+     * Date: 2016/10/26  17:26 .
+     * 加载音频文件内的背景图,使用异步加载,在未加载出来时退出界面,取消加载.
+     */
+    class LoadingMuUITask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            loadUI();
+            return null;
+        }
+
+    }
+
+    /**
+     * 设置背景
+     */
+    private void loadUI() {
+        //有些机器可能出现内存溢出
+        final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
+        if (icon != null) {
+            //耗时操作,在主线程中执行
+            final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != mCDView) {
+                        mCDView.setImageBitmap(icon);
+                    }
+                    if (null != mContentBg) {
+                        mContentBg.setBackground(drawable);
+                        mContentBg.setImageResource(R.color.per40_black);
+                    }
+                }
+            });
+        }
+
+        mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
+        if (mLyricInfo == null) {
+            showLyric = false;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showNoLyricView();
+                }
+            });
+        } else {
+            showLyric = true;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showLyricView();
+                    mLyricView.setLyricInfo(mLyricInfo);
+                }
+            });
         }
     }
 

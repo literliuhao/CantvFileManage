@@ -24,9 +24,11 @@ public class IntentBuilder {
                 intent.setDataAndType(Uri.fromFile(new File(filePath)), type);
                 context.startActivity(intent);
             } catch (Exception e) {
-                Toast.makeText(context, "未安装相关应用", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "系统不支持该格式文件", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
+        } else {
+            Toast.makeText(context, "系统不支持该格式文件", Toast.LENGTH_SHORT).show();
         }
 
     }

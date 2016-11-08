@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.service.BootDialogService;
 import com.cantv.media.center.ui.MediaGridView;
@@ -86,6 +87,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_home);
+        MyApplication.onFinishActivity();
         mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
         mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
         mAudioIV = (FrameLayout) findViewById(R.id.imageview_audio_layout);

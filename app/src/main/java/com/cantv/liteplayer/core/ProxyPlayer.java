@@ -18,7 +18,6 @@ import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
 import com.cantv.media.center.app.MyApplication;
-import com.cantv.media.center.utils.ToastUtils;
 
 import java.util.List;
 
@@ -98,6 +97,10 @@ public class ProxyPlayer {
         getLitePlayer().setOnCompletionListener(listener);
     }
 
+    public void setOnTimedTextListener(OnTimedTextListener listener) {
+        getLitePlayer().setOnTimedTextListener(listener);
+    }
+
     public void setOnVideoSizeChangedListener(OnVideoSizeChangedListener l) {
         mListener = l;
     }
@@ -109,12 +112,21 @@ public class ProxyPlayer {
     }
 
     public void playMedia(String uri, final Runnable callBack) throws Exception {
+//        getLitePlayer().stop();
         getLitePlayer().reset();
-        getLitePlayer().setDataSource(uri);
-        getLitePlayer().prepareAsync();
+        byte[] bytes = uri.getBytes();
+        String s = new String(bytes, "UTF-8");
+        getLitePlayer().setDataSource(s);
+        try {
+            getLitePlayer().prepareAsync();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Log.w("有异常存在", "文件播放发生异常...!");
+        }
         getLitePlayer().setOnPreparedListener(new OnPreparedListener() {
             @Override
-            public void onPrepared(MediaPlayer arg0) {
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
                 if (callBack != null) {
                     callBack.run();
                 }
@@ -138,10 +150,8 @@ public class ProxyPlayer {
         playMedia(mStatusInfo.mSourceUri, new Runnable() {
             @Override
             public void run() {
-                if (mStatusInfo.mAudioTrackIndex >= 0)
-                    setMovieAudioTrack(mStatusInfo.mAudioTrackIndex);
-                if (mStatusInfo.mVideoSubTitleIndex >= 0)
-                    setMovieSubTitle(mStatusInfo.mVideoSubTitleIndex);
+                if (mStatusInfo.mAudioTrackIndex >= 0) setMovieAudioTrack(mStatusInfo.mAudioTrackIndex);
+                if (mStatusInfo.mVideoSubTitleIndex >= 0) setMovieSubTitle(mStatusInfo.mVideoSubTitleIndex);
                 seekTo(mStatusInfo.mCurrentPosition, new OnSeekCompleteListener() {
                     @Override
                     public void onSeekComplete(MediaPlayer arg0) {
@@ -170,7 +180,7 @@ public class ProxyPlayer {
                     if (null != mExceptionListener) {
                         mExceptionListener.RetryPlay();
                     } else {
-                        Toast.makeText(MyApplication.getContext(), "播放发生异常!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyApplication.getContext(), "播放可能发生异常!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -180,24 +190,28 @@ public class ProxyPlayer {
         return mLitePlayer;
     }
 
+    /**
+     * 内置字幕方法，默认返回中文字幕
+     * @param srtPath
+     * @param listener
+     */
     public void addText(String srtPath, OnTimedTextListener listener) {
         try {
-            getLitePlayer().addTimedTextSource(srtPath, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP);
-
-            getLitePlayer().setOnTimedTextListener(listener);
+            if ("" == srtPath) return;
+//            getLitePlayer().addTimedTextSource(srtPath, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP);
 
             TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
-
+            int chiTrack = 0;
             if (trackInfos != null && trackInfos.length > 0) {
                 for (int i = 0; i < trackInfos.length; i++) {
-                    final TrackInfo info = trackInfos[i];
-                    if (info.getTrackType() == TrackInfo.MEDIA_TRACK_TYPE_AUDIO) {
-                        // mMediaPlayer.selectTrack(i);
-                    } else if (info.getTrackType() == TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {
-                        getLitePlayer().selectTrack(i);
+                    TrackInfo info = trackInfos[i];
+                    if(info.getLanguage().equals("chi")){
+                        chiTrack = i;
                     }
                 }
+                getLitePlayer().selectTrack(chiTrack);
             }
+            getLitePlayer().setOnTimedTextListener(listener);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,6 +233,10 @@ public class ProxyPlayer {
 
     public void onExceptionListener(MediaplayExceptionListener exceptionListener) {
         this.mExceptionListener = exceptionListener;
+    }
+
+    public void reset() {
+        getLitePlayer().reset();
     }
 
 }

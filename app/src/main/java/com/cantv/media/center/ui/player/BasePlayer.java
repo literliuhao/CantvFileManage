@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
@@ -18,7 +19,7 @@ import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener {
+public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener, MediaPlayer.OnTimedTextListener {
 
     protected List<Media> mDataList;
     protected int mDefaultPlayIndex;
@@ -26,6 +27,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected int mCurPlayIndex;
     private boolean mFistPlay = true;
     protected VideoPlayer mRecord;
+    private boolean setVideoStop;   //为了解决OS-1677,回到主页视频会重试播放的异常
 
     protected abstract void runAfterPlay(boolean isFirst);
 
@@ -57,7 +59,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
             @Override
             public void RetryPlay() {
-                playMedia(mCurPlayIndex);
+                if (!setVideoStop) {
+                    playMedia(mCurPlayIndex);
+                } else {
+                    setVideoStop = !setVideoStop;
+                }
             }
         });
 
@@ -67,22 +73,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     @Override
     public void onCompletion(MediaPlayer arg0) {
         //循环播放
-//        if (mCurPlayIndex == mDataList.size() - 1) {
-//            Toast.makeText(BasePlayer.this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
-//            getProxyPlayer().stop();
-//            finish();
-//        } else
-        {
-            scrollToNext(null);
-        }
+        scrollToNext(null);
     }
 
     @Override
     public boolean scrollToNext(OnCompletionListener listener) {
-//        if (mCurPlayIndex == mDataList.size() - 1) {
-//            Toast.makeText(this, "没有下一个视频了！", Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
         //循环播放
         mCurPlayIndex = ++mCurPlayIndex % mDataList.size();
         mPlayer.setOnCompletionListener(listener);
@@ -105,10 +100,8 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     public void onPlayerPlayOrPause() {
-        if (!isPlayerPaused())
-            getProxyPlayer().pause();
-        else
-            getProxyPlayer().start();
+        if (!isPlayerPaused()) getProxyPlayer().pause();
+        else getProxyPlayer().start();
     }
 
     @Override
@@ -139,16 +132,20 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected void playMedia(int index) {
         if (mPlayer != null) {
             mPlayer.setOnCompletionListener(null);
+            mPlayer.setOnTimedTextListener(null);
         }
         try {
             index = (index < 0) ? mDataList.size() - 1 : index;
             index = (index >= mDataList.size()) ? 0 : index;
             mCurPlayIndex = index;
-            getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
+            final String url = mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri;
+            getProxyPlayer().playMedia(url, new Runnable() {
                 @Override
                 public void run() {
-//                    getProxyPlayer().start();
                     runAfterPlay(mFistPlay);
+                    //添加内置字幕监听
+                    mPlayer.addText(url, BasePlayer.this);
+                    //添加内置字幕监听
                     mPlayer.setOnCompletionListener(BasePlayer.this);
                     mFistPlay = false;
                     runProgressBar();
@@ -161,6 +158,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                 mRecord = list.get(0);
             }
         } catch (Exception e) {
+            Toast.makeText(MyApplication.mContext, "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
             getProxyPlayer().stop();
             this.finish();
             e.printStackTrace();
@@ -170,7 +168,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected void playDefualt() {
         playMedia(mDefaultPlayIndex);
     }
-
 
     @Override
     public String getDefinition() {
@@ -197,7 +194,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     protected void onStop() {
-//        getProxyPlayer().pause();
+        setVideoStop = true;
+        if (getProxyPlayer().isPlaying()) {
+            getProxyPlayer().stop();
+        }
+        getProxyPlayer().reset();
         getProxyPlayer().release();
         super.onStop();
     }

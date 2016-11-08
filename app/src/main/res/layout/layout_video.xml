@@ -16,8 +16,8 @@
         android:background="@drawable/icon_movie"
         android:layout_gravity="center_horizontal"
 		android:layout_marginTop="@dimen/px110"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/px112"
+        android:layout_height="@dimen/px112" />
     <TextView
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/px36"

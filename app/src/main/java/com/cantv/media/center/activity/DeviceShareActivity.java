@@ -88,6 +88,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         setContentView(R.layout.activity_device_share);
         initUI();
         initData();
+        MyApplication.addActivity(this);
     }
 
     @Override
@@ -119,9 +120,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     @Override
     public void finish() {
-        if (null!=mScanSambaTask) {
+        if (null != mScanSambaTask) {
             mScanSambaTask.cancel(true);
-            mScanSambaTask=null;
+            mScanSambaTask = null;
         }
         super.finish();
     }
@@ -145,7 +146,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             mBlurDrawable.setCallback(null);
             mBlurDrawable = null;
         }
-
+        MyApplication.removeActivity(this);
         super.onDestroy();
     }
 
@@ -541,7 +542,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
 
         });
-        mScanSambaTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,deviceInfo.getFileItem().getPath());
+        mScanSambaTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, deviceInfo.getFileItem().getPath());
     }
 
     // --> loginDevice

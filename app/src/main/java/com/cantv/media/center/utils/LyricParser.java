@@ -3,6 +3,7 @@ package com.cantv.media.center.utils;
 import com.cantv.media.center.data.LyricInfo;
 import com.cantv.media.center.data.LyricInfo.Lyric;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,11 +31,43 @@ public class LyricParser {
     }
 
     public static LyricInfo parseFromFile(File file) {
+
         InputStream is = null;
+        FileInputStream fis = null;
         try {
             is = new FileInputStream(file);
-            return parseFromStream(is);
+            String chartName = "";
+
+            /**
+             * 下面是解析文件编码格式,根据格式读取歌词
+             * 参考:http://www.lai18.com/content/1874723.html?from=cancel
+             */
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bis.mark(4);
+            byte[] first3bytes = new byte[5];
+            //找到文档的前三个字节并自动判断文档类型。
+            bis.read(first3bytes);
+            bis.reset();
+            if (first3bytes[0] == (byte) 0xEF && first3bytes[1] == (byte) 0xBB && first3bytes[2] == (byte) 0xBF) {// utf-8
+                chartName = "UTF-8";
+            } else if (first3bytes[0] == (byte) 91 && first3bytes[1] == (byte) 116 && first3bytes[2] == (byte) 105 && first3bytes[4] == (byte) 48) {//utf-8无bom编码
+                //本来只比较前三个,发现GBK格式的可能和这个存在相同的情况,通过比较发现第5个字节不同 〒▽〒
+                chartName = "UTF-8";
+            } else if (first3bytes[0] == (byte) 0xFF && first3bytes[1] == (byte) 0xFE) {
+                chartName = "unicode";
+            } else if (first3bytes[0] == (byte) 0xFE && first3bytes[1] == (byte) 0xFF) {
+                chartName = "utf-16be";
+            } else if (first3bytes[0] == (byte) 0xFF && first3bytes[1] == (byte) 0xFF) {
+                chartName = "utf-16le";
+            } else {
+                chartName = "GBK";
+            }
+            //此处直接传is会导致歌词不显示
+            fis = new FileInputStream(file);
+            return parseFromStream(fis, chartName);
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (is != null) {
@@ -44,15 +77,22 @@ public class LyricParser {
                     e.printStackTrace();
                 }
             }
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
 
-    public static LyricInfo parseFromStream(InputStream stream) {
+    public static LyricInfo parseFromStream(InputStream stream, String chartName) {
         if (stream == null) {
             return null;
         }
-        BufferedReader br = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream, Charset.forName(chartName)));
         String line = null;
         try {
             LyricInfo lyricInfo = new LyricInfo();
@@ -96,7 +136,7 @@ public class LyricParser {
         while (matcher.find()) {
             if (lyricStr == null) {
                 String[] splitData = pattern.split(line);
-                if(splitData == null || splitData.length != 2){
+                if (splitData == null || splitData.length != 2) {
                     //忽略无效的单行歌词
                     return;
                 }
