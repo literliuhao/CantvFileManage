@@ -43,6 +43,7 @@ import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -174,12 +175,25 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     if (getData() == null || getData().size() == 0) {
                         return;
                     }
+                    //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
+                    final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData
+                            ().get(mCurImageIndex).mUri;
+                    final boolean isSharing = getData().get(mCurImageIndex).isSharing;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isSharing) {
+                                File imageFile = new File(imageUri);
+                                if (!imageFile.exists()) {
+                                    ImagePlayerActivity.this.finish();
+                                    return;
+                                }
+                            }
+                        }
+                    }, 500);
                     String sourcepath = getData().get(0).isSharing ? getData().get(0).sharePath : getData().get(0).mUri;
                     String targetpath = intent.getDataString();
                     boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-                    if (isequal) {
-                        ImagePlayerActivity.this.finish();
-                    }
                 }
             }
         };
@@ -244,6 +258,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight.setVisibility(View.GONE);
         mPosition.setText("");
         mTotal.setText("");
+        toHideView();
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
