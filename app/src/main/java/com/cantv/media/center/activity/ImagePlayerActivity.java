@@ -162,7 +162,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int offset = mCurImageIndex + 1;
                 offset = (offset >= getData().size()) ? 0 : offset;
                 showImage(offset, null);
-                startAutoPlay();
+                //修改幻灯片播放问题，时间不准
+                //startAutoPlay();
             }
         };
     }
@@ -259,6 +260,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mPosition.setText("");
         mTotal.setText("");
         toHideView();
+        //修改幻灯片播放问题，时间不准
+        if(mAutoPlay){
+            stopAutoPlay();
+            mAutoPlay = true;
+        }
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
@@ -294,6 +300,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
                         mToast.show();
                     }
+                }
+                //修改幻灯片播放问题，时间不准
+                if(mAutoPlay){
+                    mAutoPlay = false;
+                    startAutoPlay();
                 }
             }
 
@@ -598,12 +609,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private void startAutoPlay() {
         int curIndex = mCurImageIndex + 1;
         int size = getData().size();
-        /*if (curIndex == size) {
-            stopAutoPlay();
-            //stopMusic();
-            mAutoRunImageView.setImageResource(R.drawable.photo_info3);
-            return;
-        }*/
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
