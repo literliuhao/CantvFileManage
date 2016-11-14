@@ -10,7 +10,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.widgets.CustomDialog;
@@ -55,6 +57,10 @@ public class BootDialogService extends Service {
                 showMountedDialog();
             } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
 //                MediaUtils.removeUsbRootPaths(intent.getData().getPath());
+                //添加移除U盘提示
+                if(intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)){
+                    Toast.makeText(MyApplication.getContext(), "文件不存在或设备已移除", Toast.LENGTH_SHORT).show();
+                }
                 List<String> currPathList = MediaUtils.getCurrPathList();
                 if (currPathList.size() < 1) {
                     if (null != dialog && dialog.isShowing()) {
