@@ -2,9 +2,11 @@ package com.cantv.media.center.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -53,6 +55,7 @@ public class MediaGridView extends CustomGridView {
     //不能安装应用标记
     public static Boolean flag = false;
     private ApkDialog apkDialog = null;
+    private String install_app = "0";
 
     public MediaGridView(Context context, SourceType sourceType) {
         super(context);
@@ -115,36 +118,16 @@ public class MediaGridView extends CustomGridView {
                     openMediaActivity(item);
                 } else {
                     if (item.mType == SourceType.APP) {
-                        if (flag) {
-                            int disclaimer = SharedPreferenceUtil.getDisclaimer();
-                            if (disclaimer == 1) {
-                                MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
-                            } else {
-                                if (mDisclaimerDialog == null) {
-                                    mDisclaimerDialog = new DisclaimerDialog(mActivity);
-                                    mDisclaimerDialog.setOnClickableListener(new OnClickableListener() {
-                                        @Override
-                                        public void onConfirmClickable() {
-                                            MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
-                                        }
-
-                                        @Override
-                                        public void onCancelClickable() {
-                                            return;
-                                        }
-                                    });
-                                }
-                                mDisclaimerDialog.show();
+                        //添加APP安装设置弹框
+                        try {
+                            install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
+                            if (install_app.equals("1")) {
+                                getDisclaimerDialog(item);
+                            } else if (install_app.equals("0")) {
+                                getConfirmDialog();
                             }
-                        } else {
-                            apkDialog = new ApkDialog(mActivity);
-                            apkDialog.setOnClickableListener(new ApkDialog.OnClickableListener() {
-                                @Override
-                                public void onConfirmClickable() {
-                                    apkDialog.dismiss();
-                                }
-                            });
-                            apkDialog.show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     } else {
                         MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
@@ -346,5 +329,57 @@ public class MediaGridView extends CustomGridView {
      */
     public void setTextRTview(String st1, String st2) {
         StringUtil.getMergeString(mContext, mActivity.mRTCountView, R.style.rtTextStyle, st1, st2);
+    }
+
+    /**
+     * 免责声明
+     *
+     * @param item
+     */
+    private void getDisclaimerDialog(final Media item) {
+        int disclaimer = SharedPreferenceUtil.getDisclaimer();
+        if (disclaimer == 1) {
+            MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
+        } else {
+            if (mDisclaimerDialog == null) {
+                mDisclaimerDialog = new DisclaimerDialog(mActivity);
+                mDisclaimerDialog.setOnClickableListener(new OnClickableListener() {
+                    @Override
+                    public void onConfirmClickable() {
+                        MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
+                    }
+
+                    @Override
+                    public void onCancelClickable() {
+                        return;
+                    }
+                });
+            }
+            mDisclaimerDialog.show();
+        }
+    }
+
+    /**
+     * 设置弹出
+     */
+    private void getConfirmDialog() {
+        apkDialog = new ApkDialog(mActivity);
+        apkDialog.setOnClickableListener(new ApkDialog.OnClickableListener() {
+            @Override
+            public void onConfirmClickable() {
+                try {
+                    mActivity.startActivity(new Intent("com.os.setting.GENERAL_SETTINGS"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                apkDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelClickable() {
+                apkDialog.dismiss();
+            }
+        });
+        apkDialog.show();
     }
 }
