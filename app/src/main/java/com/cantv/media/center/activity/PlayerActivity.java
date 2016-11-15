@@ -32,6 +32,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     private boolean mInitDone = false;
     protected CoverFlowViewListener mCoverFlowViewListener;
     protected int mPlayMode = PlayMode.IN_ORDER;// 默认顺序播放
+    public boolean isPressback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,6 +199,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             public void ExceHappen() {
                 getProxyPlayer().release();
                 Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
+                isPressback = true;
                 finish();
             }
 
@@ -241,8 +243,9 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             });
             runBeforePlay(mFirstPlay);
         } catch (Exception e) {
-            Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
+            isPressback = true;
             finish();
         }
     }

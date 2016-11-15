@@ -28,6 +28,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     private boolean mFistPlay = true;
     protected VideoPlayer mRecord;
     private boolean setVideoStop;   //为了解决OS-1677,回到主页视频会重试播放的异常
+    public boolean isPressback;
 
     protected abstract void runAfterPlay(boolean isFirst);
 
@@ -54,6 +55,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             @Override
             public void ExceHappen() {
                 getProxyPlayer().release();
+                isPressback = true;
                 finish();
             }
 
@@ -166,6 +168,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         } catch (Exception e) {
             Toast.makeText(MyApplication.mContext, "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
             getProxyPlayer().stop();
+            isPressback = true;
             this.finish();
             e.printStackTrace();
         }

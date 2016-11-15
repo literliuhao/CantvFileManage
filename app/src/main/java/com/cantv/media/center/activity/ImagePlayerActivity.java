@@ -186,6 +186,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                             if (!isSharing) {
                                 File imageFile = new File(imageUri);
                                 if (!imageFile.exists()) {
+                                    isPressback = true;
                                     ImagePlayerActivity.this.finish();
                                     return;
                                 }
@@ -261,7 +262,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mTotal.setText("");
         toHideView();
         //修改幻灯片播放问题，时间不准
-        if(mAutoPlay){
+        if (mAutoPlay) {
             stopAutoPlay();
             mAutoPlay = true;
         }
@@ -302,7 +303,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     }
                 }
                 //修改幻灯片播放问题，时间不准
-                if(mAutoPlay){
+                if (mAutoPlay) {
                     mAutoPlay = false;
                     startAutoPlay();
                 }
@@ -602,6 +603,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     protected void onStop() {
         super.onStop();
+        //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
+        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+            MyApplication.onFinishActivity();
+        }
         stopAutoPlay();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
     }
@@ -928,4 +933,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAnimationDrawable.stop();
         }
     }*/
+
+
+    public boolean isPressback;
+
+    @Override
+    public void onBackPressed() {
+        isPressback = true;
+        super.onBackPressed();
+    }
+
+
 }

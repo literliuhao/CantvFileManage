@@ -11,12 +11,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.renderscript.RenderScript;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,7 +42,6 @@ import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.LyricView;
 import com.cantv.media.center.ui.MenuDialog;
 import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
-import com.cantv.media.center.utils.BitmapUtils;
 import com.cantv.media.center.utils.FastBlurUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
@@ -90,6 +87,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private static final int UNDATE_UI = -1;  //更新UI
     private String mUri;
     private LoadingMuUITask muUITask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +162,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         String targetpath = intent.getDataString();
                         boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
                         if (isequal) {
+                            isPressback = true;
                             AudioPlayerActivity.this.finish();
                         }
                     }
@@ -226,7 +225,17 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     @Override
+    public void onBackPressed() {
+        isPressback = true;
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onStop() {
+        //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
+        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+            MyApplication.onFinishActivity();
+        }
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
@@ -692,7 +701,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             //耗时操作,在主线程中执行
 //            final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
             final Bitmap bitmap = FastBlurUtil.toBlur(icon, 6);
-            final BitmapDrawable drawable = new BitmapDrawable(MyApplication.getContext().getResources(),bitmap);
+            final BitmapDrawable drawable = new BitmapDrawable(MyApplication.getContext().getResources(), bitmap);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
