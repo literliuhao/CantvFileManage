@@ -115,6 +115,7 @@ public class MediaGridView extends CustomGridView {
                     }
                     MediaGridView.this.setSelection(0);
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
+                    mActivity.isStartAc = true;
                     openMediaActivity(item);
                 } else {
                     if (item.mType == SourceType.APP) {
@@ -130,6 +131,7 @@ public class MediaGridView extends CustomGridView {
                             e.printStackTrace();
                         }
                     } else {
+                        mActivity.isStartAc = true;
                         MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
                     }
                 }
