@@ -86,11 +86,14 @@ public class SharedPreferenceUtil {
      */
     static {
         //z1
-//      defaultDevices.add("/storage/udisk0");
-//      defaultDevices.add("/storage/udisk1");
         String hzStart = "/storage/udisk";
         for (int i = 0; i < 6; i++) {
             defaultDevices.add(hzStart + i);
+        }
+        //Box-469
+        String boxPath = "/storage/external_storage/sda";
+        for (int i = 0; i < 6; i++) {
+            defaultDevices.add(boxPath + i);
         }
 
         //电视,实际硬盘中可能序号并不是按顺序来的(如:sdb1,sdb3,sdb5,sda1,sdb1,sdd1)

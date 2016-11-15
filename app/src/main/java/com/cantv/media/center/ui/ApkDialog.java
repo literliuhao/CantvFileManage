@@ -19,6 +19,7 @@ public class ApkDialog extends Dialog implements OnFocusChangeListener {
     private LinearLayout mDisclaimerText;
     private FocusUtils mFocusUtils;
     private Button mConfirmBtn;
+    private Button mCancel;
 
     private boolean isFirst = true;
 
@@ -30,6 +31,8 @@ public class ApkDialog extends Dialog implements OnFocusChangeListener {
 
     public interface OnClickableListener {
         void onConfirmClickable();
+
+        void onCancelClickable();
     }
 
     private void setupLayout(Context context, int layoutResId) {
@@ -37,8 +40,18 @@ public class ApkDialog extends Dialog implements OnFocusChangeListener {
         setContentView(contentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mDisclaimerText = (LinearLayout) contentView.findViewById(R.id.et_text);
         mConfirmBtn = (Button) contentView.findViewById(R.id.btn_confirm);
+        mCancel = (Button) contentView.findViewById(R.id.btn_cancel);
 
         mConfirmBtn.setOnFocusChangeListener(this);
+        mCancel.setOnFocusChangeListener(this);
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onCancelClickable();
+                }
+            }
+        });
 
         mConfirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +89,7 @@ public class ApkDialog extends Dialog implements OnFocusChangeListener {
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            if (v == mConfirmBtn) {
+            if (v == mConfirmBtn || v == mCancel) {
                 mFocusUtils.startMoveFocus(v, null, true, 0.96f, 0.80f, 0f, 0f);
             }
         }

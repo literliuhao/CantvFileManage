@@ -105,6 +105,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private AudioManager mAudioManager;
     private int mCurrentVolume;
     private Toast mToast = null;
+    private long MENU_DURATION = 500;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -162,7 +163,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int offset = mCurImageIndex + 1;
                 offset = (offset >= getData().size()) ? 0 : offset;
                 showImage(offset, null);
-                startAutoPlay();
+                //修改幻灯片播放问题，时间不准
+                //startAutoPlay();
             }
         };
     }
@@ -185,6 +187,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                             if (!isSharing) {
                                 File imageFile = new File(imageUri);
                                 if (!imageFile.exists()) {
+                                    isPressback = true;
                                     ImagePlayerActivity.this.finish();
                                     return;
                                 }
@@ -258,7 +261,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight.setVisibility(View.GONE);
         mPosition.setText("");
         mTotal.setText("");
-        toHideView();
+        if(mShowing){
+            MENU_DURATION = 0;
+            toHideView();
+            MENU_DURATION = 500;
+        }
+        //修改幻灯片播放问题，时间不准
+        if (mAutoPlay) {
+            stopAutoPlay();
+            mAutoPlay = true;
+        }
         mCurImageIndex = index;
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
@@ -294,6 +306,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
                         mToast.show();
                     }
+                }
+                //修改幻灯片播放问题，时间不准
+                if (mAutoPlay) {
+                    mAutoPlay = false;
+                    startAutoPlay();
                 }
             }
 
@@ -591,6 +608,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     protected void onStop() {
         super.onStop();
+        //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
+        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+            MyApplication.onFinishActivity();
+        }
         stopAutoPlay();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
     }
@@ -598,12 +619,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private void startAutoPlay() {
         int curIndex = mCurImageIndex + 1;
         int size = getData().size();
-        /*if (curIndex == size) {
-            stopAutoPlay();
-            //stopMusic();
-            mAutoRunImageView.setImageResource(R.drawable.photo_info3);
-            return;
-        }*/
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
@@ -635,7 +650,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mediaimagebar.setVisibility(View.GONE);
         MainThread.cancel(mToHideRunnable);
         mFocusUtils.hideFocus();
-        toFlyView(0, 0, 0, 1, true, false);
+        toFlyView(0, 0, 0, 1, true, false,MENU_DURATION);
     }
 
     private void toShowView() {
@@ -659,12 +674,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mShowing = true;
         MainThread.runLater(mToHideRunnable, 5 * 1000);
         mediaimagebar.setVisibility(View.VISIBLE);
-        toFlyView(0, 0, 1, 0, true, true);
+        toFlyView(0, 0, 1, 0, true, true,MENU_DURATION);
     }
 
-    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status) {
+    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status,long duration) {
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
-        animation.setDuration(UiUtils.ANIM_DURATION_LONG);
+        animation.setDuration(duration);
         animation.setFillAfter(fillAfter);
         mediaimagebar.clearAnimation();
         mediaimagebar.startAnimation(animation);
@@ -923,4 +938,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAnimationDrawable.stop();
         }
     }*/
+
+
+    public boolean isPressback;
+
+    @Override
+    public void onBackPressed() {
+        isPressback = true;
+        super.onBackPressed();
+    }
+
+
 }
