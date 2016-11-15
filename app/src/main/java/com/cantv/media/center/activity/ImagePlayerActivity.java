@@ -105,6 +105,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private AudioManager mAudioManager;
     private int mCurrentVolume;
     private Toast mToast = null;
+    private long MENU_DURATION = 500;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -260,7 +261,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight.setVisibility(View.GONE);
         mPosition.setText("");
         mTotal.setText("");
-        toHideView();
+        if(mShowing){
+            MENU_DURATION = 0;
+            toHideView();
+            MENU_DURATION = 500;
+        }
         //修改幻灯片播放问题，时间不准
         if (mAutoPlay) {
             stopAutoPlay();
@@ -645,7 +650,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mediaimagebar.setVisibility(View.GONE);
         MainThread.cancel(mToHideRunnable);
         mFocusUtils.hideFocus();
-        toFlyView(0, 0, 0, 1, true, false);
+        toFlyView(0, 0, 0, 1, true, false,MENU_DURATION);
     }
 
     private void toShowView() {
@@ -669,12 +674,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mShowing = true;
         MainThread.runLater(mToHideRunnable, 5 * 1000);
         mediaimagebar.setVisibility(View.VISIBLE);
-        toFlyView(0, 0, 1, 0, true, true);
+        toFlyView(0, 0, 1, 0, true, true,MENU_DURATION);
     }
 
-    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status) {
+    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status,long duration) {
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
-        animation.setDuration(UiUtils.ANIM_DURATION_LONG);
+        animation.setDuration(duration);
         animation.setFillAfter(fillAfter);
         mediaimagebar.clearAnimation();
         mediaimagebar.startAnimation(animation);
