@@ -17,7 +17,6 @@ import com.cantv.media.center.utils.MediaUtils;
 
 @SuppressLint("ResourceAsColor")
 public class CustomDialog extends Dialog {
-    private static int _styleID = -1;
     private static float mDialogWidth = 0.85f;
     private static float mDialogHeight = 0.91f;
 
@@ -32,7 +31,7 @@ public class CustomDialog extends Dialog {
     /**
      * Helper class for creating a custom dialog
      */
-    public static class Builder {
+    public static class Builder implements View.OnFocusChangeListener {
 
         private FocusScaleUtils mFocusScaleUtils;
         private FocusUtils focusUtils;
@@ -40,7 +39,7 @@ public class CustomDialog extends Dialog {
 
         public Builder(Context context) {
             this.mContext = context;
-            mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.06f, null, null);
+
         }
 
         /**
@@ -51,12 +50,15 @@ public class CustomDialog extends Dialog {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final CustomDialog dialog = new CustomDialog(mContext, R.style.dialog_transparent);
             View layout = inflater.inflate(R.layout.dialog_mounted, null);
-            layout.getWidth();
-            layout.getHeight();
-            dialog.addContentView(layout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            FrameLayout dialogImage = (FrameLayout) layout.findViewById(R.id.dialog_image);
-            focusUtils = new FocusUtils(mContext, layout, R.drawable.image_focus);
 
+            int layoutWidth = (int) mContext.getResources().getDimension(R.dimen.px1920);
+            int layoutHeight = (int) mContext.getResources().getDimension(R.dimen.px1080);
+
+            dialog.addContentView(layout, new LayoutParams(layoutWidth, layoutHeight));
+            focusUtils = new FocusUtils(mContext, layout, R.drawable.image_focus);
+            mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.06f, null, null);
+
+            FrameLayout dialogImage = (FrameLayout) layout.findViewById(R.id.dialog_image);
             dialogImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -112,55 +114,24 @@ public class CustomDialog extends Dialog {
                     dialog.dismiss();
                 }
             });
-            dialogVideo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
-                    } else {
-                        mFocusScaleUtils.scaleToNormal(v);
-                    }
-                }
-            });
-            dialogAudio.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
-                    } else {
-                        mFocusScaleUtils.scaleToNormal(v);
-                    }
-                }
-            });
-            dialogImage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
-                    } else {
-                        mFocusScaleUtils.scaleToNormal(v);
-                    }
-                }
-            });
-            dialogFile.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        mFocusScaleUtils.scaleToLarge(v);
-                        focusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
-                    } else {
-                        mFocusScaleUtils.scaleToNormal(v);
-                    }
-                }
-            });
+            dialogVideo.setOnFocusChangeListener(this);
+            dialogAudio.setOnFocusChangeListener(this);
+            dialogImage.setOnFocusChangeListener(this);
+            dialogFile.setOnFocusChangeListener(this);
 
             dialog.setContentView(layout);
             return dialog;
         }
 
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                mFocusScaleUtils.scaleToLarge(v);
+                focusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
+            } else {
+                mFocusScaleUtils.scaleToNormal(v);
+            }
+        }
     }
 
 }
