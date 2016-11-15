@@ -11,20 +11,23 @@
         android:layout_height="@dimen/px300"
         android:layout_gravity="center"
         android:layout_margin="@dimen/px10"
-        android:background="@drawable/bj_02"/>
+        android:background="@drawable/bj_02"
+        android:focusable="false"/>
 
     <ImageView
         android:layout_width="@dimen/px80"
         android:layout_height="@dimen/px80"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/px76"
-        android:background="@drawable/popup_photo"/>
+        android:src="@drawable/popup_photo"
+        android:focusable="false"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/px186"
+        android:focusable="false"
         android:text="@string/str_photo"
         android:textColor="@color/per80_white"
         android:textSize="@dimen/px24"/>
