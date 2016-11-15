@@ -44,7 +44,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener,OnTimedTextListener{
+public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener, OnTimedTextListener {
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -295,6 +295,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     public void onBackPressed() {
+        isPressback = true;
         storeDuration();
         if (mCtrBar != null) {
             mCtrBar.onBackPressed(this);
@@ -387,7 +388,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     if (position == 0) {
                         list.get(0).setChildSelected(mCurPlayIndex);
                         mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
-                    }else{
+                    } else {
                         mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
                     }
                     return;
@@ -646,7 +647,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     //内置字幕监听，现在可以支持内置、外挂字幕了
     @Override
     public void onTimedText(MediaPlayer mp, TimedText text) {
-        if(null == text){
+        if (null == text) {
             return;
         }
         //如果同时打开两个字幕则会显示重复，所打开外挂后内置字幕默认为关闭状态
@@ -666,4 +667,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         }
     }
 
+
+    @Override
+    protected void onStop() {
+        //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
+        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+            MyApplication.onFinishActivity();
+        }
+        super.onStop();
+    }
 }

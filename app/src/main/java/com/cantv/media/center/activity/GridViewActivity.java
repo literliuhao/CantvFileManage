@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.storage.StorageManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,8 +34,6 @@ import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +60,7 @@ public class GridViewActivity extends Activity {
     public int mCurrGridStyle; // 记录当前是什么排列方式
     private ConfirmDialog mConfirmDialog;
     private boolean mClickDelete = false;
+    public boolean isStartAc;   //用来判断是否处于打开二级activity中
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,6 +138,12 @@ public class GridViewActivity extends Activity {
                 break;
         }
         mContentView.addView(mGridView);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isStartAc = false;
     }
 
     @Override
@@ -549,7 +553,7 @@ public class GridViewActivity extends Activity {
     protected void onStop() {
         super.onStop();
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
-        if (!(MyApplication.mHomeActivityList.size() > 0)) {
+        if (!isStartAc && !(MyApplication.mHomeActivityList.size() > 0)) {
             finish();
         }
     }

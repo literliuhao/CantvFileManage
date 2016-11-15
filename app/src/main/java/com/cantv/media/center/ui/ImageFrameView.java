@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -120,6 +119,7 @@ public class ImageFrameView extends FrameLayout {
                 if (loadError >= 3) {
                     Toast.makeText(MyApplication.getContext(), "载入图片发生异常，请重试", Toast.LENGTH_LONG).show();
                     loadError = 0;
+                    mActivity.isPressback = true;
                     mActivity.finish();
                 } else {
                     loadImage(imageUri);
