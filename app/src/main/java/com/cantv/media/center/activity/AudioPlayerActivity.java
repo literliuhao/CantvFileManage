@@ -741,8 +741,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     @Override
     public void onCompletion(MediaPlayer arg0) {
         //修复OS-2387 影片播放完毕自动切换到下一个影片时，菜单显示播放影片依为前一个。
-        if (mMenuDialog.isShowing() && mMenuDialog != null) {
-            mMenuDialog.dismiss();
+        if(mMenuDialog != null){
+            if (mMenuDialog.isShowing() ) {
+                mMenuDialog.dismiss();
+            }
         }
         super.onCompletion(arg0);
     }
