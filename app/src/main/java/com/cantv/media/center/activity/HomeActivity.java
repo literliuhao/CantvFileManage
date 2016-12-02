@@ -26,7 +26,6 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
-import com.cantv.media.center.service.BootDialogService;
 import com.cantv.media.center.ui.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
@@ -226,9 +225,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
         mVersion.setText(FileUtil.getVersionName(this));
         alertDialog = new AlertDialog.Builder(mContext).create();
-        Intent intentStart = new Intent(this, BootDialogService.class);
-        intentStart.setAction("com.cantv.service.RECEIVER_START");
-        this.startService(intentStart);
+//        Intent intentStart = new Intent(this, BootDialogService.class);
+//        intentStart.setAction("com.cantv.service.RECEIVER_START");
+//        this.startService(intentStart);
         // showMountedDialog();
     }
 
