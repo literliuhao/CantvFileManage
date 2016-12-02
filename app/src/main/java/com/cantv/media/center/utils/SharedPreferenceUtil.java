@@ -96,6 +96,7 @@ public class SharedPreferenceUtil {
             defaultDevices.add(boxPath + i);
         }
 
+
         //电视,实际硬盘中可能序号并不是按顺序来的(如:sdb1,sdb3,sdb5,sda1,sdb1,sdd1)
 //      defaultDevices.add("/mnt/usb/sda1");
 //      defaultDevices.add("/mnt/usb/sdb1");

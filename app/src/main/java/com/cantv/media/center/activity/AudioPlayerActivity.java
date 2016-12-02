@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -307,7 +308,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 break;
             case R.id.ib_previous:
                 if (mCurPlayIndex == 0) {
-                    Toast.makeText(AudioPlayerActivity.this, "无上一首", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AudioPlayerActivity.this, R.string.pr_music, Toast.LENGTH_LONG).show();
                 } else {
                     onPlayPrev();
                 }
@@ -315,7 +316,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             case R.id.ib_next:
                 // 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
                 if (mDataList.size() - 1 == mCurPlayIndex) {
-                    Toast.makeText(AudioPlayerActivity.this, "无下一首", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AudioPlayerActivity.this, R.string.next_music, Toast.LENGTH_LONG).show();
                 } else {
                     onPlayNext();
                 }
@@ -596,7 +597,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     public void scrollToNext() {
-
     }
 
     @Override
@@ -738,4 +738,14 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         }
     }
 
+    @Override
+    public void onCompletion(MediaPlayer arg0) {
+        //修复OS-2387 影片播放完毕自动切换到下一个影片时，菜单显示播放影片依为前一个。
+        if (mMenuDialog != null) {
+            if (mMenuDialog.isShowing()) {
+                mMenuDialog.dismiss();
+            }
+        }
+        super.onCompletion(arg0);
+    }
 }

@@ -3,15 +3,18 @@ package com.cantv.media.center.ui;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
+import com.cantv.media.center.utils.NetworkUtils;
 
 public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
 
@@ -21,8 +24,9 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
     private FocusUtils mFocusUtils;
     private Button mConfirmBtn;
     private Button mCancelBtn;
-
+    private Context mContext;
     private boolean isFirst = true;
+    private final int IP_LENGHT = 0;
 
     public DeviceAddDialog(final Context context) {
         super(context, R.style.dialog_device_share);
@@ -35,9 +39,9 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
     }
 
     private void setupLayout(Context context, int layoutResId) {
+        mContext = context;
         contentView = View.inflate(context, layoutResId, null);
-        setContentView(contentView,
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        setContentView(contentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mIpEt = (EditText) contentView.findViewById(R.id.et_ip);
         mConfirmBtn = (Button) contentView.findViewById(R.id.btn_confirm);
         mCancelBtn = (Button) contentView.findViewById(R.id.btn_cancel);
@@ -70,9 +74,24 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
     }
 
     public void reset() {
-        mIpEt.setText("");
-        mFocusUtils.setFocusLayout(mIpEt, false, 0);
+        //产品新需求-----------------------
+        //1.文件共享添加设备时输入框默认显示当前已连接网络IP的前三项，例如192.168.1.
+        //2.添加设备时软键盘应自动调起，光标在输入框内容的最后闪动显示。
+        //3.软键盘调起时，保证不会遮挡输入框。
+        int type = NetworkUtils.getNetInfo(mContext).getType();
+        String strIP;
+        if (type == ConnectivityManager.TYPE_WIFI) {
+            strIP = NetworkUtils.getWiFiIp(mContext);
+        } else {
+            strIP = NetworkUtils.getEthernetIp(mContext);
+        }
+        mIpEt.setText(strIP.substring(IP_LENGHT, strIP.lastIndexOf(".") + 1));
         mIpEt.requestFocus();
+        mIpEt.setSelection(mIpEt.length());
+        InputMethodManager imm = (InputMethodManager) mIpEt.getContext().getSystemService(mContext.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+        //End------------------------------
+        mFocusUtils.setFocusLayout(mIpEt, false, 0);
         if (isFirst) {
             isFirst = false;
             getWindow().getDecorView().postDelayed(new Runnable() {

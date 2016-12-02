@@ -118,8 +118,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //解决内置字幕切换后不消失
         getProxyPlayer().setMovieSubTitle(0);
         getProxyPlayer().setMovieAudioTrack(0);
-        mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
-        mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
+        if (isFirst) {
+            mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
+            mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
+        }
     }
 
     private void acquireWakeLock() {
@@ -340,6 +342,12 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mCtrBar != null) {
             mCtrBar.setFullProgress();
             mCtrBar.removeAllMessage();
+        }
+        //修复OS-2387 影片播放完毕自动切换到下一个影片时，菜单显示播放影片依为前一个。
+        if(mMenuDialog != null){
+            if (mMenuDialog.isShowing() ) {
+                mMenuDialog.dismiss();
+            }
         }
 
         //差值5秒作为间隔

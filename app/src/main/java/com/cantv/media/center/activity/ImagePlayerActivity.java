@@ -137,6 +137,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         screenHeight = getWindowManager().getDefaultDisplay().getHeight();
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
         initView();
         showImage(indexOfDefaultPlay(), null);
         initViewClickEvent();
@@ -511,12 +512,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int size = getData().size();
                 if (mAutoPlay) {
                     stopAutoPlay();
+                    openVolume();
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
-                    mImageBrowser.setSoundEffectsEnabled(false);
                     mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
+                    closeVolume();
                     startAutoPlay();
                     if (isFirstPlayMusic) {
                         isFirstPlayMusic = false;
@@ -631,8 +632,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (mAutoPlay) {
             mAutoPlay = false;
             //endMusicAnimation();
-            mImageBrowser.setSoundEffectsEnabled(true);
-            mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
             MainThread.cancel(mAutoRunnable);
             getScreenLock().release();
         }
@@ -775,7 +774,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             if (!mShowing) {
                 if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
                     stopAutoPlay();
-                    //stopMusic();
+                    openVolume();
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                     return true;
@@ -810,7 +809,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onDestroy();
         if (mAutoPlay) {
             stopAutoPlay();
-            //stopMusic();
+            openVolume();
             mMusic.setVisibility(View.GONE);
             mAnimationDrawable.stop();
         }
@@ -948,5 +947,20 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onBackPressed();
     }
 
+    /**
+     * 修复OS-795本地播放幻灯片，没有背景音乐，切换图片时会响应按键音。
+     * 关闭按键音
+     */
+    public void closeVolume(){
+        mImageBrowser.setSoundEffectsEnabled(false);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
+    }
 
+    /**
+     * 打开按键音
+     */
+    public void openVolume(){
+        mImageBrowser.setSoundEffectsEnabled(true);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
+    }
 }

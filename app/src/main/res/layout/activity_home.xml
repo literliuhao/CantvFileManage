@@ -142,6 +142,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/px40"
+        android:layout_marginBottom="@dimen/px40"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/px20"/>
+        android:textSize="@dimen/px28"/>
 </RelativeLayout>

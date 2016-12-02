@@ -80,6 +80,8 @@
     <string name="total_num">共 %s 个</string>
     <string name="menu">菜单</string>
     <string name="deleteFailed">删除失败,请稍后再试!</string>
+    <string name="device_remove">文件不存在或设备已移除</string>
+
     <!-- gridview中二级菜单项 -->
     <string name="sort">排序</string>
     <string name="sort_date">按日期</string>
@@ -147,4 +149,7 @@
     <string name="disclaimer_setting">设置</string>
     <string name="disclaimer_cancel">取消</string>
     <string name="home_version">版本：</string>
+    <string name="format_not_support">不支持当前文件格式!</string>
+    <string name="pr_music">无上一首</string>
+    <string name="next_music">无下一首</string>
 </resources>

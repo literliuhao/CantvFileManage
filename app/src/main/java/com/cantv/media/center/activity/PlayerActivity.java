@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.PlayMode;
 import com.cantv.media.center.data.Media;
@@ -198,7 +199,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             @Override
             public void ExceHappen() {
                 getProxyPlayer().release();
-                Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
                 isPressback = true;
                 finish();
             }
@@ -244,7 +245,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             runBeforePlay(mFirstPlay);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
             isPressback = true;
             finish();
         }
