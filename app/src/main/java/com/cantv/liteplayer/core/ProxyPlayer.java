@@ -176,6 +176,7 @@ public class ProxyPlayer {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.w("异常", "文件播放发生异常!");
                 if (null != mExceptionListener && !mRetryPlaye) {
+                    Toast.makeText(MyApplication.getContext(), "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
                     mExceptionListener.ExceHappen();
                 } else if (mRetryPlaye) {
                     mRetryPlaye = false;
