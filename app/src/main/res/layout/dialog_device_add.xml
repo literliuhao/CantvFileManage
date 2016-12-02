@@ -30,6 +30,8 @@
             android:layout_marginTop="@dimen/px120"
             android:background="@drawable/youxian_txt"
             android:gravity="start|center_vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:paddingEnd="0dp"
             android:paddingStart="@dimen/px32"
             android:singleLine="true"
