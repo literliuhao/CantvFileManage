@@ -150,4 +150,6 @@
     <string name="disclaimer_cancel">取消</string>
     <string name="home_version">版本：</string>
     <string name="format_not_support">不支持当前文件格式!</string>
+    <string name="pr_music">无上一首</string>
+    <string name="next_music">无下一首</string>
 </resources>

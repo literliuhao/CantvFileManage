@@ -94,7 +94,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     @Override
     public boolean scrollPre(OnCompletionListener listener) {
         if (mCurPlayIndex == 0) {
-            Toast.makeText(this, "没有上一个视频了！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.baseplayer_not_video, Toast.LENGTH_SHORT).show();
             return false;
         }
 
