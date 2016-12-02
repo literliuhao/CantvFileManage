@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,6 +29,7 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
     private FocusUtils mFocusUtils;
     private Button mConfirmBtn;
     private Button mCancelBtn;
+    private Context mContext;
     private boolean isFirst = true;
 
     public DeviceLoginDialog(Context context) {
@@ -41,6 +43,7 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
     }
 
     private void setupLayout(Context context, int layoutResId) {
+        mContext = context;
         contentView = View.inflate(context, layoutResId, null);
         setContentView(contentView,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -93,9 +96,11 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
     }
 
     public void reset() {
-        mUserNameEt.setText("");
-        mPasswordEt.setText("");
+        //添加设备时软键盘应自动调起，光标在输入框内容的最后闪动显示。
         mUserNameEt.requestFocus();
+        InputMethodManager imm = (InputMethodManager) mUserNameEt.getContext().getSystemService(mContext.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+        //End------------------------------
         mFocusUtils.setFocusLayout(mUserNameEt, false, 0);
         if (isFirst) {
             isFirst = false;
