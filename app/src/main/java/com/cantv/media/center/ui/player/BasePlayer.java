@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.greendao.DaoOpenHelper;
@@ -166,7 +167,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                 mRecord = list.get(0);
             }
         } catch (Exception e) {
-            Toast.makeText(MyApplication.mContext, "不支持当前文件格式!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApplication.mContext, R.string.format_not_support, Toast.LENGTH_SHORT).show();
             getProxyPlayer().stop();
             isPressback = true;
             this.finish();

@@ -149,4 +149,5 @@
     <string name="disclaimer_setting">设置</string>
     <string name="disclaimer_cancel">取消</string>
     <string name="home_version">版本：</string>
+    <string name="format_not_support">不支持当前文件格式!</string>
 </resources>
