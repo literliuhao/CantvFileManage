@@ -633,7 +633,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoPlay = false;
             //endMusicAnimation();
             MainThread.cancel(mAutoRunnable);
-            getScreenLock().release();
+            //修复OS-2665播放幻灯片时有破损图片文件管理器崩溃问题
+            try {
+                getScreenLock().release();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
