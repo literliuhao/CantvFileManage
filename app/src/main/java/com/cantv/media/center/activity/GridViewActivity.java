@@ -397,7 +397,7 @@ public class GridViewActivity extends Activity {
                     updateSDMounted();
                 }
 
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
+            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // 移除设备
                 updateSDMounted();
             }
