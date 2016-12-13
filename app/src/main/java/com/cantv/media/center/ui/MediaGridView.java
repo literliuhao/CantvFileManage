@@ -54,6 +54,7 @@ public class MediaGridView extends CustomGridView {
     private String currentType;
     //不能安装应用标记
     public static Boolean flag = false;
+    private ApkForbidDialog apkForbidDialog = null;
     private ApkDialog apkDialog = null;
     private String install_app = "0";
 
@@ -119,7 +120,7 @@ public class MediaGridView extends CustomGridView {
                     openMediaActivity(item);
                 } else {
                     if (item.mType == SourceType.APP) {
-                        //添加APP安装设置弹框
+                        //添加APP安装设置弹框(OS1.2)
                         try {
                             install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
                             if (install_app.equals("1")) {
@@ -130,6 +131,12 @@ public class MediaGridView extends CustomGridView {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        //添加APP弹框(OS1.1)
+                        /*if (flag) {
+                            getDisclaimerDialog(item);
+                        } else {
+                            getApkForbidDialog();
+                        }*/
                     } else {
                         mActivity.isStartAc = true;
                         MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
@@ -383,5 +390,19 @@ public class MediaGridView extends CustomGridView {
             }
         });
         apkDialog.show();
+    }
+
+    /**
+     * 禁止安装Apk
+     */
+    private void getApkForbidDialog() {
+        apkForbidDialog = new ApkForbidDialog(mActivity);
+        apkForbidDialog.setOnClickableListener(new ApkForbidDialog.OnClickableListener() {
+            @Override
+            public void onConfirmClickable() {
+                apkForbidDialog.dismiss();
+            }
+        });
+        apkForbidDialog.show();
     }
 }
