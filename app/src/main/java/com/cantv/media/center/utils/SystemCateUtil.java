@@ -34,17 +34,17 @@ public class SystemCateUtil {
             Object object = cls.newInstance();
             value = (String) hideMethod.invoke(object, key);
         } catch (ClassNotFoundException e) {
-            Log.e("zhengyi.wzy", "get error() ", e);
+            Log.e("SystemCateUtil", "get error() ", e);
         } catch (NoSuchMethodException e) {
-            Log.e("zhengyi.wzy", "get error() ", e);
+            Log.e("SystemCateUtil", "get error() ", e);
         } catch (InstantiationException e) {
-            Log.e("zhengyi.wzy", "get error() ", e);
+            Log.e("SystemCateUtil", "get error() ", e);
         } catch (IllegalAccessException e) {
-            Log.e("zhengyi.wzy", "get error() ", e);
+            Log.e("SystemCateUtil", "get error() ", e);
         } catch (IllegalArgumentException e) {
-            Log.e("zhengyi.wzy", "get error() ", e);
+            Log.e("SystemCateUtil", "get error() ", e);
         } catch (InvocationTargetException e) {
-            Log.e("zhengyi.wzy", "get error() ", e);
+            Log.e("SystemCateUtil", "get error() ", e);
         }
 
         return value;
@@ -71,9 +71,10 @@ public class SystemCateUtil {
 
     /**
      * 得到系统版本(固件版本)
+     *
      * @return
      */
-    public static String getSystemVersion(){
+    public static String getSystemVersion() {
         return android.os.Build.VERSION.INCREMENTAL;
     }
 
