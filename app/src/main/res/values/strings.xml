@@ -7,7 +7,7 @@
     <string name="str_app">安装包</string>
     <string name="str_file">文件</string>
     <string name="str_external">外接设备</string>
-    <string name="str_local">本地储存</string>
+    <string name="str_local">本地存储</string>
     <string name="str_share">文件共享</string>
     <string name="str_total">共</string>
     <string name="str_null">暂无</string>
