@@ -2,7 +2,6 @@ package com.cantv.media.center.utils;
 
 import android.util.Log;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -18,38 +17,24 @@ public class SystemCateUtil {
     private static List productmodeList;
 
     static {
-        productmodeList = Arrays.asList("F55", "U65", "W55", "F55S", "V50S", "V43S"
-                , "X55", "C43S", "C43", "C42S", "C32K", "C40K", "C50S", "C49C", "C49S"
-                , "CANbox C1", "CANbox F1", "CANbox F2", "CANbox Z1", "QZH5");
+        productmodeList = Arrays.asList("F55", "U65", "W55", "F55S", "V50S", "V43S", "X55", "C43S", "C43", "C42S", "C32K", "C40K", "C50S", "C49C", "C49S", "CANbox C1", "CANbox F1", "CANbox F2", "CANbox Z1", "QZH5");
     }
 
 
     public static String get(String key) {
         String value = "";
         Class<?> cls = null;
-
         try {
             cls = Class.forName("android.os.SystemProperties");
             Method hideMethod = cls.getMethod("get", String.class);
             Object object = cls.newInstance();
             value = (String) hideMethod.invoke(object, key);
-        } catch (ClassNotFoundException e) {
-            Log.e("SystemCateUtil", "get error() ", e);
-        } catch (NoSuchMethodException e) {
-            Log.e("SystemCateUtil", "get error() ", e);
-        } catch (InstantiationException e) {
-            Log.e("SystemCateUtil", "get error() ", e);
-        } catch (IllegalAccessException e) {
-            Log.e("SystemCateUtil", "get error() ", e);
-        } catch (IllegalArgumentException e) {
-            Log.e("SystemCateUtil", "get error() ", e);
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             Log.e("SystemCateUtil", "get error() ", e);
         }
 
         return value;
     }
-
 
     /**
      * 获取产品型号
@@ -57,6 +42,7 @@ public class SystemCateUtil {
      * @return
      */
     public static String productModel() {
+        Log.i("SystemCateUtil", get("ro.product.model"));
         return get("ro.product.model");
     }
 
@@ -66,6 +52,7 @@ public class SystemCateUtil {
      * @return
      */
     public static boolean isContainsCurrModel() {
+        Log.i("SystemCateUtil", "productmodeList.contains(productModel() " + productmodeList.contains(productModel()));
         return productmodeList.contains(productModel());
     }
 
@@ -75,7 +62,19 @@ public class SystemCateUtil {
      * @return
      */
     public static String getSystemVersion() {
+        Log.i("SystemCateUtil", "getSystemVersion " + android.os.Build.VERSION.INCREMENTAL);
         return android.os.Build.VERSION.INCREMENTAL;
+    }
+
+    /**
+     * 需要特殊处理的内部机型
+     */
+    public static Boolean specialModel(String productModel) {
+        if (productModel.equals("X55")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
