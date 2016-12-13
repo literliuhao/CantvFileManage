@@ -62,8 +62,19 @@ public class SystemCateUtil {
      * @return
      */
     public static String getSystemVersion() {
-        Log.i("SystemCateUtil", "getSystemVersion " + android.os.Build.VERSION.INCREMENTAL);
-        return android.os.Build.VERSION.INCREMENTAL;
+        Log.i("SystemCateUtil", get("ro.build.version.firmware"));
+        return get("ro.build.version.firmware");
+    }
+
+
+    public static Boolean isNewVersion(){
+        String versionName = getSystemVersion();
+        Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
+        if(version > 1.1f){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
