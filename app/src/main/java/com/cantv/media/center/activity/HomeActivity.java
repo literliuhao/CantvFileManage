@@ -29,6 +29,7 @@ import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.ui.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SystemCateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -223,7 +224,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         registerReceiver(mReceiver, filter);
         mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
-        mVersion.setText(FileUtil.getVersionName(this));
+        mVersion.setText(FileUtil.getVersionName(this)+" 产品型号:"+ SystemCateUtil.productModel());
         alertDialog = new AlertDialog.Builder(mContext).create();
 //        Intent intentStart = new Intent(this, BootDialogService.class);
 //        intentStart.setAction("com.cantv.service.RECEIVER_START");
