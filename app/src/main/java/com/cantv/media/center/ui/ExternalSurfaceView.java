@@ -6,9 +6,10 @@ import android.view.SurfaceView;
 
 public class ExternalSurfaceView extends SurfaceView {
     private ShowType mType;
-//    private float mWidth_height = 0.5625f;
+    //    private float mWidth_height = 0.5625f;
     //修改视频全屏计算比例
-    private float mWidth_height = 1.7778f;
+    private float mWidth_height = 1.7778f; // 1920/1080
+
     public ExternalSurfaceView(Context context) {
         this(context, null);
     }
@@ -41,6 +42,7 @@ public class ExternalSurfaceView extends SurfaceView {
         if (newheight > height) {
             int newWidth = (mType == ShowType.WIDTH_HEIGHT_4_3) ? Math.round(1.33f * height) : width;
             newWidth = (mType == ShowType.WIDTH_HEIGHT_16_9) ? Math.round(1.778f * height) : newWidth;
+            newWidth = (mType == ShowType.WIDTH_HEIGHT_21_9) ? Math.round(2.334f * height) : newWidth;
             newWidth = (mType == ShowType.WIDTH_HEIGHT_ORIGINAL) ? Math.round(mWidth_height * height) : newWidth;
             getHolder().setFixedSize(newWidth, height);
             super.onMeasure(MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY), heightMeasureSpec);
@@ -51,6 +53,6 @@ public class ExternalSurfaceView extends SurfaceView {
     }
 
     public enum ShowType {
-        WIDTH_HEIGHT_ORIGINAL, WIDTH_HEIGHT_4_3, WIDTH_HEIGHT_16_9, WIDTH_HEIGHT_FULL_SCREEN,
+        WIDTH_HEIGHT_ORIGINAL, WIDTH_HEIGHT_4_3, WIDTH_HEIGHT_16_9, WIDTH_HEIGHT_21_9, WIDTH_HEIGHT_FULL_SCREEN,
     }
 }
