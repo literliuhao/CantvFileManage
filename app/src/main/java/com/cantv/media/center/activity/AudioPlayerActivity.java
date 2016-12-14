@@ -440,7 +440,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         if (position == 0 && showLyric == false && mLyricInfo != null) {
                             // show lyricView
                             showLyric = true;
-                            showLyricView();
+                            showOrHideLrc();
                             mLyricView.setLyricInfo(mLyricInfo);
                             mLyricView.setCurrTime(getProxyPlayer().getCurrentPosition());
                             // enable adjust lyric
@@ -448,7 +448,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         } else if (position == 1 && showLyric == true) {
                             // hide lyricView
                             showLyric = false;
-                            showNoLyricView();
+                            showOrHideLrc();
                             mLyricView.setLyricInfo(null);
                             // disable adjust lyric
                             adjuestLyricMenuData.setEnabled(false);
@@ -604,14 +604,15 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     }
 
-    private void showLyricView() {
-        mLyricView.setVisibility(View.VISIBLE);
-        mNoLyricLayout.setVisibility(View.INVISIBLE);
-    }
+    private void showOrHideLrc() {
+        if (showLyric && null != mLyricInfo) {
+            mLyricView.setVisibility(View.VISIBLE);
+            mNoLyricLayout.setVisibility(View.INVISIBLE);
+        } else {
+            mNoLyricLayout.setVisibility(View.VISIBLE);
+            mLyricView.setVisibility(View.INVISIBLE);
+        }
 
-    private void showNoLyricView() {
-        mNoLyricLayout.setVisibility(View.VISIBLE);
-        mLyricView.setVisibility(View.INVISIBLE);
     }
 
     private void resetUI() {
@@ -719,19 +720,23 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
         mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
         if (mLyricInfo == null) {
-            showLyric = false;
+//            if (isFirst) {
+//                showLyric = false;
+//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showNoLyricView();
+                    showOrHideLrc();
                 }
             });
         } else {
-            showLyric = true;
+//            if (isFirst) {  //播放第一首时,有歌词信息就设置为显示
+//                showLyric = true;
+//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showLyricView();
+                    showOrHideLrc();
                     mLyricView.setLyricInfo(mLyricInfo);
                 }
             });
