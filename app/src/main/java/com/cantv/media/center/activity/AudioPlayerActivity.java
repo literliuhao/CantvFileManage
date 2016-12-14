@@ -368,6 +368,36 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                if (mMenuDialog == null || !mMenuDialog.isShowing()) {
+                    showMenuDialog();
+                }
+                break;
+
+            //上一曲
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                if (mCurPlayIndex == 0) {
+                    Toast.makeText(AudioPlayerActivity.this, R.string.pr_music, Toast.LENGTH_LONG).show();
+                } else {
+                    onPlayPrev();
+                }
+                break;
+
+            //下一曲
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                // 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
+                if (mDataList.size() - 1 == mCurPlayIndex) {
+                    Toast.makeText(AudioPlayerActivity.this, R.string.next_music, Toast.LENGTH_LONG).show();
+                } else {
+                    onPlayNext();
+                }
+
+                break;
+
+
+        }
+
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             if (mMenuDialog == null || !mMenuDialog.isShowing()) {
                 showMenuDialog();
