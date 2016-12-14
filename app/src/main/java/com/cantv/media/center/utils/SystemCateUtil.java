@@ -66,7 +66,10 @@ public class SystemCateUtil {
         return get("ro.build.version.firmware");
     }
 
-
+    /**
+     * 用于判断系统版本号是否大于1.2版本
+     * @return
+     */
     public static Boolean isNewVersion(){
         String versionName = getSystemVersion();
         Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
