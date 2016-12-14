@@ -357,7 +357,7 @@ public class PlayerController extends RelativeLayout {
 
                 break;
             case KeyEvent.KEYCODE_MENU:
-                setVisibility(INVISIBLE);
+//                setVisibility(INVISIBLE);
             default:
                 break;
         }

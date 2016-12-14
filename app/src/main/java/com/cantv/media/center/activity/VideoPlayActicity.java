@@ -344,8 +344,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mCtrBar.removeAllMessage();
         }
         //修复OS-2387 影片播放完毕自动切换到下一个影片时，菜单显示播放影片依为前一个。
-        if(mMenuDialog != null){
-            if (mMenuDialog.isShowing() ) {
+        if (mMenuDialog != null) {
+            if (mMenuDialog.isShowing()) {
                 mMenuDialog.dismiss();
             }
         }
@@ -522,6 +522,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             case MenuConstant.SUBMENU_IMAGESCALE_4_3:
                 mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_4_3);
                 break;
+            case MenuConstant.SUBMENU_IMAGESCALE_21_9:
+                mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_21_9);
+                break;
             case MenuConstant.SUBMENU_LOADINGSUBTITLE_CLOSE:
                 isSubTitle = false;
                 mSubTitle.setText("");
@@ -596,6 +599,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_FULL, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_4_3, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_16_9, MenuItem.TYPE_SELECTOR));
+        imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_21_9, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItem.setChildren(imageScaleMenuItems);
         menuList.add(imageScaleMenuItem);
 
