@@ -23,6 +23,7 @@ import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.StringUtil;
+import com.cantv.media.center.utils.SystemCateUtil;
 import com.cantv.media.center.utils.ToastUtils;
 import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.FileServer.OnInitlizedListener;
@@ -121,22 +122,25 @@ public class MediaGridView extends CustomGridView {
                 } else {
                     if (item.mType == SourceType.APP) {
                         //添加APP安装设置弹框(OS1.2)
-                        try {
-                            install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
-                            if (install_app.equals("1")) {
-                                getDisclaimerDialog(item);
-                            } else if (install_app.equals("0")) {
-                                getConfirmDialog();
+                        if (SystemCateUtil.isNewVersion() && SystemCateUtil.isContainsCurrModel()) {
+                            try {
+                                install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
+                                if (install_app.equals("1")) {
+                                    getDisclaimerDialog(item);
+                                } else if (install_app.equals("0")) {
+                                    getConfirmDialog();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        //添加APP弹框(OS1.1)
-                        /*if (flag) {
-                            getDisclaimerDialog(item);
                         } else {
-                            getApkForbidDialog();
-                        }*/
+                            //添加APP弹框(OS1.1)
+                            if (flag) {
+                                getDisclaimerDialog(item);
+                            } else {
+                                getApkForbidDialog();
+                            }
+                        }
                     } else {
                         mActivity.isStartAc = true;
                         MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);

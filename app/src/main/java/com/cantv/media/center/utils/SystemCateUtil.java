@@ -70,14 +70,19 @@ public class SystemCateUtil {
      * 用于判断系统版本号是否大于1.2版本
      * @return
      */
-    public static Boolean isNewVersion(){
-        String versionName = getSystemVersion();
-        Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
-        if(version > 1.1f){
-            return true;
-        }else{
-            return false;
+    public static Boolean isNewVersion() {
+        try {
+            String versionName = getSystemVersion();
+            Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
+            if (version > 1.1f) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     /**
