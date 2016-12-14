@@ -264,7 +264,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 onFocusChange(mAddDeviceView, true);
                 mFocusUtils.hideFocusForStartMove(400);
             }
-        }, 500);
+        }, 700);
 
 
     }
