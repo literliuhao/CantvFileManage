@@ -88,6 +88,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private static final int UNDATE_UI = -1;  //更新UI
     private String mUri;
     private LoadingMuUITask muUITask;
+    private int currentMode = 5;
 
 
     @Override
@@ -543,6 +544,19 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mMenuList.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
+        }else if(mSelectedMenuPosi == 1){
+            //修复OS-2736进入外接设备，播放本地音乐，在播放器左下角的播放模式中切换播放模式后，打开菜单播放模式选项后没有实时更新。
+            if(currentMode != 5){
+                mMenuList.get(1).setChildSelected(currentMode);
+                mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(1).getSelectedChildIndex());
+            }
+        }
+        if (mSelectedMenuPosi != 1) {
+            MenuItem menuItemData = mMenuList.get(1);
+            View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
+            if (menuItemView != null) {
+                mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
+            }
         }
         mMenuDialog.show();
     }
@@ -680,7 +694,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MenuItem playModeMenu = mMenuList.get(1);
         List<MenuItem> children = playModeMenu.getChildren();
         int selectedChildIndex = playModeMenu.getSelectedChildIndex();
-        int nextIndex = ++selectedChildIndex % children.size();
+        //修复OS-2736进入外接设备，播放本地音乐，在播放器左下角的播放模式中切换播放模式后，打开菜单播放模式选项后没有实时更新。
+        int nextIndex = (selectedChildIndex + 1) % children.size();
         changePlayModeByIndex(selectedChildIndex, nextIndex, playModeMenu);
     }
 
@@ -690,6 +705,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayMode = playModeItem.getPlayMode();
         mPlayModeTv.setText(playModeItem.getTitle());
         mPlayModeIconIv.setImageResource(playModeItem.getDrawableResId());
+        currentMode = nextPosi;
         Log.i("", "selectedChildPosi = " + selectedChildPosi + ", nextPosi = " + nextPosi);
         if (mMenuDialog != null && mSelectedMenuPosi == 1) {
             View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + selectedChildPosi);
