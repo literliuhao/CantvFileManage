@@ -262,7 +262,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight.setVisibility(View.GONE);
         mPosition.setText("");
         mTotal.setText("");
-        if(mShowing){
+        if (mShowing) {
             MENU_DURATION = 0;
             toHideView();
             MENU_DURATION = 500;
@@ -348,6 +348,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         //实际大小
         if (!isFullSize) {
+            mSizeType = true;
             if (currentW > screenWidth || currentH > screenHeight) {
                 if (currentW > screenWidth && currentH > screenHeight) {
                     //取最大的进行缩放
@@ -358,12 +359,21 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     return currentH / screenHeight;
                 }
             } else {
-                //屏幕大于图片宽高时
-                return 1.0f;
+                if (currentW < screenWidth || currentH < screenHeight) {
+                    if ((screenWidth / currentW) > (screenHeight / currentH)) {
+                        return screenHeight / currentH;
+                    } else {
+                        return screenWidth / currentW;
+                    }
+                } else {
+                    //屏幕大于图片宽高时
+                    return 1.0f;
+                }
             }
         } else {
             //等比例全屏
             //图片宽高大于屏幕时
+            mSizeType = false;
             if (currentW > screenWidth || currentH > screenHeight) {
                 //图片实际宽高都大于屏幕宽高
                 if (currentW > screenWidth && currentH > screenHeight) {
@@ -407,11 +417,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 //                }
             } else {
                 //屏幕大于图片宽高时
-                if ((screenWidth / currentW) > (screenHeight / currentH)) {
-                    return screenHeight / currentH;
-                } else {
-                    return screenWidth / currentW;
-                }
+                return 1.0f;
             }
         }
 
@@ -477,11 +483,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (isFastClick() || mAutoPlay) {
                     return;
                 }
+                //修复OS-2838大图浏览本地图片，按遥控器菜单键切换图片比例无效,再次切换才有效
                 if (!mSizeType) {
-                    mSizeType = true;
                     mTvSize.setText(getString(R.string.image_real_size));
                 } else {
-                    mSizeType = false;
                     mTvSize.setText(getString(R.string.image_full_screen));
                 }
                 mImageBrowser.onZoomScale(calcByWH(mWidth, mHeight, mSizeType));
@@ -585,10 +590,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 } else {
                     translateUp(mTvInfo);
                     if (mLayout.getVisibility() == View.VISIBLE) {
-                        Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 0.1f, 100.0f);
-                        // 设置动画时间
-                        translateAnimation.setDuration(300);
-                        mLayout.startAnimation(translateAnimation);
+                        //修复OS-2627 在本地储存中打开一个图片,点击图片信息按左键,在焦点移动时,图片信息会向上跳一下在消失
+                        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0);
+                        alphaAnimation.setDuration(500);
+                        alphaAnimation.setFillAfter(true);
+                        mLayout.startAnimation(alphaAnimation);
                         mLayout.setVisibility(View.GONE);
                         nflag = true;
                     }
@@ -636,7 +642,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             //修复OS-2665播放幻灯片时有破损图片文件管理器崩溃问题
             try {
                 getScreenLock().release();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -654,7 +660,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mediaimagebar.setVisibility(View.GONE);
         MainThread.cancel(mToHideRunnable);
         mFocusUtils.hideFocus();
-        toFlyView(0, 0, 0, 1, true, false,MENU_DURATION);
+        toFlyView(0, 0, 0, 1, true, false, MENU_DURATION);
     }
 
     private void toShowView() {
@@ -678,10 +684,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mShowing = true;
         MainThread.runLater(mToHideRunnable, 5 * 1000);
         mediaimagebar.setVisibility(View.VISIBLE);
-        toFlyView(0, 0, 1, 0, true, true,MENU_DURATION);
+        toFlyView(0, 0, 1, 0, true, true, MENU_DURATION);
     }
 
-    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status,long duration) {
+    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status, long duration) {
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
         animation.setDuration(duration);
         animation.setFillAfter(fillAfter);
@@ -956,7 +962,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
      * 修复OS-795本地播放幻灯片，没有背景音乐，切换图片时会响应按键音。
      * 关闭按键音
      */
-    public void closeVolume(){
+    public void closeVolume() {
         mImageBrowser.setSoundEffectsEnabled(false);
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
     }
@@ -964,7 +970,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     /**
      * 打开按键音
      */
-    public void openVolume(){
+    public void openVolume() {
         mImageBrowser.setSoundEffectsEnabled(true);
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
     }
