@@ -88,6 +88,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private static final int UNDATE_UI = -1;  //更新UI
     private String mUri;
     private LoadingMuUITask muUITask;
+    private int currentMode = 5;
 
 
     @Override
@@ -212,7 +213,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     @Override
     protected void onResume() {
         if (!ismManualPaused()) {
-            mCDView.startRotate();
+            mCDView.start();
             mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
         }
         super.onResume();
@@ -253,7 +254,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         hideMenuDialog();
         mMenuDialog = null;
         mHandler.removeCallbacksAndMessages(null);
-        mCDView.stopRotate();
+        mCDView.pause();
         mCDView = null;
         super.onDestroy();
         MyApplication.removeActivity(this);
@@ -294,7 +295,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     }
 
                     setmManualPaused(true);
-                    mCDView.pauseRotate();
+                    mCDView.pause();
                     mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
                 } else {
                     if (mHandler != null) {
@@ -302,7 +303,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     }
 
                     setmManualPaused(false);
-                    mCDView.startRotate();
+                    mCDView.start();
                     mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
                 }
                 break;
@@ -334,7 +335,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     protected void runBeforePlay(boolean isFirst) {
         resetUI();
         setmManualPaused(false);
-        mCDView.startRotate();
+        mCDView.start();
         if (mDataList.size() > 0) {
             mUri = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
             mTitleTv.setText(mDataList.get(mCurPlayIndex).mName);
@@ -368,6 +369,36 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                if (mMenuDialog == null || !mMenuDialog.isShowing()) {
+                    showMenuDialog();
+                }
+                break;
+
+            //上一曲
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                if (mCurPlayIndex == 0) {
+                    Toast.makeText(AudioPlayerActivity.this, R.string.pr_music, Toast.LENGTH_LONG).show();
+                } else {
+                    onPlayPrev();
+                }
+                break;
+
+            //下一曲
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                // 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
+                if (mDataList.size() - 1 == mCurPlayIndex) {
+                    Toast.makeText(AudioPlayerActivity.this, R.string.next_music, Toast.LENGTH_LONG).show();
+                } else {
+                    onPlayNext();
+                }
+
+                break;
+
+
+        }
+
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             if (mMenuDialog == null || !mMenuDialog.isShowing()) {
                 showMenuDialog();
@@ -440,7 +471,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         if (position == 0 && showLyric == false && mLyricInfo != null) {
                             // show lyricView
                             showLyric = true;
-                            showLyricView();
+                            showOrHideLrc();
                             mLyricView.setLyricInfo(mLyricInfo);
                             mLyricView.setCurrTime(getProxyPlayer().getCurrentPosition());
                             // enable adjust lyric
@@ -448,7 +479,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         } else if (position == 1 && showLyric == true) {
                             // hide lyricView
                             showLyric = false;
-                            showNoLyricView();
+                            showOrHideLrc();
                             mLyricView.setLyricInfo(null);
                             // disable adjust lyric
                             adjuestLyricMenuData.setEnabled(false);
@@ -513,6 +544,19 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mMenuList.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
+        }else if(mSelectedMenuPosi == 1){
+            //修复OS-2736进入外接设备，播放本地音乐，在播放器左下角的播放模式中切换播放模式后，打开菜单播放模式选项后没有实时更新。
+            if(currentMode != 5){
+                mMenuList.get(1).setChildSelected(currentMode);
+                mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(1).getSelectedChildIndex());
+            }
+        }
+        if (mSelectedMenuPosi != 1) {
+            MenuItem menuItemData = mMenuList.get(1);
+            View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
+            if (menuItemView != null) {
+                mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
+            }
         }
         mMenuDialog.show();
     }
@@ -604,20 +648,21 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     }
 
-    private void showLyricView() {
-        mLyricView.setVisibility(View.VISIBLE);
-        mNoLyricLayout.setVisibility(View.INVISIBLE);
-    }
+    private void showOrHideLrc() {
+        if (showLyric && null != mLyricInfo) {
+            mLyricView.setVisibility(View.VISIBLE);
+            mNoLyricLayout.setVisibility(View.INVISIBLE);
+        } else {
+            mNoLyricLayout.setVisibility(View.VISIBLE);
+            mLyricView.setVisibility(View.INVISIBLE);
+        }
 
-    private void showNoLyricView() {
-        mNoLyricLayout.setVisibility(View.VISIBLE);
-        mLyricView.setVisibility(View.INVISIBLE);
     }
 
     private void resetUI() {
         mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
         mProgressBar.setProgress(0);
-        mCDView.setImageBitmap(null);
+        mCDView.setCoverBitmap(null);
         mContentBg.setBackgroundResource(0);
         mContentBg.setImageResource(0);
         mCurrProgressTv.setText("");
@@ -649,7 +694,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MenuItem playModeMenu = mMenuList.get(1);
         List<MenuItem> children = playModeMenu.getChildren();
         int selectedChildIndex = playModeMenu.getSelectedChildIndex();
-        int nextIndex = ++selectedChildIndex % children.size();
+        //修复OS-2736进入外接设备，播放本地音乐，在播放器左下角的播放模式中切换播放模式后，打开菜单播放模式选项后没有实时更新。
+        int nextIndex = (selectedChildIndex + 1) % children.size();
         changePlayModeByIndex(selectedChildIndex, nextIndex, playModeMenu);
     }
 
@@ -659,6 +705,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayMode = playModeItem.getPlayMode();
         mPlayModeTv.setText(playModeItem.getTitle());
         mPlayModeIconIv.setImageResource(playModeItem.getDrawableResId());
+        currentMode = nextPosi;
         Log.i("", "selectedChildPosi = " + selectedChildPosi + ", nextPosi = " + nextPosi);
         if (mMenuDialog != null && mSelectedMenuPosi == 1) {
             View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + selectedChildPosi);
@@ -706,7 +753,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 @Override
                 public void run() {
                     if (null != mCDView) {
-                        mCDView.setImageBitmap(icon);
+//                        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.fj);
+                        mCDView.setCoverBitmap(icon);
+//                        mCDView.setImageResource(R.drawable.fj);
                     }
                     if (null != mContentBg) {
 //                        mContentBg.setImageBitmap(drawable);
@@ -719,19 +768,23 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
         mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
         if (mLyricInfo == null) {
-            showLyric = false;
+//            if (isFirst) {
+//                showLyric = false;
+//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showNoLyricView();
+                    showOrHideLrc();
                 }
             });
         } else {
-            showLyric = true;
+//            if (isFirst) {  //播放第一首时,有歌词信息就设置为显示
+//                showLyric = true;
+//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showLyricView();
+                    showOrHideLrc();
                     mLyricView.setLyricInfo(mLyricInfo);
                 }
             });

@@ -8,16 +8,19 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cantv.media.R;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.ImageUtils;
@@ -52,7 +55,7 @@ public class ImageFrameView extends FrameLayout {
     }
 
     public interface onLoadingImgListener {
-        void loadSuccessed();
+        void loadSuccessed(boolean loadSuccessed);
 
         void bitmapSize(int width, int height);
 
@@ -101,7 +104,7 @@ public class ImageFrameView extends FrameLayout {
                 mImageView.setVisibility(View.VISIBLE);
 
                 if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccessed();
+                    mLoadingImgListener.loadSuccessed(true);
                     mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
                 }
 
@@ -117,10 +120,12 @@ public class ImageFrameView extends FrameLayout {
                 //解决图片加载不出来的情况下，页面一直处于加载中
                 //重试3次后弹出异常提示
                 if (loadError >= 3) {
-                    Toast.makeText(MyApplication.getContext(), "载入图片发生异常，请重试", Toast.LENGTH_LONG).show();
                     loadError = 0;
-                    mActivity.isPressback = true;
-                    mActivity.finish();
+                    dismissProgressBar();
+                    if (null != mLoadingImgListener) {
+                        mLoadingImgListener.loadSuccessed(false);
+                        //mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
+                    }
                 } else {
                     loadImage(imageUri);
                     loadError++;
@@ -226,7 +231,7 @@ public class ImageFrameView extends FrameLayout {
             }
 
             if (null != mLoadingImgListener) {
-                mLoadingImgListener.loadSuccessed();
+                mLoadingImgListener.loadSuccessed(true);
             }
 
             requestLayout();

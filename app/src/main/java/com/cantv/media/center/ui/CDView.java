@@ -1,223 +1,173 @@
 package com.cantv.media.center.ui;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Path.Direction;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.Point;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
+import android.util.Log;
+import android.view.View;
 
 import com.cantv.media.R;
+import com.cantv.media.center.utils.BitmapUtil;
 
-public class CDView extends ImageView {
 
-    private Bitmap mCDBmp;
-    private Bitmap mDefaultIconBtmp;
-    private Bitmap mIconBitmap;
+/**
+ * Created by yibh on 2016/12/16.
+ * 通过旋转动画会有很明显的噪点
+ */
 
+public class CDView extends View {
+
+    private Bitmap mDiscBitmap; //光盘
+    private Bitmap mDefaultCoverBitmap; //默认封面
+    private Bitmap mCoverBitmap;
+    private Point mDiscCenter = new Point();   //光盘中点坐标
+    private Point mCoverCenter = new Point(); //封面中点坐标
+    private Point mDiscPoint = new Point();
+    private Point mCoverPoint = new Point();
+    private Matrix mDiscMatrix = new Matrix();
+    private Matrix mCoverMatrix = new Matrix();
+    private float mRotation = 0f;
+    private boolean isPlaying = false;
+    private Handler mHandler = new Handler();
+    private static final long TIME_UPDATE = 50L;
+    private static final float DISC_ROTATION_INCREASE = 0.5f;
     private Paint mPaint;
-    private Rect mCDRect;
-    private RectF mIconDrawRect;
-    private RectF mDefaultIconRect;
-    private int mCenterX;
-    private int mCenterY;
-    private Path mIconClipPath;
-    private int mIconRadius;// 中心圆形icon半径
-    private int mIconLoopRadius;// 中心icon上圆环"半径"
-    private int mIconLoopColor;// 中心圆环颜色
-
-    private ValueAnimator mRotateAnim;
-    private boolean isRotate;
-    private boolean isShowDefIcon;
-    private float mRotateDegree;// 旋转角度
-    private int mPaintAlpha;
 
     public CDView(Context context) {
         this(context, null);
     }
 
     public CDView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
+        this(context, attrs, 0);
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        mCDBmp = BitmapFactory.decodeResource(getResources(), R.drawable.musicbj);
-        mDefaultIconBtmp = BitmapFactory.decodeResource(getResources(), R.drawable.icon_music);
-        mIconLoopColor = Color.parseColor("#50FFFFFF");
+    public CDView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
 
+    private void init() {
+        mDiscBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.musicbj);
+        mDefaultCoverBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_music);
+        mCoverBitmap = mDefaultCoverBitmap;
         mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setFlags(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-        mPaint.setDither(true);
+        //通过屏幕取色,取光盘与封面交接处的颜色
+        mPaint.setColor(Color.rgb(11, 10, 10));
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setColor(mIconLoopColor);
+        mPaint.setStrokeWidth(5);
+        mPaint.setAntiAlias(true);
+    }
 
-        mCDRect = new Rect();
-        mIconDrawRect = new RectF();
-        mDefaultIconRect = new RectF();
-        mIconClipPath = new Path();
+    /**
+     * 确定子View的位置
+     *
+     * @param changed
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     */
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        initViewLayout();
+        Log.w("onLayout", "");
+    }
 
-        mRotateAnim = ValueAnimator.ofFloat(0, 360);
-        mRotateAnim.setRepeatMode(ObjectAnimator.RESTART);
-        mRotateAnim.setRepeatCount(ObjectAnimator.INFINITE);
-        mRotateAnim.setInterpolator(new LinearInterpolator());
-        mRotateAnim.setDuration(18000);
-        mRotateAnim.addUpdateListener(new AnimatorUpdateListener() {
+    private void initViewLayout() {
+        int mdiscW = mDiscBitmap.getWidth();
+        if (getWidth() < mdiscW) {  //view宽高小于光盘时
+            mDiscBitmap = BitmapUtil.resizeImage(mDiscBitmap, getWidth(), getHeight());
+        }
 
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mRotateDegree = (Float) animation.getAnimatedValue();
+        //0.4575 根据测量光盘是400x400,里面圈是183x183,所以是0.4575
+        mCoverBitmap = BitmapUtil.resizeImage(mCoverBitmap, (int) (mDiscBitmap.getWidth() * 0.4575), (int) (mDiscBitmap.getHeight() * 0.4575));
+        mCoverPoint.x = (int) ((getWidth() - mDiscBitmap.getWidth() * 0.4575) / 2);
+        mCoverPoint.y = (int) ((getHeight() - mDiscBitmap.getHeight() * 0.4575) / 2);
+        mDiscPoint.x = (getWidth() - mDiscBitmap.getWidth()) / 2;
+        mDiscPoint.y = (getHeight() - mDiscBitmap.getHeight()) / 2;
+        mDiscCenter.x = getWidth() / 2;
+        mDiscCenter.y = getHeight() / 2;
+        mCoverCenter.x = mDiscCenter.x;
+        mCoverCenter.y = mDiscCenter.y;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+
+        //设置旋转角度
+        mDiscMatrix.setRotate(mRotation, mDiscCenter.x, mDiscCenter.y);
+        //设置旋转中心
+        mDiscMatrix.preTranslate(mDiscPoint.x, mDiscPoint.y);
+        canvas.drawBitmap(mDiscBitmap, mDiscMatrix, null);
+
+        mCoverMatrix.setRotate(mRotation, mCoverCenter.x, mCoverCenter.y);
+        mCoverMatrix.preTranslate(mCoverPoint.x, mCoverPoint.y);
+        canvas.drawBitmap(mCoverBitmap, mCoverMatrix, null);
+
+        //画个圆圈,为了遮盖住封面与光盘交界处的噪点
+        canvas.drawCircle(mCoverCenter.x, mCoverCenter.y, mCoverBitmap.getWidth() / 2, mPaint);
+//        Log.w("mDefaultCoverBitmap", mDefaultCoverBitmap.getWidth() + "");
+//        Log.w("mCoverBitmap", mCoverBitmap.getWidth() + "");
+//        Log.w("mDiscBitmap", mDiscBitmap.getWidth() + "");
+    }
+
+
+    private Runnable mRotationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isPlaying) {
+                mRotation += DISC_ROTATION_INCREASE;
+                if (mRotation >= 360) {
+                    mRotation = 0;
+                }
                 invalidate();
             }
-        });
-        setLayerType(LAYER_TYPE_HARDWARE, null);
-    }
-
-    @Override
-    protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int viewSize = Math.min(getMeasuredWidth(), getMeasuredHeight());
-        int width = resolveSize(viewSize, widthMeasureSpec);
-        int height = resolveSize(viewSize, heightMeasureSpec);
-        setMeasuredDimension(width, height);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mIconRadius = (int) Math.ceil(w * 9f / 40);
-        int iconLoopWidth = (int) Math.ceil(w * 1f / 40);
-        mPaint.setStrokeWidth(iconLoopWidth);
-        mIconLoopRadius = mIconRadius - iconLoopWidth / 2;
-        // 非通用控件，不考虑padding了
-        mCDRect.right = w;
-        mCDRect.bottom = h;
-
-        mCenterX = mCDRect.centerX();
-        mCenterY = mCDRect.centerY();
-
-        mIconDrawRect.left = mCenterX - mIconRadius;
-        mIconDrawRect.top = mCenterY - mIconRadius;
-        mIconDrawRect.right = mCenterX + mIconRadius;
-        mIconDrawRect.bottom = mCenterY + mIconRadius;
-
-        mDefaultIconRect.left = mIconDrawRect.left + 15;
-        mDefaultIconRect.top = mIconDrawRect.top + 15;
-        mDefaultIconRect.right = mIconDrawRect.right - 15;
-        mDefaultIconRect.bottom = mIconDrawRect.bottom - 15;
-
-        mIconClipPath.reset();
-        mIconClipPath.addCircle(mCenterX, mCenterY, mIconRadius, Direction.CW);
-    }
-
-    @Override
-    protected synchronized void onDraw(Canvas canvas) {
-        if (isRotate) {
-            canvas.rotate(mRotateDegree, mCenterX, mCenterY);
+            mHandler.postDelayed(this, TIME_UPDATE);
         }
+    };
 
-        // draw icon
-        mPaint.setAlpha(mPaintAlpha);
-        if (mIconBitmap != null) {
-            // draw specified icon
-            isShowDefIcon = false;
-            canvas.save();
-            canvas.clipPath(mIconClipPath);
-            canvas.drawBitmap(mIconBitmap, null, mIconDrawRect, mPaint);
-            canvas.restore();
+    /**
+     * 设置封面
+     *
+     * @param bitmap
+     */
+    public void setCoverBitmap(Bitmap bitmap) {
+        if (null != bitmap) {
+            mCoverBitmap = BitmapUtil.createCircleImage(bitmap);
         } else {
-            // draw default icon
-            isShowDefIcon = true;
-            canvas.drawBitmap(mDefaultIconBtmp, null, mDefaultIconRect, mPaint);
+            mCoverBitmap = BitmapUtil.createCircleImage(mDefaultCoverBitmap);
         }
+        mCoverBitmap = BitmapUtil.resizeImage(mCoverBitmap, (int) (mDiscBitmap.getWidth() * 0.4575), (int) (mDiscBitmap.getHeight() * 0.4575));
+        mRotation = 0f;
+        invalidate();
+    }
 
-        // draw CD
-        mPaint.setAlpha(255);
-        canvas.drawBitmap(mCDBmp, null, mCDRect, mPaint);
-
-        // draw ring
-        mPaint.setColor(mIconLoopColor);
-        canvas.drawCircle(mCenterX, mCenterY, mIconLoopRadius, mPaint);
-
-        if (mPaintAlpha < 255) {
-            if (mRotateAnim.isStarted()) {
-                mPaintAlpha += 3;
-            } else {
-                mPaintAlpha += 12;
-                if (mPaintAlpha > 255) {
-                    mPaintAlpha = 255;
-                }
-                postInvalidateDelayed(40);
-            }
+    /**
+     * 开始旋转
+     */
+    public void start() {
+        if (!isPlaying) {
+            isPlaying = true;
+            mHandler.post(mRotationRunnable);
         }
     }
 
-    public void startRotate() {
-        isRotate = true;
-        if (mRotateAnim.isPaused()) {
-            mRotateAnim.resume();
-            return;
+    /**
+     * 暂停旋转
+     */
+    public void pause() {
+        if (isPlaying) {
+            isPlaying = false;
+            mHandler.removeCallbacks(mRotationRunnable);
         }
-        if (mRotateAnim.isStarted()) {
-            return;
-        }
-        mRotateAnim.start();
     }
 
-    public void pauseRotate() {
-        isRotate = false;
-        mRotateAnim.pause();
-    }
-
-    public void stopRotate() {
-        isRotate = false;
-        mRotateAnim.cancel();
-        mRotateAnim.removeAllUpdateListeners();
-    }
-
-    @Override
-    public void setImageBitmap(Bitmap bm) {
-        if (bm == null && isShowDefIcon) {
-            return;
-        }
-        mIconBitmap = bm;
-        mPaintAlpha = 0;
-        super.setImageBitmap(bm);
-    }
-
-    @Override
-    public void setImageResource(int resId) {
-        if (resId == 0 && isShowDefIcon) {
-            return;
-        }
-        mIconBitmap = BitmapFactory.decodeResource(getResources(), resId);
-        mPaintAlpha = 0;
-        super.setImageResource(resId);
-    }
-
-    @Override
-    public void setImageDrawable(Drawable drawable) {
-        if (drawable == null && isShowDefIcon) {
-            return;
-        }
-        if (drawable instanceof BitmapDrawable) {
-            mIconBitmap = ((BitmapDrawable) drawable).getBitmap();
-            mPaintAlpha = 0;
-        }
-        super.setImageDrawable(drawable);
-    }
 }
-
