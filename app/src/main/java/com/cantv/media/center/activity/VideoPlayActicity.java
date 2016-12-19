@@ -61,6 +61,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private int mMoveTime = 0;
     private int mSelectedPosi;
     private List<MenuItem> list;
+    private int mInsubTitleIndex;
+    private int mOutsubTitleIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +180,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             if (mSelectedPosi == 1) {
                 mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             }
+            //添加字幕列表
+
         }
     }
 
@@ -427,6 +431,27 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                         mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
                     }
                     performSubmenuClickEvent(menuItemData.getSelectedChild(), position);
+                    if (mSelectedPosi == 3 || mSelectedPosi == 4) {
+                        if (mSelectedPosi == 3) {
+                            if (position != 0) {
+                                MenuItem menuItem = list.get(4);
+                                int outSelectPos = menuItem.setChildSelected(0);
+                                View outMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
+                                if (outMenuItemView != null) {
+                                    mMenuDialog.getMenuAdapter().updateSubTitle(outMenuItemView, menuItemData, false);
+                                }
+                            }
+                        } else {
+                            if (position != 0) {
+                                MenuItem menuItem = list.get(3);
+                                int inSelectPos = menuItem.setChildSelected(0);
+                                View inMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 3);
+                                if (inMenuItemView != null) {
+                                    mMenuDialog.getMenuAdapter().updateSubTitle(inMenuItemView, menuItemData, true);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 @Override
@@ -509,6 +534,33 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             getProxyPlayer().setMovieAudioTrack(positon);
             return;
         }
+
+        if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_INSUBTITLE)) {
+            mInsubTitleIndex = positon;
+            //添加内嵌字幕控制
+            if(positon == 0){
+                //关闭内嵌字幕
+
+            }else{
+                //打开内嵌字幕，关闭外挂字幕
+
+            }
+            return;
+        }
+
+        if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_OUTSUBTITLE)) {
+            mOutsubTitleIndex = positon;
+            //添加外挂字幕控制
+            if(positon == 0){
+                //关闭外挂字幕
+
+            }else{
+                //打开外挂字幕，关闭内嵌字幕
+
+            }
+            return;
+        }
+
         switch (mSubSelectedMenu.getTitle()) {
             case MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL:
                 mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
@@ -603,17 +655,25 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         imageScaleMenuItem.setChildren(imageScaleMenuItems);
         menuList.add(imageScaleMenuItem);
 
-        // 载入字母
-        MenuItem subtitlesLoadingMenuItem = new MenuItem("载入字幕", MenuItem.TYPE_SELECTOR);
-        MenuItem subtitlesLoadingSubMenuItemOpen = new MenuItem(MenuConstant.SUBMENU_LOADINGSUBTITLE_OPEN, MenuItem.TYPE_SELECTOR);
-        subtitlesLoadingSubMenuItemOpen.setSelected(true);
-        subtitlesLoadingMenuItem.setSelectedChild(subtitlesLoadingSubMenuItemOpen);
-        MenuItem subtitlesLoadingSubMenuItemColse = new MenuItem(MenuConstant.SUBMENU_LOADINGSUBTITLE_CLOSE, MenuItem.TYPE_SELECTOR);
-        List<MenuItem> subtitlseLoadintMenus = new ArrayList<MenuItem>();
-        subtitlseLoadintMenus.add(subtitlesLoadingSubMenuItemOpen);
-        subtitlseLoadintMenus.add(subtitlesLoadingSubMenuItemColse);
-        subtitlesLoadingMenuItem.setChildren(subtitlseLoadintMenus);
-        menuList.add(subtitlesLoadingMenuItem);
+        MenuItem inSubtitleMenuItem = new MenuItem("内嵌字幕", MenuItem.TYPE_SELECTOR);
+        MenuItem inSubtitleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE, MenuItem.TYPE_SELECTOR);
+        inSubtitleMenuItem.setSelectedChild(inSubtitleSubMenuOriginal);
+        inSubtitleSubMenuOriginal.setSelected(true);
+        List<MenuItem> inSubtitleMenuItems = new ArrayList<MenuItem>();
+        inSubtitleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_SUBTITLE, MenuItem.TYPE_SELECTOR));
+        inSubtitleMenuItems.add(inSubtitleSubMenuOriginal);
+        inSubtitleMenuItem.setChildren(inSubtitleMenuItems);
+        menuList.add(inSubtitleMenuItem);
+
+        MenuItem outSubtitleMenuItem = new MenuItem("外挂字幕", MenuItem.TYPE_SELECTOR);
+        MenuItem outSubtitleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_SUBTITLE, MenuItem.TYPE_SELECTOR);
+        outSubtitleMenuItem.setSelectedChild(outSubtitleSubMenuOriginal);
+        outSubtitleSubMenuOriginal.setSelected(true);
+        List<MenuItem> outSubtitleMenuItems = new ArrayList<MenuItem>();
+        outSubtitleMenuItems.add(outSubtitleSubMenuOriginal);
+        outSubtitleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_OUTSUBTITLE, MenuItem.TYPE_SELECTOR));
+        outSubtitleMenuItem.setChildren(outSubtitleMenuItems);
+        menuList.add(outSubtitleMenuItem);
 
         // 调整字幕
         MenuItem adjustSubtitleMenuItem = new MenuItem("字幕调整", MenuItem.TYPE_NORMAL);
