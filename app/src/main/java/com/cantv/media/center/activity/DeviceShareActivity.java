@@ -29,13 +29,17 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.DeviceInfo;
+import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.DeviceAddDialog;
 import com.cantv.media.center.ui.DeviceAddDialog.OnIpConfirmedListener;
 import com.cantv.media.center.ui.DeviceLoginDialog;
 import com.cantv.media.center.ui.DeviceLoginDialog.OnLoginListener;
 import com.cantv.media.center.ui.DeviceShareItemView;
+import com.cantv.media.center.ui.DisclaimerDialog;
 import com.cantv.media.center.ui.LoadingDialog;
+import com.cantv.media.center.ui.ShareGuideDialog;
 import com.cantv.media.center.utils.BitmapUtils;
+import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.ToastUtils;
@@ -79,6 +83,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     private boolean isFirst = true;
     Drawable mBlurDrawable;
+    private ShareGuideDialog mShareGuideDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,9 +167,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
             @Override
             public void onClick(View v) {
+                //getShareGuideDialog();
                 showAddDeviceDialog();
             }
         });
+        //getShareGuideDialog();
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus_full_content);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
     }
@@ -616,4 +623,30 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         });
     }
 
+    /**
+     * 免责声明
+     *
+     */
+    private void getShareGuideDialog() {
+        int shareGuide = SharedPreferenceUtil.getShareGuide();
+        if (shareGuide == 0) {
+            if (mShareGuideDialog == null) {
+                mShareGuideDialog = new ShareGuideDialog(this);
+                mShareGuideDialog.setOnClickableListener(new ShareGuideDialog.OnClickableListener() {
+                    @Override
+                    public void onConfirmClickable() {
+                        showAddDeviceDialog();
+                        return;
+                    }
+
+                    @Override
+                    public void onCancelClickable() {
+                        showAddDeviceDialog();
+                        return;
+                    }
+                });
+            }
+            mShareGuideDialog.show();
+        }
+    }
 }

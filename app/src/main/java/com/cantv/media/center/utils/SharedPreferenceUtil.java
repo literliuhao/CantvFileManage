@@ -20,6 +20,7 @@ public class SharedPreferenceUtil {
     private static final String FILE_SORT_TYPE = "sort_type";
     private static final String GRID_STYLE = "grid_style";
     private static final String DISCLAIMER_TEXT = "disclaimer_text";
+    private static final String SHARE_GUIDE = "share_guide";
     private static final String SHARE_DEFAULT_CONFIG = "default_config";
     private static SharedPreferences mSp = MyApplication.mContext.getSharedPreferences(SHARE_DEFAULT_CONFIG, Context.MODE_PRIVATE);
     private static SharedPreferences.Editor mEditor = mSp.edit();
@@ -210,5 +211,27 @@ public class SharedPreferenceUtil {
         return mSp.getString(SHARE_USER_INFO_FLAG, "");
     }
 
+    /**
+     * 设置共享向导显示
+     *
+     * @param
+     */
+    public static boolean setShareGuide(int Disclaimer) {
+        mEditor.putInt(SHARE_GUIDE, Disclaimer);
+        return commitInfo(mEditor);
+    }
+
+    /**
+     * 获取共享向导显示
+     *
+     * @param
+     */
+    public static int getShareGuide() {
+        if (mSp != null) {
+            return mSp.getInt(SHARE_GUIDE, 0);
+        } else {
+            return 0;
+        }
+    }
 
 }
