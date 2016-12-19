@@ -213,7 +213,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     @Override
     protected void onResume() {
         if (!ismManualPaused()) {
-            mCDView.startRotate();
+            mCDView.start();
             mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
         }
         super.onResume();
@@ -254,7 +254,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         hideMenuDialog();
         mMenuDialog = null;
         mHandler.removeCallbacksAndMessages(null);
-        mCDView.stopRotate();
+        mCDView.pause();
         mCDView = null;
         super.onDestroy();
         MyApplication.removeActivity(this);
@@ -295,7 +295,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     }
 
                     setmManualPaused(true);
-                    mCDView.pauseRotate();
+                    mCDView.pause();
                     mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
                 } else {
                     if (mHandler != null) {
@@ -303,7 +303,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     }
 
                     setmManualPaused(false);
-                    mCDView.startRotate();
+                    mCDView.start();
                     mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
                 }
                 break;
@@ -335,7 +335,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     protected void runBeforePlay(boolean isFirst) {
         resetUI();
         setmManualPaused(false);
-        mCDView.startRotate();
+        mCDView.start();
         if (mDataList.size() > 0) {
             mUri = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
             mTitleTv.setText(mDataList.get(mCurPlayIndex).mName);
@@ -662,7 +662,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private void resetUI() {
         mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
         mProgressBar.setProgress(0);
-        mCDView.setImageBitmap(null);
+        mCDView.setCoverBitmap(null);
         mContentBg.setBackgroundResource(0);
         mContentBg.setImageResource(0);
         mCurrProgressTv.setText("");
@@ -753,7 +753,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 @Override
                 public void run() {
                     if (null != mCDView) {
-                        mCDView.setImageBitmap(icon);
+//                        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.fj);
+                        mCDView.setCoverBitmap(icon);
+//                        mCDView.setImageResource(R.drawable.fj);
                     }
                     if (null != mContentBg) {
 //                        mContentBg.setImageBitmap(drawable);
