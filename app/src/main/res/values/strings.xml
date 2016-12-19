@@ -81,6 +81,7 @@
     <string name="menu">菜单</string>
     <string name="deleteFailed">删除失败,请稍后再试!</string>
     <string name="device_remove">文件不存在或设备已移除</string>
+    <string name="image_loading_fail">加载失败，图片可能损坏或存在其他问题</string>
 
     <!-- gridview中二级菜单项 -->
     <string name="sort">排序</string>

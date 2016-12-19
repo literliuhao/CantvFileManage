@@ -106,6 +106,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int mCurrentVolume;
     private Toast mToast = null;
     private long MENU_DURATION = 500;
+    private boolean mLoadSuccessed = true;
+    private TextView mLoadingFail;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -230,6 +232,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
         mInfo = (ImageView) findViewById(R.id.media__image_view__info);
         mHeader = (RelativeLayout) findViewById(R.id.media_image_header);
+        mLoadingFail = (TextView) findViewById(R.id.tv_loading_fail);
         mFrameView = new ImageFrameView(this);
         mFrameView.setNotifyParentUpdateListner(this);
         mImageBrowser = (ImageBrowser) findViewById(R.id.media__image_view__image);
@@ -262,6 +265,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight.setVisibility(View.GONE);
         mPosition.setText("");
         mTotal.setText("");
+        mLoadingFail.setVisibility(View.GONE);
         if (mShowing) {
             MENU_DURATION = 0;
             toHideView();
@@ -278,7 +282,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         boolean isSharing = getData().get(index).isSharing;
         mFrameView.playImage(url, isSharing, onfinish, new onLoadingImgListener() {
             @Override
-            public void loadSuccessed() {
+            public void loadSuccessed(boolean loadSuccessed) {
+                mLoadSuccessed = loadSuccessed;
+                //修复MASERATI-63USB幻灯片播放破损图片出现很抱歉，文件管理已停止运行，添加文字提示
+                if (!loadSuccessed) {
+                    mLoadingFail.setVisibility(View.VISIBLE);
+                }
                 if (isFirstMenu) {
                     isFirstMenu = false;
                     mHeader.setVisibility(View.VISIBLE);
@@ -738,7 +747,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             return false;
         }
         if (keyCode == event.KEYCODE_MENU && event.getAction() == KeyEvent.ACTION_DOWN) {
-            toShowView();
+            if (mLoadSuccessed) {
+                toShowView();
+            }
             return true;
         }
         if (!mAutoPlay) {
