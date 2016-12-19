@@ -1,6 +1,5 @@
 package com.cantv.media.center.receiver;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +17,7 @@ import java.util.List;
 public class MediaBroadcastReceiver extends BroadcastReceiver {
     private static String TAG = "MediaBroadcastReceiver";
     private Context mContext;
-    private Dialog dialog = null;
+    private static CustomDialog dialog;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -35,7 +34,7 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
             }
             List<String> currPathList = MediaUtils.getCurrPathList();
             if (currPathList.size() < 1) {
-                if (null != dialog && dialog.isShowing()) {
+                if (isShow()) {
                     dialog.dismiss();
                 }
             }
@@ -44,20 +43,19 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
     }
 
     private boolean isShow() {
+        dialog = CustomDialog.getInstance(mContext.getApplicationContext());
         if (null != dialog) {
-            return dialog.isShowing() ? true : false;
+            return dialog.isShowing();
         } else {
             return false;
         }
     }
 
     private void showMountedDialog() {
-        if (isShow()) return;
-        CustomDialog.Builder customBuilder = new CustomDialog.Builder(mContext);
-        dialog = customBuilder.create();
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        dialog.setCancelable(true);
-        dialog.show();
+        if (!isShow()) {
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            dialog.setCancelable(true);
+            dialog.show();
+        }
     }
-
 }

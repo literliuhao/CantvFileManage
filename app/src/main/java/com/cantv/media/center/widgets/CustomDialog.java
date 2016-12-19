@@ -20,11 +20,20 @@ public class CustomDialog extends Dialog {
     private static float mDialogWidth = 0.85f;
     private static float mDialogHeight = 0.91f;
 
-    public CustomDialog(Context context, int theme) {
+    private static CustomDialog customDialog;
+
+    public static CustomDialog getInstance(Context context){
+        if(null == customDialog){
+            customDialog = new CustomDialog.Builder(context).create();
+        }
+        return customDialog;
+    }
+
+    private CustomDialog(Context context, int theme) {
         super(context, theme);
     }
 
-    public CustomDialog(Context context) {
+    private CustomDialog(Context context) {
         super(context);
     }
 
