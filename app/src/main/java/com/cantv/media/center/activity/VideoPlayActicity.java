@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
+import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.MenuItem;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener {
+public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener, StDisplayCallBack {
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -63,6 +64,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private List<MenuItem> list;
     private int mInsubTitleIndex;
     private int mOutsubTitleIndex;
+    private boolean mOpenInSubtitle = true;    //是否开启内置字幕
+    private boolean mOpenExternalSubtitle;    //是否开启内置字幕
+    private String mLastStr;   //当前外置字幕的后缀
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -290,7 +295,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     //字幕修改
     public void setSrts(int time) {
 
-        if (!isSubTitle) {
+        if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().contains("srt")) {
             return;
         }
 
@@ -535,15 +540,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             return;
         }
 
-        if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_INSUBTITLE)) {
+        if (mSubSelectedMenu.getTitle().contains("无")) {
             mInsubTitleIndex = positon;
             //添加内嵌字幕控制
-            if(positon == 0){
+            if (positon == 0) {
                 //关闭内嵌字幕
-
-            }else{
+                openOrCloseSubTitle(false, -1, null, -1);
+            } else {
                 //打开内嵌字幕，关闭外挂字幕
-
+                openOrCloseSubTitle(true, mInsubTitleIndex, null, -1);
             }
             return;
         }
@@ -551,12 +556,12 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_OUTSUBTITLE)) {
             mOutsubTitleIndex = positon;
             //添加外挂字幕控制
-            if(positon == 0){
+            if (positon == 0) {
                 //关闭外挂字幕
-
-            }else{
+                openOrCloseSubTitle(null, -1, false, -1);
+            } else {
                 //打开外挂字幕，关闭内嵌字幕
-
+                openOrCloseSubTitle(null, -1, true, mOutsubTitleIndex);
             }
             return;
         }
@@ -723,10 +728,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             return;
         }
         //如果同时打开两个字幕则会显示重复，所打开外挂后内置字幕默认为关闭状态
-        if (!isSubTitle) {
+        if (mOpenInSubtitle) {
             mSubTitle.setText(text.getText());
+        }else if (mOpenExternalSubtitle){
+            mSubTitle.setText("");
         }
     }
+
+
     //内置字幕监听，现在可以支持内置、外挂字幕了
 
     class TimeReceiver extends BroadcastReceiver {
@@ -749,17 +758,48 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         super.onStop();
     }
 
+
+    @Override
+    public void onSubTitleChanging() {
+
+    }
+
+    @Override
+    public void showSubTitleText(final String text) {
+        if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().contains("ass")) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSubTitle.setText(text);
+            }
+        });
+    }
+
     /**
-     * @param showInSubtitle 是否显示内置字幕,true显示外置字幕 ,false显示外置字幕
+     * @param inOpen       true,内置字幕开;false,内置字幕关
+     * @param subIndex     内置字幕开时,传入一个索引(内置字幕集合对应的值);内置字幕关闭时,不再检测这个值
+     * @param ExternalOpen true,外置字幕开;false,外置字幕关
+     * @param index
      */
-    private void showBuilt_inOrExternalSubTitle(boolean showInSubtitle, int index) {
-        if (showInSubtitle) {
-//            String s = getInSubTitleList().get(index);
-        } else {
-            String path = getExternalSubList().get(index);
+    private void openOrCloseSubTitle(Boolean inOpen, int subIndex, Boolean ExternalOpen, int index) {
+        if (null != inOpen) {
+            mOpenInSubtitle = inOpen;
+            if (mOpenInSubtitle) {
+                mOpenExternalSubtitle = false;
+                getProxyPlayer().selectTrackInfo(getProxyPlayer().getINSubList().get(subIndex));
+            }
+            return;
+        }
+        if (null != ExternalOpen) {
+            mOpenExternalSubtitle = ExternalOpen;
+            if (mOpenExternalSubtitle) {
+                mOpenInSubtitle = false;
+                mLastStr = getExternalSubList().get(index - 1);
+            }
         }
 
-        //TODO 来设置字幕的显示/隐藏
     }
 
     /**
@@ -772,6 +812,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         String stPath = path.substring(0, path.lastIndexOf("."));
         List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass");   // stPath + ".smi", stPath + ".sub"
         ArrayList<String> savePathList = new ArrayList<>();
+        savePathList.add("无");
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
             if (file.exists() && file.canRead()) {

@@ -1,6 +1,7 @@
 package com.cantv.liteplayer.core.subtitle;
 
 import android.media.MediaPlayer;
+import android.text.Html;
 
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,9 @@ public class StDisplayThread extends Thread {
 
     private void sendShowSubtitleMsg(int delay, boolean isPicture) {
         if (mDisplayCallBack != null) {
-            //mDisplayCallBack.showSubTitleText(Html.fromHtml(mSubtitleContent.getSubtitleLine()).toString());
+            if (null != mSubtitleContent.getSubtitleLine()) {
+                mDisplayCallBack.showSubTitleText(Html.fromHtml(mSubtitleContent.getSubtitleLine()).toString());
+            }
         }
     }
 }

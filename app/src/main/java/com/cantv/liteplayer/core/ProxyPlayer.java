@@ -229,15 +229,13 @@ public class ProxyPlayer {
 
     /**
      * 获取内置字幕列表
-     * @param path
+     *
      * @return
      */
-    public List getINSubList(String path) {
+    public List<Integer> getINSubList() {
         ArrayList<Integer> saveSubIndexList = new ArrayList<>();
         saveSubIndexList.add(-1);
         TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
-        int chiTrack = 0;
-        boolean isFind = false;
         if (trackInfos != null && trackInfos.length > 0) {
             for (int i = 0; i < trackInfos.length; i++) {
                 TrackInfo info = trackInfos[i];
@@ -248,6 +246,11 @@ public class ProxyPlayer {
             }
         }
         return saveSubIndexList;
+    }
+
+
+    public void selectTrackInfo(int index) {
+        getLitePlayer().selectTrack(index);
     }
 
     /**
