@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="@dimen/px1056"
+        android:layout_height="@dimen/px856"
+        android:layout_marginBottom="@dimen/px112"
+        android:layout_marginEnd="@dimen/px432"
+        android:layout_marginStart="@dimen/px432"
+        android:layout_marginTop="@dimen/px112"
+        android:background="@drawable/home_devices_background">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/px50"
+            android:text="@string/device_share_title"
+            android:textColor="@color/per80_white"
+            android:textSize="@dimen/px38" />
+
+        <LinearLayout
+            android:id="@+id/et_text"
+            android:layout_width="@dimen/px800"
+            android:layout_height="@dimen/px430"
+            android:layout_below="@id/tv_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/px60"
+            android:background="@drawable/disclaimer_text"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/et_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/px25"
+                android:layout_marginStart="@dimen/px32"
+                android:layout_marginTop="@dimen/px32"
+                android:text="@string/device_share_first"
+                android:textColor="@color/per50_white"
+                android:textSize="@dimen/px28" />
+
+            <TextView
+                android:id="@+id/et_text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/px25"
+                android:layout_marginStart="@dimen/px32"
+                android:layout_marginTop="@dimen/px24"
+                android:text="@string/device_share_second"
+                android:textColor="@color/per50_white"
+                android:textSize="@dimen/px28" />
+
+            <TextView
+                android:id="@+id/et_text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/px10"
+                android:layout_marginStart="@dimen/px32"
+                android:layout_marginTop="@dimen/px24"
+                android:text="@string/device_share_third"
+                android:textColor="@color/per50_white"
+                android:textSize="@dimen/px28" />
+
+            <TextView
+                android:id="@+id/et_text4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/px10"
+                android:layout_marginStart="@dimen/px32"
+                android:layout_marginTop="@dimen/px24"
+                android:text="@string/device_share_fourth"
+                android:textColor="@color/per50_white"
+                android:textSize="@dimen/px28" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/px116"
+            android:layout_below="@id/et_text"
+            android:layout_marginEnd="@dimen/px60"
+            android:layout_marginStart="@dimen/px80"
+            android:layout_marginTop="@dimen/px45"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="@dimen/px396"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_normal_text"
+                android:text="@string/device_share_ok"
+                android:textColor="@color/per80_white"
+                android:textSize="@dimen/px34" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="@dimen/px396"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/px24"
+                android:background="@drawable/btn_normal_text"
+                android:text="@string/device_share_cancel"
+                android:textColor="@color/per80_white"
+                android:textSize="@dimen/px34" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

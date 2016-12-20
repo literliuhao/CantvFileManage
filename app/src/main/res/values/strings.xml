@@ -81,6 +81,14 @@
     <string name="menu">菜单</string>
     <string name="deleteFailed">删除失败,请稍后再试!</string>
     <string name="device_remove">文件不存在或设备已移除</string>
+    <string name="image_loading_fail">加载失败，图片可能损坏或存在其他问题</string>
+    <string name="device_share_title">如何使用文件共享？</string>
+    <string name="device_share_first">第一步：电脑和电视处于同一个局域网内。</string>
+    <string name="device_share_second">第二步：添加设备，输入电脑的IP地址。</string>
+    <string name="device_share_third">第三步：进入已添加的设备，输入电脑用户名和密码，即可</string>
+    <string name="device_share_fourth">查看电脑以共享的文件。</string>
+    <string name="device_share_ok">我知道了</string>
+    <string name="device_share_cancel">不再提示</string>
 
     <!-- gridview中二级菜单项 -->
     <string name="sort">排序</string>

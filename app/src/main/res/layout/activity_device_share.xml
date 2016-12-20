@@ -49,6 +49,7 @@
         android:clipToPadding="false"
         android:paddingBottom="@dimen/px100"
         android:paddingTop="@dimen/px100"
+        android:visibility="gone"
         android:scrollbars="none" >
 
         <LinearLayout
