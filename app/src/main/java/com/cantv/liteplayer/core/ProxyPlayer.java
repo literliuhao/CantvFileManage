@@ -19,7 +19,10 @@ import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
 import com.cantv.media.center.app.MyApplication;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.media.MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ProxyPlayer {
@@ -222,6 +225,29 @@ public class ProxyPlayer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取内置字幕列表
+     * @param path
+     * @return
+     */
+    public List getINSubList(String path) {
+        ArrayList<Integer> saveSubIndexList = new ArrayList<>();
+        saveSubIndexList.add(-1);
+        TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
+        int chiTrack = 0;
+        boolean isFind = false;
+        if (trackInfos != null && trackInfos.length > 0) {
+            for (int i = 0; i < trackInfos.length; i++) {
+                TrackInfo info = trackInfos[i];
+                if (info.getTrackType() == MEDIA_TRACK_TYPE_TIMEDTEXT) {
+                    saveSubIndexList.add(i);
+                }
+                Log.w("Language", info.getLanguage());
+            }
+        }
+        return saveSubIndexList;
     }
 
     /**

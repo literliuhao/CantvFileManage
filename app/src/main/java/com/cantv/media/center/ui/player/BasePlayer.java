@@ -50,6 +50,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         if (mPlayer == null) {
             mPlayer = new ProxyPlayer();
             mPlayer.setOnCompletionListener(this);
+            mPlayer.setOnTimedTextListener(this);
         }
 
         mPlayer.onExceptionListener(new ProxyPlayer.MediaplayExceptionListener() {
@@ -136,10 +137,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     }
 
     protected void playMedia(int index) {
-        if (mPlayer != null) {
-            mPlayer.setOnCompletionListener(null);
-            mPlayer.setOnTimedTextListener(null);
-        }
         try {
             index = (index < 0) ? mDataList.size() - 1 : index;
             index = (index >= mDataList.size()) ? 0 : index;
@@ -150,7 +147,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                 public void run() {
                     runAfterPlay(mFistPlay);
                     //添加内置字幕监听
-                    mPlayer.addText(url, BasePlayer.this);
+//                    mPlayer.addText(url, BasePlayer.this);
                     //添加内置字幕监听
                     mPlayer.setOnCompletionListener(BasePlayer.this);
                     mFistPlay = false;

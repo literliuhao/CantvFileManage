@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnTimedTextListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.media.TimedText;
 import android.os.Bundle;
@@ -42,9 +41,10 @@ import com.cantv.media.center.utils.MediaUtils;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener, OnTimedTextListener {
+public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener {
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -688,4 +688,37 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         }
         super.onStop();
     }
+
+    /**
+     * @param showInSubtitle 是否显示内置字幕,true显示外置字幕 ,false显示外置字幕
+     */
+    private void showBuilt_inOrExternalSubTitle(boolean showInSubtitle, int index) {
+        if (showInSubtitle) {
+//            String s = getInSubTitleList().get(index);
+        } else {
+            String path = getExternalSubList().get(index);
+        }
+
+        //TODO 来设置字幕的显示/隐藏
+    }
+
+    /**
+     * 获取外置字幕
+     *
+     * @return
+     */
+    private List<String> getExternalSubList() {
+        String path = mDataList.get(mCurPlayIndex).isSharing ? "" : mDataList.get(mCurPlayIndex).mUri;
+        String stPath = path.substring(0, path.lastIndexOf("."));
+        List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass");   // stPath + ".smi", stPath + ".sub"
+        ArrayList<String> savePathList = new ArrayList<>();
+        for (int i = 0; i < pathList.size(); i++) {
+            File file = new File(pathList.get(i));
+            if (file.exists() && file.canRead()) {
+                savePathList.add(pathList.get(i));
+            }
+        }
+        return savePathList;
+    }
+
 }
