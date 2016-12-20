@@ -64,6 +64,8 @@ public class PlayerAssistant {
         for (String each : externalSubTitles) {
             mVideoSubTitles.add(new SubTitle(each, -1));
         }
+
+        setSubTitle(player, 0);
     }
 
     public void setAudioTrack(MediaPlayer player, int index) {
@@ -106,6 +108,35 @@ public class PlayerAssistant {
         });
         mStDecodeThread.start();
     }
+
+
+    public void setSubTitle(final MediaPlayer player, String subPath) {
+        final SubTitle subTitle = new SubTitle(subPath, -1);
+        if (mStDecodeThread != null) {
+            mStDecodeThread.cancel();
+        }
+        if (mStDisplayThread != null) {
+            mStDisplayThread.cancel();
+            notifySubTitleChanging();
+        }
+        if (subTitle.isExtrnalFile() == false) {
+            try {
+                player.selectTrack(subTitle.getIndexOfTrackes());
+            } catch (Exception e) {
+            }
+            return;
+        }
+        mStDecodeThread = new StDecodeThread(subTitle.getName(), new StDecoderListener() {
+            @Override
+            public void onDecoded(StDecodeResult result) {
+                mStDisplayThread = new StDisplayThread(player, result, 0, subTitle.getName());
+                mStDisplayThread.setStDisplayCallBack(mStDisplayCallBack);
+                mStDisplayThread.start();
+            }
+        });
+        mStDecodeThread.start();
+    }
+
 
     public void release() {
         if (mStDisplayThread != null) {

@@ -83,6 +83,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     }
 
     private void initView() {
+        getProxyPlayer().setSubTitleDisplayCallBack(this);
         mSubTitle = (TextView) findViewById(R.id.media__video_view__subtitle1);
         mSurfaceView = (ExternalSurfaceView) findViewById(R.id.media__video_view__surface);
         mBackgroundView = (ImageView) findViewById(R.id.media__video_view__background);
@@ -123,8 +124,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //解决内置字幕切换后不消失
         initSrts();
         //解决内置字幕切换后不消失
-        getProxyPlayer().setMovieSubTitle(0);
-        getProxyPlayer().setMovieAudioTrack(0);
+//        getProxyPlayer().setMovieSubTitle(0);
+//        getProxyPlayer().setMovieAudioTrack(0);
         if (isFirst) {
             mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
@@ -695,7 +696,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         for (int i = 0; i < externalSubList.size(); i++) {
             MenuItem item = new MenuItem(MenuConstant.SUBMENU_OUTSUBTITLE + (i + 1));
             item.setType(MenuItem.TYPE_SELECTOR);
-            inSubtitleMenuItems.add(item);
+            outSubtitleMenuItems.add(item);
         }
         outSubtitleMenuItem.setChildren(outSubtitleMenuItems);
         menuList.add(outSubtitleMenuItem);
@@ -807,15 +808,19 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mSubTitle.setText("");
             if (mOpenInSubtitle) {
                 mOpenExternalSubtitle = false;
-                getProxyPlayer().selectTrackInfo(getProxyPlayer().getINSubList().get(subIndex));
+                getProxyPlayer().selectTrackInfo(getProxyPlayer().getINSubList().get(subIndex - 1));
             }
             return;
         }
         if (null != ExternalOpen) {
             mOpenExternalSubtitle = ExternalOpen;
+            mSubTitle.setText("");
             if (mOpenExternalSubtitle) {
                 mOpenInSubtitle = false;
                 mLastStr = getExternalSubList().get(index - 1);
+                if (!mLastStr.contains("srt")){
+                    getProxyPlayer().setSubPath(mLastStr);
+                }
             }
         }
 

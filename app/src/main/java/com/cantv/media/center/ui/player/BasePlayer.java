@@ -147,9 +147,9 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                 public void run() {
                     runAfterPlay(mFistPlay);
                     //添加内置字幕监听
-//                    mPlayer.addText(url, BasePlayer.this);
-                    //添加内置字幕监听
-                    mPlayer.setOnCompletionListener(BasePlayer.this);
+                    if (getProxyPlayer().getINSubList().size() > 0) {
+                        mPlayer.selectTrackInfo(getProxyPlayer().getINSubList().get(0));
+                    }
                     mFistPlay = false;
                     runProgressBar();
                     if (null != mPlayer) {
