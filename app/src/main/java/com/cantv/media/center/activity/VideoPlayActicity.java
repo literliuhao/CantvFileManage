@@ -187,6 +187,32 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             }
             //添加字幕列表
+            MenuItem inSubTitleMenuItem = VideoPlayActicity.this.list.get(3);
+            inSubTitleMenuItem.setChildren(getInSubtitleList());
+            if (getInSubtitleList().size() > 1) {
+                inSubTitleMenuItem.setChildSelected(1);
+            } else {
+                inSubTitleMenuItem.setChildSelected(0);
+            }
+            View inMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 3);
+            if (inMenuItemView != null) {
+                mMenuDialog.getMenuAdapter().updateMenuItem(inMenuItemView, inSubTitleMenuItem);
+            }
+            if (mSelectedPosi == 3) {
+                mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+            }
+
+            MenuItem outSubTitleMenuItem = VideoPlayActicity.this.list.get(4);
+            outSubTitleMenuItem.setChildren(getOutSubtitleList());
+            outSubTitleMenuItem.setChildSelected(0);
+            View outMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
+            if (outMenuItemView != null) {
+                mMenuDialog.getMenuAdapter().updateMenuItem(outMenuItemView, outSubTitleMenuItem);
+            }
+            if (mSelectedPosi == 4) {
+                mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
+            }
+
 
         }
     }
@@ -723,6 +749,32 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         return audioTrackMenuItems;
     }
 
+    private List<MenuItem> getInSubtitleList() {
+        List<MenuItem> inSubtitleMenuItems = new ArrayList<MenuItem>();
+        List<Integer> inSubList = getProxyPlayer().getINSubList();
+        for (int i = 0; i < inSubList.size(); i++) {
+            MenuItem item = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE + (i + 1));
+            item.setType(MenuItem.TYPE_SELECTOR);
+            inSubtitleMenuItems.add(item);
+        }
+        MenuItem inSubtitleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_SUBTITLE, MenuItem.TYPE_SELECTOR);
+        inSubtitleMenuItems.add(0, inSubtitleSubMenuOriginal);
+        return inSubtitleMenuItems;
+    }
+
+    private List<MenuItem> getOutSubtitleList() {
+        MenuItem outSubtitleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_SUBTITLE, MenuItem.TYPE_SELECTOR);
+        List<MenuItem> outSubtitleMenuItems = new ArrayList<MenuItem>();
+        outSubtitleMenuItems.add(0, outSubtitleSubMenuOriginal);
+        List<String> externalSubList = getExternalSubList();
+        for (int i = 0; i < externalSubList.size(); i++) {
+            MenuItem item = new MenuItem(MenuConstant.SUBMENU_OUTSUBTITLE + (i + 1));
+            item.setType(MenuItem.TYPE_SELECTOR);
+            outSubtitleMenuItems.add(item);
+        }
+        return outSubtitleMenuItems;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -818,7 +870,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             if (mOpenExternalSubtitle) {
                 mOpenInSubtitle = false;
                 mLastStr = getExternalSubList().get(index - 1);
-                if (!mLastStr.contains("srt")){
+                if (!mLastStr.contains("srt")) {
                     getProxyPlayer().setSubPath(mLastStr);
                 }
             }
