@@ -539,8 +539,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             getProxyPlayer().setMovieAudioTrack(positon);
             return;
         }
-
-        if (mSubSelectedMenu.getTitle().contains("无")) {
+//        && (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_SUBTITLE) || mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_INSUB))
+        if (mSelectedPosi == 3) {
             mInsubTitleIndex = positon;
             //添加内嵌字幕控制
             if (positon == 0) {
@@ -553,7 +553,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             return;
         }
 
-        if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_OUTSUBTITLE)) {
+        if (mSelectedPosi == 4) {
             mOutsubTitleIndex = positon;
             //添加外挂字幕控制
             if (positon == 0) {
@@ -660,23 +660,43 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         imageScaleMenuItem.setChildren(imageScaleMenuItems);
         menuList.add(imageScaleMenuItem);
 
+        //内嵌字幕
         MenuItem inSubtitleMenuItem = new MenuItem("内嵌字幕", MenuItem.TYPE_SELECTOR);
-        MenuItem inSubtitleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE, MenuItem.TYPE_SELECTOR);
-        inSubtitleMenuItem.setSelectedChild(inSubtitleSubMenuOriginal);
-        inSubtitleSubMenuOriginal.setSelected(true);
         List<MenuItem> inSubtitleMenuItems = new ArrayList<MenuItem>();
-        inSubtitleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_SUBTITLE, MenuItem.TYPE_SELECTOR));
-        inSubtitleMenuItems.add(inSubtitleSubMenuOriginal);
+        List<Integer> inSubList = getProxyPlayer().getINSubList();
+        Log.i("shen", "createMenuData: " + inSubList.size());
+        for (int i = 0; i < inSubList.size(); i++) {
+            MenuItem item = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE + (i + 1));
+            item.setType(MenuItem.TYPE_SELECTOR);
+            inSubtitleMenuItems.add(item);
+            if (i == 0) {
+                item.setSelected(true);
+                inSubtitleMenuItem.setSelectedChild(item);
+            }
+        }
+        MenuItem inSubtitleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_SUBTITLE, MenuItem.TYPE_SELECTOR);
+        if (null != inSubList && inSubList.size() == 0) {
+            inSubtitleMenuItem.setSelectedChild(inSubtitleSubMenuOriginal);
+            inSubtitleSubMenuOriginal.setSelected(true);
+        }
+        inSubtitleMenuItems.add(0, inSubtitleSubMenuOriginal);
         inSubtitleMenuItem.setChildren(inSubtitleMenuItems);
         menuList.add(inSubtitleMenuItem);
 
+        //外挂字幕
         MenuItem outSubtitleMenuItem = new MenuItem("外挂字幕", MenuItem.TYPE_SELECTOR);
         MenuItem outSubtitleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_SUBTITLE, MenuItem.TYPE_SELECTOR);
         outSubtitleMenuItem.setSelectedChild(outSubtitleSubMenuOriginal);
         outSubtitleSubMenuOriginal.setSelected(true);
         List<MenuItem> outSubtitleMenuItems = new ArrayList<MenuItem>();
-        outSubtitleMenuItems.add(outSubtitleSubMenuOriginal);
-        outSubtitleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_OUTSUBTITLE, MenuItem.TYPE_SELECTOR));
+        outSubtitleMenuItems.add(0, outSubtitleSubMenuOriginal);
+        List<String> externalSubList = getExternalSubList();
+        Log.i("shen", "createMenuData: " + externalSubList.size());
+        for (int i = 0; i < externalSubList.size(); i++) {
+            MenuItem item = new MenuItem(MenuConstant.SUBMENU_OUTSUBTITLE + (i + 1));
+            item.setType(MenuItem.TYPE_SELECTOR);
+            inSubtitleMenuItems.add(item);
+        }
         outSubtitleMenuItem.setChildren(outSubtitleMenuItems);
         menuList.add(outSubtitleMenuItem);
 
@@ -730,8 +750,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //如果同时打开两个字幕则会显示重复，所打开外挂后内置字幕默认为关闭状态
         if (mOpenInSubtitle) {
             mSubTitle.setText(text.getText());
-        }else if (mOpenExternalSubtitle){
-            mSubTitle.setText("");
         }
     }
 
@@ -786,6 +804,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private void openOrCloseSubTitle(Boolean inOpen, int subIndex, Boolean ExternalOpen, int index) {
         if (null != inOpen) {
             mOpenInSubtitle = inOpen;
+            mSubTitle.setText("");
             if (mOpenInSubtitle) {
                 mOpenExternalSubtitle = false;
                 getProxyPlayer().selectTrackInfo(getProxyPlayer().getINSubList().get(subIndex));
@@ -812,7 +831,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         String stPath = path.substring(0, path.lastIndexOf("."));
         List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass");   // stPath + ".smi", stPath + ".sub"
         ArrayList<String> savePathList = new ArrayList<>();
-        savePathList.add("无");
+        //savePathList.add("无");
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
             if (file.exists() && file.canRead()) {
