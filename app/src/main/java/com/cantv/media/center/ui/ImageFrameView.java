@@ -8,21 +8,16 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cantv.media.R;
 import com.cantv.media.center.activity.ImagePlayerActivity;
-import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.ImageUtils;
 
 import java.io.File;
@@ -89,17 +84,18 @@ public class ImageFrameView extends FrameLayout {
         }
 
         //加50是为了防止刚好是屏幕的整数倍,出现获取处理后的图片宽高正好和屏幕的宽高相同而出现不能缩放(也有可能碰到是加完后数据的整数倍)
-        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
+        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 mImgOrginWidth = resource.getWidth();
                 mImgOrginHeight = resource.getHeight();
-                Bitmap bitmap = null;
-                if (mImgOrginHeight != (int) mActivity.screenWidth && mImgOrginWidth != (int) mActivity.screenHeight) {
-                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
-                }
-                mBitmap = bitmap;
-                mImageView.setImageBitmap(mBitmap);
+//                Bitmap bitmap = null;
+//                if (mImgOrginHeight != (int) mActivity.screenWidth && mImgOrginWidth != (int) mActivity.screenHeight) {
+//                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
+//                }
+//                mBitmap = bitmap;
+//                mImageView.setImageBitmap(mBitmap);
+                mImageView.setImageBitmap(resource);
                 dismissProgressBar();
                 mImageView.setVisibility(View.VISIBLE);
 
