@@ -19,7 +19,10 @@ import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
 import com.cantv.media.center.app.MyApplication;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.media.MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ProxyPlayer {
@@ -193,35 +196,29 @@ public class ProxyPlayer {
         return mLitePlayer;
     }
 
+
     /**
-     * 内置字幕方法，默认返回中文字幕
+     * 获取内置字幕列表
      *
-     * @param srtPath
-     * @param listener
+     * @return
      */
-    public void addText(String srtPath, OnTimedTextListener listener) {
-        try {
-            if ("" == srtPath) return;
-//            getLitePlayer().addTimedTextSource(srtPath, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP);
-
-            TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
-            int chiTrack = 0;
-            boolean isFind = false;
-            if (trackInfos != null && trackInfos.length > 0) {
-                for (int i = 0; i < trackInfos.length; i++) {
-                    TrackInfo info = trackInfos[i];
-                    if (info.getLanguage().equals("chi")) {
-                        isFind = true;
-                        chiTrack = i;
-                    }
+    public List<Integer> getINSubList() {
+        ArrayList<Integer> saveSubIndexList = new ArrayList<>();
+        TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
+        if (trackInfos != null && trackInfos.length > 0) {
+            for (int i = 0; i < trackInfos.length; i++) {
+                TrackInfo info = trackInfos[i];
+                if (info.getTrackType() == MEDIA_TRACK_TYPE_TIMEDTEXT) {
+                    saveSubIndexList.add(i);
                 }
-                if (isFind) getLitePlayer().selectTrack(chiTrack);
             }
-            getLitePlayer().setOnTimedTextListener(listener);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        return saveSubIndexList;
+    }
+
+
+    public void selectTrackInfo(int index) {
+        getLitePlayer().selectTrack(index);
     }
 
     /**
@@ -243,6 +240,10 @@ public class ProxyPlayer {
 
     public void reset() {
         getLitePlayer().reset();
+    }
+
+    public void setSubPath(String subPath) {
+        getLitePlayer().setSubPath(subPath);
     }
 
 }

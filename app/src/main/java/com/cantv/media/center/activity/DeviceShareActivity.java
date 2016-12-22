@@ -29,17 +29,14 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.DeviceInfo;
-import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.DeviceAddDialog;
 import com.cantv.media.center.ui.DeviceAddDialog.OnIpConfirmedListener;
 import com.cantv.media.center.ui.DeviceLoginDialog;
 import com.cantv.media.center.ui.DeviceLoginDialog.OnLoginListener;
 import com.cantv.media.center.ui.DeviceShareItemView;
-import com.cantv.media.center.ui.DisclaimerDialog;
 import com.cantv.media.center.ui.LoadingDialog;
 import com.cantv.media.center.ui.ShareGuideDialog;
 import com.cantv.media.center.utils.BitmapUtils;
-import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.ToastUtils;
@@ -160,6 +157,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mNetIpTv = (TextView) findViewById(R.id.tv_net_ip);
         mScrollView = (HorizontalScrollView) findViewById(R.id.hsv_device_list);
         mDeviceItemGroup = (LinearLayout) findViewById(R.id.ll_device_list);
+        getShareGuideDialog();
         mAddDeviceView = (DeviceShareItemView) mDeviceItemGroup.getChildAt(0);
         mAddDeviceView.setBackgroundResource(getRandomBgRes());
         mAddDeviceView.setOnFocusChangeListener(this);
@@ -167,11 +165,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
             @Override
             public void onClick(View v) {
-                //getShareGuideDialog();
                 showAddDeviceDialog();
             }
         });
-        //getShareGuideDialog();
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus_full_content);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
     }
@@ -624,8 +620,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     }
 
     /**
-     * 免责声明
-     *
+     * 共享向导
      */
     private void getShareGuideDialog() {
         int shareGuide = SharedPreferenceUtil.getShareGuide();
@@ -635,18 +630,21 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 mShareGuideDialog.setOnClickableListener(new ShareGuideDialog.OnClickableListener() {
                     @Override
                     public void onConfirmClickable() {
-                        showAddDeviceDialog();
+                        mScrollView.setVisibility(View.VISIBLE);
                         return;
                     }
 
                     @Override
                     public void onCancelClickable() {
-                        showAddDeviceDialog();
+                        mScrollView.setVisibility(View.VISIBLE);
                         return;
                     }
                 });
+                mShareGuideDialog.setCancelable(false);
             }
             mShareGuideDialog.show();
+        } else {
+            mScrollView.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -4,6 +4,12 @@ public class MenuConstant {
 
     public static final String SUBMENU_AUDIOTRACKER = "音轨";
 
+    public static final String SUBMENU_SUBTITLE = "无";
+    public static final String SUBMENU_INSUBTITLE = "内嵌文件";
+    public static final String SUBMENU_OUTSUBTITLE = "外挂文件";
+    public static final String SUBMENU_INSUB = "内嵌";
+    public static final String SUBMENU_OUTSUB = "外挂";
+
     public static final String SUBMENU_IMAGESCALE_ORIGINAL = "原始比例";
     public static final String SUBMENU_IMAGESCALE_FULL = "全屏播放";
     public static final String SUBMENU_IMAGESCALE_4_3 = "4:3";

@@ -2,7 +2,6 @@ package com.cantv.liteplayer.core;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.TimedText;
 import android.os.Build;
@@ -11,7 +10,6 @@ import android.view.SurfaceHolder;
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
-import com.cantv.media.center.app.MyApplication;
 
 import java.io.IOException;
 import java.util.List;
@@ -127,6 +125,12 @@ public class LitePlayer extends MediaPlayer {
     public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
         super.setDataSource(path);
         mStatusInfo.mSourceUri = path;
+    }
+
+    public void setSubPath(String subPath) {
+        if (null != mAssitant) {
+            mAssitant.setSubTitle(LitePlayer.this, subPath);
+        }
     }
 
 
