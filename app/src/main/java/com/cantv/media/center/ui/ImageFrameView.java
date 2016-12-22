@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,8 +14,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.utils.ImageUtils;
 
@@ -84,51 +81,52 @@ public class ImageFrameView extends FrameLayout {
         }
 
         //加50是为了防止刚好是屏幕的整数倍,出现获取处理后的图片宽高正好和屏幕的宽高相同而出现不能缩放(也有可能碰到是加完后数据的整数倍)
-        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                mImgOrginWidth = resource.getWidth();
-                mImgOrginHeight = resource.getHeight();
+        Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(mImageView);
+//        {
+//            @Override
+//            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                mImgOrginWidth = resource.getWidth();
+//                mImgOrginHeight = resource.getHeight();
 //                Bitmap bitmap = null;
-//                if (mImgOrginHeight != (int) mActivity.screenWidth && mImgOrginWidth != (int) mActivity.screenHeight) {
-//                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
-//                }
-//                mBitmap = bitmap;
-//                mImageView.setImageBitmap(mBitmap);
-                mImageView.setImageBitmap(resource);
+////                if (mImgOrginHeight != (int) mActivity.screenWidth && mImgOrginWidth != (int) mActivity.screenHeight) {
+////                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
+////                }
+////                mBitmap = bitmap;
+////                mImageView.setImageBitmap(mBitmap);
+//                mImageView.setImageBitmap(resource);
                 dismissProgressBar();
                 mImageView.setVisibility(View.VISIBLE);
-
+//
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccessed(true);
                     mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
                 }
+//
+//                if (mBitmap != null && !mBitmap.isRecycled()) {
+//                    mBitmap = null;
+//                    resource = null;
+//                }
+//            }
 
-                if (mBitmap != null && !mBitmap.isRecycled()) {
-                    mBitmap = null;
-                    resource = null;
-                }
-            }
-
-            @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
-                //解决图片加载不出来的情况下，页面一直处于加载中
-                //重试3次后弹出异常提示
-                if (loadError >= 3) {
-                    loadError = 0;
-                    dismissProgressBar();
-                    if (null != mLoadingImgListener) {
-                        mLoadingImgListener.loadSuccessed(false);
-                        //mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
-                    }
-                } else {
-                    loadImage(imageUri);
-                    loadError++;
-                }
-                //解决图片加载不出来的情况下，页面一直处于加载中
-            }
-        });
+//            @Override
+//            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                super.onLoadFailed(e, errorDrawable);
+//                //解决图片加载不出来的情况下，页面一直处于加载中
+//                //重试3次后弹出异常提示
+//                if (loadError >= 3) {
+//                    loadError = 0;
+//                    dismissProgressBar();
+//                    if (null != mLoadingImgListener) {
+//                        mLoadingImgListener.loadSuccessed(false);
+//                        //mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
+//                    }
+//                } else {
+//                    loadImage(imageUri);
+//                    loadError++;
+//                }
+//                //解决图片加载不出来的情况下，页面一直处于加载中
+//            }
+//        });
     }
 
     public static Bitmap getBitmap(Bitmap bitmap, int screenWidth, int screenHight) {

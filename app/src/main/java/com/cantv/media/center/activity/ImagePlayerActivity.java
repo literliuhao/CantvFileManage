@@ -483,10 +483,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 float calc = calcByWH(mWidth, mHeight, mSizeType);
                 Log.i("ImagePlayerActivity", "calc " + calc);
-                if (calc >= 2.0f) {
-                    Log.i("ImagePlayerActivity", "calc == " + 1f);
-                    calc -= 1f;
-                }
                 mImageBrowser.onZoomScale(calc);
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
