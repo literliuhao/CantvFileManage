@@ -205,7 +205,6 @@ public class ProxyPlayer {
      */
     public List<String> getINSubList() {
         ArrayList<String> saveSubIndexList = new ArrayList<>();
-
         TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
         if (trackInfos != null && trackInfos.length > 0) {
             for (int i = 0; i < trackInfos.length; i++) {
@@ -221,9 +220,50 @@ public class ProxyPlayer {
                 }
             }
         }
-        return saveSubIndexList;
+        return getLanguageList(saveSubIndexList);
     }
 
+    /**
+     * 目的:把类似下列集合归类排序
+     * ("und", "und", "1.a", "2.a", "3.a", "4.c", "6.b", "3.c", "2.und", "9.c", "1.b");
+     * @param list
+     */
+    private List<String> getLanguageList(List<String> list) {
+        ArrayList<String> list1 = new ArrayList<>();
+        ArrayList<String> list3 = new ArrayList<>();
+        for (int i = 0; i < list.size() - 1; i++) {
+            String s1 = list.get(i);
+            if (s1.equals("und")) {
+                list3.add(s1);
+                continue;
+            }
+            String string = s1.substring(list.get(i).indexOf("."));
+            if (!list1.contains(string)) {
+                list1.add(string);
+            } else {
+                continue;
+            }
+            ArrayList<String> list2 = new ArrayList<>();
+            list2.add(s1);
+            for (int j = i + 1; j < list.size(); j++) {
+                String s = list.get(j).substring(list.get(j).indexOf("."));
+                if (s.equals(string)) {
+                    list1.add(s);
+                    list2.add(list.get(j));
+                }
+            }
+            ArrayList<String> list4 = new ArrayList<>();
+            if (list2.size() > 1) {
+                for (int m = 0; m < list2.size(); m++) {
+                    list4.add(list2.get(m) + (m + 1));
+                }
+            } else {
+                list4.addAll(list2);
+            }
+            list3.addAll(list4);
+        }
+        return list3;
+    }
 
     public void selectTrackInfo(int index) {
         try {
