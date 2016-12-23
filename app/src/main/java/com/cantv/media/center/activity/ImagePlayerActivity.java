@@ -297,7 +297,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 isRotation = false;
                 mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
                 mPosition.setText(String.valueOf(mCurImageIndex + 1));
                 mTotal.setText(" / " + getData().size());
                 arrowShow(getData());
@@ -310,20 +309,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
                     }
                 });
-                if (!mAutoPlay) {
-                    if (curIndex == getData().size() && curIndex != 1) {
-                        mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG);
-                        mToast.show();
-                    } else if (curIndex == 1 && getData().size() > 1) {
-                        mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
-                        mToast.show();
-                    }
-                }
-                //修改幻灯片播放问题，时间不准
-                if (mAutoPlay) {
-                    mAutoPlay = false;
-                    startAutoPlay();
-                }
             }
 
             @Override
@@ -342,6 +327,22 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             @Override
             public void loadResourceReady(boolean isLoadReady) {
                 mLoadReady = isLoadReady;
+                if (isLoadReady) {
+                    if (!mAutoPlay) {
+                        if (curIndex == getData().size() && curIndex != 1) {
+                            mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG);
+                            mToast.show();
+                        } else if (curIndex == 1 && getData().size() > 1) {
+                            mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
+                            mToast.show();
+                        }
+                    }
+                    //修改幻灯片播放问题，时间不准
+                    if (mAutoPlay) {
+                        mAutoPlay = false;
+                        startAutoPlay();
+                    }
+                }
             }
         });
     }
