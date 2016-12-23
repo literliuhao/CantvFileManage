@@ -84,16 +84,21 @@ public class StringUtil {
 
     /**
      * 获取指定字母开头的语言
+     *
      * @param string
      * @return
      */
     public static String getLanguage(String string) {
+        if (string.equals("jpn")) {
+            return "Japanese";
+        }
         for (int i = 0; i < mLanguageList.size(); i++) {
             if (mLanguageList.get(i).toLowerCase().indexOf(string.toLowerCase()) == 0) {
                 return mLanguageList.get(i);
             }
         }
         return "und";
+
     }
 
 }

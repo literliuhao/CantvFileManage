@@ -203,8 +203,8 @@ public class ProxyPlayer {
      *
      * @return
      */
-    public List<String > getINSubList() {
-        ArrayList<String > saveSubIndexList = new ArrayList<>();
+    public List<String> getINSubList() {
+        ArrayList<String> saveSubIndexList = new ArrayList<>();
 
         TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
         if (trackInfos != null && trackInfos.length > 0) {
@@ -213,9 +213,9 @@ public class ProxyPlayer {
                 if (info.getTrackType() == MEDIA_TRACK_TYPE_TIMEDTEXT) {
                     String language = info.getLanguage();
                     if (!"und".equals(language)) {
-                        StringUtil.getLanguage(language);
+                        language = StringUtil.getLanguage(language);
                     }
-                    saveSubIndexList.add(i+"."+language);
+                    saveSubIndexList.add(i + "." + language);
                 }
             }
         }

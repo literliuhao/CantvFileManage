@@ -67,6 +67,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private boolean mOpenInSubtitle = true;    //是否开启内置字幕
     private boolean mOpenExternalSubtitle;    //是否开启内置字幕
     private String mLastStr;   //当前外置字幕的后缀
+    private String subName = "";
 
 
     @Override
@@ -691,10 +692,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //内嵌字幕
         MenuItem inSubtitleMenuItem = new MenuItem("内嵌字幕", MenuItem.TYPE_SELECTOR);
         List<MenuItem> inSubtitleMenuItems = new ArrayList<MenuItem>();
-        List<Integer> inSubList = getProxyPlayer().getINSubList();
-        Log.i("shen", "createMenuData: " + inSubList.size());
+        List<String> inSubList = getProxyPlayer().getINSubList();
         for (int i = 0; i < inSubList.size(); i++) {
-            MenuItem item = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE + (i + 1));
+            String substring = inSubList.get(i).substring(2);
+            if (substring.equals("und")) {
+                subName = MenuConstant.SUBMENU_INSUBTITLE;
+            } else {
+                subName = substring;
+            }
+            MenuItem item = new MenuItem(subName + (i + 1));
             item.setType(MenuItem.TYPE_SELECTOR);
             inSubtitleMenuItems.add(item);
             if (i == 0) {
@@ -719,7 +725,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         List<MenuItem> outSubtitleMenuItems = new ArrayList<MenuItem>();
         outSubtitleMenuItems.add(0, outSubtitleSubMenuOriginal);
         List<String> externalSubList = getExternalSubList();
-        Log.i("shen", "createMenuData: " + externalSubList.size());
         for (int i = 0; i < externalSubList.size(); i++) {
             MenuItem item = new MenuItem(MenuConstant.SUBMENU_OUTSUBTITLE + (i + 1));
             item.setType(MenuItem.TYPE_SELECTOR);
@@ -752,9 +757,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     private List<MenuItem> getInSubtitleList() {
         List<MenuItem> inSubtitleMenuItems = new ArrayList<MenuItem>();
-        List<Integer> inSubList = getProxyPlayer().getINSubList();
+        List<String> inSubList = getProxyPlayer().getINSubList();
         for (int i = 0; i < inSubList.size(); i++) {
-            MenuItem item = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE + (i + 1));
+            String substring = inSubList.get(i).substring(2);
+            if (substring.equals("und")) {
+                subName = MenuConstant.SUBMENU_INSUBTITLE;
+            } else {
+                subName = substring;
+            }
+            MenuItem item = new MenuItem(subName + (i + 1));
             item.setType(MenuItem.TYPE_SELECTOR);
             inSubtitleMenuItems.add(item);
         }
