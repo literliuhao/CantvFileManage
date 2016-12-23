@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,9 +14,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cantv.media.center.activity.ImagePlayerActivity;
-import com.cantv.media.center.utils.ImageUtils;
-
-import java.io.File;
 
 @SuppressLint("ResourceAsColor")
 public class ImageFrameView extends FrameLayout {
@@ -28,7 +24,7 @@ public class ImageFrameView extends FrameLayout {
     private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
     private final long SHOWPROCESS_FILE_SIZE = 50 * 1024 * 1024;
     private LoadingDialog mLoadingDialog;
-    private MediaImageViewLoaderTask mTask;
+//    private MediaImageViewLoaderTask mTask;
     private NotifyParentUpdate mNotifyParentUpdate;
     private Context mContext;
     private ImagePlayerActivity mActivity;
@@ -188,78 +184,78 @@ public class ImageFrameView extends FrameLayout {
         }
     }
 
-    private void asyncLoadData() {
-        if (mTask != null) {
-            mTask.execute();
-            mTask = null;
-        }
-    }
+//    private void asyncLoadData() {
+//        if (mTask != null) {
+//            mTask.execute();
+//            mTask = null;
+//        }
+//    }
 
-    private class MediaImageViewLoaderTask extends AsyncTask<Void, Void, Bitmap> {
-        private final String mimageUri;
-        private final Runnable monfinish;
-        private int mImgWidth;
-        private int mImgHeight;
-
-        MediaImageViewLoaderTask(final String imageUri, final Runnable onfinish) {
-            mimageUri = imageUri;
-            monfinish = onfinish;
-        }
-
-        protected void onPreExecute() {
-            if (new File(mimageUri).length() > SHOWPROCESS_FILE_SIZE) {
-                showProgressBar();
-            }
-            if (mBitmap != null && !mBitmap.isRecycled()) {
-                mBitmap = null;
-            }
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            dismissProgressBar();
-            mImgOrginWidth = mImgWidth;
-            mImgOrginHeight = mImgHeight;
-            mImageView.setImageBitmap(mBitmap);
-            if (mNotifyParentUpdate != null) {
-                mNotifyParentUpdate.update();
-            }
-
-            if (null != mLoadingImgListener) {
-                mLoadingImgListener.loadSuccessed(true);
-            }
-
-            requestLayout();
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            try {
-                BitmapFactory.Options opt = new BitmapFactory.Options();
-                opt.inJustDecodeBounds = true;
-                mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
-                mImgWidth = opt.outWidth;
-                mImgHeight = opt.outHeight;
-                opt.inJustDecodeBounds = false;
-                if (new File(mimageUri).length() >= MAX_FILE_SIZE) {
-                    opt.inPurgeable = true;// 设置为True时，表示系统内存不足时可以被回
-                    // 收，设置为False时，表示不能被回收
-                    opt.inInputShareable = true;
-                    opt.inPreferredConfig = Bitmap.Config.ARGB_4444;
-                }
-                // mBitmap = ImageUtils.createImageThumbnail(mimageUri);
-                // mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
-                mBitmap = ImageUtils.createBitmap(mimageUri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (monfinish != null) {
-                    monfinish.run();
-                }
-            }
-            // mBitmap = ImageUtils.createBitmap(mimageUri);
-            return mBitmap;
-        }
-    }
+//    private class MediaImageViewLoaderTask extends AsyncTask<Void, Void, Bitmap> {
+//        private final String mimageUri;
+//        private final Runnable monfinish;
+//        private int mImgWidth;
+//        private int mImgHeight;
+//
+//        MediaImageViewLoaderTask(final String imageUri, final Runnable onfinish) {
+//            mimageUri = imageUri;
+//            monfinish = onfinish;
+//        }
+//
+//        protected void onPreExecute() {
+//            if (new File(mimageUri).length() > SHOWPROCESS_FILE_SIZE) {
+//                showProgressBar();
+//            }
+//            if (mBitmap != null && !mBitmap.isRecycled()) {
+//                mBitmap = null;
+//            }
+//        }
+//
+//        protected void onPostExecute(Bitmap result) {
+//            dismissProgressBar();
+//            mImgOrginWidth = mImgWidth;
+//            mImgOrginHeight = mImgHeight;
+//            mImageView.setImageBitmap(mBitmap);
+//            if (mNotifyParentUpdate != null) {
+//                mNotifyParentUpdate.update();
+//            }
+//
+//            if (null != mLoadingImgListener) {
+//                mLoadingImgListener.loadSuccessed(true);
+//            }
+//
+//            requestLayout();
+//        }
+//
+//        @Override
+//        protected Bitmap doInBackground(Void... params) {
+//            try {
+//                BitmapFactory.Options opt = new BitmapFactory.Options();
+//                opt.inJustDecodeBounds = true;
+//                mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
+//                mImgWidth = opt.outWidth;
+//                mImgHeight = opt.outHeight;
+//                opt.inJustDecodeBounds = false;
+//                if (new File(mimageUri).length() >= MAX_FILE_SIZE) {
+//                    opt.inPurgeable = true;// 设置为True时，表示系统内存不足时可以被回
+//                    // 收，设置为False时，表示不能被回收
+//                    opt.inInputShareable = true;
+//                    opt.inPreferredConfig = Bitmap.Config.ARGB_4444;
+//                }
+//                // mBitmap = ImageUtils.createImageThumbnail(mimageUri);
+//                // mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
+//                mBitmap = ImageUtils.createBitmap(mimageUri);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            } finally {
+//                if (monfinish != null) {
+//                    monfinish.run();
+//                }
+//            }
+//            // mBitmap = ImageUtils.createBitmap(mimageUri);
+//            return mBitmap;
+//        }
+//    }
 
     public void setNotifyParentUpdateListner(NotifyParentUpdate listen) {
         mNotifyParentUpdate = listen;
