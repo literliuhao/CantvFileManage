@@ -1,9 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cantv.media"
           android:sharedUserId="android.uid.system"
-          android:versionCode="145"
-          android:versionName="20161212X_v1.4.5">
-
+          android:versionCode="146"
+          android:versionName="20161223_v1.4.6">
 
     <uses-sdk
         android:minSdkVersion="19"

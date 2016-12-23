@@ -35,6 +35,7 @@ import com.cantv.media.center.ui.DeviceLoginDialog;
 import com.cantv.media.center.ui.DeviceLoginDialog.OnLoginListener;
 import com.cantv.media.center.ui.DeviceShareItemView;
 import com.cantv.media.center.ui.LoadingDialog;
+import com.cantv.media.center.ui.ShareGuideDialog;
 import com.cantv.media.center.utils.BitmapUtils;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
@@ -79,6 +80,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     private boolean isFirst = true;
     Drawable mBlurDrawable;
+    private ShareGuideDialog mShareGuideDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +157,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mNetIpTv = (TextView) findViewById(R.id.tv_net_ip);
         mScrollView = (HorizontalScrollView) findViewById(R.id.hsv_device_list);
         mDeviceItemGroup = (LinearLayout) findViewById(R.id.ll_device_list);
+        getShareGuideDialog();
         mAddDeviceView = (DeviceShareItemView) mDeviceItemGroup.getChildAt(0);
         mAddDeviceView.setBackgroundResource(getRandomBgRes());
         mAddDeviceView.setOnFocusChangeListener(this);
@@ -264,7 +267,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 onFocusChange(mAddDeviceView, true);
                 mFocusUtils.hideFocusForStartMove(400);
             }
-        }, 500);
+        }, 700);
 
 
     }
@@ -616,4 +619,32 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         });
     }
 
+    /**
+     * 共享向导
+     */
+    private void getShareGuideDialog() {
+        int shareGuide = SharedPreferenceUtil.getShareGuide();
+        if (shareGuide == 0) {
+            if (mShareGuideDialog == null) {
+                mShareGuideDialog = new ShareGuideDialog(this);
+                mShareGuideDialog.setOnClickableListener(new ShareGuideDialog.OnClickableListener() {
+                    @Override
+                    public void onConfirmClickable() {
+                        mScrollView.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    @Override
+                    public void onCancelClickable() {
+                        mScrollView.setVisibility(View.VISIBLE);
+                        return;
+                    }
+                });
+                mShareGuideDialog.setCancelable(false);
+            }
+            mShareGuideDialog.show();
+        } else {
+            mScrollView.setVisibility(View.VISIBLE);
+        }
+    }
 }

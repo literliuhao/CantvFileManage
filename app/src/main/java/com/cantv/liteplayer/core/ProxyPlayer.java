@@ -18,8 +18,12 @@ import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
 import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.utils.StringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.media.MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ProxyPlayer {
@@ -193,32 +197,78 @@ public class ProxyPlayer {
         return mLitePlayer;
     }
 
-    /**
-     * 内置字幕方法，默认返回中文字幕
-     *
-     * @param srtPath
-     * @param listener
-     */
-    public void addText(String srtPath, OnTimedTextListener listener) {
-        try {
-            if ("" == srtPath) return;
-//            getLitePlayer().addTimedTextSource(srtPath, MediaPlayer.MEDIA_MIMETYPE_TEXT_SUBRIP);
 
-            TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
-            int chiTrack = 0;
-            boolean isFind = false;
-            if (trackInfos != null && trackInfos.length > 0) {
-                for (int i = 0; i < trackInfos.length; i++) {
-                    TrackInfo info = trackInfos[i];
-                    if (info.getLanguage().equals("chi")) {
-                        isFind = true;
-                        chiTrack = i;
+    /**
+     * 获取内置字幕列表
+     *
+     * @return
+     */
+    public List<String> getINSubList() {
+        ArrayList<String> saveSubIndexList = new ArrayList<>();
+        TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
+        if (trackInfos != null && trackInfos.length > 0) {
+            for (int i = 0; i < trackInfos.length; i++) {
+                TrackInfo info = trackInfos[i];
+                if (info.getTrackType() == MEDIA_TRACK_TYPE_TIMEDTEXT) {
+                    String language = info.getLanguage();
+                    if (!"und".equals(language)) {
+                        language = StringUtil.getLanguage(language);
+                        saveSubIndexList.add(saveSubIndexList.size(), i + "." + language);
+                    } else {
+                        saveSubIndexList.add(0, i + "." + language);
                     }
                 }
-                if (isFind) getLitePlayer().selectTrack(chiTrack);
             }
-            getLitePlayer().setOnTimedTextListener(listener);
+        }
+        return getLanguageList(saveSubIndexList);
+    }
 
+    /**
+     * 目的:把类似下列集合归类排序
+     * ("und", "und", "1.a", "2.a", "3.a", "4.c", "6.b", "3.c", "2.und", "9.c", "1.b");
+     *
+     * @param list
+     */
+    private List<String> getLanguageList(List<String> list) {
+        ArrayList<String> list1 = new ArrayList<>();
+        ArrayList<String> list3 = new ArrayList<>();
+        for (int i = 0; i < list.size() - 1; i++) {
+            String s1 = list.get(i);
+            String string = s1.substring(s1.indexOf(".") + 1);
+            if (string.equals("und")) {
+                list3.add(s1);
+                continue;
+            }
+            if (!list1.contains(string)) {
+                list1.add(string);
+            } else {
+                continue;
+            }
+            ArrayList<String> list2 = new ArrayList<>();
+            list2.add(s1);
+            for (int j = i + 1; j < list.size(); j++) {
+                String s = list.get(j).substring(list.get(j).indexOf("."));
+                if (s.equals(string)) {
+                    list1.add(s);
+                    list2.add(list.get(j));
+                }
+            }
+            ArrayList<String> list4 = new ArrayList<>();
+            if (list2.size() > 1) {
+                for (int m = 0; m < list2.size(); m++) {
+                    list4.add(list2.get(m) + (m + 1));
+                }
+            } else {
+                list4.addAll(list2);
+            }
+            list3.addAll(list4);
+        }
+        return list3;
+    }
+
+    public void selectTrackInfo(int index) {
+        try {
+            getLitePlayer().selectTrack(index);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -244,5 +294,10 @@ public class ProxyPlayer {
     public void reset() {
         getLitePlayer().reset();
     }
+
+    public void setSubPath(String subPath) {
+        getLitePlayer().setSubPath(subPath);
+    }
+
 
 }

@@ -106,6 +106,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int mCurrentVolume;
     private Toast mToast = null;
     private long MENU_DURATION = 500;
+    private boolean mLoadSuccessed = false;
+
+    private boolean mLoadReady = false;
+    private TextView mLoadingFail;
+    private boolean mFullScreen;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -179,8 +184,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         return;
                     }
                     //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
-                    final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData
-                            ().get(mCurImageIndex).mUri;
+                    final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
                     final boolean isSharing = getData().get(mCurImageIndex).isSharing;
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -230,6 +234,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mAutoRunImageView = (ImageView) findViewById(R.id.media__image_view__auto);
         mInfo = (ImageView) findViewById(R.id.media__image_view__info);
         mHeader = (RelativeLayout) findViewById(R.id.media_image_header);
+        mLoadingFail = (TextView) findViewById(R.id.tv_loading_fail);
         mFrameView = new ImageFrameView(this);
         mFrameView.setNotifyParentUpdateListner(this);
         mImageBrowser = (ImageBrowser) findViewById(R.id.media__image_view__image);
@@ -262,7 +267,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mArrowRight.setVisibility(View.GONE);
         mPosition.setText("");
         mTotal.setText("");
-        if(mShowing){
+        mLoadingFail.setVisibility(View.GONE);
+        if (mShowing) {
             MENU_DURATION = 0;
             toHideView();
             MENU_DURATION = 500;
@@ -278,7 +284,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         boolean isSharing = getData().get(index).isSharing;
         mFrameView.playImage(url, isSharing, onfinish, new onLoadingImgListener() {
             @Override
-            public void loadSuccessed() {
+            public void loadSuccessed(boolean loadSuccessed) {
+                mLoadSuccessed = loadSuccessed;
+                //修复MASERATI-63USB幻灯片播放破损图片出现很抱歉，文件管理已停止运行，添加文字提示
+                if (!loadSuccessed) {
+                    mLoadingFail.setVisibility(View.VISIBLE);
+                }
                 if (isFirstMenu) {
                     isFirstMenu = false;
                     mHeader.setVisibility(View.VISIBLE);
@@ -286,7 +297,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 isRotation = false;
                 mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
                 mPosition.setText(String.valueOf(mCurImageIndex + 1));
                 mTotal.setText(" / " + getData().size());
                 arrowShow(getData());
@@ -299,20 +309,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         UiUtils.fadeView(mImageBrowser, 0, 1, UiUtils.ANIM_DURATION_LONG_LONG * 0, false, null);
                     }
                 });
-                if (!mAutoPlay) {
-                    if (curIndex == getData().size() && curIndex != 1) {
-                        mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG);
-                        mToast.show();
-                    } else if (curIndex == 1 && getData().size() > 1) {
-                        mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
-                        mToast.show();
-                    }
-                }
-                //修改幻灯片播放问题，时间不准
-                if (mAutoPlay) {
-                    mAutoPlay = false;
-                    startAutoPlay();
-                }
             }
 
             @Override
@@ -324,7 +320,29 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
 
             @Override
-            public void getSizeSuccessed(int width, int height) {
+            public void isFullScreen(boolean isFullScreen) {
+                mFullScreen = isFullScreen;
+            }
+
+            @Override
+            public void loadResourceReady(boolean isLoadReady) {
+                mLoadReady = isLoadReady;
+                if (isLoadReady) {
+                    if (!mAutoPlay) {
+                        if (curIndex == getData().size() && curIndex != 1) {
+                            mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG);
+                            mToast.show();
+                        } else if (curIndex == 1 && getData().size() > 1) {
+                            mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
+                            mToast.show();
+                        }
+                    }
+                    //修改幻灯片播放问题，时间不准
+                    if (mAutoPlay) {
+                        mAutoPlay = false;
+                        startAutoPlay();
+                    }
+                }
             }
         });
     }
@@ -348,6 +366,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         //实际大小
         if (!isFullSize) {
+            mSizeType = true;
             if (currentW > screenWidth || currentH > screenHeight) {
                 if (currentW > screenWidth && currentH > screenHeight) {
                     //取最大的进行缩放
@@ -358,12 +377,21 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     return currentH / screenHeight;
                 }
             } else {
-                //屏幕大于图片宽高时
-                return 1.0f;
+                if (currentW < screenWidth || currentH < screenHeight) {
+                    if ((screenWidth / currentW) > (screenHeight / currentH)) {
+                        return screenHeight / currentH;
+                    } else {
+                        return screenWidth / currentW;
+                    }
+                } else {
+                    //屏幕大于图片宽高时
+                    return 1.0f;
+                }
             }
         } else {
             //等比例全屏
             //图片宽高大于屏幕时
+            mSizeType = false;
             if (currentW > screenWidth || currentH > screenHeight) {
                 //图片实际宽高都大于屏幕宽高
                 if (currentW > screenWidth && currentH > screenHeight) {
@@ -389,29 +417,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 else {
                     return screenHeight / currentH;
                 }
-
-//                else {
-//                    if (!isRotation) {
-//                        if ((currentW - screenWidth) < (currentH - screenHeight)) {
-//                            return screenWidth / currentW;
-//                        } else {
-//                            return screenHeight / currentH;
-//                        }
-//                    } else {
-//                        if ((currentW - screenWidth) > (currentH - screenHeight)) {
-//                            return screenWidth / currentW;
-//                        } else {
-//                            return screenHeight / currentH;
-//                        }
-//                    }
-//                }
             } else {
                 //屏幕大于图片宽高时
-                if ((screenWidth / currentW) > (screenHeight / currentH)) {
-                    return screenHeight / currentH;
-                } else {
-                    return screenWidth / currentW;
-                }
+                return 1.0f;
             }
         }
 
@@ -454,7 +462,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 markRotation();
                 mImageBrowser.changeRotation();
                 mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
+                changeTvSize();
             }
         });
         mRotation.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -477,14 +485,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (isFastClick() || mAutoPlay) {
                     return;
                 }
+                //修复OS-2838大图浏览本地图片，按遥控器菜单键切换图片比例无效,再次切换才有效
                 if (!mSizeType) {
-                    mSizeType = true;
-                    mTvSize.setText(getString(R.string.image_real_size));
+                    resetTvSize();
                 } else {
-                    mSizeType = false;
-                    mTvSize.setText(getString(R.string.image_full_screen));
+                    changeTvSize();
                 }
-                mImageBrowser.onZoomScale(calcByWH(mWidth, mHeight, mSizeType));
+                float calc = calcByWH(mWidth, mHeight, mSizeType);
+                Log.i("ImagePlayerActivity", "calc " + calc);
+                mImageBrowser.onZoomScale(calc);
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
@@ -585,10 +594,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 } else {
                     translateUp(mTvInfo);
                     if (mLayout.getVisibility() == View.VISIBLE) {
-                        Animation translateAnimation = new TranslateAnimation(0.1f, 0.1f, 0.1f, 100.0f);
-                        // 设置动画时间
-                        translateAnimation.setDuration(300);
-                        mLayout.startAnimation(translateAnimation);
+                        //修复OS-2627 在本地储存中打开一个图片,点击图片信息按左键,在焦点移动时,图片信息会向上跳一下在消失
+                        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0);
+                        alphaAnimation.setDuration(500);
+                        alphaAnimation.setFillAfter(true);
+                        mLayout.startAnimation(alphaAnimation);
                         mLayout.setVisibility(View.GONE);
                         nflag = true;
                     }
@@ -636,7 +646,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             //修复OS-2665播放幻灯片时有破损图片文件管理器崩溃问题
             try {
                 getScreenLock().release();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -654,11 +664,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mediaimagebar.setVisibility(View.GONE);
         MainThread.cancel(mToHideRunnable);
         mFocusUtils.hideFocus();
-        toFlyView(0, 0, 0, 1, true, false,MENU_DURATION);
+        toFlyView(0, 0, 0, 1, true, false, MENU_DURATION);
     }
 
     private void toShowView() {
         if (mShowing) return;
+        if (mSizeType) {
+            resetTvSize();
+        } else {
+            changeTvSize();
+        }
         switch (POSTION) {
             case 0:
                 mRotation.requestFocus();
@@ -678,10 +693,19 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mShowing = true;
         MainThread.runLater(mToHideRunnable, 5 * 1000);
         mediaimagebar.setVisibility(View.VISIBLE);
-        toFlyView(0, 0, 1, 0, true, true,MENU_DURATION);
+        toFlyView(0, 0, 1, 0, true, true, MENU_DURATION);
     }
 
-    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status,long duration) {
+    //改变提示状态
+    private void resetTvSize() {
+        if (mFullScreen) {
+            mTvSize.setText(getString(R.string.image_full_screen));
+        } else {
+            mTvSize.setText(getString(R.string.image_real_size));
+        }
+    }
+
+    private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status, long duration) {
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, fromXValue, Animation.RELATIVE_TO_SELF, toXValue, Animation.RELATIVE_TO_SELF, fromYValue, Animation.RELATIVE_TO_SELF, toYValue);
         animation.setDuration(duration);
         animation.setFillAfter(fillAfter);
@@ -732,7 +756,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             return false;
         }
         if (keyCode == event.KEYCODE_MENU && event.getAction() == KeyEvent.ACTION_DOWN) {
-            toShowView();
+            if (mLoadSuccessed) {
+                if (mLoadReady) {
+                    toShowView();
+                }
+            }
             return true;
         }
         if (!mAutoPlay) {
@@ -758,20 +786,24 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (isFastClick()) {
                     return true;
                 }
-                markRotation();
-                mImageBrowser.changeRotation();
-                mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
+                if (mLoadReady) {
+                    markRotation();
+                    mImageBrowser.changeRotation();
+                    mSizeType = false;
+                    changeTvSize();
+                }
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (isFastClick()) {
                     return true;
                 }
-                markRotation();
-                mImageBrowser.changeUpRotation();
-                mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
+                if (mLoadReady) {
+                    markRotation();
+                    mImageBrowser.changeUpRotation();
+                    mSizeType = false;
+                    changeTvSize();
+                }
                 return true;
             }
         }
@@ -807,6 +839,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
          * } return true; }
          */
         return super.onKeyDown(keyCode, event);
+    }
+
+    //初始提示状态
+    private void changeTvSize() {
+        if (mFullScreen) {
+            mTvSize.setText(getString(R.string.image_real_size));
+        } else {
+            mTvSize.setText(getString(R.string.image_full_screen));
+        }
     }
 
     @Override
@@ -943,7 +984,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
     }*/
 
-
     public boolean isPressback;
 
     @Override
@@ -956,7 +996,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
      * 修复OS-795本地播放幻灯片，没有背景音乐，切换图片时会响应按键音。
      * 关闭按键音
      */
-    public void closeVolume(){
+    public void closeVolume() {
         mImageBrowser.setSoundEffectsEnabled(false);
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
     }
@@ -964,7 +1004,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     /**
      * 打开按键音
      */
-    public void openVolume(){
+    public void openVolume() {
         mImageBrowser.setSoundEffectsEnabled(true);
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
     }

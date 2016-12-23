@@ -223,7 +223,11 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         registerReceiver(mReceiver, filter);
         mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
-        mVersion.setText(FileUtil.getVersionName(this));
+        mVersion.setText(FileUtil.getVersionName(this)
+//                +" 产品型号:"+ SystemCateUtil.productModel()
+//                +"\n固件版本: "+SystemCateUtil.getSystemVersion()+"\n系统版本:Android "
+//                + android.os.Build.VERSION.RELEASE
+        );
         alertDialog = new AlertDialog.Builder(mContext).create();
 //        Intent intentStart = new Intent(this, BootDialogService.class);
 //        intentStart.setAction("com.cantv.service.RECEIVER_START");

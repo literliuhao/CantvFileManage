@@ -4,43 +4,36 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cantv.media.center.activity.ImagePlayerActivity;
-import com.cantv.media.center.app.MyApplication;
-import com.cantv.media.center.utils.ImageUtils;
-
-import java.io.File;
 
 @SuppressLint("ResourceAsColor")
 public class ImageFrameView extends FrameLayout {
     public Bitmap mBitmap = null;
     private final ImageView mImageView;
-    private int mImgOrginWidth;
-    private int mImgOrginHeight;
-    private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
-    private final long SHOWPROCESS_FILE_SIZE = 50 * 1024 * 1024;
+    private int mImgWidth;
+    private int mImgHeight;
     private LoadingDialog mLoadingDialog;
-    private MediaImageViewLoaderTask mTask;
     private NotifyParentUpdate mNotifyParentUpdate;
     private Context mContext;
     private ImagePlayerActivity mActivity;
     private int callbackW;
     private int callbackH;
     private String ShareUrl_FLAG = "http://";
-    private int loadError = 0;
+    private int convertW = 0;
+    private int convertH = 0;
+    private int[] sizeArray = new int[2];
+    private final int MAX_LENGHT = 4096;
+    private int loadResourceReady = 0;
 
     public ImageFrameView(Context context) {
         super(context);
@@ -52,11 +45,13 @@ public class ImageFrameView extends FrameLayout {
     }
 
     public interface onLoadingImgListener {
-        void loadSuccessed();
+        void loadSuccessed(boolean loadSuccessed);
 
         void bitmapSize(int width, int height);
 
-        void getSizeSuccessed(int width, int height);
+        void isFullScreen(boolean isFullScreen);
+
+        void loadResourceReady(boolean isLoadReady);
     }
 
     private onLoadingImgListener mLoadingImgListener;
@@ -67,7 +62,34 @@ public class ImageFrameView extends FrameLayout {
         this.mLoadingImgListener = loadingImgListener;
         showProgressBar();
         mImageView.setVisibility(View.GONE);
+        loadResourceReady = 0;
         loadImage(imageUri);
+    }
+
+    public int[] convertImage(float imageWidht, float imageHeight) {
+        Log.i("convertImage", imageWidht + " " + imageHeight);
+        if (imageWidht > MAX_LENGHT || imageHeight > MAX_LENGHT) {
+            float lenghtW = imageWidht - MAX_LENGHT;
+            float lenghtH = imageHeight - MAX_LENGHT;
+            float cutNumber;
+            if (lenghtW > lenghtH) {
+                float calc = lenghtW / imageWidht;
+                imageWidht -= lenghtW;
+                cutNumber = imageHeight * calc;
+                imageHeight -= cutNumber;
+            } else if (lenghtH > lenghtW) {
+                float calc = lenghtH / imageHeight;
+                imageHeight -= lenghtH;
+                cutNumber = imageWidht * calc;
+                imageWidht -= cutNumber;
+
+            }
+        } else if (imageWidht < 0 || imageHeight < 0) {
+            imageWidht = (int) mActivity.screenWidth;
+            imageHeight = (int) mActivity.screenHeight;
+        }
+        Log.i("convertImage", imageWidht + " " + imageHeight);
+        return new int[]{(int) imageWidht, (int) imageHeight};
     }
 
     public void loadImage(final String imageUri) {
@@ -81,82 +103,49 @@ public class ImageFrameView extends FrameLayout {
             callbackW = options.outWidth;
             if (null != bitmap) {
                 bitmap.recycle();
-                bitmap = null;
             }
         }
 
-        //加50是为了防止刚好是屏幕的整数倍,出现获取处理后的图片宽高正好和屏幕的宽高相同而出现不能缩放(也有可能碰到是加完后数据的整数倍)
-        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
+        convertW = callbackW;
+        convertH = callbackH;
+        sizeArray = convertImage(convertW, convertH);
+
+        mImageView.setVisibility(View.VISIBLE);
+        Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                mImgOrginWidth = resource.getWidth();
-                mImgOrginHeight = resource.getHeight();
-                Bitmap bitmap = null;
-                if (mImgOrginHeight != (int) mActivity.screenWidth && mImgOrginWidth != (int) mActivity.screenHeight) {
-                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
-                }
-                mBitmap = bitmap;
-                mImageView.setImageBitmap(mBitmap);
+            public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
                 dismissProgressBar();
-                mImageView.setVisibility(View.VISIBLE);
-
                 if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccessed();
-                    mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
+                    mLoadingImgListener.loadSuccessed(false);
                 }
-
-                if (mBitmap != null && !mBitmap.isRecycled()) {
-                    mBitmap = null;
-                    resource = null;
-                }
+                return false;
             }
 
             @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
-                //解决图片加载不出来的情况下，页面一直处于加载中
-                //重试3次后弹出异常提示
-                if (loadError >= 3) {
-                    Toast.makeText(MyApplication.getContext(), "载入图片发生异常，请重试", Toast.LENGTH_LONG).show();
-                    loadError = 0;
-                    mActivity.isPressback = true;
-                    mActivity.finish();
-                } else {
-                    loadImage(imageUri);
-                    loadError++;
+            public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                dismissProgressBar();
+                mImgWidth = bitmap.getWidth();
+                mImgHeight = bitmap.getHeight();
+                loadResourceReady += 1;
+                if (null != mLoadingImgListener) {
+                    mLoadingImgListener.loadSuccessed(true);
+                    mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgWidth : sizeArray[0], imageUri.startsWith(ShareUrl_FLAG) ? mImgHeight : sizeArray[1]);
+                    if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
+                        mLoadingImgListener.isFullScreen(false);
+                    } else {
+                        mLoadingImgListener.isFullScreen(true);
+                    }
+                    mLoadingImgListener.loadResourceReady(loadResourceReady == 2 ? true : false);
                 }
-                //解决图片加载不出来的情况下，页面一直处于加载中
+                return false;
             }
-        });
-    }
-
-    public static Bitmap getBitmap(Bitmap bitmap, int screenWidth, int screenHight) {
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
-        Matrix matrix = new Matrix();
-        float scale = (float) screenWidth / w;
-        //修复OS-2080 USB幻灯片播”测试图片“文件夹内图片,播放中出现"很抱歉,文件管理已停止运行"(内存溢出)
-        float scale2 = (float) screenHight / h;
-        scale = scale < scale2 ? scale : scale2;
-        matrix.postScale(scale, scale);
-        Bitmap bmp = null;
-        try {
-            bmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
-            if (bitmap != null && !bitmap.equals(bmp) && !bitmap.isRecycled()) {
-                bitmap.recycle();
-                bitmap = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return bmp;
+        }).into(mImageView);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = mImgOrginWidth;
-        int height = mImgOrginHeight;
-//        Log.i("liujun4", "width====" + width + "---height====" + height);
+        int width = sizeArray[0];
+        int height = sizeArray[1];
         if (width == 0 || height == 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         } else {
@@ -186,79 +175,6 @@ public class ImageFrameView extends FrameLayout {
     private void dismissProgressBar() {
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
-        }
-    }
-
-    private void asyncLoadData() {
-        if (mTask != null) {
-            mTask.execute();
-            mTask = null;
-        }
-    }
-
-    private class MediaImageViewLoaderTask extends AsyncTask<Void, Void, Bitmap> {
-        private final String mimageUri;
-        private final Runnable monfinish;
-        private int mImgWidth;
-        private int mImgHeight;
-
-        MediaImageViewLoaderTask(final String imageUri, final Runnable onfinish) {
-            mimageUri = imageUri;
-            monfinish = onfinish;
-        }
-
-        protected void onPreExecute() {
-            if (new File(mimageUri).length() > SHOWPROCESS_FILE_SIZE) {
-                showProgressBar();
-            }
-            if (mBitmap != null && !mBitmap.isRecycled()) {
-                mBitmap = null;
-            }
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            dismissProgressBar();
-            mImgOrginWidth = mImgWidth;
-            mImgOrginHeight = mImgHeight;
-            mImageView.setImageBitmap(mBitmap);
-            if (mNotifyParentUpdate != null) {
-                mNotifyParentUpdate.update();
-            }
-
-            if (null != mLoadingImgListener) {
-                mLoadingImgListener.loadSuccessed();
-            }
-
-            requestLayout();
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            try {
-                BitmapFactory.Options opt = new BitmapFactory.Options();
-                opt.inJustDecodeBounds = true;
-                mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
-                mImgWidth = opt.outWidth;
-                mImgHeight = opt.outHeight;
-                opt.inJustDecodeBounds = false;
-                if (new File(mimageUri).length() >= MAX_FILE_SIZE) {
-                    opt.inPurgeable = true;// 设置为True时，表示系统内存不足时可以被回
-                    // 收，设置为False时，表示不能被回收
-                    opt.inInputShareable = true;
-                    opt.inPreferredConfig = Bitmap.Config.ARGB_4444;
-                }
-                // mBitmap = ImageUtils.createImageThumbnail(mimageUri);
-                // mBitmap = BitmapFactory.decodeFile(mimageUri, opt);
-                mBitmap = ImageUtils.createBitmap(mimageUri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (monfinish != null) {
-                    monfinish.run();
-                }
-            }
-            // mBitmap = ImageUtils.createBitmap(mimageUri);
-            return mBitmap;
         }
     }
 
