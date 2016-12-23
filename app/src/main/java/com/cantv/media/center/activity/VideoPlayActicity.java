@@ -695,12 +695,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         List<String> inSubList = getProxyPlayer().getINSubList();
         for (int i = 0; i < inSubList.size(); i++) {
             String substring = inSubList.get(i).substring(2);
+            MenuItem item = null;
             if (substring.equals("und")) {
                 subName = MenuConstant.SUBMENU_INSUBTITLE;
+                item = new MenuItem(subName + (i + 1));
             } else {
                 subName = substring;
+                item = new MenuItem(subName);
             }
-            MenuItem item = new MenuItem(subName + (i + 1));
             item.setType(MenuItem.TYPE_SELECTOR);
             inSubtitleMenuItems.add(item);
             if (i == 0) {
@@ -760,12 +762,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         List<String> inSubList = getProxyPlayer().getINSubList();
         for (int i = 0; i < inSubList.size(); i++) {
             String substring = inSubList.get(i).substring(2);
+            MenuItem item = null;
             if (substring.equals("und")) {
                 subName = MenuConstant.SUBMENU_INSUBTITLE;
+                item = new MenuItem(subName + (i + 1));
             } else {
                 subName = substring;
+                item = new MenuItem(subName);
             }
-            MenuItem item = new MenuItem(subName + (i + 1));
             item.setType(MenuItem.TYPE_SELECTOR);
             inSubtitleMenuItems.add(item);
         }

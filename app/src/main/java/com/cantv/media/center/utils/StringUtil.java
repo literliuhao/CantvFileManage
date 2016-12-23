@@ -97,7 +97,7 @@ public class StringUtil {
                 return mLanguageList.get(i);
             }
         }
-        return "und";
+        return string;
 
     }
 
