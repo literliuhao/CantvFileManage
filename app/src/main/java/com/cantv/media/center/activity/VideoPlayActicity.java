@@ -67,6 +67,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private boolean mOpenInSubtitle = true;    //是否开启内置字幕
     private boolean mOpenExternalSubtitle;    //是否开启内置字幕
     private String mLastStr;   //当前外置字幕的后缀
+    private String subName = "";
 
 
     @Override
@@ -151,6 +152,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     protected void runProgressBar() {
 
         String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
+        Log.w("path", path);
         String srtUrl = checkSrt();
         mCtrBar.setPlayDuration();
         List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
@@ -219,7 +221,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     public String checkSrt() {
         String url = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
-        final String srt = url.substring(0, url.indexOf(".")) + ".srt";
+        final String srt = url.substring(0, url.lastIndexOf(".")) + ".srt";
 
         File file = new File(srt);
 
@@ -690,10 +692,17 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //内嵌字幕
         MenuItem inSubtitleMenuItem = new MenuItem("内嵌字幕", MenuItem.TYPE_SELECTOR);
         List<MenuItem> inSubtitleMenuItems = new ArrayList<MenuItem>();
-        List<Integer> inSubList = getProxyPlayer().getINSubList();
-        Log.i("shen", "createMenuData: " + inSubList.size());
+        List<String> inSubList = getProxyPlayer().getINSubList();
         for (int i = 0; i < inSubList.size(); i++) {
-            MenuItem item = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE + (i + 1));
+            String substring = inSubList.get(i).substring(2);
+            MenuItem item = null;
+            if (substring.equals("und")) {
+                subName = MenuConstant.SUBMENU_INSUBTITLE;
+                item = new MenuItem(subName + (i + 1));
+            } else {
+                subName = substring;
+                item = new MenuItem(subName);
+            }
             item.setType(MenuItem.TYPE_SELECTOR);
             inSubtitleMenuItems.add(item);
             if (i == 0) {
@@ -718,7 +727,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         List<MenuItem> outSubtitleMenuItems = new ArrayList<MenuItem>();
         outSubtitleMenuItems.add(0, outSubtitleSubMenuOriginal);
         List<String> externalSubList = getExternalSubList();
-        Log.i("shen", "createMenuData: " + externalSubList.size());
         for (int i = 0; i < externalSubList.size(); i++) {
             MenuItem item = new MenuItem(MenuConstant.SUBMENU_OUTSUBTITLE + (i + 1));
             item.setType(MenuItem.TYPE_SELECTOR);
@@ -751,9 +759,17 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     private List<MenuItem> getInSubtitleList() {
         List<MenuItem> inSubtitleMenuItems = new ArrayList<MenuItem>();
-        List<Integer> inSubList = getProxyPlayer().getINSubList();
+        List<String> inSubList = getProxyPlayer().getINSubList();
         for (int i = 0; i < inSubList.size(); i++) {
-            MenuItem item = new MenuItem(MenuConstant.SUBMENU_INSUBTITLE + (i + 1));
+            String substring = inSubList.get(i).substring(2);
+            MenuItem item = null;
+            if (substring.equals("und")) {
+                subName = MenuConstant.SUBMENU_INSUBTITLE;
+                item = new MenuItem(subName + (i + 1));
+            } else {
+                subName = substring;
+                item = new MenuItem(subName);
+            }
             item.setType(MenuItem.TYPE_SELECTOR);
             inSubtitleMenuItems.add(item);
         }
@@ -860,7 +876,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mSubTitle.setText("");
             if (mOpenInSubtitle) {
                 mOpenExternalSubtitle = false;
-                getProxyPlayer().selectTrackInfo(getProxyPlayer().getINSubList().get(subIndex - 1));
+                getProxyPlayer().selectTrackInfo(Integer.parseInt(getProxyPlayer().getINSubList().get(subIndex - 1).substring(0, 1)));
             }
             return;
         }
@@ -886,7 +902,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private List<String> getExternalSubList() {
         String path = mDataList.get(mCurPlayIndex).isSharing ? "" : mDataList.get(mCurPlayIndex).mUri;
         String stPath = path.substring(0, path.lastIndexOf("."));
-        List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass");   // stPath + ".smi", stPath + ".sub"
+        List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass", stPath + ".ssa");   // stPath + ".smi", stPath + ".sub"
         ArrayList<String> savePathList = new ArrayList<>();
         //savePathList.add("无");
         for (int i = 0; i < pathList.size(); i++) {
