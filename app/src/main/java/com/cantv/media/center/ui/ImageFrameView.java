@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 
 @SuppressLint("ResourceAsColor")
@@ -21,6 +23,8 @@ public class ImageFrameView extends FrameLayout {
     private final ImageView mImageView;
     private int mImgOrginWidth;
     private int mImgOrginHeight;
+    private int mImgWidth;
+    private int mImgHeight;
     private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
     private final long SHOWPROCESS_FILE_SIZE = 50 * 1024 * 1024;
     private LoadingDialog mLoadingDialog;
@@ -76,8 +80,32 @@ public class ImageFrameView extends FrameLayout {
             }
         }
 
+        mImageView.setVisibility(View.VISIBLE);
         //加50是为了防止刚好是屏幕的整数倍,出现获取处理后的图片宽高正好和屏幕的宽高相同而出现不能缩放(也有可能碰到是加完后数据的整数倍)
-        Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(mImageView);
+        Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).listener(new RequestListener<String, Bitmap>() {
+            @Override
+            public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
+                loadError = 0;
+                dismissProgressBar();
+                if (null != mLoadingImgListener) {
+                    mLoadingImgListener.loadSuccessed(false);
+                    //mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                dismissProgressBar();
+                mImgWidth = bitmap.getWidth();
+                mImgHeight = bitmap.getHeight();
+                if (null != mLoadingImgListener) {
+                    mLoadingImgListener.loadSuccessed(true);
+                    mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgHeight : callbackH);
+                }
+                return false;
+            }
+        }).into(mImageView);
 //        {
 //            @Override
 //            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -90,13 +118,13 @@ public class ImageFrameView extends FrameLayout {
 ////                mBitmap = bitmap;
 ////                mImageView.setImageBitmap(mBitmap);
 //                mImageView.setImageBitmap(resource);
-                dismissProgressBar();
+                /*dismissProgressBar();
                 mImageView.setVisibility(View.VISIBLE);
 //
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccessed(true);
                     mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgOrginHeight : callbackH);
-                }
+                }*/
 //
 //                if (mBitmap != null && !mBitmap.isRecycled()) {
 //                    mBitmap = null;
