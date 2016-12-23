@@ -668,9 +668,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
     private void toShowView() {
         if (mShowing) return;
-        if(mSizeType){
+        if (mSizeType) {
             resetTvSize();
-        }else {
+        } else {
             changeTvSize();
         }
         switch (POSTION) {
@@ -697,9 +697,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
     //改变提示状态
     private void resetTvSize() {
-        if(mFullScreen){
+        if (mFullScreen) {
             mTvSize.setText(getString(R.string.image_full_screen));
-        }else{
+        } else {
             mTvSize.setText(getString(R.string.image_real_size));
         }
     }
@@ -756,7 +756,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         if (keyCode == event.KEYCODE_MENU && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (mLoadSuccessed) {
-                if(mLoadReady){
+                if (mLoadReady) {
                     toShowView();
                 }
             }
@@ -785,20 +785,24 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (isFastClick()) {
                     return true;
                 }
-                markRotation();
-                mImageBrowser.changeRotation();
-                mSizeType = false;
-                changeTvSize();
+                if (mLoadReady) {
+                    markRotation();
+                    mImageBrowser.changeRotation();
+                    mSizeType = false;
+                    changeTvSize();
+                }
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (isFastClick()) {
                     return true;
                 }
-                markRotation();
-                mImageBrowser.changeUpRotation();
-                mSizeType = false;
-                changeTvSize();
+                if (mLoadReady) {
+                    markRotation();
+                    mImageBrowser.changeUpRotation();
+                    mSizeType = false;
+                    changeTvSize();
+                }
                 return true;
             }
         }
@@ -838,9 +842,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
     //初始提示状态
     private void changeTvSize() {
-        if(mFullScreen){
+        if (mFullScreen) {
             mTvSize.setText(getString(R.string.image_real_size));
-        }else{
+        } else {
             mTvSize.setText(getString(R.string.image_full_screen));
         }
     }
