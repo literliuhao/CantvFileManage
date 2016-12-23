@@ -181,8 +181,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                         return;
                     }
                     //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
-                    final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData
-                            ().get(mCurImageIndex).mUri;
+                    final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
                     final boolean isSharing = getData().get(mCurImageIndex).isSharing;
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -408,22 +407,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 else {
                     return screenHeight / currentH;
                 }
-
-//                else {
-//                    if (!isRotation) {
-//                        if ((currentW - screenWidth) < (currentH - screenHeight)) {
-//                            return screenWidth / currentW;
-//                        } else {
-//                            return screenHeight / currentH;
-//                        }
-//                    } else {
-//                        if ((currentW - screenWidth) > (currentH - screenHeight)) {
-//                            return screenWidth / currentW;
-//                        } else {
-//                            return screenHeight / currentH;
-//                        }
-//                    }
-//                }
             } else {
                 //屏幕大于图片宽高时
                 return 1.0f;
@@ -498,7 +481,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 } else {
                     mTvSize.setText(getString(R.string.image_full_screen));
                 }
-                mImageBrowser.onZoomScale(calcByWH(mWidth, mHeight, mSizeType));
+                float calc = calcByWH(mWidth, mHeight, mSizeType);
+                Log.i("ImagePlayerActivity", "calc " + calc);
+                mImageBrowser.onZoomScale(calc);
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, 5 * 1000);
             }
@@ -959,7 +944,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAnimationDrawable.stop();
         }
     }*/
-
 
     public boolean isPressback;
 

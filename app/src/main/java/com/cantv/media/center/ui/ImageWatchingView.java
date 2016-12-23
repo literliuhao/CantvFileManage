@@ -49,11 +49,11 @@ public class ImageWatchingView extends ZoomView {
     }
 
     public void onZoomInScale(float scale) {
-        float newfactor = scale;
-        if (newfactor - clacFitScreenScale() > 1.0f) {
-            newfactor = clacFitScreenScale() + 1.0f;
-        }
-        zoomAndCenterChildSmoothlyTo(mFrameView.getWidth() / 2, mFrameView.getHeight() / 2, newfactor, null, null);
+//        float newfactor = scale;
+//        if (newfactor - clacFitScreenScale() > 1.0f) {
+//            newfactor = clacFitScreenScale() + 1.0f;
+//        }
+        zoomAndCenterChildSmoothlyTo(mFrameView.getWidth() / 2, mFrameView.getHeight() / 2, scale, null, null);
     }
 
     

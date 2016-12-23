@@ -99,7 +99,7 @@ public class LitePlayer extends MediaPlayer {
             public void onPrepared(MediaPlayer mp) {
                 mVideoWidthHeightRate = 1.0f * mp.getVideoWidth() / mp.getVideoHeight();
                 try {
-//                    mAssitant.loadSubTitlesAndAudioTrack(LitePlayer.this);
+                    mAssitant.loadSubTitlesAndAudioTrack(LitePlayer.this);
                 } catch (Exception e) {
                 }
                 if (listener != null) {
@@ -127,9 +127,9 @@ public class LitePlayer extends MediaPlayer {
         mStatusInfo.mSourceUri = path;
     }
 
-    public void setSubPath(String subPath){
-        if (null!=mAssitant){
-            mAssitant.setSubTitle(LitePlayer.this,subPath);
+    public void setSubPath(String subPath) {
+        if (null != mAssitant) {
+            mAssitant.setSubTitle(LitePlayer.this, subPath);
         }
     }
 

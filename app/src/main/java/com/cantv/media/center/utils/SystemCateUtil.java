@@ -67,6 +67,14 @@ public class SystemCateUtil {
     }
 
     /**
+     * 或许系统设置，当为1时不弹出U盘对话框
+     * @return
+     */
+    public static String getPersist(){
+        return get("persist.sys.burningmode");
+    }
+
+    /**
      * 用于判断系统版本号是否大于1.2版本
      * @return
      */

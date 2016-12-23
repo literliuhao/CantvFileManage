@@ -38,6 +38,7 @@ public class ExternalSurfaceView extends SurfaceView {
         int height = MeasureSpec.getSize(heightMeasureSpec);
         int newheight = (mType == ShowType.WIDTH_HEIGHT_4_3) ? Math.round(0.75f * width) : height;
         newheight = (mType == ShowType.WIDTH_HEIGHT_16_9) ? Math.round(0.5625f * width) : newheight;
+        newheight = (mType == ShowType.WIDTH_HEIGHT_21_9) ? Math.round(0.4286f * width) : newheight;
         newheight = (mType == ShowType.WIDTH_HEIGHT_ORIGINAL) ? Math.round(1.0f / mWidth_height * width) : newheight;
         if (newheight > height) {
             int newWidth = (mType == ShowType.WIDTH_HEIGHT_4_3) ? Math.round(1.33f * height) : width;
