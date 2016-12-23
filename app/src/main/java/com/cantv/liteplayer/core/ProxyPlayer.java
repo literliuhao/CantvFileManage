@@ -226,6 +226,7 @@ public class ProxyPlayer {
     /**
      * 目的:把类似下列集合归类排序
      * ("und", "und", "1.a", "2.a", "3.a", "4.c", "6.b", "3.c", "2.und", "9.c", "1.b");
+     *
      * @param list
      */
     private List<String> getLanguageList(List<String> list) {
@@ -233,11 +234,11 @@ public class ProxyPlayer {
         ArrayList<String> list3 = new ArrayList<>();
         for (int i = 0; i < list.size() - 1; i++) {
             String s1 = list.get(i);
-            if (s1.equals("und")) {
+            String string = s1.substring(s1.indexOf(".") + 1);
+            if (string.equals("und")) {
                 list3.add(s1);
                 continue;
             }
-            String string = s1.substring(list.get(i).indexOf("."));
             if (!list1.contains(string)) {
                 list1.add(string);
             } else {
