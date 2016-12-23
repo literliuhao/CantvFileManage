@@ -214,8 +214,10 @@ public class ProxyPlayer {
                     String language = info.getLanguage();
                     if (!"und".equals(language)) {
                         language = StringUtil.getLanguage(language);
+                        saveSubIndexList.add(saveSubIndexList.size(), i + "." + language);
+                    } else {
+                        saveSubIndexList.add(0, i + "." + language);
                     }
-                    saveSubIndexList.add(i + "." + language);
                 }
             }
         }
