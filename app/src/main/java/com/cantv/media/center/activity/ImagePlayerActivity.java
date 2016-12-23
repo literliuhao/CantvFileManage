@@ -106,8 +106,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private int mCurrentVolume;
     private Toast mToast = null;
     private long MENU_DURATION = 500;
-    private boolean mLoadSuccessed = true;
+    private boolean mLoadSuccessed = false;
+
+    private boolean mLoadReady = false;
     private TextView mLoadingFail;
+    private boolean mFullScreen;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -332,7 +335,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
 
             @Override
-            public void getSizeSuccessed(int width, int height) {
+            public void isFullScreen(boolean isFullScreen) {
+                mFullScreen = isFullScreen;
+            }
+
+            @Override
+            public void loadResourceReady(boolean isLoadReady) {
+                mLoadReady = isLoadReady;
             }
         });
     }
@@ -452,7 +461,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 markRotation();
                 mImageBrowser.changeRotation();
                 mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
+                changeTvSize();
             }
         });
         mRotation.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -477,9 +486,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 }
                 //修复OS-2838大图浏览本地图片，按遥控器菜单键切换图片比例无效,再次切换才有效
                 if (!mSizeType) {
-                    mTvSize.setText(getString(R.string.image_real_size));
+                    resetTvSize();
                 } else {
-                    mTvSize.setText(getString(R.string.image_full_screen));
+                    changeTvSize();
                 }
                 float calc = calcByWH(mWidth, mHeight, mSizeType);
                 Log.i("ImagePlayerActivity", "calc " + calc);
@@ -659,6 +668,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
     private void toShowView() {
         if (mShowing) return;
+        if(mSizeType){
+            resetTvSize();
+        }else {
+            changeTvSize();
+        }
         switch (POSTION) {
             case 0:
                 mRotation.requestFocus();
@@ -679,6 +693,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         MainThread.runLater(mToHideRunnable, 5 * 1000);
         mediaimagebar.setVisibility(View.VISIBLE);
         toFlyView(0, 0, 1, 0, true, true, MENU_DURATION);
+    }
+
+    //改变提示状态
+    private void resetTvSize() {
+        if(mFullScreen){
+            mTvSize.setText(getString(R.string.image_full_screen));
+        }else{
+            mTvSize.setText(getString(R.string.image_real_size));
+        }
     }
 
     private void toFlyView(float fromXValue, float toXValue, float fromYValue, float toYValue, boolean fillAfter, final Boolean status, long duration) {
@@ -733,7 +756,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         if (keyCode == event.KEYCODE_MENU && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (mLoadSuccessed) {
-                toShowView();
+                if(mLoadReady){
+                    toShowView();
+                }
             }
             return true;
         }
@@ -763,7 +788,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 markRotation();
                 mImageBrowser.changeRotation();
                 mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
+                changeTvSize();
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -773,7 +798,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 markRotation();
                 mImageBrowser.changeUpRotation();
                 mSizeType = false;
-                mTvSize.setText(getString(R.string.image_full_screen));
+                changeTvSize();
                 return true;
             }
         }
@@ -809,6 +834,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
          * } return true; }
          */
         return super.onKeyDown(keyCode, event);
+    }
+
+    //初始提示状态
+    private void changeTvSize() {
+        if(mFullScreen){
+            mTvSize.setText(getString(R.string.image_real_size));
+        }else{
+            mTvSize.setText(getString(R.string.image_full_screen));
+        }
     }
 
     @Override
