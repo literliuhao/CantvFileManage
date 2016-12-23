@@ -33,6 +33,7 @@ public class ImageFrameView extends FrameLayout {
     private int convertH = 0;
     private int[] sizeArray = new int[2];
     private final int MAX_LENGHT = 4096;
+    private int loadResourceReady = 0;
 
     public ImageFrameView(Context context) {
         super(context);
@@ -48,7 +49,9 @@ public class ImageFrameView extends FrameLayout {
 
         void bitmapSize(int width, int height);
 
-        void getSizeSuccessed(int width, int height);
+        void isFullScreen(boolean isFullScreen);
+
+        void loadResourceReady(boolean isLoadReady);
     }
 
     private onLoadingImgListener mLoadingImgListener;
@@ -59,6 +62,7 @@ public class ImageFrameView extends FrameLayout {
         this.mLoadingImgListener = loadingImgListener;
         showProgressBar();
         mImageView.setVisibility(View.GONE);
+        loadResourceReady = 0;
         loadImage(imageUri);
     }
 
@@ -80,7 +84,7 @@ public class ImageFrameView extends FrameLayout {
                 imageWidht -= cutNumber;
 
             }
-        }else if (imageWidht < 0 || imageHeight < 0) {
+        } else if (imageWidht < 0 || imageHeight < 0) {
             imageWidht = (int) mActivity.screenWidth;
             imageHeight = (int) mActivity.screenHeight;
         }
@@ -122,9 +126,16 @@ public class ImageFrameView extends FrameLayout {
                 dismissProgressBar();
                 mImgWidth = bitmap.getWidth();
                 mImgHeight = bitmap.getHeight();
+                loadResourceReady += 1;
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccessed(true);
                     mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgWidth : sizeArray[0], imageUri.startsWith(ShareUrl_FLAG) ? mImgHeight : sizeArray[1]);
+                    if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
+                        mLoadingImgListener.isFullScreen(false);
+                    } else {
+                        mLoadingImgListener.isFullScreen(true);
+                    }
+                    mLoadingImgListener.loadResourceReady(loadResourceReady == 2 ? true : false);
                 }
                 return false;
             }
