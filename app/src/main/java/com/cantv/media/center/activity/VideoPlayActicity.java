@@ -151,6 +151,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     protected void runProgressBar() {
 
         String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
+        Log.w("path", path);
         String srtUrl = checkSrt();
         mCtrBar.setPlayDuration();
         List<VideoPlayer> list = DaoOpenHelper.getInstance(this).queryInfo(path);
@@ -219,7 +220,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     public String checkSrt() {
         String url = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
-        final String srt = url.substring(0, url.indexOf(".")) + ".srt";
+        final String srt = url.substring(0, url.lastIndexOf(".")) + ".srt";
 
         File file = new File(srt);
 
@@ -860,7 +861,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mSubTitle.setText("");
             if (mOpenInSubtitle) {
                 mOpenExternalSubtitle = false;
-                getProxyPlayer().selectTrackInfo(getProxyPlayer().getINSubList().get(subIndex - 1));
+                getProxyPlayer().selectTrackInfo(Integer.parseInt(getProxyPlayer().getINSubList().get(subIndex - 1).substring(0, 1)));
             }
             return;
         }

@@ -18,6 +18,7 @@ import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
 import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,14 +203,19 @@ public class ProxyPlayer {
      *
      * @return
      */
-    public List<Integer> getINSubList() {
-        ArrayList<Integer> saveSubIndexList = new ArrayList<>();
+    public List<String > getINSubList() {
+        ArrayList<String > saveSubIndexList = new ArrayList<>();
+
         TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
         if (trackInfos != null && trackInfos.length > 0) {
             for (int i = 0; i < trackInfos.length; i++) {
                 TrackInfo info = trackInfos[i];
                 if (info.getTrackType() == MEDIA_TRACK_TYPE_TIMEDTEXT) {
-                    saveSubIndexList.add(i);
+                    String language = info.getLanguage();
+                    if (!"und".equals(language)) {
+                        StringUtil.getLanguage(language);
+                    }
+                    saveSubIndexList.add(i+"."+language);
                 }
             }
         }
@@ -218,7 +224,11 @@ public class ProxyPlayer {
 
 
     public void selectTrackInfo(int index) {
-        getLitePlayer().selectTrack(index);
+        try {
+            getLitePlayer().selectTrack(index);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -245,5 +255,6 @@ public class ProxyPlayer {
     public void setSubPath(String subPath) {
         getLitePlayer().setSubPath(subPath);
     }
+
 
 }

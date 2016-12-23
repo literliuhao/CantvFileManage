@@ -5,6 +5,8 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
@@ -26,14 +28,19 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected int mDefaultPlayIndex;
     private ProxyPlayer mPlayer;
     protected int mCurPlayIndex;
-    private boolean mFistPlay = true;
+    private boolean mFirstPlay = true;
     protected VideoPlayer mRecord;
     private boolean setVideoStop;   //为了解决OS-1677,回到主页视频会重试播放的异常
     public boolean isPressback;
+    private FinishRunnable mFinishRunnable;
+    private boolean isFinish = true;   //是否要关闭Activity
+    private long mfinishDelayTime = 5000; //间隔时间5秒
 
     protected abstract void runAfterPlay(boolean isFirst);
 
     protected abstract void runProgressBar();
+
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             mDefaultPlayIndex = 0;
             mDataList = new ArrayList<>();
         }
+        mFinishRunnable = new FinishRunnable();
     }
 
     protected ProxyPlayer getProxyPlayer() {
@@ -142,15 +150,18 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             index = (index >= mDataList.size()) ? 0 : index;
             mCurPlayIndex = index;
             final String url = mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri;
+            Log.w("video_path", url);
+//            mHandler.postDelayed(mFinishRunnable, mfinishDelayTime);
             getProxyPlayer().playMedia(url, new Runnable() {
                 @Override
                 public void run() {
-                    runAfterPlay(mFistPlay);
-                    //添加内置字幕监听
+                    isFinish = false;
+                    runAfterPlay(mFirstPlay);
+                    //设置默认内置字幕
                     if (getProxyPlayer().getINSubList().size() > 0) {
-                        mPlayer.selectTrackInfo(getProxyPlayer().getINSubList().get(0));
+                        mPlayer.selectTrackInfo(Integer.parseInt(getProxyPlayer().getINSubList().get(0).substring(0, 1)));
                     }
-                    mFistPlay = false;
+                    mFirstPlay = false;
                     runProgressBar();
                     if (null != mPlayer) {
                         mPlayer.mRetryPlaye = true;
@@ -209,4 +220,23 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         getProxyPlayer().release();
         super.onStop();
     }
+
+    /**
+     * 关闭Activity,为了处理视频无法播放,又没有抛出异常的情况
+     */
+    private class FinishRunnable implements Runnable {
+
+        @Override
+        public void run() {
+//            if (isFinish) {
+//                Log.w("finishRun","~~");
+//                Toast.makeText(MyApplication.mContext, R.string.format_not_support, Toast.LENGTH_SHORT).show();
+////                getProxyPlayer().stop();
+//                isPressback = true;
+//                getProxyPlayer().release();
+//                finish();
+//            }
+        }
+    }
+
 }

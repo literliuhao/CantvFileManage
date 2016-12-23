@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
@@ -233,6 +234,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
                 index = index % mDataList.size();
             }
             mCurPlayIndex = index;
+            Log.w("path",mDataList.get(index).getmUri());
             getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
                 @Override
                 public void run() {
