@@ -396,17 +396,17 @@ public class MediaGridView extends CustomGridView {
         apkDialog.show();
     }
 
-    /**
-     * 禁止安装Apk
-     */
-    private void getApkForbidDialog() {
-        apkForbidDialog = new ApkForbidDialog(mActivity);
-        apkForbidDialog.setOnClickableListener(new ApkForbidDialog.OnClickableListener() {
-            @Override
-            public void onConfirmClickable() {
-                apkForbidDialog.dismiss();
-            }
-        });
-        apkForbidDialog.show();
-    }
+        /**
+         * 禁止安装Apk
+         */
+        private void getApkForbidDialog() {
+            apkForbidDialog = new ApkForbidDialog(mActivity);
+            apkForbidDialog.setOnClickableListener(new ApkForbidDialog.OnClickableListener() {
+                @Override
+                public void onConfirmClickable() {
+                    apkForbidDialog.dismiss();
+                }
+            });
+            apkForbidDialog.show();
+        }
 }
