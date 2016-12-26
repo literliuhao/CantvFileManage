@@ -15,8 +15,10 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import com.cantv.media.R;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.LyricInfo;
 import com.cantv.media.center.data.LyricInfo.Lyric;
+import com.cantv.media.center.utils.ToastUtils;
 
 import java.util.List;
 
@@ -256,12 +258,23 @@ public class LyricView extends View {
     }
 
     /**
+     * 还原歌词调整
+     */
+    public void restoreTime() {
+        mTimeOffset = 0;
+        ToastUtils.showMessage(MyApplication.getContext(), "歌词调整已还原");
+        invalidate();
+    }
+
+    /**
      * 调整延迟
      *
      * @param offset
      */
     public void adjustTimeOffset(int offset) {
         mTimeOffset += offset;
+        String msg = mTimeOffset > 0 ? "提前" + (float) mTimeOffset / 1000 + "秒" : mTimeOffset == 0 ? "歌词调整已还原" : "延后" + Math.abs((float) mTimeOffset / 1000);
+        ToastUtils.showMessage(MyApplication.getContext(), msg);
         invalidate();
     }
 
@@ -269,16 +282,20 @@ public class LyricView extends View {
         return mTimeOffset;
     }
 
-    public void setCurrTime(final long timeInMillis) {
+    public void setCurrTime(long timeInMillis) {
+        setCurrTime1(timeInMillis + mTimeOffset);
+    }
+
+    private void setCurrTime1(long timeInMillis) {
         if (mLyricInfo == null) {
             return;
         }
-        mDestLineIndex = selectLyric(resolveTime(timeInMillis + mTimeOffset));
+        mDestLineIndex = selectLyric(resolveTime(timeInMillis));
         if (mFocusedLineIndex == mDestLineIndex) {
             return;
         }
         if (anim != null && anim.isStarted()) {
-            mDestTime = resolveTime(timeInMillis + mTimeOffset);
+            mDestTime = resolveTime(timeInMillis);
             return;
         }
         int startOffsetLineIndex = calculateStartOffsetIndex();
@@ -372,7 +389,7 @@ public class LyricView extends View {
                 mCurrTime = destTime;
                 mFocusedLineIndex = mDestLineIndex;
                 if (mDestTime != 0) {
-                    setCurrTime(mDestTime);
+                    setCurrTime1(mDestTime);
                 }
             }
             return null;
