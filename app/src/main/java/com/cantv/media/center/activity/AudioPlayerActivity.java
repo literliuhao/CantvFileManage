@@ -612,7 +612,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         List<MenuItem> adjustLyricSubMenuItems = new ArrayList<MenuItem>();
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.forward_seconds), MenuItem.TYPE_LIST));
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.delay_seconds), MenuItem.TYPE_LIST));
-        adjustLyricSubMenuItems.add(new MenuItem("还原", MenuItem.TYPE_SELECTOR));
+        adjustLyricSubMenuItems.add(new MenuItem("还原", MenuItem.TYPE_LIST));
         adjustLyricMenuItem.setChildren(adjustLyricSubMenuItems);
         menuList.add(adjustLyricMenuItem);
 
