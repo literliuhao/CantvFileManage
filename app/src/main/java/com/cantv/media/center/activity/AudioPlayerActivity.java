@@ -496,6 +496,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.adjustTimeOffset(200);
                         } else if (position == 1) {
                             mLyricView.adjustTimeOffset(-200);
+                        }else if (position == 2) {
+                            mLyricView.restoreTime();
                         }
                     }
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
@@ -610,6 +612,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         List<MenuItem> adjustLyricSubMenuItems = new ArrayList<MenuItem>();
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.forward_seconds), MenuItem.TYPE_LIST));
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.delay_seconds), MenuItem.TYPE_LIST));
+        adjustLyricSubMenuItems.add(new MenuItem("还原", MenuItem.TYPE_SELECTOR));
         adjustLyricMenuItem.setChildren(adjustLyricSubMenuItems);
         menuList.add(adjustLyricMenuItem);
 
