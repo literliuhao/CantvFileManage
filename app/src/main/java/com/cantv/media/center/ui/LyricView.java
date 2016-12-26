@@ -273,7 +273,7 @@ public class LyricView extends View {
      */
     public void adjustTimeOffset(int offset) {
         mTimeOffset += offset;
-        String msg = mTimeOffset > 0 ? "提前" + (float) mTimeOffset / 1000 + "秒" : mTimeOffset == 0 ? "歌词调整已还原" : "延后" + Math.abs((float) mTimeOffset / 1000);
+        String msg = mTimeOffset > 0 ? "提前" + (float) mTimeOffset / 1000 + "秒" : mTimeOffset == 0 ? "歌词调整已还原" : "延后" + Math.abs((float) mTimeOffset / 1000) + "秒";
         ToastUtils.showMessage(MyApplication.getContext(), msg);
         invalidate();
     }
