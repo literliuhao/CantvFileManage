@@ -112,6 +112,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private boolean mFullScreen;
 
     private Handler mHandler = new Handler() {
+        
         public void handleMessage(android.os.Message msg) {
             int flag = msg.what;
             if (flag == 1) {
