@@ -45,11 +45,20 @@ public class AnimateView extends View {
         }
     }
 
+    public void setFocus() {
+        if (mToShow == false) {
+            mToShow = true;
+            mAnimation = new AlphaAnimation(mAlpha, 1);
+            mAnimation.setDuration(0);
+            invalidate();
+        }
+    }
+
     public void toHide() {
         if (mToShow == true) {
             mToShow = false;
             mAnimation = new AlphaAnimation(mAlpha, 0);
-            mAnimation.setDuration(Math.round(mAlpha * ANIM_DURATION_SHORT));
+            mAnimation.setDuration(ANIM_DURATION_SHORT);
             invalidate();
         }
     }

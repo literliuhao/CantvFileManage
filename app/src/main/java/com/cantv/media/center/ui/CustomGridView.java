@@ -63,7 +63,7 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
                 if (hasFocus) {
                     MainThread.runLater(new Runnable() {
                         public void run() {
-                            animateFoucs(mGridView.getSelectedView());
+                            animateFocus(mGridView.getSelectedView());
                         }
                     });
                 } else {
@@ -90,8 +90,8 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
             }
         };
     }
-    public void setStyleFocus(int sytle) {
-        mFocusView.setFocusFrameImageResourceAndMeasure(sytle);
+    public void setStyleFocus(int style) {
+        mFocusView.setFocusFrameImageResourceAndMeasure(style);
     }
     public void setDefaultStyle() {
         mFocusView.setFocusFrameImageResourceAndMeasure(R.drawable.focus);
@@ -127,11 +127,11 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
         mGridView.setSelection(position);
     }
     @Override
-    public void onItemSelected(AdapterView<?> arg0, View v, int arg2, long arg3) {
+    public void onItemSelected(AdapterView<?> arg0, View view, int arg2, long arg3) {
         if (mSelectedListener != null) {
-            mSelectedListener.onItemSelected(arg0, v, arg2, arg3);
+            mSelectedListener.onItemSelected(arg0, view, arg2, arg3);
         }
-        animateFoucs(v);
+        animateFocus(view);
     }
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
@@ -139,19 +139,25 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
             mSelectedListener.onNothingSelected(arg0);
         }
     }
-    protected void animateFoucs(View v) {
+    protected void animateFocus(View v) {
         if (v != null) {
             animateFoucs(v.getLeft(), v.getTop(), v.getWidth(), v.getHeight());
         }
     }
     protected void animateFoucs(int left, int top, int width, int height) {
+
         if (mGridView.hasFocus()) {
             int oldLeft = mLastFocusPoint.x < 0 ? left : mLastFocusPoint.x;
             int oldTop = mLastFocusPoint.y < 0 ? top : mLastFocusPoint.y;
+
             mFocusView.move(oldLeft, oldTop, left, top, width, height);
             mLastFocusPoint.set(left, top);
         }
     }
+    protected void onFocus(){
+        mFocusView.onFocus();
+    }
+
     /**
      * 展示空白页
      *

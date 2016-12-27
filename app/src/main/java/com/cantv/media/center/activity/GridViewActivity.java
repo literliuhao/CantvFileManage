@@ -1,11 +1,8 @@
 package com.cantv.media.center.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,11 +13,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.ui.ConfirmDialog;
 import com.cantv.media.center.ui.DoubleColumnMenu;
 import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
@@ -37,7 +36,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridViewActivity extends Activity {
+public class GridViewActivity extends Activity implements IMediaListener {
     private static String TAG = "GridViewActivity";
     private RelativeLayout mContentView;
     private TextView mTitleTV;
@@ -73,12 +72,7 @@ public class GridViewActivity extends Activity {
         mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
         mRTCountView = (TextView) findViewById(R.id.file_count);
         Intent intent = getIntent();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        filter.addAction(Intent.ACTION_MEDIA_REMOVED);
-        filter.addDataScheme("file");
-        registerReceiver(mReceiver, filter);
+        MediaBroadcastReceiver.getInstance().addListener(this);
         String type = intent.getStringExtra("type");
         if ("video".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_movie);
@@ -224,7 +218,6 @@ public class GridViewActivity extends Activity {
                     View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
 
                     mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, mMenuList.get(mSelectedMenuPosi));
-
 
                     mSelectedMenuPosi = position;
                     MenuItem menuItem = mMenuList.get(position);
@@ -387,30 +380,12 @@ public class GridViewActivity extends Activity {
         }
     }
 
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                //先为了判断是否处在外接设备列表根目录
-                if (mGridView.mMediaStack.isEmpty()) {
-                    // 有新设备插入
-                    updateSDMounted();
-                }
-
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                // 移除设备
-                updateSDMounted();
-            }
-        }
-    };
-
-
     @Override
     protected void onDestroy() {
         if (mGridView != null && mGridView.fileServer != null) {
             mGridView.fileServer.release();
         }
-        unregisterReceiver(mReceiver);
+        MediaBroadcastReceiver.getInstance().removeListener(this);
         mConfirmDialog = null;
         super.onDestroy();
     }
@@ -420,7 +395,6 @@ public class GridViewActivity extends Activity {
         getWindow().getDecorView().setDrawingCacheEnabled(true);
         return getWindow().getDecorView().getDrawingCache();
     }
-
 
     private void updateSDMounted() {
 
@@ -548,7 +522,6 @@ public class GridViewActivity extends Activity {
         });
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -556,5 +529,22 @@ public class GridViewActivity extends Activity {
         if (!isStartAc && !(MyApplication.mHomeActivityList.size() > 0)) {
             finish();
         }
+    }
+
+    @Override
+    public void onMounted(Intent intent) {
+        Log.i("Mount", "gridView mounted...");
+        //先为了判断是否处在外接设备列表根目录
+        if (mGridView.mMediaStack.isEmpty()) {
+            // 有新设备插入
+            updateSDMounted();
+        }
+    }
+
+    @Override
+    public void onUnmounted(Intent intent) {
+        Log.i("Mount", "gridView unmounted...");
+        // 移除设备
+        updateSDMounted();
     }
 }

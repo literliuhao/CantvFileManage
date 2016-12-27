@@ -274,7 +274,6 @@ public class MediaGridView extends CustomGridView {
     }
 
     public boolean onBack() {
-        boolean isback = false;
         if (!mPosStack.isEmpty() && !mMediaStack.isEmpty()) {
             List<Media> pop = mMediaStack.pop();
             mListAdapter.bindData(pop);
@@ -284,9 +283,10 @@ public class MediaGridView extends CustomGridView {
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
             }
             setTextRTview("1", " / " + mCurrMediaList.size());
-            isback = true;
+//            onFocus();
+            return true;
         }
-        return isback;
+        return false;
     }
 
     @Override
@@ -298,12 +298,12 @@ public class MediaGridView extends CustomGridView {
     }
 
     @Override
-    protected void animateFoucs(View v) {
+    protected void animateFocus(View v) {
         if (v != null && v instanceof MediaItemView) {
             View child = ((MediaItemView) v).getFocusImage();
             animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(), child.getHeight());
         } else {
-            super.animateFoucs(v);
+            super.animateFocus(v);
         }
     }
 
@@ -396,17 +396,17 @@ public class MediaGridView extends CustomGridView {
         apkDialog.show();
     }
 
-        /**
-         * 禁止安装Apk
-         */
-        private void getApkForbidDialog() {
-            apkForbidDialog = new ApkForbidDialog(mActivity);
-            apkForbidDialog.setOnClickableListener(new ApkForbidDialog.OnClickableListener() {
-                @Override
-                public void onConfirmClickable() {
-                    apkForbidDialog.dismiss();
-                }
-            });
-            apkForbidDialog.show();
-        }
+    /**
+     * 禁止安装Apk
+     */
+    private void getApkForbidDialog() {
+        apkForbidDialog = new ApkForbidDialog(mActivity);
+        apkForbidDialog.setOnClickableListener(new ApkForbidDialog.OnClickableListener() {
+            @Override
+            public void onConfirmClickable() {
+                apkForbidDialog.dismiss();
+            }
+        });
+        apkForbidDialog.show();
+    }
 }

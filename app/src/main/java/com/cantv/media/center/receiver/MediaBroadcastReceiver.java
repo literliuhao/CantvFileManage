@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.MediaUtils;
@@ -14,6 +15,7 @@ import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.SystemCateUtil;
 import com.cantv.media.center.widgets.CustomDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MediaBroadcastReceiver extends BroadcastReceiver {
@@ -21,22 +23,47 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
     private Context mContext;
     private static CustomDialog dialog;
 
+    private static List<IMediaListener> mediaListener = new ArrayList<>();
+
+    public MediaBroadcastReceiver() {
+    }
+
+    private static MediaBroadcastReceiver mediaBroadcastReceiver;
+
+    public static MediaBroadcastReceiver getInstance() {
+        if (null == mediaBroadcastReceiver) {
+            mediaBroadcastReceiver = new MediaBroadcastReceiver();
+        }
+        return mediaBroadcastReceiver;
+    }
+
+    public void addListener(IMediaListener iMediaListener) {
+        mediaListener.add(iMediaListener);
+    }
+
+    public void removeListener(IMediaListener iMediaListener) {
+        mediaListener.remove(iMediaListener);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
         if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+            for (int i = 0; i < mediaListener.size(); i++) {
+                mediaListener.get(i).onMounted(intent);
+            }
+
             Log.i("MediaBroadcastReceiver", SystemCateUtil.getPersist());
             String path = intent.getData().getPath();
             //保存路径到本地
             SharedPreferenceUtil.saveDevice(path);
             //老化模式下不弹出U盘提示
-            if(!SystemCateUtil.getPersist().equals("1")){
+            if (!SystemCateUtil.getPersist().equals("1")) {
                 showMountedDialog();
             }
-        } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-            //添加移除U盘提示
-            if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
-                Toast.makeText(MyApplication.getContext(), mContext.getResources().getString(R.string.device_remove), Toast.LENGTH_SHORT).show();
+        } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+            for (int i = 0; i < mediaListener.size(); i++) {
+                mediaListener.get(i).onUnmounted(intent);
             }
             List<String> currPathList = MediaUtils.getCurrPathList();
             if (currPathList.size() < 1) {
@@ -44,6 +71,9 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
                     dialog.dismiss();
                 }
             }
+        } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
+            //添加移除U盘提示
+            Toast.makeText(MyApplication.getContext(), mContext.getResources().getString(R.string.device_remove), Toast.LENGTH_SHORT).show();
         }
     }
 

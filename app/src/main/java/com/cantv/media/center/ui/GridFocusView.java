@@ -61,9 +61,19 @@ public class GridFocusView extends AnimateView {
                 @Override
                 public void run() {
                     toShow();
+//                    toHide();
+//                    setFocus();
                 }
             });
         }
+    }
+
+    public void onFocus(){
+        setFocus();
+    }
+
+    public void hide(){
+        toHide();
     }
 
 }

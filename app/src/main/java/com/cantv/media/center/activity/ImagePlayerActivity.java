@@ -1,10 +1,8 @@
 package com.cantv.media.center.activity;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -31,9 +29,11 @@ import android.widget.Toast;
 import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
+import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
 import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
@@ -47,7 +47,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
+public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate, IMediaListener {
     private int mCurImageIndex;
     private ImageFrameView mFrameView;
     private ImageBrowser mImageBrowser;
@@ -63,7 +63,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     public float screenWidth;
     public float screenHeight;
     private Context mContext;
-    private BroadcastReceiver mimageReceiver;
     private LinearLayout mediaimagebar;
     private Runnable mToHideRunnable;
     private boolean mShowing = true;
@@ -149,7 +148,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mCurImageIndex = indexOfDefaultPlay();
         autoRunnable();
         toHideRunnable();
-        registerReceiver();
+        MediaBroadcastReceiver.getInstance().addListener(this);
         toHideView();
         MyApplication.addActivity(this);
     }
@@ -173,45 +172,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 //startAutoPlay();
             }
         };
-    }
-
-    private void registerReceiver() {
-        mimageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                    if (getData() == null || getData().size() == 0) {
-                        return;
-                    }
-                    //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
-                    final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
-                    final boolean isSharing = getData().get(mCurImageIndex).isSharing;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!isSharing) {
-                                File imageFile = new File(imageUri);
-                                if (!imageFile.exists()) {
-                                    isPressback = true;
-                                    ImagePlayerActivity.this.finish();
-                                    return;
-                                }
-                            }
-                        }
-                    }, 500);
-                    String sourcepath = getData().get(0).isSharing ? getData().get(0).sharePath : getData().get(0).mUri;
-                    String targetpath = intent.getDataString();
-                    boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-                }
-            }
-        };
-        IntentFilter usbFilter = new IntentFilter();
-        usbFilter.setPriority(1000);
-        usbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        usbFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
-        usbFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        usbFilter.addDataScheme("file");
-        mContext.registerReceiver(mimageReceiver, usbFilter);
     }
 
     private void initView() {
@@ -863,7 +823,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mHandler.removeMessages(ARROW_SHOW);
             mHandler.removeMessages(MENU_SHOW);
         }
-        unregisterReceiver(mimageReceiver);
+        MediaBroadcastReceiver.getInstance().removeListener(this);
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }
@@ -899,68 +859,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         view.startAnimation(translateAnimation);
     }
 
-    /*private void stopMusic() {
-        stop();
-        isFirstPlayMusic = true;
-    }
-
-    private void startMusic() {
-        play();
-    }
-
-    private void pauseMusic() {
-        pause();
-    }
-
-    private void resumeMusic() {
-        resume();
-    }
-
-    private void play() {
-        try {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.reset();
-            AssetManager assetManager = mContext.getAssets();
-            AssetFileDescriptor fileDescriptor = assetManager.openFd("mm.mp3");
-            mMediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getLength());
-            mMediaPlayer.prepare();
-            mMediaPlayer.start();
-            mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mMediaPlayer.start();
-                    mMediaPlayer.setLooping(true);
-                }
-            });
-            PLAYING_STATUS = PLAYING;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void pause() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.pause();
-            PLAYING_STATUS = PAUSE;
-        }
-    }
-
-    private void resume() {
-        if (mMediaPlayer != null && PLAYING_STATUS == PAUSE) {
-            mMediaPlayer.start();
-            PLAYING_STATUS = PLAYING;
-        }
-    }
-
-    private void stop() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-            PLAYING_STATUS = STOP;
-        }
-    }*/
-
     public synchronized static boolean isFastClick() {
         long time = System.currentTimeMillis();
         if (time - lastClickTime < 500) {
@@ -969,20 +867,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         lastClickTime = time;
         return false;
     }
-
-   /* private void startMusicAnimation() {
-        if (!mAnimationDrawable.isRunning()) {
-            mMusic.setVisibility(View.VISIBLE);
-            mAnimationDrawable.start();
-        }
-    }
-
-    private void endMusicAnimation() {
-        if (mAnimationDrawable.isRunning()) {
-            mMusic.setVisibility(View.GONE);
-            mAnimationDrawable.stop();
-        }
-    }*/
 
     public boolean isPressback;
 
@@ -1007,5 +891,37 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     public void openVolume() {
         mImageBrowser.setSoundEffectsEnabled(true);
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
+    }
+
+    @Override
+    public void onMounted(Intent intent) {
+        Log.i("Mount", "ImagePlayer mounted...");
+    }
+
+    @Override
+    public void onUnmounted(Intent intent) {
+        Log.i("Mount", "ImagePlayer unmounted...");
+        if (getData() == null || getData().size() == 0) {
+            return;
+        }
+        //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
+        final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
+        final boolean isSharing = getData().get(mCurImageIndex).isSharing;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isSharing) {
+                    File imageFile = new File(imageUri);
+                    if (!imageFile.exists()) {
+                        isPressback = true;
+                        ImagePlayerActivity.this.finish();
+                        return;
+                    }
+                }
+            }
+        }, 500);
+        String sourcepath = getData().get(0).isSharing ? getData().get(0).sharePath : getData().get(0).mUri;
+        String targetpath = intent.getDataString();
+        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
     }
 }

@@ -3,12 +3,10 @@ package com.cantv.media.center.activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
@@ -28,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
+import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.PlayMode;
@@ -35,6 +34,7 @@ import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.LyricInfo;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.PlayModeMenuItem;
+import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.ui.CDView;
 import com.cantv.media.center.ui.CircleProgressBar;
 import com.cantv.media.center.ui.DoubleColumnMenu;
@@ -54,7 +54,7 @@ import java.util.Locale;
 import static com.cantv.media.R.string.singer;
 
 @SuppressLint("NewApi")
-public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener {
+public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener,IMediaListener {
 
     private final int INTERVAL_CHECK_PROGRESS = 1;
 
@@ -67,8 +67,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private ImageButton mPlayPauseBtn, mPreviousBtn, mNextBtn;
     private ImageView mPlayModeIconIv, mPlayModeView;
 
-    private BroadcastReceiver mUsbChangeReceiver;
-    private IntentFilter mUsbFilter;
     private PowerManager.WakeLock mWakeLock;
     private Handler mHandler;
     private MenuDialog mMenuDialog;
@@ -90,7 +88,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private LoadingMuUITask muUITask;
     private int currentMode = 5;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +95,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MyApplication.addActivity(this);
         holdWakeLock();
         initData();
-        regUsbChangeReceiver();
+        MediaBroadcastReceiver.getInstance().addListener(this);
         playDefualt();
         initHandler();
     }
@@ -151,34 +148,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayModeView.setNextFocusDownId(playModeViewId);
     }
 
-    public void regUsbChangeReceiver() {
-        if (mUsbChangeReceiver == null) {
-            mUsbChangeReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                        if (mDataList == null || mDataList.size() == 0) {
-                            return;
-                        }
-                        String sourcepath = mDataList.get(0).isSharing ? mDataList.get(0).sharePath : mDataList.get(0).mUri;
-                        String targetpath = intent.getDataString();
-                        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-                        if (isequal) {
-                            isPressback = true;
-                            AudioPlayerActivity.this.finish();
-                        }
-                    }
-                }
-            };
-            mUsbFilter = new IntentFilter();
-            mUsbFilter.setPriority(1000);
-            mUsbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-            mUsbFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
-            mUsbFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-            mUsbFilter.addDataScheme("file");
-        }
-        registerReceiver(mUsbChangeReceiver, mUsbFilter);
-    }
 
     @SuppressLint("HandlerLeak")
     public void initHandler() {
@@ -246,11 +215,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mUsbChangeReceiver);
+        MediaBroadcastReceiver.getInstance().removeListener(this);
         muUITask.cancel(true);
         releaseWakeLock();
-        mUsbChangeReceiver = null;
-        mUsbFilter = null;
         hideMenuDialog();
         mMenuDialog = null;
         mHandler.removeCallbacksAndMessages(null);
@@ -496,7 +463,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.adjustTimeOffset(200);
                         } else if (position == 1) {
                             mLyricView.adjustTimeOffset(-200);
-                        }else if (position == 2) {
+                        } else if (position == 2) {
                             mLyricView.restoreTime();
                         }
                     }
@@ -546,9 +513,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mMenuList.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
-        }else if(mSelectedMenuPosi == 1){
+        } else if (mSelectedMenuPosi == 1) {
             //修复OS-2736进入外接设备，播放本地音乐，在播放器左下角的播放模式中切换播放模式后，打开菜单播放模式选项后没有实时更新。
-            if(currentMode != 5){
+            if (currentMode != 5) {
                 mMenuList.get(1).setChildSelected(currentMode);
                 mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(1).getSelectedChildIndex());
             }
@@ -723,6 +690,26 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             if (menuItemView != null) {
                 mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
             }
+        }
+    }
+
+    @Override
+    public void onMounted(Intent intent) {
+        Log.i("Mount", "audio mounted...");
+    }
+
+    @Override
+    public void onUnmounted(Intent intent) {
+        Log.i("Mount", "audio unmounted...");
+        if (mDataList == null || mDataList.size() == 0) {
+            return;
+        }
+        String sourcepath = mDataList.get(0).isSharing ? mDataList.get(0).sharePath : mDataList.get(0).mUri;
+        String targetpath = intent.getDataString();
+        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
+        if (isequal) {
+            isPressback = true;
+            AudioPlayerActivity.this.finish();
         }
     }
 
