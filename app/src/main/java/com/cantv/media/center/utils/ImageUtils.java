@@ -167,7 +167,7 @@ public class ImageUtils {
         Bitmap bmp = null;
         try {
             bmp = BitmapFactory.decodeFile(path, opts);
-        } catch (OutOfMemoryError err) {
+        } catch (OutOfMemoryError ignored) {
         }
 
         return bmp;

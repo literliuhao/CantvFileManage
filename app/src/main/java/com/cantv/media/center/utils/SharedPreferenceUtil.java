@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 存储sp信息
  * Created by yibh on 2016/7/6.
  */
 

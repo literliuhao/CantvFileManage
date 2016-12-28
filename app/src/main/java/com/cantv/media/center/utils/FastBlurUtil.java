@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.URL;
 
 /**
+ * 图片高斯模糊
  * Created by yibh on 2016/11/7 16:30 .
  */
 
@@ -30,7 +31,7 @@ public class FastBlurUtil {
      * @param url
      * @return
      */
-    public static int IO_BUFFER_SIZE = 2 * 1024;
+    private static final int IO_BUFFER_SIZE = 2 * 1024;
 
     public static Bitmap GetUrlBitmap(String url, int scaleRatio) {
 
@@ -40,9 +41,9 @@ public class FastBlurUtil {
         }
 
 
-        Bitmap originBitmap = null;
-        InputStream in = null;
-        BufferedOutputStream out = null;
+        Bitmap originBitmap;
+        InputStream in;
+        BufferedOutputStream out;
         try {
             in = new BufferedInputStream(new URL(url).openStream(), IO_BUFFER_SIZE);
             final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
@@ -56,8 +57,7 @@ public class FastBlurUtil {
                     originBitmap.getWidth() / scaleRatio,
                     originBitmap.getHeight() / scaleRatio,
                     false);
-            Bitmap blurBitmap = doBlur(scaledBitmap, blurRadius, true);
-            return blurBitmap;
+            return doBlur(scaledBitmap, blurRadius);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -92,11 +92,10 @@ public class FastBlurUtil {
                 originBitmap.getWidth() / scaleRatio,
                 originBitmap.getHeight() / scaleRatio,
                 false);
-        Bitmap blurBitmap = doBlur(scaledBitmap, blurRadius, true);
-        return blurBitmap;
+        return doBlur(scaledBitmap, blurRadius);
     }
 
-    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
+    private static Bitmap doBlur(Bitmap sentBitmap, int radius) {
 
         // Stack Blur v1.0 from
         // http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
@@ -127,7 +126,7 @@ public class FastBlurUtil {
         // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
 
         Bitmap bitmap;
-        if (canReuseInBitmap) {
+        if (true) {
             bitmap = sentBitmap;
         } else {
             bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);

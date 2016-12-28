@@ -34,7 +34,7 @@ public class IntentBuilder {
     }
 
     public static Intent buildSendFile(ArrayList<Media> files) {
-        ArrayList<Uri> uris = new ArrayList<Uri>();
+        ArrayList<Uri> uris = new ArrayList<>();
 
         String mimeType = "*/*";
         for (Media file : files) {

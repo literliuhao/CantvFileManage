@@ -82,11 +82,7 @@ public class SystemCateUtil {
         try {
             String versionName = getSystemVersion();
             Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
-            if (version > 1.1f) {
-                return true;
-            } else {
-                return false;
-            }
+            return version > 1.1f;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,11 +93,7 @@ public class SystemCateUtil {
      * 需要特殊处理的内部机型
      */
     public static Boolean specialModel(String productModel) {
-        if (productModel.equals("X55")) {
-            return true;
-        } else {
-            return false;
-        }
+        return productModel.equals("X55");
     }
 
 }

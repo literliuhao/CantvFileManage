@@ -26,7 +26,7 @@ public class FileServer extends Thread implements org.cybergarage.http.HTTPReque
 	private OnInitlizedListener listener;
 	
 	public interface OnInitlizedListener{
-		public void onInitlized();
+		void onInitlized();
 	}
 
 	public void setOnInitlizedListener(OnInitlizedListener listener) {
@@ -84,7 +84,7 @@ public class FileServer extends Thread implements org.cybergarage.http.HTTPReque
 
 		String uri = httpReq.getURI();
 
-		if (uri.startsWith(CONTENT_EXPORT_URI) == false) {
+		if (!uri.startsWith(CONTENT_EXPORT_URI)) {
 			httpReq.returnBadRequest();
 			return;
 		}
@@ -122,13 +122,8 @@ public class FileServer extends Thread implements org.cybergarage.http.HTTPReque
 			contentIn.close();
 		} catch (MalformedURLException e) {
 			httpReq.returnBadRequest();
-			return;
-		} catch (SmbException e) {
-			httpReq.returnBadRequest();
-			return;
 		} catch (IOException e) {
 			httpReq.returnBadRequest();
-			return;
 		}
 	}
 

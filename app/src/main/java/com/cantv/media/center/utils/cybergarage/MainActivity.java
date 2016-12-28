@@ -31,7 +31,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private Button mAddBtn = null;
 	private ListView mListview = null;
 	private ArrayAdapter<FileItem> mAdapter = null;
-	private ArrayList<FileItem> mData = new ArrayList<FileItem>();
+	private ArrayList<FileItem> mData = new ArrayList<>();
 	private ScanSambaTask mScanSambaTask = null;
 	FileServer mFileServer;
 
@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		mAddBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String ipValue = mIpEditText.getText().toString();
+				String ipValue ;
 				ipValue = "zhuhl:123456789@192.168.88.111";
 				mAdapter.add(new FileItem(ipValue, "smb://" + ipValue + "/", false));
 			}

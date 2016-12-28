@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 字符串工具类
  * Created by yibh on 2016/7/21.
  */
 
