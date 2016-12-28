@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
+ * 图片压缩,图片缩放,图片剪裁为圆形
  * Created by y on 2016/5/26.
  */
 public class BitmapUtil {
@@ -33,7 +34,7 @@ public class BitmapUtil {
         BitmapFactory.decodeStream(in, null, options);
         in.close();
         int i = 0;
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         // options.inJustDecodeBounds=true那么将不返回实际的bitmap对象，不给其分配内存空间但是可以得到一些解码边界信息即图片大小等信息
         // outHeight(图片原始高度)和 outWidth(图片的原始宽度)
         // inSampleSize表示缩略图大小为原始图片大小的几分之一

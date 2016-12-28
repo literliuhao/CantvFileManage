@@ -3,6 +3,7 @@ package com.cantv.media.center.utils;
 import java.util.HashMap;
 
 /**
+ * 定义不同机型音频、视频、图片支持格式
  * Created by yibh on 2016/7/4.
  */
 
@@ -59,7 +60,7 @@ public class FileCategoryHelper {
         if (null == integer) {
             return TYPE_UNKNOW;
         } else {
-            return integer.intValue();
+            return integer;
         }
 
     }

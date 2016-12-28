@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.cantv.media.center.data.Media;
-import com.cantv.media.center.ui.MediaGridItemView;
-import com.cantv.media.center.ui.MediaItemView;
-import com.cantv.media.center.ui.MediaListItemView;
-import com.cantv.media.center.ui.MediaOrientation;
+import com.cantv.media.center.ui.directory.MediaGridItemView;
+import com.cantv.media.center.ui.directory.MediaItemView;
+import com.cantv.media.center.ui.directory.MediaListItemView;
+import com.cantv.media.center.constants.MediaOrientation;
 import com.cantv.media.center.utils.MediaUtils;
 
 import java.util.ArrayList;
@@ -19,10 +19,8 @@ public class MediaListAdapter extends BaseAdapter {
     private List<Media> mMediaList = new ArrayList<Media>();
     private MediaOrientation mStyle = MediaOrientation.THUMBNAIL;
     private List<String> mUsbRootPaths;
-    private int mCurrent = 0;
 
     public MediaListAdapter(Context context, List<Media> medialist) {
-//        bindData(medialist);
         mMediaList = medialist;
     }
 

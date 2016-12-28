@@ -32,9 +32,9 @@ import java.util.Properties;
  * Used to implement java.net.URLConnection and android.webkit.MimeTypeMap.
  */
 public final class MimeUtils {
-    private static final Map<String, String> mimeTypeToExtensionMap = new HashMap<String, String>();
+    private static final Map<String, String> mimeTypeToExtensionMap = new HashMap<>();
 
-    private static final Map<String, String> extensionToMimeTypeMap = new HashMap<String, String>();
+    private static final Map<String, String> extensionToMimeTypeMap = new HashMap<>();
 
     static {
         // The following table is based on /etc/mime.types data minus
@@ -439,10 +439,7 @@ public final class MimeUtils {
      * @return True iff there is a mimeType entry in the map.
      */
     public static boolean hasMimeType(String mimeType) {
-        if (mimeType == null || mimeType.isEmpty()) {
-            return false;
-        }
-        return mimeTypeToExtensionMap.containsKey(mimeType);
+        return !(mimeType == null || mimeType.isEmpty()) && mimeTypeToExtensionMap.containsKey(mimeType);
     }
 
     /**
@@ -465,10 +462,7 @@ public final class MimeUtils {
      * @return True iff there is an extension entry in the map.
      */
     public static boolean hasExtension(String extension) {
-        if (extension == null || extension.isEmpty()) {
-            return false;
-        }
-        return extensionToMimeTypeMap.containsKey(extension);
+        return !(extension == null || extension.isEmpty()) && extensionToMimeTypeMap.containsKey(extension);
     }
 
     /**

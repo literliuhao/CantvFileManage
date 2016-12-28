@@ -42,9 +42,6 @@ import java.util.concurrent.Executors;
 
 public class MediaUtils {
     private static final String TAG = "MediaUtils";
-    // public static String getUsbRootPath() {
-    // return "/storage/external_storage/udisk0/";
-    // }
     private static List<String> usbList = new ArrayList<>();
     private static Map<String, Integer> mAduioIconMap = new HashMap<>();
     private static ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -61,12 +58,8 @@ public class MediaUtils {
 
     public static String getLocalPath() {
         return Environment.getExternalStorageDirectory().getPath();
-//        return "/storage/emulated";
     }
 
-    // public static List<String> getUsbRootPaths() {
-    // return usbList;
-    // }
     public static void addUsbRootPaths(String usbPath) {
         if (!usbList.contains(usbPath)) {
             usbList.add(usbPath);
@@ -79,29 +72,16 @@ public class MediaUtils {
         }
     }
 
-    // public static boolean isExistUSB() {
-    // // usbList = runMount();
-    // if (usbList != null && usbList.size() > 0) {
-    // return true;
-    // }
-    // return false;
-    // }
     public static int getUSBNum() {
-        // if (usbList != null) {
-        // return usbList.size();
-        // }
-        // return 0;
         return getCurrPathList().size();
     }
 
     public static String getInternalTotal() {
-        String total = getRealTotalSize(getLocalPath());
-        return total;
+        return getRealTotalSize(getLocalPath());
     }
 
     public static String getInternalFree() {
-        String total = MediaUtils.getRealFreeSize(getLocalPath());
-        return total;
+        return MediaUtils.getRealFreeSize(getLocalPath());
     }
 
     public static String getTotal(String path) {
@@ -124,7 +104,6 @@ public class MediaUtils {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
         }
         return total;
     }
@@ -153,91 +132,11 @@ public class MediaUtils {
                     mCallBack.onSuccess(total);
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
                 }
             }
         });
     }
 
-//    public static void getFree(final String path, ICallBack callBack) {
-//        mCallBack = callBack;
-//        executorService.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                Process mprocess;
-//                BufferedReader mreader;
-//                String temp;
-//                String total = null;
-//                Runtime runtime = Runtime.getRuntime();
-//                try {
-//                    mprocess = runtime.exec("df");
-//                    mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
-//                    while ((temp = mreader.readLine()) != null) {
-//                        if (temp.contains(path)) {
-//                            total = temp.split("\\s+")[3];
-//                            break;
-//                        }
-//                    }
-//                    mreader.close();
-//                    mCallBack.onSuccess(total);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                }
-//            }
-//        });
-//    }
-
-//    public static String getFree(String path) {
-//        Process mprocess;
-//        BufferedReader mreader;
-//        String temp;
-//        String total = null;
-//        Runtime runtime = Runtime.getRuntime();
-//        try {
-//            mprocess = runtime.exec("df");
-//            mreader = new BufferedReader(new InputStreamReader(mprocess.getInputStream()));
-//            while ((temp = mreader.readLine()) != null) {
-//                if (temp.contains(path)) {
-//                    total = temp.split("\\s+")[3];
-//                    break;
-//                }
-//            }
-//            mreader.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//        }
-//        return total;
-//    }
-
-    //     private static List<String> runMount() {
-//     Set<String> set = new TreeSet<String>();
-//     List<String> list = null;
-//     Process mprocess;
-//     BufferedReader mreader;
-//     String temp;
-//     Runtime runtime = Runtime.getRuntime();
-//     try {
-//     mprocess = runtime.exec("mount");
-//     mreader = new BufferedReader(new
-//     InputStreamReader(mprocess.getInputStream()));
-//     while ((temp = mreader.readLine()) != null) {
-//     if (temp.contains("/dev/block/vold/8:")) {
-//     String usbpath = temp.split(" ")[1];
-//     Log.i("mount","usbpath >>>>> " + usbpath);
-//     set.add(usbpath);
-//     }
-//     }
-//     mreader.close();
-//     list = new ArrayList<String>(set);
-//     } catch (IOException e) {
-//     e.printStackTrace();
-//     } finally {
-//     }
-//     return list;
-//     }
     public static boolean isImage(String filename) {
         String[] str = {"jpg", "png", "jpeg", "bmp", "gif", "webp", "wbmp"};
         return isEqualType(filename, str);
@@ -272,8 +171,8 @@ public class MediaUtils {
 
     private static boolean isEqualType(String filename, String[] types) {
         String fileType = filename.substring(filename.lastIndexOf('.') + 1, filename.length());
-        for (int i = 0; i < types.length; i++) {
-            if (types[i].equals(fileType.toLowerCase())) {
+        for (String type : types) {
+            if (type.equals(fileType.toLowerCase())) {
                 return true;
             }
         }
@@ -285,7 +184,7 @@ public class MediaUtils {
         List<String> mediaFiles = new ArrayList<>();
         MediaFormat format = curMedia.getMediaFormat();
         for (Media each : medias) {
-            if (each.isCollection() == false && each.getMediaFormat() == format) {
+            if (!each.isCollection() && each.getMediaFormat() == format) {
                 mediaFiles.add(each.getUri());
             }
         }
@@ -298,7 +197,7 @@ public class MediaUtils {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setDataAndType(Uri.parse("file://" + mediaFiles.get(0).toString()), "application/vnd.android.package-archive");
+            intent.setDataAndType(Uri.parse("file://" + mediaFiles.get(0)), "application/vnd.android.package-archive");
             context.startActivity(intent);
         } else {
             Intent mIntent = new Intent(context, mediaClass);
@@ -310,8 +209,7 @@ public class MediaUtils {
 
     public static String getFileName(String filepath) {
         filepath = filepath.replace("\\040", " ");
-        String filename = filepath.substring(filepath.lastIndexOf('/') + 1, filepath.length());
-        return filename;
+        return filepath.substring(filepath.lastIndexOf('/') + 1, filepath.length());
     }
 
     public static Bitmap loadBitmap(final Audio audio, final ImageCallBack imageCallBack) {
@@ -332,7 +230,7 @@ public class MediaUtils {
     }
 
     public interface ImageCallBack {
-        public void imageLoad(Bitmap bitmap);
+        void imageLoad(Bitmap bitmap);
     }
 
     public static boolean isEqualDevices(String sourcepath, String targetpath) {
@@ -341,10 +239,7 @@ public class MediaUtils {
         if ((sourcepath.contains("usb_storage") || sourcepath.contains("usbotg")) && (sourcepath.contains(tem))) {
             return true;
         }
-        if ((sourcepath.contains("external_sd") || sourcepath.contains("sdcard1")) && (sourcepath.contains(tem))) {
-            return true;
-        }
-        return false;
+        return (sourcepath.contains("external_sd") || sourcepath.contains("sdcard1")) && (sourcepath.contains(tem));
     }
 
     public static String fileLength(long length) {
@@ -356,12 +251,12 @@ public class MediaUtils {
         String sizestr = "";
         if (fileSize > 1024 * 1024) {
             fileSize = fileSize / (1024 * 1024);
-            sizestr = decFormat.format(fileSize).toString() + "G";
+            sizestr = decFormat.format(fileSize) + "G";
         } else if (fileSize > 1024) {
             fileSize = fileSize / 1024;
-            sizestr = decFormat.format(fileSize).toString() + "M";
+            sizestr = decFormat.format(fileSize) + "M";
         } else {
-            sizestr = decFormat.format(fileSize).toString() + "K";
+            sizestr = decFormat.format(fileSize) + "K";
         }
         return sizestr;
     }
@@ -451,26 +346,6 @@ public class MediaUtils {
         Glide.with(context).load(path).centerCrop().into(imageView);
     }
 
-//    /**
-//     * 获取当前存在的外接存储设备
-//     *
-//     * @return
-//     */
-//    public static List<String> getCurrPathList() {
-//        ArrayList<String> arrayList = new ArrayList<String>();
-//        String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
-//        for (String s : pathList) {
-//            if (null == s || s.trim().equals("")) {
-//                continue;
-//            }
-//            // 获取路径对应设备的总容量
-//            if (null != MediaUtils.getTotal(s)) {
-//                arrayList.add(s);
-//            }
-//        }
-//        return arrayList;
-//    }
-
     /**
      * 获取指定外接设备的可用空间,实测比上面getFree方法靠谱一些
      *
@@ -521,10 +396,6 @@ public class MediaUtils {
         try {
             //通过反射获取到路径的挂载状态
             StorageManager sm = (StorageManager) (MyApplication.getContext().getSystemService(Context.STORAGE_SERVICE));
-//            Method getVolumList = StorageManager.class.getMethod("getVolumeList");
-//            getVolumList.setAccessible(true);
-//            Object[] results = (Object[]) getVolumList.invoke(sm);
-//            System.out.println("results:" + results.length);
             Method getState = sm.getClass().getMethod("getVolumeState", String.class);
 
             final String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
@@ -545,9 +416,7 @@ public class MediaUtils {
                 }
 
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();

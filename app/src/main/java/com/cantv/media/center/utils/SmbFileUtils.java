@@ -59,10 +59,7 @@ public class SmbFileUtils {
             return false;
         }
 
-        if (file.getName().startsWith(".")) {
-            return false;
-        }
-        return true;
+        return !file.getName().startsWith(".");
     }
 
     /**
@@ -332,8 +329,8 @@ public class SmbFileUtils {
         } else if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
-                for (int i = 0; i < files.length; i++) {
-                    size = size + getFileSize(files[i]);
+                for (File file1 : files) {
+                    size = size + getFileSize(file1);
                 }
             }
         }
@@ -421,9 +418,7 @@ public class SmbFileUtils {
 
                 try {
                     MyApplication.mContext.getContentResolver().applyBatch(MediaStore.AUTHORITY, ops);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (OperationApplicationException e) {
+                } catch (RemoteException | OperationApplicationException e) {
                     e.printStackTrace();
                 }
 
@@ -450,9 +445,7 @@ public class SmbFileUtils {
                 for (Media f : mCurFileNameList) {
                     try {
                         deleteFile(f);
-                    } catch (SmbException e) {
-                        e.printStackTrace();
-                    } catch (MalformedURLException e) {
+                    } catch (SmbException | MalformedURLException e) {
                         e.printStackTrace();
                     }
                 }

@@ -13,7 +13,7 @@ import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.SystemCateUtil;
-import com.cantv.media.center.widgets.CustomDialog;
+import com.cantv.media.center.ui.dialog.CustomDialog;
 
 import org.greenrobot.eventbus.EventBus;
 

@@ -3,14 +3,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.cantv.media.center.ui.MediaPicView
+    <com.cantv.media.center.ui.directory.MediaPicView
         android:id="@+id/media_item_backgroud"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
 
 
-    </com.cantv.media.center.ui.MediaPicView>
+    </com.cantv.media.center.ui.directory.MediaPicView>
 
 
 </RelativeLayout>

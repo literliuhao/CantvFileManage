@@ -42,7 +42,7 @@ public class ScanSambaTask extends AsyncTask<String, Void, ArrayList<SmbFile>> {
     protected ArrayList<SmbFile> doInBackground(String... params) {
         Log.i("", "scanSamba path : " + params[0]);
         ArrayList<SmbFile> dirList = new ArrayList<SmbFile>();
-        SmbFile smbFile = null;
+        SmbFile smbFile;
         try {
             smbFile = new SmbFile(params[0]);
         } catch (MalformedURLException e1) {
