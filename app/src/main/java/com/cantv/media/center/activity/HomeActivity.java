@@ -26,7 +26,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.receiver.MediaBroadcastReceiver;
-import com.cantv.media.center.ui.MediaGridView;
+import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 

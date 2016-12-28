@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.cantv.media.R;
 import com.cantv.media.center.activity.VideoPlayActicity;
-import com.cantv.media.center.ui.TimeProgressBar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -11,7 +11,7 @@
         android:layout_gravity="center" >
     </SurfaceView>
 
-    <com.cantv.media.center.ui.ExternalSurfaceView
+    <com.cantv.media.center.ui.player.ExternalSurfaceView
         android:id="@+id/media__video_view__surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,7 +34,7 @@
         android:text="TTTTTTT"
         android:textSize="@dimen/px80" />
 
-    <com.cantv.media.center.ui.PlayerControllerBar
+    <com.cantv.media.center.ui.player.PlayerControllerBar
         android:id="@+id/media__video_view__ctrlbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
