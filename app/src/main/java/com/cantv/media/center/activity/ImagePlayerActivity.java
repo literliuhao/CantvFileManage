@@ -45,6 +45,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -592,8 +593,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     private void startAutoPlay() {
-        int curIndex = mCurImageIndex + 1;
-        int size = getData().size();
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
@@ -880,26 +879,28 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUsbMounted(UsbMounted usbMounted) {
         if (usbMounted.mIsRemoved) {
-            if (getData() == null || getData().size() == 0) {
-                return;
+
+            final List<Media> mediaList = new ArrayList<>();
+            List<String> currPathList = MediaUtils.getCurrPathList();
+            for (String path : currPathList) {
+                File file = new File(path);
+                Media fileInfo = FileUtil.getFileInfo(file, null, false);
+                mediaList.add(fileInfo);
             }
-            //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
-            final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
-            final boolean isSharing = getData().get(mCurImageIndex).isSharing;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isSharing) {
-                        File imageFile = new File(imageUri);
-                        if (!imageFile.exists()) {
-                            isPressback = true;
-                            ImagePlayerActivity.this.finish();
-                            return;
+
+            if (getData().size() > 0) {
+                if (!getData().get(0).isSharing) {
+                    boolean isClose = true; //是否关闭当前页面
+                    for (int i = 0; i < mediaList.size(); i++) {
+                        if (getData().get(0).mUri.contains(mediaList.get(i).mUri)) {
+                            isClose = false;
                         }
                     }
+                    if (isClose) {
+                        finish();
+                    }
                 }
-            }, 500);
-            MediaUtils.isEqualDevices(getData().get(0).isSharing ? getData().get(0).sharePath : getData().get(0).mUri, usbMounted.mUsbPath);
+            }
         }
     }
 }
