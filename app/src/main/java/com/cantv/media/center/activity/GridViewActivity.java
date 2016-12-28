@@ -405,21 +405,31 @@ public class GridViewActivity extends Activity {
         if (!isExternal) { //不是外接设备就不用往下走了
             return;
         }
-        boolean isUpdate = false;
+        final List<Media> mediaList = new ArrayList<>();
+        List<String> currPathList = MediaUtils.getCurrPathList();
+        for (String path : currPathList) {
+            File file = new File(path);
+            Media fileInfo = FileUtil.getFileInfo(file, null, false);
+            mediaList.add(fileInfo);
+        }
+
+        boolean isUpdate = true;    //
         if (!mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
 
-            for (int i = 0; i < mGridView.mMediaStack.get(0).size(); i++) {
-                //获取上一级的某个路径,然后和依然存在的外设路径比较,不用当前集合(当前集合可能没有内容)
-                Media parentMed = mGridView.mMediaStack.get(0).get(i);
-                if (usbPath.contains(parentMed.mUri)) {
-                    isUpdate = true;
-                    break;
+            if (mGridView.mMediaStack.size() > 1) { //取第二级目录中第一个地址,和还存在的外接设备地址进行比较
+                String uri = mGridView.mMediaStack.get(1).get(0).mUri;
+                for (int i = 0; i < mediaList.size(); i++) {
+                    if (uri.contains(mediaList.get(i).mUri)) {
+                        isUpdate = false;
+                        break;
+                    }
                 }
             }
+
         }
 
         if (isUpdate) {
-            updateRootUI();
+            updateRootUI(mediaList);
         }
 
 
@@ -428,14 +438,7 @@ public class GridViewActivity extends Activity {
     /**
      * 更新外接设备列表
      */
-    private void updateRootUI() {
-        final List<Media> mediaList = new ArrayList<>();
-        List<String> currPathList = MediaUtils.getCurrPathList();
-        for (String path : currPathList) {
-            File file = new File(path);
-            Media fileInfo = FileUtil.getFileInfo(file, null, false);
-            mediaList.add(fileInfo);
-        }
+    private void updateRootUI(List<Media> mediaList) {
         // 清除记录的上级目录
         mGridView.mMediaStack.clear();
         mGridView.mPosStack.clear();
