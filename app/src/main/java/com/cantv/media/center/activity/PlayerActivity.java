@@ -10,11 +10,11 @@ import android.widget.Toast;
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
-import com.cantv.media.center.constants.PlayMode;
+import com.cantv.media.center.Listener.PlayMode;
 import com.cantv.media.center.data.Media;
-import com.cantv.media.center.ui.PlayerControllerBar.CoverFlowViewListener;
-import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarContext;
-import com.cantv.media.center.ui.PlayerControllerBar.PlayerCtrlBarListener;
+import com.cantv.media.center.ui.player.PlayerControllerBar.CoverFlowViewListener;
+import com.cantv.media.center.ui.player.PlayerControllerBar.PlayerCtrlBarContext;
+import com.cantv.media.center.ui.player.PlayerControllerBar.PlayerCtrlBarListener;
 
 import java.util.ArrayList;
 import java.util.List;

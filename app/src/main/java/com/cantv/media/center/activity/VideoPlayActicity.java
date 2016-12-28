@@ -27,13 +27,13 @@ import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
-import com.cantv.media.center.ui.DoubleColumnMenu;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
-import com.cantv.media.center.ui.ExternalSurfaceView;
-import com.cantv.media.center.ui.ExternalSurfaceView.ShowType;
-import com.cantv.media.center.ui.MenuDialog;
-import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnKeyEventListener;
+import com.cantv.media.center.ui.player.ExternalSurfaceView;
+import com.cantv.media.center.ui.player.ExternalSurfaceView.ShowType;
+import com.cantv.media.center.ui.dialog.MenuDialog;
+import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
 import com.cantv.media.center.ui.player.BasePlayer;
 import com.cantv.media.center.ui.player.PlayerController;
 import com.cantv.media.center.ui.player.SrcParser;
@@ -117,7 +117,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
-
     }
 
     @Override

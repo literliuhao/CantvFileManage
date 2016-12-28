@@ -28,7 +28,7 @@
                 android:layout_width="@dimen/px430"
                 android:layout_height="@dimen/px430">
 
-                <com.cantv.media.center.ui.CircleProgressBar
+                <com.cantv.media.center.ui.audio.CircleProgressBar
                     android:id="@+id/pb_circle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -37,7 +37,7 @@
                     zby:progressBarColor="@color/blue_32aefd"
                     zby:progressBarWidth="@dimen/px7"/>
 
-                <com.cantv.media.center.ui.CDView
+                <com.cantv.media.center.ui.audio.CDView
                     android:id="@+id/v_cd"
                     android:layout_width="@dimen/px400"
                     android:layout_height="@dimen/px400"
@@ -106,7 +106,7 @@
                     android:textColor="@color/per50_white"
                     android:textSize="@dimen/fontsize_36"/>
 
-                <com.cantv.media.center.ui.LyricView
+                <com.cantv.media.center.ui.audio.LyricView
                     android:id="@+id/lv_lyric"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

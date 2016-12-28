@@ -113,7 +113,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
 
-        <com.cantv.media.center.ui.TimeProgressBar
+        <com.cantv.media.center.ui.player.TimeProgressBar
             android:id="@+id/pb_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
