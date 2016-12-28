@@ -37,14 +37,6 @@ public final class MimeUtils {
     private static final Map<String, String> extensionToMimeTypeMap = new HashMap<>();
 
     static {
-        // The following table is based on /etc/mime.types data minus
-        // chemical/* MIME types and MIME types that don't map to any
-        // file extensions. We also exclude top-level domain names to
-        // deal with cases like:
-        //
-        // mail.google.com/a/google.com
-        //
-        // and "active" MIME types (due to potential security issues).
 
         add("application/andrew-inset", "ez");
         add("application/dsptype", "tsp");
@@ -360,14 +352,6 @@ public final class MimeUtils {
     }
 
     private static void add(String mimeType, String extension) {
-        //
-        // if we have an existing x --> y mapping, we do not want to
-        // override it with another mapping x --> ?
-        // this is mostly because of the way the mime-type map below
-        // is constructed (if a mime type maps to several extensions
-        // the first extension is considered the most popular and is
-        // added first; we do not want to overwrite it later).
-        //
         if (!mimeTypeToExtensionMap.containsKey(mimeType)) {
             mimeTypeToExtensionMap.put(mimeType, extension);
         }

@@ -18,135 +18,131 @@ import android.util.Log;
 
 public class FileServer extends Thread implements org.cybergarage.http.HTTPRequestListener {
 
-	public static final String CONTENT_EXPORT_URI = "/smb";
-	private HTTPServerList httpServerList = new HTTPServerList();
-	private int HTTPPort = 2222;
-	private String bindIP = null;
-	public static int mPort;
-	private OnInitlizedListener listener;
-	
-	public interface OnInitlizedListener{
-		void onInitlized();
-	}
+    public static final String CONTENT_EXPORT_URI = "/smb";
+    private HTTPServerList httpServerList = new HTTPServerList();
+    private int HTTPPort = 2222;
+    private String bindIP = null;
+    public static int mPort;
+    private OnInitlizedListener listener;
 
-	public void setOnInitlizedListener(OnInitlizedListener listener) {
-		this.listener = listener;
-	}
+    public interface OnInitlizedListener {
+        void onInitlized();
+    }
 
-	public String getBindIP() {
-		return bindIP;
-	}
+    public void setOnInitlizedListener(OnInitlizedListener listener) {
+        this.listener = listener;
+    }
 
-	public HTTPServerList getHttpServerList() {
-		return httpServerList;
-	}
+    public String getBindIP() {
+        return bindIP;
+    }
 
-	public int getHTTPPort() {
-		return HTTPPort;
-	}
-	
-	public String getProxyPathPrefix(){
-		if(bindIP == null){
-			return "";
-		}
-		return new StringBuilder("http://")
-				.append(bindIP).append(":")
-				.append(HTTPPort).append("/smb=").toString();
-	}
+    public HTTPServerList getHttpServerList() {
+        return httpServerList;
+    }
 
-	@Override
-	public void run() {
-		super.run();
+    public int getHTTPPort() {
+        return HTTPPort;
+    }
 
-		/**************************************************
-		 * ����http�����������չ�������
-		 *************************************************/
-		int retryCnt = 0;
-		HTTPServerList httpServerList = getHttpServerList();
-		while (httpServerList.open(HTTPPort) == false) {
-			retryCnt++;
-			if (100 < retryCnt) {
-				return;
-			}
-			HTTPPort++;
-		}
-		httpServerList.addRequestListener(this);
-		httpServerList.start();
-		bindIP = httpServerList.getHTTPServer(0).getBindAddress();
-		Log.i("", "bindIP = " + bindIP + ", bindPort = " + HTTPPort);
-		if(listener != null){
-			listener.onInitlized();
-		}
-	}
+    public String getProxyPathPrefix() {
+        if (bindIP == null) {
+            return "";
+        }
+        return new StringBuilder("http://")
+                .append(bindIP).append(":")
+                .append(HTTPPort).append("/smb=").toString();
+    }
 
-	@Override
-	public void httpRequestRecieved(HTTPRequest httpReq) {
+    @Override
+    public void run() {
+        super.run();
+        int retryCnt = 0;
+        HTTPServerList httpServerList = getHttpServerList();
+        while (httpServerList.open(HTTPPort) == false) {
+            retryCnt++;
+            if (100 < retryCnt) {
+                return;
+            }
+            HTTPPort++;
+        }
+        httpServerList.addRequestListener(this);
+        httpServerList.start();
+        bindIP = httpServerList.getHTTPServer(0).getBindAddress();
+        Log.i("", "bindIP = " + bindIP + ", bindPort = " + HTTPPort);
+        if (listener != null) {
+            listener.onInitlized();
+        }
+    }
 
-		String uri = httpReq.getURI();
+    @Override
+    public void httpRequestRecieved(HTTPRequest httpReq) {
 
-		if (!uri.startsWith(CONTENT_EXPORT_URI)) {
-			httpReq.returnBadRequest();
-			return;
-		}
+        String uri = httpReq.getURI();
 
-		try {
-			uri = URLDecoder.decode(uri, "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-		String filePaths = "smb://" + uri.substring(5);
-		int indexOf = filePaths.indexOf("&");
-		if (indexOf != -1) {
-			filePaths = filePaths.substring(0, indexOf);
-		}
+        if (!uri.startsWith(CONTENT_EXPORT_URI)) {
+            httpReq.returnBadRequest();
+            return;
+        }
 
-		try {
-			SmbFile file = new SmbFile(filePaths);
-			long contentLen = file.length();
-			String contentType = getFileType(filePaths);
-			InputStream contentIn = file.getInputStream();
+        try {
+            uri = URLDecoder.decode(uri, "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        String filePaths = "smb://" + uri.substring(5);
+        int indexOf = filePaths.indexOf("&");
+        if (indexOf != -1) {
+            filePaths = filePaths.substring(0, indexOf);
+        }
 
-			if (contentLen <= 0 || contentType.length() <= 0 || contentIn == null) {
-				httpReq.returnBadRequest();
-				return;
-			}
+        try {
+            SmbFile file = new SmbFile(filePaths);
+            long contentLen = file.length();
+            String contentType = getFileType(filePaths);
+            InputStream contentIn = file.getInputStream();
 
-			HTTPResponse httpRes = new HTTPResponse();
-			httpRes.setContentType(contentType);
-			httpRes.setStatusCode(HTTPStatus.OK);
-			httpRes.setContentLength(contentLen);
-			httpRes.setContentInputStream(contentIn);
+            if (contentLen <= 0 || contentType.length() <= 0 || contentIn == null) {
+                httpReq.returnBadRequest();
+                return;
+            }
 
-			httpReq.post(httpRes);
+            HTTPResponse httpRes = new HTTPResponse();
+            httpRes.setContentType(contentType);
+            httpRes.setStatusCode(HTTPStatus.OK);
+            httpRes.setContentLength(contentLen);
+            httpRes.setContentInputStream(contentIn);
 
-			contentIn.close();
-		} catch (MalformedURLException e) {
-			httpReq.returnBadRequest();
-		} catch (IOException e) {
-			httpReq.returnBadRequest();
-		}
-	}
+            httpReq.post(httpRes);
 
-	public static String getFileType(String uri) {
-		if (uri == null) {
-			return "*/*";
-		}
+            contentIn.close();
+        } catch (MalformedURLException e) {
+            httpReq.returnBadRequest();
+        } catch (IOException e) {
+            httpReq.returnBadRequest();
+        }
+    }
 
-		if (uri.endsWith(".mp3")) {
-			return "audio/mpeg";
-		}
+    public static String getFileType(String uri) {
+        if (uri == null) {
+            return "*/*";
+        }
 
-		if (uri.endsWith(".mp4")) {
-			return "video/mp4";
-		}
+        if (uri.endsWith(".mp3")) {
+            return "audio/mpeg";
+        }
 
-		return "*/*";
-	}
+        if (uri.endsWith(".mp4")) {
+            return "video/mp4";
+        }
 
-	public void release(){
-		httpServerList.stop(); 
-		httpServerList.close(); 
-		httpServerList.clear(); 
-		interrupt(); 
-	}
+        return "*/*";
+    }
+
+    public void release() {
+        httpServerList.stop();
+        httpServerList.close();
+        httpServerList.clear();
+        interrupt();
+    }
 }
