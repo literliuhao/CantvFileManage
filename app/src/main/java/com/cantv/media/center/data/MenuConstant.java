@@ -1,4 +1,4 @@
-package com.cantv.media.center.activity;
+package com.cantv.media.center.data;
 
 public class MenuConstant {
 

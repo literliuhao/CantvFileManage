@@ -48,6 +48,9 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 浏览图片页面
+ */
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
     private int mCurImageIndex;
     private ImageFrameView mFrameView;

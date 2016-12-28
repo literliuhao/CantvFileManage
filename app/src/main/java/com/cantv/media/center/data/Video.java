@@ -143,23 +143,5 @@ public class Video extends Media {
         }
         return null;
     }
-    // public void saveBitmap(Bitmap bitmap) throws IOException
-    // {
-    // File file = new File("/sdcard/"+"888.jpg");
-    // FileOutputStream out;
-    // try{
-    // out = new FileOutputStream(file);
-    // out.flush();
-    // out.close();
-    // }
-    // catch (FileNotFoundException e)
-    // {
-    // e.printStackTrace();
-    // }
-    // catch (IOException e)
-    // {
-    // e.printStackTrace();
-    // }
-    // }
 
 }

@@ -55,6 +55,9 @@ import java.util.Locale;
 
 import static com.cantv.media.R.string.singer;
 
+/**
+ * 播放音频
+ */
 @SuppressLint("NewApi")
 public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener {
 
@@ -192,8 +195,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onPause() {
-//        mCDView.pauseRotate();
-//        mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
         super.onPause();
     }
 
@@ -725,12 +726,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 @Override
                 public void run() {
                     if (null != mCDView) {
-//                        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.fj);
                         mCDView.setCoverBitmap(icon);
-//                        mCDView.setImageResource(R.drawable.fj);
                     }
                     if (null != mContentBg) {
-//                        mContentBg.setImageBitmap(drawable);
                         mContentBg.setBackground(drawable);
                         mContentBg.setImageResource(R.color.per40_black);
                     }
@@ -740,9 +738,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
         mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
         if (mLyricInfo == null) {
-//            if (isFirst) {
-//                showLyric = false;
-//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -750,9 +745,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 }
             });
         } else {
-//            if (isFirst) {  //播放第一首时,有歌词信息就设置为显示
-//                showLyric = true;
-//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

@@ -228,9 +228,6 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         try {
             index = (index < 0) ? 0 : index;
             if (index >= mDataList.size()) {
-//            	mPlayer.release();
-//            	finish();
-//            	return;
                 index = index % mDataList.size();
             }
             mCurPlayIndex = index;

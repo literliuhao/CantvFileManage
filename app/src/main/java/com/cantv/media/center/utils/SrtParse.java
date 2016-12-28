@@ -1,4 +1,6 @@
-package com.cantv.media.center.activity;
+package com.cantv.media.center.utils;
+
+import com.cantv.media.center.data.SrtBean;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -9,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-
-import android.util.Log;
 
 public class SrtParse {
 	private final static String EXPRESSION = "[0-9]+";

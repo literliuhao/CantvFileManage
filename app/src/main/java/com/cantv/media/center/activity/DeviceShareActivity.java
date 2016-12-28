@@ -55,6 +55,9 @@ import java.util.regex.Pattern;
 
 import jcifs.smb.SmbFile;
 
+/**
+ * 添加共享设备页面
+ */
 public class DeviceShareActivity extends Activity implements OnFocusChangeListener {
 
     private TextView mNetNameTv;

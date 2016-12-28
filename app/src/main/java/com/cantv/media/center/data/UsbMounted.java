@@ -2,6 +2,7 @@ package com.cantv.media.center.data;
 
 /**
  * Created by yibh on 2016/12/28.
+ * 插拔外接设备时使用
  */
 
 public class UsbMounted {
