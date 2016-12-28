@@ -6,7 +6,6 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
-import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.PlayMode;
@@ -34,7 +32,7 @@ import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.LyricInfo;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.PlayModeMenuItem;
-import com.cantv.media.center.receiver.MediaBroadcastReceiver;
+import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.CDView;
 import com.cantv.media.center.ui.CircleProgressBar;
 import com.cantv.media.center.ui.DoubleColumnMenu;
@@ -46,6 +44,10 @@ import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
 import com.cantv.media.center.utils.FastBlurUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -54,7 +56,7 @@ import java.util.Locale;
 import static com.cantv.media.R.string.singer;
 
 @SuppressLint("NewApi")
-public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener,IMediaListener {
+public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener {
 
     private final int INTERVAL_CHECK_PROGRESS = 1;
 
@@ -95,7 +97,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MyApplication.addActivity(this);
         holdWakeLock();
         initData();
-        MediaBroadcastReceiver.getInstance().addListener(this);
         playDefualt();
         initHandler();
     }
@@ -177,6 +178,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         }
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendEmptyMessage(0);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -210,12 +212,12 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        MediaBroadcastReceiver.getInstance().removeListener(this);
         muUITask.cancel(true);
         releaseWakeLock();
         hideMenuDialog();
@@ -693,26 +695,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         }
     }
 
-    @Override
-    public void onMounted(Intent intent) {
-        Log.i("Mount", "audio mounted...");
-    }
-
-    @Override
-    public void onUnmounted(Intent intent) {
-        Log.i("Mount", "audio unmounted...");
-        if (mDataList == null || mDataList.size() == 0) {
-            return;
-        }
-        String sourcepath = mDataList.get(0).isSharing ? mDataList.get(0).sharePath : mDataList.get(0).mUri;
-        String targetpath = intent.getDataString();
-        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-        if (isequal) {
-            isPressback = true;
-            AudioPlayerActivity.this.finish();
-        }
-    }
-
     /**
      * author: yibh
      * Date: 2016/10/26  17:26 .
@@ -790,5 +772,24 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             }
         }
         super.onCompletion(arg0);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        if (!usbMounted.mIsRemoved) {
+            return;
+        }
+        Log.i("Mount", "audio ...");
+        if (mDataList == null || mDataList.size() == 0) {
+            return;
+        }
+        String sourcepath = mDataList.get(0).isSharing ? mDataList.get(0).sharePath : mDataList.get(0).mUri;
+//        String targetpath = intent.getDataString();
+        String targetpath = usbMounted.mUsbPath;
+        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
+        if (isequal) {
+            isPressback = true;
+            AudioPlayerActivity.this.finish();
+        }
     }
 }

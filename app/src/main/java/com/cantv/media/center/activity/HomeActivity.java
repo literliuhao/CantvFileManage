@@ -21,21 +21,24 @@ import android.widget.TextView;
 
 import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
-import com.cantv.media.center.receiver.MediaBroadcastReceiver;
+import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class HomeActivity extends Activity implements OnFocusChangeListener, IMediaListener {
+public class HomeActivity extends Activity implements OnFocusChangeListener {
     private static final String TAG = "HomeActivity";
     private static final String EXTERNAL = "external";
     private static final int SINGLE_DEVICE = 1;
@@ -218,7 +221,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener, IMe
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
         mVersion.setText(FileUtil.getVersionName(this));
         alertDialog = new AlertDialog.Builder(mContext).create();
-        MediaBroadcastReceiver.getInstance().addListener(this);
     }
 
     private void initKey(String PRIVATEKEY) {
@@ -437,7 +439,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener, IMe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MediaBroadcastReceiver.getInstance().removeListener(this);
         MyApplication.removeHomeActivity();
         System.gc();
     }
@@ -501,16 +502,25 @@ public class HomeActivity extends Activity implements OnFocusChangeListener, IMe
         }
     }
 
-    @Override
-    public void onMounted(Intent intent) {
-        Log.i("Mount", "Home mounted...");
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        Log.i("Mount", "Home ...");
+        if (usbMounted.mIsRemoved) {
+            closeTimer();
+        }
         sendUSBRefreshMsg();
     }
 
+
     @Override
-    public void onUnmounted(Intent intent) {
-        Log.i("Mount", "Home unmounted...");
-        closeTimer();
-        sendUSBRefreshMsg();
+    protected void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

@@ -2,7 +2,6 @@ package com.cantv.media.center.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -29,11 +28,10 @@ import android.widget.Toast;
 import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
-import com.cantv.media.center.receiver.MediaBroadcastReceiver;
+import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.ImageBrowser;
 import com.cantv.media.center.ui.ImageFrameView;
 import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
@@ -43,11 +41,15 @@ import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate, IMediaListener {
+public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
     private int mCurImageIndex;
     private ImageFrameView mFrameView;
     private ImageBrowser mImageBrowser;
@@ -112,7 +114,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private boolean mFullScreen;
 
     private Handler mHandler = new Handler() {
-        
+
         public void handleMessage(android.os.Message msg) {
             int flag = msg.what;
             if (flag == 1) {
@@ -149,7 +151,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mCurImageIndex = indexOfDefaultPlay();
         autoRunnable();
         toHideRunnable();
-        MediaBroadcastReceiver.getInstance().addListener(this);
         toHideView();
         MyApplication.addActivity(this);
     }
@@ -578,6 +579,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
@@ -586,6 +593,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         stopAutoPlay();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+        EventBus.getDefault().unregister(this);
     }
 
     private void startAutoPlay() {
@@ -824,7 +832,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mHandler.removeMessages(ARROW_SHOW);
             mHandler.removeMessages(MENU_SHOW);
         }
-        MediaBroadcastReceiver.getInstance().removeListener(this);
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }
@@ -894,35 +901,33 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
     }
 
-    @Override
-    public void onMounted(Intent intent) {
-        Log.i("Mount", "ImagePlayer mounted...");
-    }
 
-    @Override
-    public void onUnmounted(Intent intent) {
-        Log.i("Mount", "ImagePlayer unmounted...");
-        if (getData() == null || getData().size() == 0) {
-            return;
-        }
-        //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
-        final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
-        final boolean isSharing = getData().get(mCurImageIndex).isSharing;
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!isSharing) {
-                    File imageFile = new File(imageUri);
-                    if (!imageFile.exists()) {
-                        isPressback = true;
-                        ImagePlayerActivity.this.finish();
-                        return;
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        if (usbMounted.mIsRemoved) {
+            if (getData() == null || getData().size() == 0) {
+                return;
+            }
+            //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
+            final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
+            final boolean isSharing = getData().get(mCurImageIndex).isSharing;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isSharing) {
+                        File imageFile = new File(imageUri);
+                        if (!imageFile.exists()) {
+                            isPressback = true;
+                            ImagePlayerActivity.this.finish();
+                            return;
+                        }
                     }
                 }
-            }
-        }, 500);
-        String sourcepath = getData().get(0).isSharing ? getData().get(0).sharePath : getData().get(0).mUri;
-        String targetpath = intent.getDataString();
-        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
+            }, 500);
+            String sourcepath = getData().get(0).isSharing ? getData().get(0).sharePath : getData().get(0).mUri;
+//            String targetpath = intent.getDataString();
+            String targetpath = usbMounted.mUsbPath;
+            boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
+        }
     }
 }
