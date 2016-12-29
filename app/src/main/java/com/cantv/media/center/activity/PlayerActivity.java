@@ -207,6 +207,10 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
             @Override
             public void RetryPlay() {
+                getProxyPlayer().release();
+                Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
+                isPressback = true;
+                finish();
             }
         });
 
@@ -231,7 +235,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
                 index = index % mDataList.size();
             }
             mCurPlayIndex = index;
-            Log.w("path",mDataList.get(index).getmUri());
+            Log.w("path", mDataList.get(index).getmUri());
             getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
                 @Override
                 public void run() {

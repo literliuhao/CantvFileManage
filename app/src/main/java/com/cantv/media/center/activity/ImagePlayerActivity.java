@@ -899,6 +899,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     for (int i = 0; i < mediaList.size(); i++) {
                         if (getData().get(0).mUri.contains(mediaList.get(i).mUri)) {
                             isClose = false;
+                            break;
                         }
                     }
                     if (isClose) {
