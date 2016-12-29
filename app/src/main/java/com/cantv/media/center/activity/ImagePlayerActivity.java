@@ -242,11 +242,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         boolean isSharing = getData().get(index).isSharing;
         mFrameView.playImage(url, isSharing, onfinish, new onLoadingImgListener() {
             @Override
-            public void loadSuccessed(boolean loadSuccessed) {
-                mLoadSuccessed = loadSuccessed;
+            public void loadSuccess(boolean loadSuccess) {
+                mLoadSuccessed = loadSuccess;
                 //修复MASERATI-63USB幻灯片播放破损图片出现很抱歉，文件管理已停止运行，添加文字提示
-                if (!loadSuccessed) {
+                if (!loadSuccess) {
                     mLoadingFail.setVisibility(View.VISIBLE);
+                    //修复幻灯片播放破损图停止问题
+                    if (mAutoPlay) {
+                        mAutoPlay = false;
+                        startAutoPlay();
+                    }
                 }
                 if (isFirstMenu) {
                     isFirstMenu = false;

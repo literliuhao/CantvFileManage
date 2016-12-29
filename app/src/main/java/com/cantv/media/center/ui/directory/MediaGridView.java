@@ -128,15 +128,13 @@ public class MediaGridView extends CustomGridView {
                     if (item.mType == SourceType.APP) {
                         //添加APP安装设置弹框(OS1.2)
                         if (SystemCateUtil.isNewVersion() && SystemCateUtil.isContainsCurrModel()) {
-                            try {
-                                install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
-                                if (install_app.equals("1")) {
-                                    getDisclaimerDialog(item);
-                                } else if (install_app.equals("0")) {
-                                    getConfirmDialog();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                            install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
+                            if (null == install_app) {
+                                getApkForbidDialog();
+                            } else if (install_app.equals("1")) {
+                                getDisclaimerDialog(item);
+                            } else if (install_app.equals("0")) {
+                                getConfirmDialog();
                             }
                         } else {
                             //添加APP弹框(OS1.1)
