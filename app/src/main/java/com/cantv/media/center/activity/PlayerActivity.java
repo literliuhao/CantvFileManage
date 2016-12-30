@@ -279,6 +279,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     @Override
     protected void onDestroy() {
         getProxyPlayer().release();
+        Log.w("PlayerActivity", "onDestroy");
         super.onDestroy();
     }
 }

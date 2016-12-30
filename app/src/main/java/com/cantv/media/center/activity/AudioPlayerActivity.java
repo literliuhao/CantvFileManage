@@ -30,6 +30,7 @@ import com.cantv.media.center.Listener.PlayMode;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.LyricInfo;
+import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.PlayModeMenuItem;
 import com.cantv.media.center.data.UsbMounted;
@@ -42,12 +43,14 @@ import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.dialog.MenuDialog;
 import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
 import com.cantv.media.center.utils.FastBlurUtil;
+import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -772,11 +775,28 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         Log.i("Mount", "audio ...");
         if (mDataList == null || mDataList.size() == 0) {
             return;
+            //是共享就不用继续下去
+        } else if (null != mDataList && mDataList.size() > 0 && mDataList.get(0).isSharing) {
+            return;
         }
-        String sourcepath = mDataList.get(0).isSharing ? mDataList.get(0).sharePath : mDataList.get(0).mUri;
-        String targetpath = usbMounted.mUsbPath;
-        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-        if (isequal) {
+
+        //获取当前未移除的外接设备路径
+        final List<Media> mediaList = new ArrayList<>();
+        List<String> currPathList = MediaUtils.getCurrPathList();
+        for (String path : currPathList) {
+            File file = new File(path);
+            Media fileInfo = FileUtil.getFileInfo(file, null, false);
+            mediaList.add(fileInfo);
+        }
+
+        boolean isFinish = true;
+        for (int i = 0; i < mediaList.size(); i++) {
+            if (mDataList.get(mCurPlayIndex).mUri.contains(mediaList.get(i).mUri)) {
+                isFinish = false;
+                break;
+            }
+        }
+        if (isFinish) {
             isPressback = true;
             AudioPlayerActivity.this.finish();
         }
