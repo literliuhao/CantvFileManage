@@ -116,6 +116,7 @@ public class ImageFrameView extends FrameLayout {
             sizeArray = convertImage(convertW, convertH);
             loadLocalImage(imageUri);
         } else {
+            //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             loadNetImage(imageUri);
         }
     }
@@ -204,20 +205,13 @@ public class ImageFrameView extends FrameLayout {
                 if (mImgHeight != (int) mActivity.screenWidth && mImgWidth != (int) mActivity.screenHeight) {
                     bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
                 }
-                loadResourceReady += 1;
                 mBitmap = bitmap;
                 mImageView.setImageBitmap(mBitmap);
                 dismissProgressBar();
-                if (loadResourceReady == 2) {
-                    //dismissProgressBar();
-//                    mImgWidth = resource.getWidth();
-//                    mImgHeight = resource.getHeight();
-                }
                 mImageView.setVisibility(View.VISIBLE);
 
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccess(true);
-//                    mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgWidth : callbackW, imageUri.startsWith(ShareUrl_FLAG) ? mImgHeight : callbackH);
                     mLoadingImgListener.bitmapSize(mImgWidth, mImgHeight);
                     mLoadingImgListener.loadResourceReady(true);
                     if (mImgHeight < (int) mActivity.screenHeight && mImgWidth < (int) mActivity.screenWidth) {

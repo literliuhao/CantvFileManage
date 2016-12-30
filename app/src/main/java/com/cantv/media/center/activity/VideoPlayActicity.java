@@ -10,6 +10,7 @@ import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.media.TimedText;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -901,13 +902,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
      */
     private List<String> getExternalSubList() {
         String path = mDataList.get(mCurPlayIndex).isSharing ? "" : mDataList.get(mCurPlayIndex).mUri;
-
-        if("".equals(path)){
-            return new ArrayList<>();
+        ArrayList<String> savePathList = new ArrayList<>();
+        Log.i("shen", "getExternalSubList: "+path.length());
+        if (TextUtils.isEmpty(path)) {
+            return savePathList;
         }
         String stPath = path.substring(0, path.lastIndexOf("."));
         List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass", stPath + ".ssa");   // stPath + ".smi", stPath + ".sub"
-        ArrayList<String> savePathList = new ArrayList<>();
         //savePathList.add("无");
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
