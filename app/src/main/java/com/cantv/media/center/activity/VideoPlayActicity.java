@@ -901,6 +901,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
      */
     private List<String> getExternalSubList() {
         String path = mDataList.get(mCurPlayIndex).isSharing ? "" : mDataList.get(mCurPlayIndex).mUri;
+
+        if("".equals(path)){
+            return new ArrayList<>();
+        }
         String stPath = path.substring(0, path.lastIndexOf("."));
         List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass", stPath + ".ssa");   // stPath + ".smi", stPath + ".sub"
         ArrayList<String> savePathList = new ArrayList<>();

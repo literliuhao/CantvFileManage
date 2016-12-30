@@ -643,8 +643,8 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                         return;
                     }
                 });
-                mShareGuideDialog.setCancelable(false);
             }
+            mShareGuideDialog.setCancelable(false);
             mShareGuideDialog.show();
         } else {
             mScrollView.setVisibility(View.VISIBLE);
