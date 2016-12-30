@@ -204,7 +204,11 @@ public class ProxyPlayer {
      * @return
      */
     public List<String> getINSubList() {
+        String sourceUri = getLitePlayer().getStatusInfo().mSourceUri;
         ArrayList<String> saveSubIndexList = new ArrayList<>();
+        if (sourceUri.equals("") || sourceUri.contains("//")) {
+            return saveSubIndexList;
+        }
         TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
         if (trackInfos != null && trackInfos.length > 0) {
             for (int i = 0; i < trackInfos.length; i++) {
