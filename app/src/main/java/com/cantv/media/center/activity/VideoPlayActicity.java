@@ -135,6 +135,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //解决内置字幕切换后不消失
 //        getProxyPlayer().setMovieSubTitle(0);
 //        getProxyPlayer().setMovieAudioTrack(0);
+
+        //给外挂字幕关闭
+        mOpenExternalSubtitle=false;
         if (isFirst) {
             mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
