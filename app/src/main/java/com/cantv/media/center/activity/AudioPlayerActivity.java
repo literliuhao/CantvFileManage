@@ -798,7 +798,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         }
         if (isFinish) {
             isPressback = true;
-            AudioPlayerActivity.this.finish();
+            finish();
         }
     }
 }
