@@ -3,12 +3,9 @@ package com.cantv.media.center.activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
@@ -29,23 +26,31 @@ import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
+import com.cantv.media.center.Listener.PlayMode;
 import com.cantv.media.center.app.MyApplication;
-import com.cantv.media.center.constants.PlayMode;
 import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.LyricInfo;
+import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.PlayModeMenuItem;
-import com.cantv.media.center.ui.CDView;
-import com.cantv.media.center.ui.CircleProgressBar;
-import com.cantv.media.center.ui.DoubleColumnMenu;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
-import com.cantv.media.center.ui.LyricView;
-import com.cantv.media.center.ui.MenuDialog;
-import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
+import com.cantv.media.center.data.UsbMounted;
+import com.cantv.media.center.ui.audio.CDView;
+import com.cantv.media.center.ui.audio.CircleProgressBar;
+import com.cantv.media.center.ui.audio.LyricView;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnKeyEventListener;
+import com.cantv.media.center.ui.dialog.MenuDialog;
+import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
 import com.cantv.media.center.utils.FastBlurUtil;
+import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
@@ -53,6 +58,9 @@ import java.util.Locale;
 
 import static com.cantv.media.R.string.singer;
 
+/**
+ * 播放音频
+ */
 @SuppressLint("NewApi")
 public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener {
 
@@ -67,8 +75,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private ImageButton mPlayPauseBtn, mPreviousBtn, mNextBtn;
     private ImageView mPlayModeIconIv, mPlayModeView;
 
-    private BroadcastReceiver mUsbChangeReceiver;
-    private IntentFilter mUsbFilter;
     private PowerManager.WakeLock mWakeLock;
     private Handler mHandler;
     private MenuDialog mMenuDialog;
@@ -85,11 +91,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private MenuItem playModeMenuItem;
 
-    private static final int UNDATE_UI = -1;  //更新UI
     private String mUri;
     private LoadingMuUITask muUITask;
     private int currentMode = 5;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +102,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MyApplication.addActivity(this);
         holdWakeLock();
         initData();
-        regUsbChangeReceiver();
         playDefualt();
         initHandler();
     }
@@ -151,34 +154,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayModeView.setNextFocusDownId(playModeViewId);
     }
 
-    public void regUsbChangeReceiver() {
-        if (mUsbChangeReceiver == null) {
-            mUsbChangeReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                        if (mDataList == null || mDataList.size() == 0) {
-                            return;
-                        }
-                        String sourcepath = mDataList.get(0).isSharing ? mDataList.get(0).sharePath : mDataList.get(0).mUri;
-                        String targetpath = intent.getDataString();
-                        boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-                        if (isequal) {
-                            isPressback = true;
-                            AudioPlayerActivity.this.finish();
-                        }
-                    }
-                }
-            };
-            mUsbFilter = new IntentFilter();
-            mUsbFilter.setPriority(1000);
-            mUsbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-            mUsbFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
-            mUsbFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-            mUsbFilter.addDataScheme("file");
-        }
-        registerReceiver(mUsbChangeReceiver, mUsbFilter);
-    }
 
     @SuppressLint("HandlerLeak")
     public void initHandler() {
@@ -208,6 +183,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         }
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendEmptyMessage(0);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -221,8 +197,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onPause() {
-//        mCDView.pauseRotate();
-//        mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
         super.onPause();
     }
 
@@ -241,16 +215,14 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mUsbChangeReceiver);
         muUITask.cancel(true);
         releaseWakeLock();
-        mUsbChangeReceiver = null;
-        mUsbFilter = null;
         hideMenuDialog();
         mMenuDialog = null;
         mHandler.removeCallbacksAndMessages(null);
@@ -496,6 +468,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.adjustTimeOffset(200);
                         } else if (position == 1) {
                             mLyricView.adjustTimeOffset(-200);
+                        } else if (position == 2) {
+                            mLyricView.restoreTime();
                         }
                     }
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
@@ -526,7 +500,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
                     // if current choice is playList, selected subMenuItem
                     // should be auto-focused after left-key
-                    // down
                     if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN && mSelectedMenuPosi == 0) {
                         mMenuDialog.getMenu().openSubMenu(true, mMenuList.get(0).getSelectedChildIndex());
                         return true;
@@ -544,9 +517,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mMenuList.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
-        }else if(mSelectedMenuPosi == 1){
+        } else if (mSelectedMenuPosi == 1) {
             //修复OS-2736进入外接设备，播放本地音乐，在播放器左下角的播放模式中切换播放模式后，打开菜单播放模式选项后没有实时更新。
-            if(currentMode != 5){
+            if (currentMode != 5) {
                 mMenuList.get(1).setChildSelected(currentMode);
                 mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(1).getSelectedChildIndex());
             }
@@ -610,6 +583,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         List<MenuItem> adjustLyricSubMenuItems = new ArrayList<MenuItem>();
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.forward_seconds), MenuItem.TYPE_LIST));
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.delay_seconds), MenuItem.TYPE_LIST));
+        adjustLyricSubMenuItems.add(new MenuItem("还原", MenuItem.TYPE_LIST));
         adjustLyricMenuItem.setChildren(adjustLyricSubMenuItems);
         menuList.add(adjustLyricMenuItem);
 
@@ -753,12 +727,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 @Override
                 public void run() {
                     if (null != mCDView) {
-//                        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.fj);
                         mCDView.setCoverBitmap(icon);
-//                        mCDView.setImageResource(R.drawable.fj);
                     }
                     if (null != mContentBg) {
-//                        mContentBg.setImageBitmap(drawable);
                         mContentBg.setBackground(drawable);
                         mContentBg.setImageResource(R.color.per40_black);
                     }
@@ -768,9 +739,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
         mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
         if (mLyricInfo == null) {
-//            if (isFirst) {
-//                showLyric = false;
-//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -778,9 +746,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 }
             });
         } else {
-//            if (isFirst) {  //播放第一首时,有歌词信息就设置为显示
-//                showLyric = true;
-//            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -800,5 +765,40 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             }
         }
         super.onCompletion(arg0);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        if (!usbMounted.mIsRemoved) {
+            return;
+        }
+        Log.i("Mount", "audio ...");
+        if (mDataList == null || mDataList.size() == 0) {
+            return;
+            //是共享就不用继续下去
+        } else if (null != mDataList && mDataList.size() > 0 && mDataList.get(0).isSharing) {
+            return;
+        }
+
+        //获取当前未移除的外接设备路径
+        final List<Media> mediaList = new ArrayList<>();
+        List<String> currPathList = MediaUtils.getCurrPathList();
+        for (String path : currPathList) {
+            File file = new File(path);
+            Media fileInfo = FileUtil.getFileInfo(file, null, false);
+            mediaList.add(fileInfo);
+        }
+
+        boolean isFinish = true;
+        for (int i = 0; i < mediaList.size(); i++) {
+            if (mDataList.get(mCurPlayIndex).mUri.contains(mediaList.get(i).mUri)) {
+                isFinish = false;
+                break;
+            }
+        }
+        if (isFinish) {
+            isPressback = true;
+            finish();
+        }
     }
 }

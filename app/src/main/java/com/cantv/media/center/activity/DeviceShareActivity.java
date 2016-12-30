@@ -29,13 +29,13 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.DeviceInfo;
-import com.cantv.media.center.ui.DeviceAddDialog;
-import com.cantv.media.center.ui.DeviceAddDialog.OnIpConfirmedListener;
-import com.cantv.media.center.ui.DeviceLoginDialog;
-import com.cantv.media.center.ui.DeviceLoginDialog.OnLoginListener;
-import com.cantv.media.center.ui.DeviceShareItemView;
-import com.cantv.media.center.ui.LoadingDialog;
-import com.cantv.media.center.ui.ShareGuideDialog;
+import com.cantv.media.center.ui.dialog.DeviceAddDialog;
+import com.cantv.media.center.ui.dialog.DeviceAddDialog.OnIpConfirmedListener;
+import com.cantv.media.center.ui.dialog.DeviceLoginDialog;
+import com.cantv.media.center.ui.dialog.DeviceLoginDialog.OnLoginListener;
+import com.cantv.media.center.ui.share.DeviceShareItemView;
+import com.cantv.media.center.ui.dialog.LoadingDialog;
+import com.cantv.media.center.ui.dialog.ShareGuideDialog;
 import com.cantv.media.center.utils.BitmapUtils;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
@@ -55,6 +55,9 @@ import java.util.regex.Pattern;
 
 import jcifs.smb.SmbFile;
 
+/**
+ * 添加共享设备页面
+ */
 public class DeviceShareActivity extends Activity implements OnFocusChangeListener {
 
     private TextView mNetNameTv;
@@ -640,8 +643,8 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                         return;
                     }
                 });
-                mShareGuideDialog.setCancelable(false);
             }
+            mShareGuideDialog.setCancelable(false);
             mShareGuideDialog.show();
         } else {
             mScrollView.setVisibility(View.VISIBLE);

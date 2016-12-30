@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.URL;
 
 /**
+ * 图片高斯模糊
  * Created by yibh on 2016/11/7 16:30 .
  */
 
@@ -30,7 +31,7 @@ public class FastBlurUtil {
      * @param url
      * @return
      */
-    public static int IO_BUFFER_SIZE = 2 * 1024;
+    private static final int IO_BUFFER_SIZE = 2 * 1024;
 
     public static Bitmap GetUrlBitmap(String url, int scaleRatio) {
 
@@ -40,9 +41,9 @@ public class FastBlurUtil {
         }
 
 
-        Bitmap originBitmap = null;
-        InputStream in = null;
-        BufferedOutputStream out = null;
+        Bitmap originBitmap;
+        InputStream in;
+        BufferedOutputStream out;
         try {
             in = new BufferedInputStream(new URL(url).openStream(), IO_BUFFER_SIZE);
             final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
@@ -56,8 +57,7 @@ public class FastBlurUtil {
                     originBitmap.getWidth() / scaleRatio,
                     originBitmap.getHeight() / scaleRatio,
                     false);
-            Bitmap blurBitmap = doBlur(scaledBitmap, blurRadius, true);
-            return blurBitmap;
+            return doBlur(scaledBitmap, blurRadius);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -92,42 +92,13 @@ public class FastBlurUtil {
                 originBitmap.getWidth() / scaleRatio,
                 originBitmap.getHeight() / scaleRatio,
                 false);
-        Bitmap blurBitmap = doBlur(scaledBitmap, blurRadius, true);
-        return blurBitmap;
+        return doBlur(scaledBitmap, blurRadius);
     }
 
-    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
-
-        // Stack Blur v1.0 from
-        // http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
-        //
-        // Java Author: Mario Klingemann <mario at quasimondo.com>
-        // http://incubator.quasimondo.com
-        // created Feburary 29, 2004
-        // Android port : Yahel Bouaziz <yahel at kayenko.com>
-        // http://www.kayenko.com
-        // ported april 5th, 2012
-
-        // This is a compromise between Gaussian Blur and Box blur
-        // It creates much better looking blurs than Box Blur, but is
-        // 7x faster than my Gaussian Blur implementation.
-        //
-        // I called it Stack Blur because this describes best how this
-        // filter works internally: it creates a kind of moving stack
-        // of colors whilst scanning through the image. Thereby it
-        // just has to add one new block of color to the right side
-        // of the stack and remove the leftmost color. The remaining
-        // colors on the topmost layer of the stack are either added on
-        // or reduced by one, depending on if they are on the right or
-        // on the left side of the stack.
-        //
-        // If you are using this algorithm in your code please add
-        // the following line:
-        //
-        // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
+    private static Bitmap doBlur(Bitmap sentBitmap, int radius) {
 
         Bitmap bitmap;
-        if (canReuseInBitmap) {
+        if (true) {
             bitmap = sentBitmap;
         } else {
             bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);

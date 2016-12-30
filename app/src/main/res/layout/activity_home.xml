@@ -127,7 +127,7 @@
                 android:id="@+id/layout_bottom_layout_share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pxn16"
+                android:layout_marginLeft="@dimen/px_minus_15"
                 android:layout_toRightOf="@id/layout_bottom_layout_internal">
 
                 <include layout="@layout/layout_share"/>

@@ -65,8 +65,6 @@ public class LyricParser {
             //此处直接传is会导致歌词不显示
             fis = new FileInputStream(file);
             return parseFromStream(fis, chartName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -93,7 +91,7 @@ public class LyricParser {
             return null;
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(stream, Charset.forName(chartName)));
-        String line = null;
+        String line;
         try {
             LyricInfo lyricInfo = new LyricInfo();
             List<Lyric> lyrics = lyricInfo.getLyrics();

@@ -2,10 +2,8 @@ package com.cantv.media.center.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,15 +24,23 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
-import com.cantv.media.center.ui.MediaGridView;
+import com.cantv.media.center.data.UsbMounted;
+import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * 首页
+ */
 public class HomeActivity extends Activity implements OnFocusChangeListener {
     private static final String TAG = "HomeActivity";
     private static final String EXTERNAL = "external";
@@ -60,7 +66,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private TextView mImageTV;
     private TextView mAudioTV;
     private TextView mAppTV;
-    private TextView mShareTV;
     private TextView mLocalFreeTV;
     private TextView mLocalTotalTV;
     private TextView mVersion;
@@ -125,7 +130,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "video");
-                if (mUsbRootPaths.size() > 1) {
+                if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
                 startActivity(intent);
@@ -137,7 +142,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "image");
-                if (mUsbRootPaths.size() > 1) {
+                if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
                 startActivity(intent);
@@ -149,7 +154,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "audio");
-                if (mUsbRootPaths.size() > 1) {
+                if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
                 startActivity(intent);
@@ -161,7 +166,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "app");
-                if (mUsbRootPaths.size() > 1) {
+                if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
                 startActivity(intent);
@@ -181,7 +186,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onClick(View v) {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
-                if (mUsbRootPaths.size() > 1) {
+                if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
                 intent.putExtra("type", "device1");
@@ -203,7 +208,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "device2");
-                intent.putExtra("filePath", mUsbRootPaths.get(1));
+                intent.putExtra("filePath", mUsbRootPaths.get(SINGLE_DEVICE));
                 startActivity(intent);
             }
         });
@@ -215,24 +220,10 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 startActivity(intent);
             }
         });
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        filter.addAction(Intent.ACTION_MEDIA_REMOVED);
-        filter.addDataScheme("file");
-        registerReceiver(mReceiver, filter);
         mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
         mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
-        mVersion.setText(FileUtil.getVersionName(this)
-//                +" 产品型号:"+ SystemCateUtil.productModel()
-//                +"\n固件版本: "+SystemCateUtil.getSystemVersion()+"\n系统版本:Android "
-//                + android.os.Build.VERSION.RELEASE
-        );
+        mVersion.setText(FileUtil.getVersionName(this));
         alertDialog = new AlertDialog.Builder(mContext).create();
-//        Intent intentStart = new Intent(this, BootDialogService.class);
-//        intentStart.setAction("com.cantv.service.RECEIVER_START");
-//        this.startService(intentStart);
-        // showMountedDialog();
     }
 
     private void initKey(String PRIVATEKEY) {
@@ -278,8 +269,8 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                         try { //外接存储设备移出过快可能出现集合越界异常
                             mExternalFreeTV1.setText(getString(R.string.str_localdiskfree) + MediaUtils.getRealFreeSize(mUsbRootPaths.get(0)));
                             mExternalTotalTV1.setText(getString(R.string.str_localdisktotal) + MediaUtils.getRealTotalSize(mUsbRootPaths.get(0)));
-                            mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getRealFreeSize(mUsbRootPaths.get(1)));
-                            mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getRealTotalSize(mUsbRootPaths.get(1)));
+                            mExternalFreeTV2.setText(getString(R.string.str_localdiskfree) + MediaUtils.getRealFreeSize(mUsbRootPaths.get(SINGLE_DEVICE)));
+                            mExternalTotalTV2.setText(getString(R.string.str_localdisktotal) + MediaUtils.getRealTotalSize(mUsbRootPaths.get(SINGLE_DEVICE)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -290,7 +281,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 mExternalIV1.setVisibility(View.GONE);
                 mExternalIV2.setVisibility(View.GONE);
                 mExternalUIV.setBackgroundResource(R.drawable.icon_u);
-                if (mNum == 1) {
+                if (mNum == SINGLE_DEVICE) {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
@@ -317,18 +308,18 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         }
     }
 
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                // openTimer();
-                sendUSBRefreshMsg();
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                closeTimer();
-                sendUSBRefreshMsg();
-            }
-        }
-    };
+//    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+//                // openTimer();
+//                sendUSBRefreshMsg();
+//            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
+//                closeTimer();
+//                sendUSBRefreshMsg();
+//            }
+//        }
+//    };
 
     private void openTimer() {
         if (mTimer == null) {
@@ -448,11 +439,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         }
     };
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
         MyApplication.removeHomeActivity();
         System.gc();
     }
@@ -480,7 +469,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             mFocusScaleUtils.scaleToNormal(v);
         }
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -515,5 +503,27 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         } else {
             return "break";
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        Log.i("Mount", "Home ...");
+        if (usbMounted.mIsRemoved) {
+            closeTimer();
+        }
+        sendUSBRefreshMsg();
+    }
+
+
+    @Override
+    protected void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

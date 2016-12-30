@@ -10,6 +10,7 @@ import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.media.TimedText;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -24,20 +25,28 @@ import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.data.Media;
+import com.cantv.media.center.data.MenuConstant;
 import com.cantv.media.center.data.MenuItem;
+import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
-import com.cantv.media.center.ui.DoubleColumnMenu;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnKeyEventListener;
-import com.cantv.media.center.ui.ExternalSurfaceView;
-import com.cantv.media.center.ui.ExternalSurfaceView.ShowType;
-import com.cantv.media.center.ui.MenuDialog;
-import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnKeyEventListener;
+import com.cantv.media.center.ui.player.ExternalSurfaceView;
+import com.cantv.media.center.ui.player.ExternalSurfaceView.ShowType;
+import com.cantv.media.center.ui.dialog.MenuDialog;
+import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
 import com.cantv.media.center.ui.player.BasePlayer;
 import com.cantv.media.center.ui.player.PlayerController;
 import com.cantv.media.center.ui.player.SrcParser;
+import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -117,7 +126,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
-
     }
 
     @Override
@@ -127,6 +135,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //解决内置字幕切换后不消失
 //        getProxyPlayer().setMovieSubTitle(0);
 //        getProxyPlayer().setMovieAudioTrack(0);
+
+        //给外挂字幕关闭
+        mOpenExternalSubtitle=false;
         if (isFirst) {
             mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
@@ -842,6 +853,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
             MyApplication.onFinishActivity();
         }
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
@@ -901,9 +913,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
      */
     private List<String> getExternalSubList() {
         String path = mDataList.get(mCurPlayIndex).isSharing ? "" : mDataList.get(mCurPlayIndex).mUri;
+        ArrayList<String> savePathList = new ArrayList<>();
+        Log.i("shen", "getExternalSubList: " + path.length());
+        if (TextUtils.isEmpty(path)) {
+            return savePathList;
+        }
         String stPath = path.substring(0, path.lastIndexOf("."));
         List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass", stPath + ".ssa");   // stPath + ".smi", stPath + ".sub"
-        ArrayList<String> savePathList = new ArrayList<>();
         //savePathList.add("无");
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
@@ -912,6 +928,55 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             }
         }
         return savePathList;
+    }
+
+
+    @Override
+    protected void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+
+    /**
+     * 移除外接设备的监听
+     *
+     * @param usbMounted
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        if (!usbMounted.mIsRemoved) {
+            return;
+        }
+
+        if (mDataList == null || mDataList.size() == 0) {
+            return;
+            //是共享就不用继续下去
+        } else if (null != mDataList && mDataList.size() > 0 && mDataList.get(0).isSharing) {
+            return;
+        }
+
+        //获取当前未移除的外接设备路径
+        final List<Media> mediaList = new ArrayList<>();
+        List<String> currPathList = MediaUtils.getCurrPathList();
+        for (String path : currPathList) {
+            File file = new File(path);
+            Media fileInfo = FileUtil.getFileInfo(file, null, false);
+            mediaList.add(fileInfo);
+        }
+
+        boolean isFinish = true;
+        for (int i = 0; i < mediaList.size(); i++) {
+            if (mDataList.get(mCurPlayIndex).mUri.contains(mediaList.get(i).mUri)) {
+                isFinish = false;
+                break;
+            }
+        }
+        if (isFinish) {
+            isPressback = true;
+            finish();
+        }
+
     }
 
 }

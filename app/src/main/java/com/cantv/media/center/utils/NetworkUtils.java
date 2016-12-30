@@ -10,10 +10,7 @@ import android.util.Log;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
@@ -36,12 +33,11 @@ public class NetworkUtils {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int ipAddress = wifiInfo.getIpAddress();
 
-        String ip = String.format("%d.%d.%d.%d",
+        return String.format("%d.%d.%d.%d",
                 (ipAddress & 0xff),
                 (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff),
                 (ipAddress >> 24 & 0xff));
-        return ip;
     }
 
     public static String getEthernetIp(Context context) {
@@ -54,7 +50,7 @@ public class NetworkUtils {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()
                             && InetAddressUtils.isIPv4Address(inetAddress.getHostAddress())) {
-                        ip = inetAddress.getHostAddress().toString();
+                        ip = inetAddress.getHostAddress();
                         break;
                     }
                 }
@@ -70,7 +66,7 @@ public class NetworkUtils {
      * @return
      * @category 判断是否有外网连接（普通方法不能判断外网的网络是否连接，比如连接上局域网）
      */
-    public static final boolean ping(String host) {
+    public static boolean ping(String host) {
 
         String result = null;
         try {

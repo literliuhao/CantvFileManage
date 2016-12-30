@@ -49,7 +49,7 @@
         android:clipToPadding="false"
         android:paddingBottom="@dimen/px100"
         android:paddingTop="@dimen/px100"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:scrollbars="none" >
 
         <LinearLayout
@@ -65,12 +65,12 @@
             android:paddingEnd="@dimen/px15"
              >
 
-            <com.cantv.media.center.ui.DeviceShareItemView
+            <com.cantv.media.center.ui.share.DeviceShareItemView
                 android:id="@+id/dsiv_add_device"
                 android:layout_width="@dimen/px300"
                 android:layout_height="@dimen/px450"
                 zby:viewType="ADD_DEVICE" >
-            </com.cantv.media.center.ui.DeviceShareItemView>
+            </com.cantv.media.center.ui.share.DeviceShareItemView>
         </LinearLayout>
     </HorizontalScrollView>
 

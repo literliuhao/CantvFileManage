@@ -1,11 +1,8 @@
 package com.cantv.media.center.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,25 +15,33 @@ import android.widget.Toast;
 
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.constants.MediaOrientation;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
-import com.cantv.media.center.ui.ConfirmDialog;
-import com.cantv.media.center.ui.DoubleColumnMenu;
-import com.cantv.media.center.ui.DoubleColumnMenu.OnItemClickListener;
-import com.cantv.media.center.ui.MediaGridView;
-import com.cantv.media.center.ui.MediaOrientation;
-import com.cantv.media.center.ui.MenuDialog;
-import com.cantv.media.center.ui.MenuDialog.MenuAdapter;
+import com.cantv.media.center.data.UsbMounted;
+import com.cantv.media.center.ui.dialog.ConfirmDialog;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
+import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.dialog.MenuDialog;
+import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
+import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 文件列表页面
+ */
 public class GridViewActivity extends Activity {
     private static String TAG = "GridViewActivity";
     private RelativeLayout mContentView;
@@ -73,12 +78,6 @@ public class GridViewActivity extends Activity {
         mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
         mRTCountView = (TextView) findViewById(R.id.file_count);
         Intent intent = getIntent();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        filter.addAction(Intent.ACTION_MEDIA_REMOVED);
-        filter.addDataScheme("file");
-        registerReceiver(mReceiver, filter);
         String type = intent.getStringExtra("type");
         if ("video".equalsIgnoreCase(type)) {
             mTitleTV.setText(R.string.str_movie);
@@ -224,7 +223,6 @@ public class GridViewActivity extends Activity {
                     View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
 
                     mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, mMenuList.get(mSelectedMenuPosi));
-
 
                     mSelectedMenuPosi = position;
                     MenuItem menuItem = mMenuList.get(position);
@@ -387,30 +385,11 @@ public class GridViewActivity extends Activity {
         }
     }
 
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                //先为了判断是否处在外接设备列表根目录
-                if (mGridView.mMediaStack.isEmpty()) {
-                    // 有新设备插入
-                    updateSDMounted();
-                }
-
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                // 移除设备
-                updateSDMounted();
-            }
-        }
-    };
-
-
     @Override
     protected void onDestroy() {
         if (mGridView != null && mGridView.fileServer != null) {
             mGridView.fileServer.release();
         }
-        unregisterReceiver(mReceiver);
         mConfirmDialog = null;
         super.onDestroy();
     }
@@ -421,36 +400,36 @@ public class GridViewActivity extends Activity {
         return getWindow().getDecorView().getDrawingCache();
     }
 
-
-    private void updateSDMounted() {
+    private void updateSDMounted(String usbPath) {
 
         if (!isExternal) { //不是外接设备就不用往下走了
             return;
         }
-        final List<Media> mediaes = new ArrayList<>();
+        final List<Media> mediaList = new ArrayList<>();
         List<String> currPathList = MediaUtils.getCurrPathList();
         for (String path : currPathList) {
             File file = new File(path);
             Media fileInfo = FileUtil.getFileInfo(file, null, false);
-            mediaes.add(fileInfo);
+            mediaList.add(fileInfo);
         }
 
-        boolean isUpdate = true;
+        boolean isUpdate = true;    //
         if (!mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
 
-            //获取上一级的某个路径,然后和依然存在的外设路径比较,不用当前集合(当前集合可能没有内容)
-            Media parentMed = mGridView.mMediaStack.get(0).get(0);
-
-            for (Media media : mediaes) {
-                if (parentMed.mUri.contains(media.mUri)) {
-                    isUpdate = false;
-                    break;
+            if (mGridView.mMediaStack.size() > 1) { //取第二级目录中第一个地址,和还存在的外接设备地址进行比较
+                String uri = mGridView.mMediaStack.get(1).get(0).mUri;
+                for (int i = 0; i < mediaList.size(); i++) {
+                    if (uri.contains(mediaList.get(i).mUri)) {
+                        isUpdate = false;
+                        break;
+                    }
                 }
             }
+
         }
 
         if (isUpdate) {
-            updateRootUI(mediaes);
+            updateRootUI(mediaList);
         }
 
 
@@ -458,8 +437,6 @@ public class GridViewActivity extends Activity {
 
     /**
      * 更新外接设备列表
-     *
-     * @param mediaList
      */
     private void updateRootUI(List<Media> mediaList) {
         // 清除记录的上级目录
@@ -548,6 +525,11 @@ public class GridViewActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
 
     @Override
     protected void onStop() {
@@ -556,5 +538,21 @@ public class GridViewActivity extends Activity {
         if (!isStartAc && !(MyApplication.mHomeActivityList.size() > 0)) {
             finish();
         }
+        EventBus.getDefault().unregister(this);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        if (usbMounted.mIsRemoved) {
+            Log.i("Mount", "gridView unmounted...");
+            updateSDMounted(usbMounted.mUsbPath);
+        } else {
+            Log.i("Mount", "gridView mounted...");
+            if (mGridView.mMediaStack.isEmpty()) {
+                // 有新设备插入
+                updateSDMounted(usbMounted.mUsbPath);
+            }
+        }
+    }
+
 }

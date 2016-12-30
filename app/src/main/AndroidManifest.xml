@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cantv.media"
           android:sharedUserId="android.uid.system"
-          android:versionCode="146"
-          android:versionName="20161223_v1.4.6">
+          android:versionCode="147"
+          android:versionName="20161230_v1.4.7">
+
 
     <uses-sdk
         android:minSdkVersion="19"
@@ -100,6 +101,7 @@
                 <action android:name="android.intent.action.MEDIA_MOUNTED"/>
                 <action android:name="android.intent.action.MEDIA_UNMOUNTED"/>
                 <action android:name="android.intent.action.MEDIA_REMOVED"/>
+                <action android:name="android.intent.action.MEDIA_EJECT"/>
 
                 <data android:scheme="file"/>
             </intent-filter>

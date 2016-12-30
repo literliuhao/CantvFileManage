@@ -37,6 +37,7 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /**
+ * 获取File信息工具类
  * Created by yibh on 2016/6/28.
  */
 public class FileUtil {
@@ -74,10 +75,7 @@ public class FileUtil {
         if (file.isHidden()) {
             return false;
         }
-        if (file.getName().startsWith(".")) {
-            return false;
-        }
-        return true;
+        return !file.getName().startsWith(".");
     }
 
     /**
@@ -92,10 +90,7 @@ public class FileUtil {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        if (file.getName().startsWith(".")) {
-            return false;
-        }
-        return true;
+        return !file.getName().startsWith(".");
     }
 
     /**
@@ -108,7 +103,7 @@ public class FileUtil {
         if (path.equals("/")) {
             return "/";
         }
-        int index = 0;
+        int index;
         index = path.lastIndexOf("/");
         if (index == -1 || !path.startsWith("/")) {
             try {
@@ -136,7 +131,7 @@ public class FileUtil {
     public static Media getFileInfo(File file, FilenameFilter filter, boolean showOrHidden) {
         SourceType fileType = FileUtil.getFileType(file);
         // 下面分类的写法是为了显示缩略图
-        Media fileBean = null;
+        Media fileBean;
         if (fileType == SourceType.MOIVE) {
             fileBean = new Video(fileType, file.getAbsolutePath());
         } else if (fileType == SourceType.MUSIC) {
@@ -146,8 +141,6 @@ public class FileUtil {
         } else {
             fileBean = new Media(fileType, file.getAbsolutePath());
         }
-        String path = file.getPath();
-        // File file1 = new File(path);
         fileBean.canRead = file.canRead();
         fileBean.canWrite = file.canWrite();
         fileBean.isHidden = file.isHidden();
@@ -174,7 +167,7 @@ public class FileUtil {
     public static Media getSmbFileInfo(SmbFile file, FilenameFilter filter, boolean showOrHidden, String proxyPathPrefix) {
         SourceType fileType = FileUtil.getSmbFileType(file);
         // 下面分类的写法是为了显示缩略图
-        Media fileBean = null;
+        Media fileBean;
         if (fileType == SourceType.MOIVE) {
             fileBean = new Video(fileType, file.getPath());
         } else if (fileType == SourceType.MUSIC) {
@@ -202,9 +195,7 @@ public class FileUtil {
             fileBean.isSharing = true;
             fileBean.sharePath = proxyPathPrefix + URLEncoder.encode(fileBean.mUri.substring(6), "UTF-8");
             // fileBean.sharePath = "http://"+fileBean.mUri.split("@")[1];
-        } catch (SmbException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (SmbException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         // 文件夹时计算出总的下一级文件/夹数量
@@ -546,8 +537,8 @@ public class FileUtil {
         } else if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
-                for (int i = 0; i < files.length; i++) {
-                    size = size + getFileSize(files[i]);
+                for (File file1 : files) {
+                    size = size + getFileSize(file1);
                 }
             }
         }
@@ -847,8 +838,8 @@ public class FileUtil {
             return strings;
         }
 
-        for (int i = 0; i < array.length; i++) {
-            strings.add(array[i]);
+        for (String anArray : array) {
+            strings.add(anArray);
         }
         return strings;
     }

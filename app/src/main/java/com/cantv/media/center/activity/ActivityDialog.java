@@ -1,9 +1,5 @@
 package com.cantv.media.center.activity;
 
-import com.cantv.liteplayer.core.focus.FocusScaleUtils;
-import com.cantv.liteplayer.core.focus.FocusUtils;
-import com.cantv.media.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,10 +9,14 @@ import android.os.PersistableBundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
+
+import com.cantv.liteplayer.core.focus.FocusScaleUtils;
+import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.media.R;
 
 /**
  * Created by liuhao on 16/7/14.
+ * 插入外接设备时的弹窗
  */
 public class ActivityDialog extends Activity {
     private FocusScaleUtils mFocusScaleUtils;
@@ -40,9 +40,6 @@ public class ActivityDialog extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "image");
-                // if (mUsbRootPaths.size() > 1) {
-                // intent.putExtra("toListFlag", "ListFlag");
-                // }
                 startActivity(intent);
             }
         });
@@ -52,9 +49,6 @@ public class ActivityDialog extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "video");
-                // if (mUsbRootPaths.size() > 1) {
-                // intent.putExtra("toListFlag", "ListFlag");
-                // }
                 startActivity(intent);
             }
         });
@@ -64,9 +58,6 @@ public class ActivityDialog extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, GridViewActivity.class);
                 intent.putExtra("type", "audio");
-                // if (mUsbRootPaths.size() > 1) {
-                // intent.putExtra("toListFlag", "ListFlag");
-                // }
                 startActivity(intent);
             }
         });
@@ -75,9 +66,6 @@ public class ActivityDialog extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, GridViewActivity.class);
-                // if (mUsbRootPaths.size() > 1) {
-                // intent.putExtra("toListFlag", "ListFlag");
-                // }
                 intent.putExtra("type", "device1");
                 startActivity(intent);
             }

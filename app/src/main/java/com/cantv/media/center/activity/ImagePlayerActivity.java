@@ -1,15 +1,11 @@
 package com.cantv.media.center.activity;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,19 +30,28 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
-import com.cantv.media.center.ui.ImageBrowser;
-import com.cantv.media.center.ui.ImageFrameView;
-import com.cantv.media.center.ui.ImageFrameView.NotifyParentUpdate;
-import com.cantv.media.center.ui.ImageFrameView.onLoadingImgListener;
-import com.cantv.media.center.ui.MediaControllerBar;
+import com.cantv.media.center.data.UsbMounted;
+import com.cantv.media.center.ui.image.ImageBrowser;
+import com.cantv.media.center.ui.image.ImageFrameView;
+import com.cantv.media.center.ui.image.ImageFrameView.NotifyParentUpdate;
+import com.cantv.media.center.ui.image.ImageFrameView.onLoadingImgListener;
+import com.cantv.media.center.ui.player.MediaControllerBar;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 浏览图片页面
+ */
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
     private int mCurImageIndex;
     private ImageFrameView mFrameView;
@@ -63,7 +68,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     public float screenWidth;
     public float screenHeight;
     private Context mContext;
-    private BroadcastReceiver mimageReceiver;
     private LinearLayout mediaimagebar;
     private Runnable mToHideRunnable;
     private boolean mShowing = true;
@@ -91,8 +95,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private boolean isFirstPlayMusic = true;
     private boolean mSizeType = false;
     private boolean isFirstMenu = true;
-    private MediaPlayer mMediaPlayer;
-    private int PLAYING_STATUS;
     private int STOP = 0;
     private int PLAYING = 1;
     private int PAUSE = 2;
@@ -113,6 +115,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private boolean mFullScreen;
 
     private Handler mHandler = new Handler() {
+
         public void handleMessage(android.os.Message msg) {
             int flag = msg.what;
             if (flag == 1) {
@@ -130,8 +133,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 mHeader.setVisibility(View.GONE);
             }
         }
-
-        ;
     };
 
     @Override
@@ -149,7 +150,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mCurImageIndex = indexOfDefaultPlay();
         autoRunnable();
         toHideRunnable();
-        registerReceiver();
         toHideView();
         MyApplication.addActivity(this);
     }
@@ -169,49 +169,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int offset = mCurImageIndex + 1;
                 offset = (offset >= getData().size()) ? 0 : offset;
                 showImage(offset, null);
-                //修改幻灯片播放问题，时间不准
-                //startAutoPlay();
             }
         };
-    }
-
-    private void registerReceiver() {
-        mimageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED) || intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                    if (getData() == null || getData().size() == 0) {
-                        return;
-                    }
-                    //修复OS-1933 USB播放图片（未进入幻灯片时），拔出U盘或硬盘后，图片仍残留显示
-                    final String imageUri = getData().get(mCurImageIndex).isSharing ? getData().get(mCurImageIndex).sharePath : getData().get(mCurImageIndex).mUri;
-                    final boolean isSharing = getData().get(mCurImageIndex).isSharing;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!isSharing) {
-                                File imageFile = new File(imageUri);
-                                if (!imageFile.exists()) {
-                                    isPressback = true;
-                                    ImagePlayerActivity.this.finish();
-                                    return;
-                                }
-                            }
-                        }
-                    }, 500);
-                    String sourcepath = getData().get(0).isSharing ? getData().get(0).sharePath : getData().get(0).mUri;
-                    String targetpath = intent.getDataString();
-                    boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
-                }
-            }
-        };
-        IntentFilter usbFilter = new IntentFilter();
-        usbFilter.setPriority(1000);
-        usbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        usbFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
-        usbFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        usbFilter.addDataScheme("file");
-        mContext.registerReceiver(mimageReceiver, usbFilter);
     }
 
     private void initView() {
@@ -253,7 +212,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     private void showImage(int index, Runnable onfinish) {
-        //final List<String> data = getData();
         if (index < 0 || index >= getData().size()) {
             return;
         }
@@ -284,11 +242,16 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         boolean isSharing = getData().get(index).isSharing;
         mFrameView.playImage(url, isSharing, onfinish, new onLoadingImgListener() {
             @Override
-            public void loadSuccessed(boolean loadSuccessed) {
-                mLoadSuccessed = loadSuccessed;
+            public void loadSuccess(boolean loadSuccess) {
+                mLoadSuccessed = loadSuccess;
                 //修复MASERATI-63USB幻灯片播放破损图片出现很抱歉，文件管理已停止运行，添加文字提示
-                if (!loadSuccessed) {
+                if (!loadSuccess) {
                     mLoadingFail.setVisibility(View.VISIBLE);
+                    //修复幻灯片播放破损图停止问题
+                    if (mAutoPlay) {
+                        mAutoPlay = false;
+                        startAutoPlay();
+                    }
                 }
                 if (isFirstMenu) {
                     isFirstMenu = false;
@@ -458,7 +421,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     return;
                 }
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
                 markRotation();
                 mImageBrowser.changeRotation();
                 mSizeType = false;
@@ -476,7 +439,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     translateUp(mTvRotation);
                 }
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
             }
         });
         mSize.setOnClickListener(new OnClickListener() {
@@ -495,7 +458,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 Log.i("ImagePlayerActivity", "calc " + calc);
                 mImageBrowser.onZoomScale(calc);
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
             }
         });
         mSize.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -509,14 +472,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     translateUp(mTvSize);
                 }
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
             }
         });
         mAutoRunImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
                 int curIndex = mCurImageIndex + 1;
                 int size = getData().size();
                 if (mAutoPlay) {
@@ -548,7 +511,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     translateUp(mTvAuto);
                 }
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
             }
         });
         mInfo.setOnClickListener(new OnClickListener() {
@@ -558,7 +521,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     return;
                 }
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
                 if (nflag) {
                     mLayout.setVisibility(View.VISIBLE);
                     // 初始化
@@ -604,7 +567,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     }
                 }
                 MainThread.cancel(mToHideRunnable);
-                MainThread.runLater(mToHideRunnable, 5 * 1000);
+                MainThread.runLater(mToHideRunnable, DELAYED_TIME);
             }
         });
     }
@@ -617,6 +580,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
@@ -625,11 +594,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         stopAutoPlay();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+        EventBus.getDefault().unregister(this);
     }
 
     private void startAutoPlay() {
-        int curIndex = mCurImageIndex + 1;
-        int size = getData().size();
         if (mAutoPlay == false) {
             mAutoPlay = true;
             getScreenLock().acquire();
@@ -691,7 +659,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 break;
         }
         mShowing = true;
-        MainThread.runLater(mToHideRunnable, 5 * 1000);
+        MainThread.runLater(mToHideRunnable, DELAYED_TIME);
         mediaimagebar.setVisibility(View.VISIBLE);
         toFlyView(0, 0, 1, 0, true, true, MENU_DURATION);
     }
@@ -816,28 +784,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                     return true;
                 }
-                /*
-                 * if (keyCode == event.KEYCODE_DPAD_CENTER && event.getAction()
-                 * == KeyEvent.ACTION_DOWN) { stopAutoPlay();
-                 * Toast.makeText(ImagePlayerActivity.this, "结束幻灯片播放",
-                 * Toast.LENGTH_SHORT).show();
-                 * mAutoRunImageView.setImageResource(R.drawable.photo_info3);
-                 * return true; }
-                 */
             }
         }
-        /*
-         * if (keyCode == event.KEYCODE_DPAD_CENTER && event.getAction() ==
-         * KeyEvent.ACTION_DOWN) { if (!mShowing) { if (mAutoPlay) {
-         * //stopAutoPlay(); //Toast.makeText(ImagePlayerActivity.this,
-         * "结束幻灯片播放", Toast.LENGTH_SHORT).show();
-         * //mAutoRunImageView.setImageResource(R.drawable.photo_info3); } else
-         * { startAutoPlay(); Toast.makeText(ImagePlayerActivity.this,
-         * "开始幻灯片播放", Toast.LENGTH_SHORT).show();
-         * mAutoRunImageView.setImageResource(R.drawable.photo_info33); }
-         * 
-         * } return true; }
-         */
         return super.onKeyDown(keyCode, event);
     }
 
@@ -863,7 +811,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mHandler.removeMessages(ARROW_SHOW);
             mHandler.removeMessages(MENU_SHOW);
         }
-        unregisterReceiver(mimageReceiver);
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }
@@ -899,68 +846,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         view.startAnimation(translateAnimation);
     }
 
-    /*private void stopMusic() {
-        stop();
-        isFirstPlayMusic = true;
-    }
-
-    private void startMusic() {
-        play();
-    }
-
-    private void pauseMusic() {
-        pause();
-    }
-
-    private void resumeMusic() {
-        resume();
-    }
-
-    private void play() {
-        try {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.reset();
-            AssetManager assetManager = mContext.getAssets();
-            AssetFileDescriptor fileDescriptor = assetManager.openFd("mm.mp3");
-            mMediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(), fileDescriptor.getStartOffset(), fileDescriptor.getLength());
-            mMediaPlayer.prepare();
-            mMediaPlayer.start();
-            mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mMediaPlayer.start();
-                    mMediaPlayer.setLooping(true);
-                }
-            });
-            PLAYING_STATUS = PLAYING;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void pause() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.pause();
-            PLAYING_STATUS = PAUSE;
-        }
-    }
-
-    private void resume() {
-        if (mMediaPlayer != null && PLAYING_STATUS == PAUSE) {
-            mMediaPlayer.start();
-            PLAYING_STATUS = PLAYING;
-        }
-    }
-
-    private void stop() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-            PLAYING_STATUS = STOP;
-        }
-    }*/
-
     public synchronized static boolean isFastClick() {
         long time = System.currentTimeMillis();
         if (time - lastClickTime < 500) {
@@ -969,20 +854,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         lastClickTime = time;
         return false;
     }
-
-   /* private void startMusicAnimation() {
-        if (!mAnimationDrawable.isRunning()) {
-            mMusic.setVisibility(View.VISIBLE);
-            mAnimationDrawable.start();
-        }
-    }
-
-    private void endMusicAnimation() {
-        if (mAnimationDrawable.isRunning()) {
-            mMusic.setVisibility(View.GONE);
-            mAnimationDrawable.stop();
-        }
-    }*/
 
     public boolean isPressback;
 
@@ -1007,5 +878,35 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     public void openVolume() {
         mImageBrowser.setSoundEffectsEnabled(true);
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUsbMounted(UsbMounted usbMounted) {
+        if (usbMounted.mIsRemoved) {
+
+            final List<Media> mediaList = new ArrayList<>();
+            List<String> currPathList = MediaUtils.getCurrPathList();
+            for (String path : currPathList) {
+                File file = new File(path);
+                Media fileInfo = FileUtil.getFileInfo(file, null, false);
+                mediaList.add(fileInfo);
+            }
+
+            if (getData().size() > 0) {
+                if (!getData().get(0).isSharing) {
+                    boolean isClose = true; //是否关闭当前页面
+                    for (int i = 0; i < mediaList.size(); i++) {
+                        if (getData().get(0).mUri.contains(mediaList.get(i).mUri)) {
+                            isClose = false;
+                            break;
+                        }
+                    }
+                    if (isClose) {
+                        finish();
+                    }
+                }
+            }
+        }
     }
 }

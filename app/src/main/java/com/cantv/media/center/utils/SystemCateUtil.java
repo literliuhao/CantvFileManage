@@ -12,27 +12,32 @@ import java.util.List;
  */
 
 public class SystemCateUtil {
-
     //保存现有产品的型号
     private static List productmodeList;
 
     static {
-        productmodeList = Arrays.asList("F55", "U65", "W55", "F55S", "V50S", "V43S", "X55", "C43S", "C43", "C42S", "C32K", "C40K", "C50S", "C49C", "C49S", "CANbox C1", "CANbox F1", "CANbox F2", "CANbox Z1", "QZH5");
+        productmodeList = Arrays.asList("F55", "U65KE660", "W55KE590", "F55SD160", "V50SD160", "V43SD160", "X55KE560", "X55QE190",
+                "C43SD120", "C43", "C42SD320", "C32KD210", "C32KD110", "C40KD120", "C50SD120", "C49CD120", "C49SD320", "CANbox C1",
+                "CANbox Z1", "CANbox F1", "CANbox F2", "Can C1", "Can C2", "Can C3", "Can C4", "Can C5", "Can C6", "Can C7", "Can C8",
+                "Can C9", "changhong_F3", "AMOI_B5", "AMOI_B6", "AMOI_B8", "AMOI_B9", "Linkin_H3", "Linkin_H6", "mohe_TVB10",
+                "mohe_TVB11", "MALATA_F4", "JOHE.LIVE_F6", "QHTF_F5", "EARISE_K1", "YUANJING_V30", "EARISE_K2", "EARISE_K3",
+                "EARISE_K5", "EARISE_K6", "EARISE_K8", "EARISE_K9", "WZHT_OS", "EARISE_M1", "EARISE_M2", "EARISE_M3", "EARISE_M5",
+                "EARISE_M6", "EARISE_M8", "EARISE_M9", "LW8000U7", "ctv638", "JRX338", "TM6", "TM6_64", "HiDPTAndroid", "TT338512",
+                "TT3381G", "TT6381GB", "H8", "H9", "N8", "N360", "T8", "R1", "DYOS", "SP3811", "JCG-Lebo-H3", "ADA.S338A", "X6",
+                "HK-T.RT2968P61");
     }
 
 
     public static String get(String key) {
         String value = "";
-        Class<?> cls = null;
         try {
-            cls = Class.forName("android.os.SystemProperties");
+            Class<?> cls = Class.forName("android.os.SystemProperties");
             Method hideMethod = cls.getMethod("get", String.class);
             Object object = cls.newInstance();
             value = (String) hideMethod.invoke(object, key);
         } catch (Exception e) {
             Log.e("SystemCateUtil", "get error() ", e);
         }
-
         return value;
     }
 
@@ -68,25 +73,23 @@ public class SystemCateUtil {
 
     /**
      * 或许系统设置，当为1时不弹出U盘对话框
+     *
      * @return
      */
-    public static String getPersist(){
+    public static String getPersist() {
         return get("persist.sys.burningmode");
     }
 
     /**
      * 用于判断系统版本号是否大于1.2版本
+     *
      * @return
      */
     public static Boolean isNewVersion() {
         try {
             String versionName = getSystemVersion();
             Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
-            if (version > 1.1f) {
-                return true;
-            } else {
-                return false;
-            }
+            return version > 1.1f;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,11 +100,7 @@ public class SystemCateUtil {
      * 需要特殊处理的内部机型
      */
     public static Boolean specialModel(String productModel) {
-        if (productModel.equals("X55")) {
-            return true;
-        } else {
-            return false;
-        }
+        return productModel.equals("X55");
     }
 
 }

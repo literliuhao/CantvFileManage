@@ -8,7 +8,7 @@ import android.view.KeyEvent;
 
 import com.app.core.utils.UiUtils;
 import com.cantv.media.center.data.Media;
-import com.cantv.media.center.ui.MediaControllerBar;
+import com.cantv.media.center.ui.player.MediaControllerBar;
 
 import java.util.ArrayList;
 import java.util.List;

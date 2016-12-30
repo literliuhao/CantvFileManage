@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * date转换成String类型
  * Created by yibh on 2016/6/28.
  */
 
