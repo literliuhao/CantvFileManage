@@ -64,6 +64,8 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
             EventBus.getDefault().post(new UsbMounted(true, intent.getDataString()));
             //添加移除U盘提示
             Toast.makeText(MyApplication.getContext(), mContext.getResources().getString(R.string.device_remove), Toast.LENGTH_SHORT).show();
+        }else if(intent.getAction().equals(Intent.ACTION_MEDIA_EJECT)){
+            EventBus.getDefault().post(new UsbMounted(true, intent.getDataString()));
         }
     }
 
