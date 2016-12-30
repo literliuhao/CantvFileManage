@@ -88,7 +88,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private MenuItem playModeMenuItem;
 
-    private static final int UNDATE_UI = -1;  //更新UI
     private String mUri;
     private LoadingMuUITask muUITask;
     private int currentMode = 5;
@@ -498,7 +497,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
                     // if current choice is playList, selected subMenuItem
                     // should be auto-focused after left-key
-                    // down
                     if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN && mSelectedMenuPosi == 0) {
                         mMenuDialog.getMenu().openSubMenu(true, mMenuList.get(0).getSelectedChildIndex());
                         return true;
@@ -776,7 +774,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             return;
         }
         String sourcepath = mDataList.get(0).isSharing ? mDataList.get(0).sharePath : mDataList.get(0).mUri;
-//        String targetpath = intent.getDataString();
         String targetpath = usbMounted.mUsbPath;
         boolean isequal = MediaUtils.isEqualDevices(sourcepath, targetpath);
         if (isequal) {
