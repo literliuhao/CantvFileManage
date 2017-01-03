@@ -1,11 +1,5 @@
 package com.cantv.media.center.utils.cybergarage;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-
-import com.cantv.media.center.utils.cybergarage.ScanSambaTask.IScanFileListener;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -19,9 +13,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.cantv.media.center.utils.cybergarage.ScanSambaTask.IScanFileListener;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -112,7 +111,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
                 @Override
                 public void onSuccess(ArrayList<SmbFile> list) {
                     if (list == null || list.isEmpty()) {
-                        Toast.makeText(MainActivity.this, "����ʧ���ˣ������� ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "onSuccess ", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     mAdapter.clear();

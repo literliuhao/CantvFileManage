@@ -1,4 +1,5 @@
 package com.cantv.media.center.ui.directory;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
@@ -26,15 +27,19 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
     private Point mLastFocusPoint = new Point(-1, -1);
     private OnItemSelectedListener mSelectedListener = null;
     private Runnable mRefreshSelectedViewRunnable;
-    private View memptyView;
-    private TextView mdata_tip;
-    private TextView textType;
+    private View mEmptyView;
+    private TextView mDataTip;
+    private TextView mTextType;
+    private Boolean animate = true;
+
     public CustomGridView(Context context) {
         this(context, null);
     }
+
     public CustomGridView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
+
     public CustomGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mFocusView = new GridFocusView(context);
@@ -45,7 +50,6 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
             public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
                 if (previouslyFocusedRect != null) {
                     previouslyFocusedRect.right = previouslyFocusedRect.left = mLastFocusPoint.x;
-//                    return super.requestFocus(direction, previouslyFocusedRect);
                 }
                 return super.requestFocus(direction, previouslyFocusedRect);
             }
@@ -74,89 +78,100 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
         });
         mGridView.setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        memptyView = inflater.inflate(R.layout.gridview_empty_view, this, false);
-        textType = (TextView) memptyView.findViewById(R.id.data_tip);
+        mEmptyView = inflater.inflate(R.layout.gridview_empty_view, this, false);
+        mTextType = (TextView) mEmptyView.findViewById(R.id.data_tip);
 
-        mdata_tip = (TextView) findViewById(R.id.data_tip);
+        mDataTip = (TextView) findViewById(R.id.data_tip);
         addView(mGridView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(mFocusView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        addView(memptyView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        addView(mEmptyView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mGridView.setOnItemSelectedListener(this);
         mRefreshSelectedViewRunnable = new Runnable() {
             @Override
             public void run() {
-                if (mGridView.getSelectedView() != null) {
+                if (null != mGridView.getSelectedView()) {
                     mGridView.getSelectedView().setSelected(false);
                 }
             }
         };
     }
+
     public void setStyleFocus(int style) {
         mFocusView.setFocusFrameImageResourceAndMeasure(style);
     }
+
     public void setDefaultStyle() {
         mFocusView.setFocusFrameImageResourceAndMeasure(R.drawable.focus);
     }
+
     public void setOnItemSelectedListener(OnItemSelectedListener l) {
         mSelectedListener = l;
     }
+
     public void setAdapter(ListAdapter adapter) {
         if (adapter.getCount() == 0) {
-            if (mdata_tip != null) {
-                mdata_tip.setVisibility(View.VISIBLE);
+            if (mDataTip != null) {
+                mDataTip.setVisibility(View.VISIBLE);
             }
-            mGridView.setEmptyView(memptyView);
+            mGridView.setEmptyView(mEmptyView);
         }
         mGridView.setAdapter(adapter);
     }
+
     public void setHorizontalSpacing(int horizontalSpacing) {
         mGridView.setHorizontalSpacing(horizontalSpacing);
     }
+
     public void setVerticalSpacing(int verticalSpacing) {
         mGridView.setVerticalSpacing(verticalSpacing);
     }
+
     public void setGridViewSelector(Drawable sel) {
         mGridView.setSelector(sel);
     }
+
     public void setNumColumns(int num) {
         mGridView.setNumColumns(num);
     }
+
     public void setOnItemClickListener(OnItemClickListener l) {
         mGridView.setOnItemClickListener(l);
     }
+
     public void setSelection(int position) {
+        animate = false;
         mGridView.setSelection(position);
     }
+
     @Override
     public void onItemSelected(AdapterView<?> arg0, View view, int arg2, long arg3) {
-        if (mSelectedListener != null) {
+        if (null != mSelectedListener) {
             mSelectedListener.onItemSelected(arg0, view, arg2, arg3);
         }
         animateFocus(view);
     }
+
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
         if (mSelectedListener != null) {
             mSelectedListener.onNothingSelected(arg0);
         }
     }
+
     protected void animateFocus(View v) {
         if (v != null) {
-            animateFoucs(v.getLeft(), v.getTop(), v.getWidth(), v.getHeight());
+            animateFocus(v.getLeft(), v.getTop(), v.getWidth(), v.getHeight());
         }
     }
-    protected void animateFoucs(int left, int top, int width, int height) {
 
+    protected void animateFocus(int left, int top, int width, int height) {
         if (mGridView.hasFocus()) {
             int oldLeft = mLastFocusPoint.x < 0 ? left : mLastFocusPoint.x;
             int oldTop = mLastFocusPoint.y < 0 ? top : mLastFocusPoint.y;
-
-            mFocusView.move(oldLeft, oldTop, left, top, width, height);
+            mFocusView.move(oldLeft, oldTop, left, top, width, height, animate);
+            animate = true;
             mLastFocusPoint.set(left, top);
         }
-    }
-    protected void onFocus(){
-        mFocusView.onFocus();
     }
 
     /**
@@ -165,15 +180,15 @@ public class CustomGridView extends FrameLayout implements OnItemSelectedListene
      * @param
      */
     public void showNoDataPage(String type) {
-        textType.setText(type);
-        mGridView.setEmptyView(memptyView);
+        mTextType.setText(type);
+        mGridView.setEmptyView(mEmptyView);
     }
 
     public void showNoDataPage() {
-        mGridView.setEmptyView(memptyView);
+        mGridView.setEmptyView(mEmptyView);
     }
 
-    public void syncType(String type){
-        textType.setText(type);
+    public void syncType(String type) {
+        mTextType.setText(type);
     }
 }

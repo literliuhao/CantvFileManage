@@ -30,7 +30,6 @@ public class MediaGridItemView extends MediaItemView {
     private ImageView mFocusView;
     private TextView mTextView;
     private NumberDrawable mNumDrawable;
-    private Media mMedia;
     private boolean isShow = false;
     private float mAnimateRate = 0;
     private AlphaAnimation mAnimation = null;
@@ -107,7 +106,6 @@ public class MediaGridItemView extends MediaItemView {
     }
 
     public void setMediaItem(Media media, int position) {
-        mMedia = media;
         mTextView.setText(media.getName());
         mNumDrawable.setNum(media.getSubMediasCount());
         LayoutParams mediaParams;

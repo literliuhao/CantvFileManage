@@ -102,7 +102,7 @@ public class PicView extends ImageView {
 
         @Override
         public int hashCode() {
-            return mBitmapTag.hashCode() + (int) (mDstWidth * mDstHeight) << 5;
+            return mBitmapTag.hashCode() + (mDstWidth * mDstHeight) << 5;
         }
 
         @Override
@@ -125,7 +125,6 @@ public class PicView extends ImageView {
     }
 
     private class PicLoadTask {
-
         private String mTaskPicUri = null;
         private PicViewDecoder mTaskPicDecoder = null;
         private File mTaskSavePicAs = null;
@@ -193,7 +192,6 @@ public class PicView extends ImageView {
                             if (picBitmap == null && cacheSlot != null) {
                                 picBitmap = cacheSlot.getValue();
                             }
-//                            if (cacheSlot != null) mPicCache.releaseSlot(cacheSlot);
                             saveBitmap(picBitmap);
                             picBitmap = tuneBitmap(picBitmap);
                             final Bitmap resultBitmap = picBitmap;
