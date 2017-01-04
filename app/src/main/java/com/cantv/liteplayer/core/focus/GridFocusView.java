@@ -47,7 +47,7 @@ public class GridFocusView extends AnimateView {
         }
     }
 
-    public void move(int lastleft, int lasttop, int curleft, int curtop, int width, int height) {
+    public void move(int lastleft, int lasttop, int curleft, int curtop, int width, int height, final Boolean isAnimate) {
         if (View.VISIBLE != getVisibility()) return;
         mlastleft = lastleft;
         mlasttop = lasttop;
@@ -60,16 +60,14 @@ public class GridFocusView extends AnimateView {
             post(new Runnable() {
                 @Override
                 public void run() {
-                    toShow();
-//                    toHide();
-//                    setFocus();
+                    if(isAnimate){
+                        toShow();
+                    }else{
+                        setFocus();
+                    }
                 }
             });
         }
-    }
-
-    public void onFocus(){
-        setFocus();
     }
 
     public void hide(){

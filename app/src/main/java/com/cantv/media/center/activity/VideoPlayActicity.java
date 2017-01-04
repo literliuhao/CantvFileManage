@@ -34,11 +34,11 @@ import com.cantv.media.center.greendao.VideoPlayer;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnKeyEventListener;
-import com.cantv.media.center.ui.player.ExternalSurfaceView;
-import com.cantv.media.center.ui.player.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.dialog.MenuDialog;
 import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
 import com.cantv.media.center.ui.player.BasePlayer;
+import com.cantv.media.center.ui.player.ExternalSurfaceView;
+import com.cantv.media.center.ui.player.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.player.PlayerController;
 import com.cantv.media.center.ui.player.SrcParser;
 import com.cantv.media.center.utils.FileUtil;
@@ -49,7 +49,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +63,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private MenuDialog mMenuDialog;
     private TimeReceiver mTimeReceiver;
     private IntentFilter mTimeFilter;
-
     private int curindex;
     private boolean isSubTitle = true;
     private boolean isSrtExist;
@@ -77,7 +75,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private boolean mOpenExternalSubtitle;    //是否开启内置字幕
     private String mLastStr;   //当前外置字幕的后缀
     private String subName = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +134,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 //        getProxyPlayer().setMovieAudioTrack(0);
 
         //给外挂字幕关闭
-        mOpenExternalSubtitle=false;
+        mOpenExternalSubtitle = false;
+        //开启内置字幕
+        mOpenInSubtitle = true;
         if (isFirst) {
             mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
@@ -292,41 +291,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         return super.onKeyUp(keyCode, event);
     }
 
-    public ArrayList<String> getVideos(String path) {
-        File file = new File(path);
-        ArrayList<String> list = new ArrayList<String>();
-        if (file.isDirectory()) {
-
-            File[] files = file.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return MediaUtils.isVideo(name);
-                }
-            });
-
-            for (int i = 0; i < files.length; i++) {
-                list.add(file.getAbsolutePath() + "/" + files[i].getName());
-            }
-
-            File[] file1 = file.listFiles();
-
-            for (int i = 0; i < file1.length; i++) {
-
-                if (file1[i].isDirectory()) {
-                    ArrayList<String> list2 = getVideos(file1[i].getAbsolutePath());
-                    if (list2.size() != 0) {
-                        list.addAll(list2);
-                    }
-                }
-            }
-
-        } else {
-            if (MediaUtils.isVideo(file.getName())) {
-                list.add(file.getAbsolutePath());
-            }
-        }
-
-        return list;
-    }
 
     public void initSrts() {
         mSubTitle.setText("");

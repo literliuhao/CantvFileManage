@@ -36,7 +36,6 @@ public class MediaListItemView extends MediaItemView {
     private TextView mTvSize;
     private TextView mTvDate;
     private NumberDrawable mNumDrawable;
-    private Media mMedia;
     private boolean isShow = false;
     private float mAnimateRate = 0;
     private AlphaAnimation mAnimation = null;
@@ -51,7 +50,6 @@ public class MediaListItemView extends MediaItemView {
     public MediaListItemView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
 
     @SuppressLint("ResourceAsColor")
     public MediaListItemView(Context context, AttributeSet attrs, int defStyle) {
@@ -131,22 +129,21 @@ public class MediaListItemView extends MediaItemView {
     }
 
     public void setMediaItem(final Media media, int position) {
-        mMedia = media;
         mTvName.setText(media.getName());
         mTvDate.setVisibility(VISIBLE);
         // 当是文件类型,并且不是外接设备的根目录(根目录是默认1970时间,无意义)
-        if ((mMedia.mType == SourceType.FOLDER) && !usbRootPaths.contains(mMedia.mUri)) {
+        if ((media.mType == SourceType.FOLDER) && !usbRootPaths.contains(media.mUri)) {
             mTvSize.setVisibility(GONE);
         } else {
             mTvSize.setVisibility(VISIBLE);
             // 设置根目录大小
-            if (usbRootPaths.contains(mMedia.mUri)) {
+            if (usbRootPaths.contains(media.mUri)) {
                 mTvDate.setVisibility(GONE);
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        String free = MediaUtils.getRealFreeSize(mMedia.mUri); // 可用大小
-                        String total = MediaUtils.getRealTotalSize(mMedia.mUri); // 总大小
+                        String free = MediaUtils.getRealFreeSize(media.mUri); // 可用大小
+                        String total = MediaUtils.getRealTotalSize(media.mUri); // 总大小
                         mTvSize.setText("总大小: " + total + "  可用大小: " + free);
                     }
                 });
@@ -159,8 +156,7 @@ public class MediaListItemView extends MediaItemView {
         LayoutParams mediaParams;
         switch (media.getMediaFormat()) {
             case IMAGE:
-
-                String path = "";
+                String path;
                 if (media.isSharing) {
                     path = media.sharePath;
                 } else {
@@ -225,8 +221,7 @@ public class MediaListItemView extends MediaItemView {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (isSelected())
-                    animateView(to, from);
+                if (isSelected()) animateView(to, from);
             }
         });
     }
@@ -234,8 +229,7 @@ public class MediaListItemView extends MediaItemView {
     boolean needReDraw() {
         long currentTime = AnimationUtils.currentAnimationTimeMillis();
         if (mAnimation != null && mAnimation.hasEnded() == false) {
-            if (mAnimation.hasStarted() == false)
-                mAnimation.setStartTime(currentTime);
+            if (mAnimation.hasStarted() == false) mAnimation.setStartTime(currentTime);
             mAnimation.getTransformation(currentTime, mDrawingTransform);
             mAnimateRate = mDrawingTransform.getAlpha();
             return true;

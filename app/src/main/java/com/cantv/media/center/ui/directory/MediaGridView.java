@@ -48,7 +48,7 @@ public class MediaGridView extends CustomGridView {
     private String devicePath;
     private SourceType msSourceType;
     private boolean misShowProcess = false;
-    private int mfirst = 0;
+    private Boolean mFirst = false;
     private Context mContext;
     private GridViewActivity mActivity;
     public int mSelectItemPosition;
@@ -213,7 +213,7 @@ public class MediaGridView extends CustomGridView {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (mfirst == 0) {
+            if (!mFirst) {
                 if (misShowProcess) {
                     showProgressBar(null);
                 }
@@ -234,10 +234,10 @@ public class MediaGridView extends CustomGridView {
                 mActivity.mRTCountView.setVisibility(View.VISIBLE);
                 setTextRTview("1", " / " + mCurrMediaList.size());
             }
-            if (mfirst == 0) {
+            if (!mFirst) {
                 dismissProgressBar();
             }
-            mfirst = 1;
+            mFirst = true;
         }
 
         @Override
@@ -304,7 +304,7 @@ public class MediaGridView extends CustomGridView {
     protected void animateFocus(View v) {
         if (v != null && v instanceof MediaItemView) {
             View child = ((MediaItemView) v).getFocusImage();
-            animateFoucs(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(), child.getHeight());
+            animateFocus(child.getLeft() + v.getLeft(), child.getTop() + v.getTop(), child.getWidth(), child.getHeight());
         } else {
             super.animateFocus(v);
         }

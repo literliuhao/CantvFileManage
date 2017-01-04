@@ -434,7 +434,7 @@ public class FileUtil {
         String extFromFilename = FileUtil.getExtFromFilename(file.getAbsolutePath());
         int fileType = FileCategoryHelper.getFileType(extFromFilename);
         switch (fileType) {
-            case FileCategoryHelper.TYPE_MOIVE:
+            case FileCategoryHelper.TYPE_MOVIE:
                 return SourceType.MOIVE;
             case FileCategoryHelper.TYPE_MUSIC:
                 return SourceType.MUSIC;
@@ -466,7 +466,7 @@ public class FileUtil {
         String extFromFilename = FileUtil.getExtFromFilename(file.getPath());
         int fileType = FileCategoryHelper.getFileType(extFromFilename);
         switch (fileType) {
-            case FileCategoryHelper.TYPE_MOIVE:
+            case FileCategoryHelper.TYPE_MOVIE:
                 return SourceType.MOIVE;
             case FileCategoryHelper.TYPE_MUSIC:
                 return SourceType.MUSIC;
@@ -600,7 +600,7 @@ public class FileUtil {
             uri = MediaStore.Audio.Media.getContentUri(volumeName);
         } else if (fileType == FileCategoryHelper.TYPE_PICTURE) {
             uri = MediaStore.Images.Media.getContentUri(volumeName);
-        } else if (fileType == FileCategoryHelper.TYPE_MOIVE) {
+        } else if (fileType == FileCategoryHelper.TYPE_MOVIE) {
             uri = MediaStore.Video.Media.getContentUri(volumeName);
         } else {
             uri = MediaStore.Files.getContentUri(volumeName);

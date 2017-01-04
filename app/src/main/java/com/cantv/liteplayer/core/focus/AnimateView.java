@@ -31,7 +31,7 @@ public class AnimateView extends View {
     }
 
     public void toShow() {
-        if (mToShow == false) {
+        if (!mToShow) {
             mToShow = true;
             mAnimation = new AlphaAnimation(mAlpha, 1);
             if (mDuration != 0) {
@@ -44,7 +44,7 @@ public class AnimateView extends View {
     }
 
     public void setFocus() {
-        if (mToShow == false) {
+        if (!mToShow) {
             mToShow = true;
             mAnimation = new AlphaAnimation(mAlpha, 1);
             mAnimation.setDuration(0);
@@ -53,7 +53,7 @@ public class AnimateView extends View {
     }
 
     public void toHide() {
-        if (mToShow == true) {
+        if (mToShow) {
             mToShow = false;
             mAnimation = new AlphaAnimation(mAlpha, 0);
             mAnimation.setDuration(ANIM_DURATION_SHORT);
