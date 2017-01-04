@@ -79,7 +79,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     @Override
     public void onCompletion(MediaPlayer arg0) {
         //循环播放
-        scrollToNext(null);
+        scrollToNext(this);
     }
 
     @Override
