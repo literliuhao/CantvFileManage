@@ -114,7 +114,7 @@ public class ImageFrameView extends FrameLayout {
             convertW = callbackW;
             convertH = callbackH;
             sizeArray = convertImage(convertW, convertH);
-            loadLocalImage(imageUri);
+            loadLocalGif(imageUri);
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             loadNetImage(imageUri);
@@ -315,7 +315,7 @@ public class ImageFrameView extends FrameLayout {
                 loadResourceReady += 1;
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccess(true);
-                    mLoadingImgListener.bitmapSize(imageUri.startsWith(ShareUrl_FLAG) ? mImgWidth : sizeArray[0], imageUri.startsWith(ShareUrl_FLAG) ? mImgHeight : sizeArray[1]);
+                    mLoadingImgListener.bitmapSize(sizeArray[0], sizeArray[1]);
                     Log.i(TAG, "尺寸2:" + sizeArray[0] + "*" + sizeArray[1]);
                     if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
                         mLoadingImgListener.isFullScreen(false);
@@ -377,5 +377,44 @@ public class ImageFrameView extends FrameLayout {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    /**
+     * 加载动态图片
+     *
+     * @param imageUri
+     */
+    private void loadLocalGif(final String imageUri) {
+        mImageView.setVisibility(View.VISIBLE);
+        Glide.with(mContext).load(imageUri).thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
+            @Override
+            public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
+                dismissProgressBar();
+                if (null != mLoadingImgListener) {
+                    mLoadingImgListener.loadSuccess(false);
+                }
+                Log.i(TAG, "onException: " + s);
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(GlideDrawable glideDrawable, String s, Target<GlideDrawable> target, boolean b, boolean b1) {
+                dismissProgressBar();
+                Log.i(TAG, "尺寸1:" + mImgWidth + "*" + mImgHeight);
+                loadResourceReady += 1;
+                if (null != mLoadingImgListener) {
+                    mLoadingImgListener.loadSuccess(true);
+                    mLoadingImgListener.bitmapSize(sizeArray[0], sizeArray[1]);
+                    Log.i(TAG, "尺寸2:" + sizeArray[0] + "*" + sizeArray[1]);
+                    if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
+                        mLoadingImgListener.isFullScreen(false);
+                    } else {
+                        mLoadingImgListener.isFullScreen(true);
+                    }
+                    mLoadingImgListener.loadResourceReady(loadResourceReady == 2 ? true : false);
+                }
+                return false;
+            }
+        }).into(mImageView);
     }
 }

@@ -768,7 +768,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (mCtrBar != null) {
             mCtrBar.removeAllMessage();
         }

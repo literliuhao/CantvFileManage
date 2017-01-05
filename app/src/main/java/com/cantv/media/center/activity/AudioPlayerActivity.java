@@ -195,10 +195,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         super.onResume();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     public void onBackPressed() {

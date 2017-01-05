@@ -4,15 +4,19 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
-import com.cantv.media.center.utils.SharedPreferenceUtil;
 
-public class ShareGuideDialog extends Dialog implements OnFocusChangeListener {
+/**
+ * 包含两个按钮的通用对话框
+ * Created by shenpx on 2017/1/4 0004.
+ */
+public class CommonDialog extends Dialog implements View.OnFocusChangeListener {
+
     private OnClickableListener listener;
     private View contentView;
     private FocusUtils mFocusUtils;
@@ -20,11 +24,17 @@ public class ShareGuideDialog extends Dialog implements OnFocusChangeListener {
     private Button mCancelBtn;
 
     private boolean isFirst = true;
+    private TextView mTitle;
+    private TextView mText1;
+    private TextView mText2;
+    private TextView mText3;
+    private TextView mText4;
 
-    public ShareGuideDialog(Context context) {
+
+    public CommonDialog(Context context) {
         super(context, R.style.dialog_device_share);
         mFocusUtils = new FocusUtils(context, getWindow().getDecorView(), R.drawable.focus_full_content);
-        setupLayout(context, R.layout.dialog_shareguide);
+        setupLayout(context, R.layout.dialog_common);
     }
 
     public interface OnClickableListener {
@@ -38,6 +48,11 @@ public class ShareGuideDialog extends Dialog implements OnFocusChangeListener {
         setContentView(contentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mConfirmBtn = (Button) contentView.findViewById(R.id.btn_confirm);
         mCancelBtn = (Button) contentView.findViewById(R.id.btn_cancel);
+        mTitle = (TextView) contentView.findViewById(R.id.tv_title);
+        mText1 = (TextView) contentView.findViewById(R.id.et_text1);
+        mText2 = (TextView) contentView.findViewById(R.id.et_text2);
+        mText3 = (TextView) contentView.findViewById(R.id.et_text3);
+        mText4 = (TextView) contentView.findViewById(R.id.et_text4);
 
         mConfirmBtn.setOnFocusChangeListener(this);
         mCancelBtn.setOnFocusChangeListener(this);
@@ -49,8 +64,7 @@ public class ShareGuideDialog extends Dialog implements OnFocusChangeListener {
                 if (listener != null) {
                     listener.onConfirmClickable();
                 }
-                SharedPreferenceUtil.setShareGuide(0);
-                ShareGuideDialog.this.dismiss();
+                CommonDialog.this.dismiss();
             }
 
         });
@@ -61,8 +75,7 @@ public class ShareGuideDialog extends Dialog implements OnFocusChangeListener {
                 if (listener != null) {
                     listener.onCancelClickable();
                 }
-                SharedPreferenceUtil.setShareGuide(1);
-                ShareGuideDialog.this.dismiss();
+                CommonDialog.this.dismiss();
             }
         });
     }
@@ -100,5 +113,80 @@ public class ShareGuideDialog extends Dialog implements OnFocusChangeListener {
             }
         }
     }
+
+    /**
+     * 是否响应返回键
+     * @param isCancelable
+     */
+    public void setCancel(boolean isCancelable){
+        CommonDialog.this.setCancelable(isCancelable);
+    }
+
+    /**
+     * 设置标题
+     * @param title
+     * @return
+     */
+    public CommonDialog setTitle(String title) {
+        this.mTitle.setText(title);
+        return this;
+    }
+
+    /**
+     * 设置内容
+     * @param text
+     * @param start 距离左侧距离
+     * @return
+     * MyApplication.mContext.getResources().getDimensionPixelSize(R.dimen.px62)
+     */
+    public CommonDialog setContent1(String text,int start) {
+        this.mText1.setVisibility(View.VISIBLE);
+        this.mText1.setPadding(start,0,0,0);
+        this.mText1.setText(text);
+        return this;
+    }
+
+    public CommonDialog setContent2(String text) {
+        this.mText2.setVisibility(View.VISIBLE);
+        this.mText2.setText(text);
+        return this;
+    }
+    public CommonDialog setContent3(String text) {
+        this.mText3.setVisibility(View.VISIBLE);
+        this.mText3.setText(text);
+        return this;
+    }
+    public CommonDialog setContent4(String text) {
+        this.mText4.setVisibility(View.VISIBLE);
+        this.mText4.setText(text);
+        return this;
+    }
+
+    /**
+     * 设置按钮内容
+     * @param left
+     * @param right
+     * @return
+     */
+    public CommonDialog setButtonContent(String left,String right) {
+        this.mConfirmBtn.setText(left);
+        this.mCancelBtn.setText(right);
+        return this;
+    }
+
+    /**
+     * 设置内容大小
+     * @param size
+     * @return
+     */
+    public CommonDialog setContentSize(int size) {
+        this.mText1.setTextSize(size);
+        this.mText2.setTextSize(size);
+        this.mText3.setTextSize(size);
+        this.mText4.setTextSize(size);
+        return this;
+    }
+
+
 
 }

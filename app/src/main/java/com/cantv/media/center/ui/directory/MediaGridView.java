@@ -18,10 +18,8 @@ import com.cantv.media.center.adapter.MediaListAdapter;
 import com.cantv.media.center.constants.MediaOrientation;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
-import com.cantv.media.center.ui.dialog.ApkDialog;
 import com.cantv.media.center.ui.dialog.ApkForbidDialog;
-import com.cantv.media.center.ui.dialog.DisclaimerDialog;
-import com.cantv.media.center.ui.dialog.DisclaimerDialog.OnClickableListener;
+import com.cantv.media.center.ui.dialog.CommonDialog;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
 import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
@@ -55,14 +53,14 @@ public class MediaGridView extends CustomGridView {
     public List<Media> mCurrMediaList = new ArrayList<>(); // 记录当前的数据集合
     public FileServer fileServer;
     private boolean autoLoadData = true;
-    private DisclaimerDialog mDisclaimerDialog;
     private LoadingDialog mLoadingDialog;
     private String currentType;
     //不能安装应用标记
     public static Boolean flag = false;
     private ApkForbidDialog apkForbidDialog = null;
-    private ApkDialog apkDialog = null;
     private String install_app = "0";
+    private CommonDialog mDisclaimerDialog;
+    private CommonDialog apkDialog = null;
 
     public MediaGridView(Context context, SourceType sourceType) {
         super(context);
@@ -134,7 +132,7 @@ public class MediaGridView extends CustomGridView {
                             } else if (install_app.equals("1")) {
                                 getDisclaimerDialog(item);
                             } else if (install_app.equals("0")) {
-                                getConfirmDialog();
+                                getSettingDialog();
                             }
                         } else {
                             //添加APP弹框(OS1.1)
@@ -348,58 +346,6 @@ public class MediaGridView extends CustomGridView {
     }
 
     /**
-     * 免责声明
-     *
-     * @param item
-     */
-    private void getDisclaimerDialog(final Media item) {
-        int disclaimer = SharedPreferenceUtil.getDisclaimer();
-        if (disclaimer == 1) {
-            MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
-        } else {
-            if (mDisclaimerDialog == null) {
-                mDisclaimerDialog = new DisclaimerDialog(mActivity);
-                mDisclaimerDialog.setOnClickableListener(new OnClickableListener() {
-                    @Override
-                    public void onConfirmClickable() {
-                        MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
-                    }
-
-                    @Override
-                    public void onCancelClickable() {
-                        return;
-                    }
-                });
-            }
-            mDisclaimerDialog.show();
-        }
-    }
-
-    /**
-     * 设置弹出
-     */
-    private void getConfirmDialog() {
-        apkDialog = new ApkDialog(mActivity);
-        apkDialog.setOnClickableListener(new ApkDialog.OnClickableListener() {
-            @Override
-            public void onConfirmClickable() {
-                try {
-                    mActivity.startActivity(new Intent("com.os.setting.GENERAL_SETTINGS"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                apkDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelClickable() {
-                apkDialog.dismiss();
-            }
-        });
-        apkDialog.show();
-    }
-
-    /**
      * 禁止安装Apk
      */
     private void getApkForbidDialog() {
@@ -411,5 +357,70 @@ public class MediaGridView extends CustomGridView {
             }
         });
         apkForbidDialog.show();
+    }
+
+    /**
+     * 免责声明
+     *
+     * @param item
+     */
+    private void getDisclaimerDialog(final Media item) {
+        int disclaimer = SharedPreferenceUtil.getDisclaimer();
+        if (disclaimer == 1) {
+            MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
+        } else {
+            if (mDisclaimerDialog == null) {
+                mDisclaimerDialog = new CommonDialog(mActivity);
+                mDisclaimerDialog.setTitle(mActivity.getString(R.string.disclaimer_title))
+                        .setContent1(mActivity.getString(R.string.disclaimer_text1), (int) mActivity.getResources().getDimension(R.dimen.px60))
+                        .setContent2(mActivity.getString(R.string.disclaimer_text2))
+                        .setContent3(mActivity.getString(R.string.disclaimer_text3))
+                        .setContent4(mActivity.getString(R.string.disclaimer_text4))
+                        .setButtonContent(mActivity.getString(R.string.str_disclaimerconfirm), mActivity.getString(R.string.str_cancel));
+                mDisclaimerDialog.setOnClickableListener(new CommonDialog.OnClickableListener() {
+                    @Override
+                    public void onConfirmClickable() {
+                        SharedPreferenceUtil.setDisclaimer(1);
+                        MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
+                    }
+
+                    @Override
+                    public void onCancelClickable() {
+                        SharedPreferenceUtil.setDisclaimer(0);
+                        return;
+                    }
+                });
+            }
+            mDisclaimerDialog.show();
+        }
+    }
+
+    /**
+     * 设置弹出
+     */
+    private void getSettingDialog() {
+        if (apkDialog == null) {
+            apkDialog = new CommonDialog(mActivity);
+            apkDialog.setTitle(mActivity.getString(R.string.disclaimer_install))
+                    .setContentSize((int) mActivity.getResources().getDimension(R.dimen.px26))
+                    .setContent1(mActivity.getString(R.string.disclaimer_apkinfo), (int) mActivity.getResources().getDimension(R.dimen.px15))
+                    .setButtonContent(mActivity.getString(R.string.disclaimer_setting), mActivity.getString(R.string.disclaimer_cancel));
+        }
+        apkDialog.setOnClickableListener(new CommonDialog.OnClickableListener() {
+            @Override
+            public void onConfirmClickable() {
+                try {
+                    mActivity.startActivity(new Intent("com.os.setting.GENERAL_SETTINGS"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelClickable() {
+
+            }
+        });
+        apkDialog.show();
     }
 }
