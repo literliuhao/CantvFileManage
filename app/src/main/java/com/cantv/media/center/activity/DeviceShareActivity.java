@@ -29,13 +29,13 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.DeviceInfo;
+import com.cantv.media.center.ui.dialog.CommonDialog;
 import com.cantv.media.center.ui.dialog.DeviceAddDialog;
 import com.cantv.media.center.ui.dialog.DeviceAddDialog.OnIpConfirmedListener;
 import com.cantv.media.center.ui.dialog.DeviceLoginDialog;
 import com.cantv.media.center.ui.dialog.DeviceLoginDialog.OnLoginListener;
 import com.cantv.media.center.ui.share.DeviceShareItemView;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
-import com.cantv.media.center.ui.dialog.ShareGuideDialog;
 import com.cantv.media.center.utils.BitmapUtils;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
@@ -83,7 +83,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     private boolean isFirst = true;
     Drawable mBlurDrawable;
-    private ShareGuideDialog mShareGuideDialog;
+    private CommonDialog mCommonDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -628,24 +628,30 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     private void getShareGuideDialog() {
         int shareGuide = SharedPreferenceUtil.getShareGuide();
         if (shareGuide == 0) {
-            if (mShareGuideDialog == null) {
-                mShareGuideDialog = new ShareGuideDialog(this);
-                mShareGuideDialog.setOnClickableListener(new ShareGuideDialog.OnClickableListener() {
+            if (mCommonDialog == null) {
+                mCommonDialog = new CommonDialog(this);
+                mCommonDialog.setTitle(getString(R.string.device_share_title))
+                        .setContent1(getString(R.string.device_share_first), 0)
+                        .setContent2(getString(R.string.device_share_second))
+                        .setContent3(getString(R.string.device_share_third))
+                        .setContent4(getString(R.string.device_share_fourth))
+                        .setButtonContent(getString(R.string.device_share_ok), getString(R.string.device_share_cancel));
+                mCommonDialog.setOnClickableListener(new CommonDialog.OnClickableListener() {
                     @Override
                     public void onConfirmClickable() {
+                        SharedPreferenceUtil.setShareGuide(0);
                         mScrollView.setVisibility(View.VISIBLE);
-                        return;
                     }
 
                     @Override
                     public void onCancelClickable() {
+                        SharedPreferenceUtil.setShareGuide(1);
                         mScrollView.setVisibility(View.VISIBLE);
-                        return;
                     }
                 });
             }
-            mShareGuideDialog.setCancelable(false);
-            mShareGuideDialog.show();
+            mCommonDialog.setCancel(false);
+            mCommonDialog.show();
         } else {
             mScrollView.setVisibility(View.VISIBLE);
         }

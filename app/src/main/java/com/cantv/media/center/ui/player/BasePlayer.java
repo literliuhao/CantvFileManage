@@ -201,6 +201,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     protected void onStop() {
+        Log.w("BasePlayer","onStop");
         setVideoStop = true;
         if (getProxyPlayer().isPlaying()) {
             getProxyPlayer().stop();
