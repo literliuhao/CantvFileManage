@@ -436,7 +436,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     } else if (mSelectedMenuPosi == 2) {
                         MenuItem adjuestLyricMenuData = mMenuList.get(3);
                         // select load lyric or no
-                        if (position == 0 && showLyric == false && mLyricInfo != null) {
+                        //修复MASERATI-222文件夹内有带歌词与不带歌词音乐,USB播放不带歌词音乐打开载入歌词，此时在播放列表切换任意带歌词音乐，播放时无显示歌词
+                        if (position == 0) {
                             // show lyricView
                             showLyric = true;
                             showOrHideLrc();
@@ -444,7 +445,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.setCurrTime(getProxyPlayer().getCurrentPosition());
                             // enable adjust lyric
                             adjuestLyricMenuData.setEnabled(true);
-                        } else if (position == 1 && showLyric == true) {
+                        } else if (position == 1) {
                             // hide lyricView
                             showLyric = false;
                             showOrHideLrc();
@@ -464,9 +465,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                             mLyricView.adjustTimeOffset(200);
                         } else if (position == 1) {
                             mLyricView.adjustTimeOffset(-200);
-                        } else if (position == 2) {
+                        } /*else if (position == 2) {
                             mLyricView.restoreTime();
-                        }
+                        }*/
                     }
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
                     if (oldSubMenuItemView != null) {
@@ -566,7 +567,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
         MenuItem loadLyricMenuItem = new MenuItem(getString(R.string.load_lyric));
         loadLyricMenuItem.setType(MenuItem.TYPE_SELECTOR);
-        List<MenuItem> loadLyricSubMenuItems = new ArrayList<MenuItem>();
+        List<MenuItem> loadLyricSubMenuItems = new ArrayList<>();
         MenuItem menuItem2 = new MenuItem(getString(R.string.str_open), MenuItem.TYPE_SELECTOR);
         menuItem2.setParent(loadLyricMenuItem);
         menuItem2.setSelected(true);
@@ -576,10 +577,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         menuList.add(loadLyricMenuItem);
 
         MenuItem adjustLyricMenuItem = new MenuItem(getString(R.string.adjust_lyric));
-        List<MenuItem> adjustLyricSubMenuItems = new ArrayList<MenuItem>();
+        List<MenuItem> adjustLyricSubMenuItems = new ArrayList<>();
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.forward_seconds), MenuItem.TYPE_LIST));
         adjustLyricSubMenuItems.add(new MenuItem(getString(R.string.delay_seconds), MenuItem.TYPE_LIST));
-        adjustLyricSubMenuItems.add(new MenuItem("还原", MenuItem.TYPE_LIST));
+        //去除还原按钮
+        //adjustLyricSubMenuItems.add(new MenuItem("还原", MenuItem.TYPE_LIST));
         adjustLyricMenuItem.setChildren(adjustLyricSubMenuItems);
         menuList.add(adjustLyricMenuItem);
 
