@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#cc000000"
-              android:orientation="horizontal" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/rl_content"
@@ -24,15 +24,16 @@
             android:text="@string/disclaimer_install"
             android:textColor="@color/per80_white"
             android:textSize="@dimen/px46" />
+
         <LinearLayout
             android:id="@+id/et_text"
             android:layout_width="@dimen/px800"
             android:layout_height="@dimen/px360"
-            android:layout_marginTop="@dimen/px60"
             android:layout_below="@id/tv_title"
             android:layout_centerHorizontal="true"
-            android:orientation="vertical"
-            android:background="@drawable/disclaimer_text">
+            android:layout_marginTop="@dimen/px60"
+            android:background="@drawable/disclaimer_text"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/et_text1"
@@ -41,21 +42,23 @@
                 android:layout_marginEnd="@dimen/px15"
                 android:layout_marginStart="@dimen/px15"
                 android:layout_marginTop="@dimen/px30"
+                android:lineSpacingExtra="@dimen/px24"
                 android:paddingStart="@dimen/px15"
                 android:text="@string/disclaimer_apk"
                 android:textColor="@color/per50_white"
                 android:textSize="@dimen/px40" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/px116"
             android:layout_below="@id/et_text"
+            android:layout_centerHorizontal="true"
             android:layout_marginEnd="@dimen/px60"
             android:layout_marginStart="@dimen/px80"
             android:layout_marginTop="@dimen/px45"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_confirm"

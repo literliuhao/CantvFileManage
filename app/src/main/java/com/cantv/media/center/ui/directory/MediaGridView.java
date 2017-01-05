@@ -372,10 +372,7 @@ public class MediaGridView extends CustomGridView {
             if (mDisclaimerDialog == null) {
                 mDisclaimerDialog = new CommonDialog(mActivity);
                 mDisclaimerDialog.setTitle(mActivity.getString(R.string.disclaimer_title))
-                        .setContent1(mActivity.getString(R.string.disclaimer_text1), (int) mActivity.getResources().getDimension(R.dimen.px60))
-                        .setContent2(mActivity.getString(R.string.disclaimer_text2))
-                        .setContent3(mActivity.getString(R.string.disclaimer_text3))
-                        .setContent4(mActivity.getString(R.string.disclaimer_text4))
+                        .setContent(mActivity.getString(R.string.disclaimer_text), 0)
                         .setButtonContent(mActivity.getString(R.string.str_disclaimerconfirm), mActivity.getString(R.string.str_cancel));
                 mDisclaimerDialog.setOnClickableListener(new CommonDialog.OnClickableListener() {
                     @Override
@@ -403,7 +400,7 @@ public class MediaGridView extends CustomGridView {
             apkDialog = new CommonDialog(mActivity);
             apkDialog.setTitle(mActivity.getString(R.string.disclaimer_install))
                     .setContentSize((int) mActivity.getResources().getDimension(R.dimen.px26))
-                    .setContent1(mActivity.getString(R.string.disclaimer_apkinfo), (int) mActivity.getResources().getDimension(R.dimen.px15))
+                    .setContent(mActivity.getString(R.string.disclaimer_apkinfo), 0)
                     .setButtonContent(mActivity.getString(R.string.disclaimer_setting), mActivity.getString(R.string.disclaimer_cancel));
         }
         apkDialog.setOnClickableListener(new CommonDialog.OnClickableListener() {

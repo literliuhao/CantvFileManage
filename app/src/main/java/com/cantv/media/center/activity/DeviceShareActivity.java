@@ -631,10 +631,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             if (mCommonDialog == null) {
                 mCommonDialog = new CommonDialog(this);
                 mCommonDialog.setTitle(getString(R.string.device_share_title))
-                        .setContent1(getString(R.string.device_share_first), 0)
-                        .setContent2(getString(R.string.device_share_second))
-                        .setContent3(getString(R.string.device_share_third))
-                        .setContent4(getString(R.string.device_share_fourth))
+                        .setContent(getString(R.string.device_share_content), 0)
                         .setButtonContent(getString(R.string.device_share_ok), getString(R.string.device_share_cancel));
                 mCommonDialog.setOnClickableListener(new CommonDialog.OnClickableListener() {
                     @Override
