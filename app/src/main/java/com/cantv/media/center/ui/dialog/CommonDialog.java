@@ -25,11 +25,7 @@ public class CommonDialog extends Dialog implements View.OnFocusChangeListener {
 
     private boolean isFirst = true;
     private TextView mTitle;
-    private TextView mText1;
-    private TextView mText2;
-    private TextView mText3;
-    private TextView mText4;
-
+    private TextView mText;
 
     public CommonDialog(Context context) {
         super(context, R.style.dialog_device_share);
@@ -49,10 +45,7 @@ public class CommonDialog extends Dialog implements View.OnFocusChangeListener {
         mConfirmBtn = (Button) contentView.findViewById(R.id.btn_confirm);
         mCancelBtn = (Button) contentView.findViewById(R.id.btn_cancel);
         mTitle = (TextView) contentView.findViewById(R.id.tv_title);
-        mText1 = (TextView) contentView.findViewById(R.id.et_text1);
-        mText2 = (TextView) contentView.findViewById(R.id.et_text2);
-        mText3 = (TextView) contentView.findViewById(R.id.et_text3);
-        mText4 = (TextView) contentView.findViewById(R.id.et_text4);
+        mText = (TextView) contentView.findViewById(R.id.et_text);
 
         mConfirmBtn.setOnFocusChangeListener(this);
         mCancelBtn.setOnFocusChangeListener(this);
@@ -139,26 +132,10 @@ public class CommonDialog extends Dialog implements View.OnFocusChangeListener {
      * @return
      * MyApplication.mContext.getResources().getDimensionPixelSize(R.dimen.px62)
      */
-    public CommonDialog setContent1(String text,int start) {
-        this.mText1.setVisibility(View.VISIBLE);
-        this.mText1.setPadding(start,0,0,0);
-        this.mText1.setText(text);
-        return this;
-    }
-
-    public CommonDialog setContent2(String text) {
-        this.mText2.setVisibility(View.VISIBLE);
-        this.mText2.setText(text);
-        return this;
-    }
-    public CommonDialog setContent3(String text) {
-        this.mText3.setVisibility(View.VISIBLE);
-        this.mText3.setText(text);
-        return this;
-    }
-    public CommonDialog setContent4(String text) {
-        this.mText4.setVisibility(View.VISIBLE);
-        this.mText4.setText(text);
+    public CommonDialog setContent(String text,int start) {
+        this.mText.setVisibility(View.VISIBLE);
+        this.mText.setPadding(start,0,0,0);
+        this.mText.setText(text);
         return this;
     }
 
@@ -180,10 +157,7 @@ public class CommonDialog extends Dialog implements View.OnFocusChangeListener {
      * @return
      */
     public CommonDialog setContentSize(int size) {
-        this.mText1.setTextSize(size);
-        this.mText2.setTextSize(size);
-        this.mText3.setTextSize(size);
-        this.mText4.setTextSize(size);
+        this.mText.setTextSize(size);
         return this;
     }
 

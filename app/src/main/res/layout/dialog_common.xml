@@ -25,7 +25,7 @@
             android:textSize="@dimen/px38" />
 
         <LinearLayout
-            android:id="@+id/et_text"
+            android:id="@+id/et_text1"
             android:layout_width="@dimen/px800"
             android:layout_height="@dimen/px430"
             android:layout_below="@id/tv_title"
@@ -35,55 +35,23 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/et_text1"
+                android:id="@+id/et_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/px25"
                 android:layout_marginStart="@dimen/px32"
                 android:layout_marginTop="@dimen/px32"
+                android:lineSpacingExtra="@dimen/px24"
                 android:textColor="@color/per50_white"
-                android:visibility="invisible"
-                android:textSize="@dimen/px28" />
-
-            <TextView
-                android:id="@+id/et_text2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/px25"
-                android:layout_marginStart="@dimen/px32"
-                android:layout_marginTop="@dimen/px24"
-                android:textColor="@color/per50_white"
-                android:visibility="invisible"
-                android:textSize="@dimen/px28" />
-
-            <TextView
-                android:id="@+id/et_text3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/px10"
-                android:layout_marginStart="@dimen/px32"
-                android:layout_marginTop="@dimen/px24"
-                android:textColor="@color/per50_white"
-                android:visibility="invisible"
-                android:textSize="@dimen/px28" />
-
-            <TextView
-                android:id="@+id/et_text4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/px10"
-                android:layout_marginStart="@dimen/px32"
-                android:layout_marginTop="@dimen/px24"
-                android:textColor="@color/per50_white"
-                android:visibility="invisible"
-                android:textSize="@dimen/px28" />
+                android:textSize="@dimen/px28"
+                android:visibility="invisible" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/px116"
-            android:layout_below="@id/et_text"
+            android:layout_below="@id/et_text1"
             android:layout_marginEnd="@dimen/px60"
             android:layout_marginStart="@dimen/px80"
             android:layout_marginTop="@dimen/px45"
