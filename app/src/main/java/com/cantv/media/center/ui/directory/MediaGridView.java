@@ -125,7 +125,7 @@ public class MediaGridView extends CustomGridView {
                 } else {
                     if (item.mType == SourceType.APP) {
                         //添加APP安装设置弹框(OS1.2)
-                        if (SystemCateUtil.isNewVersion() && SystemCateUtil.isContainsCurrModel()) {
+                        if (SystemCateUtil.isContainsCurrModel()) {
                             install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
                             if (null == install_app) {
                                 getApkForbidDialog();
