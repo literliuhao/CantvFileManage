@@ -69,7 +69,7 @@ public class ImageFrameView extends FrameLayout {
 
     private onLoadingImgListener mLoadingImgListener;
 
-    public void playImage(final String imageUri, final boolean isSharing, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
+    public void playImage(final String imageUri, final boolean isSharing, String imageName, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
         this.mLoadingImgListener = loadingImgListener;
@@ -77,7 +77,7 @@ public class ImageFrameView extends FrameLayout {
         showProgressBar();
         mImageView.setVisibility(View.GONE);
         loadResourceReady = 0;
-        loadImage(imageUri, isSharing);
+        loadImage(imageUri, isSharing, imageName);
     }
 
     public int[] convertImage(float imageWidht, float imageHeight) {
@@ -106,7 +106,7 @@ public class ImageFrameView extends FrameLayout {
         return new int[]{(int) imageWidht, (int) imageHeight};
     }
 
-    public void loadImage(final String imageUri, boolean isSharing) {
+    public void loadImage(final String imageUri, boolean isSharing, String imageName) {
         Log.i("playImage", imageUri);
         //计算本地图片的实际宽高
         if (!isSharing) {

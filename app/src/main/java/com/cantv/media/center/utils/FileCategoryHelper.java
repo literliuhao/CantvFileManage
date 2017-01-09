@@ -20,7 +20,7 @@ public class FileCategoryHelper {
     static {
         addItem(new String[]{"avi", "mov", "asf", "wmv", "3gp", "flv", "mkv", "ram", "rmvb", "ts", "mp4", "mpeg", "dat", "vob", "mpg", "trp", "tp", "m2ts", "webm", "3gpp", "rm"}, TYPE_MOVIE);
         addItem(new String[]{"jpg", "jpeg", "gif", "png", "bmp"}, TYPE_PICTURE);
-        addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac", "aac", "mka", "m4a", "ra", "divx", "dts", "ac3", "amr"}, TYPE_MUSIC);
+        addItem(new String[]{"mp3", "wma", "wav", "ogg", "ape", "flac", "aac", "mka", "m4a", "ra", "divx", "dts", "ac3", "amr","eac3"}, TYPE_MUSIC);
         addItem(new String[]{"apk"}, TYPE_APP);
     }
 

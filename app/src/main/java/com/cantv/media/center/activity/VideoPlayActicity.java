@@ -768,6 +768,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         if (mCtrBar != null) {
             mCtrBar.removeAllMessage();
         }
@@ -812,6 +813,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void onStop() {
+        storeDuration();    //保存进度
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
         if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
             MyApplication.onFinishActivity();

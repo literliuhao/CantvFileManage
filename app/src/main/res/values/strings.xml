@@ -89,7 +89,7 @@
     <string name="device_share_fourth">查看电脑以共享的文件。</string>
     <string name="device_share_ok">我知道了</string>
     <string name="device_share_cancel">不再提示</string>
-
+    <string name="device_share_content">第一步：电脑和电视处于同一个局域网内。\n第二步：添加设备，输入电脑的IP地址。\n第三步：进入已添加的设备，输入电脑用户名和密码，即\n可查看电脑以共享的文件。</string>
     <!-- gridview中二级菜单项 -->
     <string name="sort">排序</string>
     <string name="sort_date">按日期</string>
@@ -157,7 +157,8 @@
     <string name="disclaimer_setting">设置</string>
     <string name="disclaimer_cancel">取消</string>
     <string name="home_version">版本：</string>
-    <string name="format_not_support">不支持当前文件格式!</string>
+    <string name="format_not_support">文件格式不支持或外接设备已移除</string>
     <string name="pr_music">无上一首</string>
     <string name="next_music">无下一首</string>
+    <string name="disclaimer_text">\u3000\u3000按照国家相关政策规定，本机已经禁止安装第三方软\n件，第三方软件不保证能兼容和适用于所有Android平台和\n系统，有可能引起冲突和导致不可预测的问题出现，请自\n行承担使用第三方软件而导致的风险和后果。</string>
 </resources>
