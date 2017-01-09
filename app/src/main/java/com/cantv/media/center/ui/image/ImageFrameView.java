@@ -69,7 +69,7 @@ public class ImageFrameView extends FrameLayout {
 
     private onLoadingImgListener mLoadingImgListener;
 
-    public void playImage(final String imageUri, final boolean isSharing, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
+    public void playImage(final String imageUri, final boolean isSharing, String imageName, final Runnable onfinish, onLoadingImgListener loadingImgListener) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
         this.mLoadingImgListener = loadingImgListener;
@@ -77,7 +77,7 @@ public class ImageFrameView extends FrameLayout {
         showProgressBar();
         mImageView.setVisibility(View.GONE);
         loadResourceReady = 0;
-        loadImage(imageUri, isSharing);
+        loadImage(imageUri, isSharing, imageName);
     }
 
     public int[] convertImage(float imageWidht, float imageHeight) {
@@ -106,7 +106,7 @@ public class ImageFrameView extends FrameLayout {
         return new int[]{(int) imageWidht, (int) imageHeight};
     }
 
-    public void loadImage(final String imageUri, boolean isSharing) {
+    public void loadImage(final String imageUri, boolean isSharing, String imageName) {
         Log.i("playImage", imageUri);
         //计算本地图片的实际宽高
         if (!isSharing) {
@@ -114,7 +114,11 @@ public class ImageFrameView extends FrameLayout {
             convertW = callbackW;
             convertH = callbackH;
             sizeArray = convertImage(convertW, convertH);
-            loadLocalGif(imageUri);
+            if (imageName.endsWith(".gif")) {
+                loadLocalGif(imageUri);
+            } else {
+                loadLocalImage(imageUri);
+            }
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             loadNetImage(imageUri);
