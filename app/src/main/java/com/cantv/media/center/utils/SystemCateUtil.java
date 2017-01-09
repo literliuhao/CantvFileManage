@@ -88,8 +88,15 @@ public class SystemCateUtil {
     public static Boolean isNewVersion() {
         try {
             String versionName = getSystemVersion();
-            Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
-            return version > 1.1f;
+            if(null != versionName && !versionName.equals("")){
+                //V1.2.0
+                Log.i("SystemCateUtil", "versionName  = "+ versionName);
+                Float version = Float.valueOf(versionName.substring(versionName.lastIndexOf("V") + 1));
+                Log.i("SystemCateUtil", "SubString version = " + version);
+                return version > 1.1f;
+            }else{
+                return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
