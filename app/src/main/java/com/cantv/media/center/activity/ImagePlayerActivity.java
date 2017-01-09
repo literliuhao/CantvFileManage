@@ -240,7 +240,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         final int curIndex = index + 1;
         String url = getData().get(index).isSharing ? getData().get(index).sharePath : getData().get(index).mUri;
         boolean isSharing = getData().get(index).isSharing;
-        mFrameView.playImage(url, isSharing, onfinish, new onLoadingImgListener() {
+        String imageName = getData().get(mCurImageIndex).mName;
+        mFrameView.playImage(url, isSharing, imageName, onfinish, new onLoadingImgListener() {
             @Override
             public void loadSuccess(boolean loadSuccess) {
                 mLoadSuccessed = loadSuccess;
