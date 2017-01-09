@@ -114,11 +114,7 @@ public class ImageFrameView extends FrameLayout {
             convertW = callbackW;
             convertH = callbackH;
             sizeArray = convertImage(convertW, convertH);
-            if (imageName.endsWith(".gif")) {
-                loadLocalGif(imageUri);
-            } else {
-                loadLocalImage(imageUri);
-            }
+            loadLocalGif(imageUri);
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             loadNetImage(imageUri);
