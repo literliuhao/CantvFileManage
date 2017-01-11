@@ -443,6 +443,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     protected void onDestroy() {
         super.onDestroy();
         MyApplication.removeHomeActivity();
+        EventBus.getDefault().unregister(this);
         System.gc();
     }
 
@@ -523,7 +524,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 
     @Override
     protected void onStop() {
-        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 }

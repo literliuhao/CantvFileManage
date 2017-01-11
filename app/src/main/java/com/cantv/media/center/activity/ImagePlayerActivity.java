@@ -595,7 +595,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         }
         stopAutoPlay();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
-        EventBus.getDefault().unregister(this);
     }
 
     private void startAutoPlay() {
@@ -815,6 +814,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }
+        EventBus.getDefault().unregister(this);
         MyApplication.removeActivity(this);
     }
 

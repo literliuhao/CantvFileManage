@@ -391,6 +391,7 @@ public class GridViewActivity extends Activity {
             mGridView.fileServer.release();
         }
         mConfirmDialog = null;
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -538,7 +539,6 @@ public class GridViewActivity extends Activity {
         if (!isStartAc && !(MyApplication.mHomeActivityList.size() > 0)) {
             finish();
         }
-        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

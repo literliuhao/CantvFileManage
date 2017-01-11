@@ -211,7 +211,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
-        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
@@ -225,6 +224,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mCDView.pause();
         mCDView = null;
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         MyApplication.removeActivity(this);
     }
 

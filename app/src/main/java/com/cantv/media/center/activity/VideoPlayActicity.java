@@ -775,6 +775,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mTimeReceiver != null) {
             unregisterReceiver(mTimeReceiver);
         }
+        EventBus.getDefault().unregister(this);
         MyApplication.removeActivity(this);
     }
 
@@ -818,7 +819,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
             MyApplication.onFinishActivity();
         }
-        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
