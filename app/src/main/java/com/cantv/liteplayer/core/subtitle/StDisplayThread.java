@@ -92,8 +92,12 @@ public class StDisplayThread extends Thread {
 
     private void sendShowSubtitleMsg(int delay, boolean isPicture) {
         if (mDisplayCallBack != null) {
-            if (null != mSubtitleContent.getSubtitleLine()) {
-                mDisplayCallBack.showSubTitleText(Html.fromHtml(mSubtitleContent.getSubtitleLine()).toString());
+            if (!isPicture) {   //非sub字幕
+                if (null != mSubtitleContent.getSubtitleLine()) {
+                    mDisplayCallBack.showSubTitleText(Html.fromHtml(mSubtitleContent.getSubtitleLine()).toString());
+                }
+            } else {
+                mDisplayCallBack.showSubTitleBit(mSubtitleContent);
             }
         }
     }

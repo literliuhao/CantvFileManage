@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cantv.media"
-          android:sharedUserId="android.uid.system"
           android:versionCode="148"
           android:versionName="20170109_v1.4.8">
+          <!--android:sharedUserId="android.uid.system"-->
 
 
     <uses-sdk
