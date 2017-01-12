@@ -99,6 +99,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupLayout();
+        EventBus.getDefault().register(this);
         MyApplication.addActivity(this);
         holdWakeLock();
         initData();
@@ -183,7 +184,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         }
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendEmptyMessage(0);
-        EventBus.getDefault().register(this);
     }
 
     @Override

@@ -1,9 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cantv.media"
           android:versionCode="148"
+<<<<<<< HEAD
           android:versionName="20170109_v1.4.8">
           <!--android:sharedUserId="android.uid.system"-->
 
+=======
+          android:versionName="20170112_v1.4.8.1">
+    <!--android:sharedUserId="android.uid.system"-->
+>>>>>>> 35c4beab746f59e7444b2bc09385324be87edd69
 
     <uses-sdk
         android:minSdkVersion="19"
@@ -90,10 +95,16 @@
             android:name="com.cantv.media.center.activity.DeviceShareActivity"
             android:label="@string/app_name"></activity>
 
-        <activity android:name="com.cantv.media.center.activity.ActivityDialog">
+        <activity
+            android:name="com.cantv.media.center.activity.ActivityDialog">
             <intent-filter>
                 <action android:name="com.cantv.activity.SHOW_DIALOG"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.cantv.media.center.ui.dialog.DialogActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/dialog_transparent">
         </activity>
 
         <receiver android:name="com.cantv.media.center.receiver.MediaBroadcastReceiver">

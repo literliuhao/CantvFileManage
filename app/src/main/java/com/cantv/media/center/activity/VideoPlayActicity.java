@@ -82,6 +82,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        EventBus.getDefault().register(this);
         if (mDataList == null || mDataList.size() == 0) {
             return;
         }
@@ -920,7 +921,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void onStart() {
-        EventBus.getDefault().register(this);
         super.onStart();
     }
 

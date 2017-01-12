@@ -73,6 +73,7 @@ public class GridViewActivity extends Activity {
         setContentView(R.layout.activity_gridview);
         MyApplication.onFinishActivity();
         MyApplication.addActivity(this);
+        EventBus.getDefault().register(this);
         mTitleTV = (TextView) findViewById(R.id.title_textview);
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
         mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
@@ -529,7 +530,6 @@ public class GridViewActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
     }
 
     @Override
