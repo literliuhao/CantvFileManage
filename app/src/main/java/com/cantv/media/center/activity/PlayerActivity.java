@@ -121,9 +121,13 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
     @Override
     public void onPlayNext() {
-        mAutoPaused = false;
-        mPlayer.setOnCompletionListener(null);
-        playMedia(mCurPlayIndex + 1);
+        if (mPlayMode == PlayMode.RANDOM_ORDER) {
+            onPlayRandomNext();
+        } else {
+            mAutoPaused = false;
+            mPlayer.setOnCompletionListener(null);
+            playMedia(mCurPlayIndex + 1);
+        }
     }
 
     private void onPlayRandomNext() {
@@ -140,9 +144,13 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
     @Override
     public void onPlayPrev() {
-        mAutoPaused = false;
-        mPlayer.setOnCompletionListener(null);
-        playMedia(mCurPlayIndex - 1);
+        if (mPlayMode == PlayMode.RANDOM_ORDER) {
+            onPlayRandomNext();
+        } else {
+            mAutoPaused = false;
+            mPlayer.setOnCompletionListener(null);
+            playMedia(mCurPlayIndex - 1);
+        }
 
     }
 

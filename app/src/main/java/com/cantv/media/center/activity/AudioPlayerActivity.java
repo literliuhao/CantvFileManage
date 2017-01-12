@@ -276,7 +276,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 }
                 break;
             case R.id.ib_previous:
-                if (mCurPlayIndex == 0) {
+                if (mCurPlayIndex == 0 && mPlayMode != PlayMode.RANDOM_ORDER) {
                     Toast.makeText(AudioPlayerActivity.this, R.string.pr_music, Toast.LENGTH_LONG).show();
                 } else {
                     onPlayPrev();
@@ -284,7 +284,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 break;
             case R.id.ib_next:
                 // 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
-                if (mDataList.size() - 1 == mCurPlayIndex) {
+                if (mDataList.size() - 1 == mCurPlayIndex && mPlayMode != PlayMode.RANDOM_ORDER) {
                     Toast.makeText(AudioPlayerActivity.this, R.string.next_music, Toast.LENGTH_LONG).show();
                 } else {
                     onPlayNext();
