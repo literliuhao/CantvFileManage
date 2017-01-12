@@ -140,6 +140,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.media__image_view);
+        EventBus.getDefault().register(this);
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         screenHeight = getWindowManager().getDefaultDisplay().getHeight();
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -583,7 +584,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     protected void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
     }
 
     @Override
