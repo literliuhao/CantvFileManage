@@ -874,6 +874,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (null != inOpen) {
             mOpenInSubtitle = inOpen;
             mSubTitle.setText("");
+            mSubtitle_bt.setVisibility(View.GONE);
             if (mOpenInSubtitle) {
                 mOpenExternalSubtitle = false;
                 getProxyPlayer().selectTrackInfo(Integer.parseInt(getProxyPlayer().getINSubList().get(subIndex - 1).substring(0, 1)));
@@ -883,6 +884,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (null != ExternalOpen) {
             mOpenExternalSubtitle = ExternalOpen;
             mSubTitle.setText("");
+            mSubtitle_bt.setVisibility(View.GONE);
             if (mOpenExternalSubtitle) {
                 mOpenInSubtitle = false;
                 mLastStr = getExternalSubList().get(index - 1);
