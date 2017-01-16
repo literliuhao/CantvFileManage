@@ -22,9 +22,13 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.ImagePlayerActivity;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -122,33 +126,60 @@ public class ImageFrameView extends FrameLayout {
             convertH = callbackH;
             //判断机型运行内存，重新赋值MAX_LENGTH,MAX_WIDTH
             Log.i(TAG, "deviceTotalMemory: " + getDeviceTotalMemory());
-            if (getDeviceTotalMemory() > 1500) {
-                MAX_WIDTH = MAX_LENGTH;
-                MAX_HEIGHT = MAX_LENGTH;
-                /*MAX_WIDTH = (int) mActivity.screenWidth;
-                MAX_HEIGHT = (int) mActivity.screenHeight;*/
-                sizeArray = convertImage(convertW, convertH);
-                //是否带有模糊效果，根据分辨率区分,是否是gif
-                if ((callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) || imageName.endsWith(".gif")) {
-                    loadLocalGifNoThumbnail(imageUri);
-                } else {
-                    loadLocalGif(imageUri);
-                }
-            } else {
+            MyApplication.format = true;
+            if (MyApplication.format) {
                 MAX_WIDTH = (int) mActivity.screenWidth;
                 MAX_HEIGHT = (int) mActivity.screenHeight;
                 sizeArray = convertImage(convertW, convertH);
-                //是否带有模糊效果，根据分辨率区分
-                if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
-                    loadLocalImageNoThumbnail(imageUri);
+                MyApplication.format = false;
+                loadImageUsePicasso(imageUri);
+            } else {
+                if (getDeviceTotalMemory() > 1500) {
+                    MAX_WIDTH = MAX_LENGTH;
+                    MAX_HEIGHT = MAX_LENGTH;
+                /*MAX_WIDTH = (int) mActivity.screenWidth;
+                MAX_HEIGHT = (int) mActivity.screenHeight;*/
+                    sizeArray = convertImage(convertW, convertH);
+                    //是否带有模糊效果，根据分辨率区分,是否是gif
+                    if ((callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) || imageName.endsWith(".gif")) {
+                        loadLocalGifNoThumbnail(imageUri);
+                    } else {
+                        loadLocalGif(imageUri);
+                    }
                 } else {
-                    loadLocalImage(imageUri);
+                    MAX_WIDTH = (int) mActivity.screenWidth;
+                    MAX_HEIGHT = (int) mActivity.screenHeight;
+                    sizeArray = convertImage(convertW, convertH);
+                    //是否带有模糊效果，根据分辨率区分
+                    if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
+                        loadLocalImageNoThumbnail(imageUri);
+                    } else {
+                        loadLocalImage(imageUri);
+                    }
                 }
             }
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             loadNetImage(imageUri);
         }
+    }
+
+    /**
+     * 使用picasso加载图片
+     * @param imageUri
+     */
+    private void loadImageUsePicasso(String imageUri) {
+        Picasso.with(mContext).load(new File(imageUri)).into(mImageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                loadImageSuccessNoThumb(callbackW, callbackH);
+            }
+
+            @Override
+            public void onError() {
+                loadImageFail();
+            }
+        });
     }
 
     @Override

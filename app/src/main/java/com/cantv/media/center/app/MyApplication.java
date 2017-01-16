@@ -12,6 +12,7 @@ public class MyApplication extends Application {
     //目前只为了存GridViewActivity,播放视频/音频/图片的Activity,为了解决0S/1439问题
     private static List<Activity> activityList;
     public static List<Activity> mHomeActivityList;    //存HomeActivity
+    public static boolean format = false;
 
     @Override
     public void onCreate() {
