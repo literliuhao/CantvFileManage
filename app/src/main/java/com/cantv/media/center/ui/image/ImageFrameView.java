@@ -22,6 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -117,26 +118,23 @@ public class ImageFrameView extends FrameLayout {
     public void loadImage(final String imageUri, boolean isSharing, String imageName) {
         Log.i("playImage", imageUri);
         //计算本地图片的实际宽高
-        //loadNetImage(imageUri);
         if (!isSharing) {
             getLocalImageSize(imageUri);
             convertW = callbackW;
             convertH = callbackH;
             //判断机型运行内存，重新赋值MAX_LENGTH,MAX_WIDTH
             Log.i(TAG, "deviceTotalMemory: " + getDeviceTotalMemory());
-            MyApplication.format = true;
-            if (MyApplication.format) {
+            int photoModel = SharedPreferenceUtil.getPhotoModel();
+            if (photoModel == 1) {
                 MAX_WIDTH = (int) mActivity.screenWidth;
                 MAX_HEIGHT = (int) mActivity.screenHeight;
                 sizeArray = convertImage(convertW, convertH);
-                MyApplication.format = false;
+                SharedPreferenceUtil.setPhotoModel(0);
                 loadImageUsePicasso(imageUri);
             } else {
                 if (getDeviceTotalMemory() > 1500) {
                     MAX_WIDTH = MAX_LENGTH;
                     MAX_HEIGHT = MAX_LENGTH;
-                /*MAX_WIDTH = (int) mActivity.screenWidth;
-                MAX_HEIGHT = (int) mActivity.screenHeight;*/
                     sizeArray = convertImage(convertW, convertH);
                     //是否带有模糊效果，根据分辨率区分,是否是gif
                     if ((callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) || imageName.endsWith(".gif")) {
@@ -164,6 +162,7 @@ public class ImageFrameView extends FrameLayout {
 
     /**
      * 使用picasso加载图片
+     *
      * @param imageUri
      */
     private void loadImageUsePicasso(String imageUri) {
