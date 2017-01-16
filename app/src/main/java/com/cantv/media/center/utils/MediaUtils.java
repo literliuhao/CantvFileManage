@@ -343,7 +343,11 @@ public class MediaUtils {
     }
 
     public static void loadPicImg(Context context, String path, ImageView imageView) {
-        Glide.with(context).load(path).centerCrop().into(imageView);
+        try {
+            Glide.with(context).load(path).asBitmap().centerCrop().into(imageView);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
