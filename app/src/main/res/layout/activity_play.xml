@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
 
     <SurfaceView
         android:id="@+id/surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" >
+        android:layout_gravity="center">
     </SurfaceView>
 
     <com.cantv.media.center.ui.player.ExternalSurfaceView
         android:id="@+id/media__video_view__surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
     <ImageView
         android:id="@+id/media__video_view__background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible" >
+        android:visibility="invisible">
     </ImageView>
 
     <LinearLayout
@@ -29,16 +29,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="50dp"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/media__video_view__subtitle1"
-            
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="17dp"
-            android:textSize="@dimen/px60" />
+            android:textSize="@dimen/px60"/>
+
+        <ImageView
+            android:id="@+id/subtitle_bt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <!--
        <TextView
@@ -55,7 +61,7 @@
     <com.cantv.media.center.ui.player.PlayerController
         android:id="@+id/media__video_view__ctrlbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <!--
          <com.cantv.media.center.ui.player.PlayerControllerBar

@@ -1,5 +1,9 @@
 package com.cantv.liteplayer.core.subtitle;
 
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Matrix;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,10 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Matrix;
 
 public class SubDecoder extends StDecoder {
 
@@ -612,7 +612,7 @@ public class SubDecoder extends StDecoder {
 		subtitleContent.setSubtitleEndTime(subtitleContent.getSubtitleStartTime() + VobSubEndTime);
 		int frameWidth = vobsub_ds.frame_width;
 		if (frameWidth > 0) {
-			float scale = (screenWidth + frameWidth) * 1.0f / (2 * frameWidth);
+			float scale = (screenWidth + frameWidth) * 1.5f / (2 * frameWidth);
 			mVobBitmap = bitmapScale(mVobBitmap, scale);
 		}
 		subtitleContent.setSubtitleBmp(mVobBitmap);

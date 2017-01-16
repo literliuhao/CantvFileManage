@@ -343,7 +343,11 @@ public class MediaUtils {
     }
 
     public static void loadPicImg(Context context, String path, ImageView imageView) {
-        Glide.with(context).load(path).centerCrop().into(imageView);
+        try {
+            Glide.with(context).load(path).asBitmap().centerCrop().into(imageView);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -354,18 +358,23 @@ public class MediaUtils {
      */
     public static String getRealFreeSize(String path) {
 
-        StatFs stat = new StatFs(path); // 创建StatFs对象
+        try {
+            StatFs stat = new StatFs(path); // 创建StatFs对象
 
-        long blockSize = stat.getBlockSizeLong(); // 获取block的size
-        float totalBlocks = stat.getBlockCountLong(); // 获取block的总数
+            long blockSize = stat.getBlockSizeLong(); // 获取block的size
+            float totalBlocks = stat.getBlockCountLong(); // 获取block的总数
 
-        long mToalBytes = (long) (blockSize * totalBlocks);
-        long availableBlocks = stat.getAvailableBlocksLong(); // 获取可用块大小
+            long mToalBytes = (long) (blockSize * totalBlocks);
+            long availableBlocks = stat.getAvailableBlocksLong(); // 获取可用块大小
 
-        long mUsedBytes = (long) ((totalBlocks - availableBlocks) * blockSize);
-        long mFreeBytes = mToalBytes - mUsedBytes;
+            long mUsedBytes = (long) ((totalBlocks - availableBlocks) * blockSize);
+            long mFreeBytes = mToalBytes - mUsedBytes;
 
-        return FileUtil.convertStorage(mFreeBytes);
+            return FileUtil.convertStorage(mFreeBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0KB";
+        }
     }
 
     /**

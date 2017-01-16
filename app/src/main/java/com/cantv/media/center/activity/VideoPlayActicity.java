@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
+import com.cantv.liteplayer.core.subtitle.StContent;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
@@ -75,11 +76,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private boolean mOpenExternalSubtitle;    //是否开启内置字幕
     private String mLastStr;   //当前外置字幕的后缀
     private String subName = "";
+    private ImageView mSubtitle_bt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        EventBus.getDefault().register(this);
         if (mDataList == null || mDataList.size() == 0) {
             return;
         }
@@ -92,6 +95,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private void initView() {
         getProxyPlayer().setSubTitleDisplayCallBack(this);
         mSubTitle = (TextView) findViewById(R.id.media__video_view__subtitle1);
+        mSubtitle_bt = (ImageView) findViewById(R.id.subtitle_bt);  //sub字幕
         mSurfaceView = (ExternalSurfaceView) findViewById(R.id.media__video_view__surface);
         mBackgroundView = (ImageView) findViewById(R.id.media__video_view__background);
         mCtrBar = (PlayerController) findViewById(R.id.media__video_view__ctrlbar);
@@ -775,6 +779,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mTimeReceiver != null) {
             unregisterReceiver(mTimeReceiver);
         }
+        EventBus.getDefault().unregister(this);
         MyApplication.removeActivity(this);
     }
 
@@ -788,6 +793,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     //内置字幕监听，现在可以支持内置、外挂字幕了
     @Override
     public void onTimedText(MediaPlayer mp, TimedText text) {
+        mSubtitle_bt.setVisibility(View.GONE);
+        mSubTitle.setVisibility(View.VISIBLE);
         if (null == text) {
             return;
         }
@@ -818,7 +825,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
             MyApplication.onFinishActivity();
         }
-        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
@@ -836,7 +842,24 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mSubtitle_bt.setVisibility(View.GONE);
+                mSubTitle.setVisibility(View.VISIBLE);
                 mSubTitle.setText(text);
+            }
+        });
+    }
+
+    @Override
+    public void showSubTitleBit(final StContent stContent) {
+        if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().contains("sub")) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSubTitle.setVisibility(View.GONE);
+                mSubtitle_bt.setVisibility(View.VISIBLE);
+                mSubtitle_bt.setImageBitmap(stContent.getSubtitleBmp());
             }
         });
     }
@@ -851,6 +874,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (null != inOpen) {
             mOpenInSubtitle = inOpen;
             mSubTitle.setText("");
+            mSubtitle_bt.setVisibility(View.GONE);
             if (mOpenInSubtitle) {
                 mOpenExternalSubtitle = false;
                 getProxyPlayer().selectTrackInfo(Integer.parseInt(getProxyPlayer().getINSubList().get(subIndex - 1).substring(0, 1)));
@@ -860,6 +884,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (null != ExternalOpen) {
             mOpenExternalSubtitle = ExternalOpen;
             mSubTitle.setText("");
+            mSubtitle_bt.setVisibility(View.GONE);
             if (mOpenExternalSubtitle) {
                 mOpenInSubtitle = false;
                 mLastStr = getExternalSubList().get(index - 1);
@@ -884,7 +909,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             return savePathList;
         }
         String stPath = path.substring(0, path.lastIndexOf("."));
-        List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass", stPath + ".ssa");   // stPath + ".smi", stPath + ".sub"
+        List<String> pathList = Arrays.asList(stPath + ".srt", stPath + ".ass", stPath + ".ssa", stPath + ".sub");   // stPath + ".smi", stPath + ".sub"
         //savePathList.add("无");
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
@@ -898,7 +923,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void onStart() {
-        EventBus.getDefault().register(this);
         super.onStart();
     }
 
