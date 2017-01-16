@@ -415,7 +415,7 @@ public class ImageFrameView extends FrameLayout {
      * @param imageUri
      */
     private void loadLocalGifNoThumbnail(final String imageUri) {
-        Glide.with(mContext).load(imageUri).crossFade(0).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
+        Glide.with(mContext).using.load(imageUri).crossFade(0).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
                 loadImageFail();
