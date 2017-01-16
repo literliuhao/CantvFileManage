@@ -17,8 +17,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.PreloadTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.cantv.media.R;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
 
@@ -42,7 +44,9 @@ public class ImageFrameView extends FrameLayout {
     private int convertW = 0;
     private int convertH = 0;
     private int[] sizeArray = new int[2];
-    private final int MAX_LENGHT = 4096;
+    private int MAX_HEIGHT = 4096;
+    private int MAX_WIDTH = 4096;
+    private int MAX_LENGTH = 4096;
     private int loadResourceReady = 0;
     private static final String TAG = "imageFrameView";
     private int loadError = 0;
@@ -75,16 +79,18 @@ public class ImageFrameView extends FrameLayout {
         this.mLoadingImgListener = loadingImgListener;
         this.mIsShare = isSharing;
         showProgressBar();
-        mImageView.setVisibility(View.GONE);
+        if (isSharing) {
+            mImageView.setVisibility(View.GONE);
+        }
         loadResourceReady = 0;
         loadImage(imageUri, isSharing, imageName);
     }
 
     public int[] convertImage(float imageWidht, float imageHeight) {
         Log.i("convertImage", imageWidht + " " + imageHeight);
-        if (imageWidht > MAX_LENGHT || imageHeight > MAX_LENGHT) {
-            float lenghtW = imageWidht - MAX_LENGHT;
-            float lenghtH = imageHeight - MAX_LENGHT;
+        if (imageWidht > MAX_WIDTH || imageHeight > MAX_HEIGHT) {
+            float lenghtW = imageWidht - MAX_WIDTH;
+            float lenghtH = imageHeight - MAX_HEIGHT;
             float cutNumber;
             if (lenghtW > lenghtH) {
                 float calc = lenghtW / imageWidht;
@@ -109,12 +115,36 @@ public class ImageFrameView extends FrameLayout {
     public void loadImage(final String imageUri, boolean isSharing, String imageName) {
         Log.i("playImage", imageUri);
         //计算本地图片的实际宽高
+        //loadNetImage(imageUri);
         if (!isSharing) {
             getLocalImageSize(imageUri);
             convertW = callbackW;
             convertH = callbackH;
-            sizeArray = convertImage(convertW, convertH);
-            loadLocalGif(imageUri);
+            //判断机型运行内存，重新赋值MAX_LENGTH,MAX_WIDTH
+            Log.i(TAG, "deviceTotalMemory: " + getDeviceTotalMemory());
+            if (getDeviceTotalMemory() > 1500) {
+                MAX_WIDTH = MAX_LENGTH;
+                MAX_HEIGHT = MAX_LENGTH;
+                /*MAX_WIDTH = (int) mActivity.screenWidth;
+                MAX_HEIGHT = (int) mActivity.screenHeight;*/
+                sizeArray = convertImage(convertW, convertH);
+                //是否带有模糊效果，根据分辨率区分,是否是gif
+                if ((callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) || imageName.endsWith(".gif")) {
+                    loadLocalGifNoThumbnail(imageUri);
+                } else {
+                    loadLocalGif(imageUri);
+                }
+            } else {
+                MAX_WIDTH = (int) mActivity.screenWidth;
+                MAX_HEIGHT = (int) mActivity.screenHeight;
+                sizeArray = convertImage(convertW, convertH);
+                //是否带有模糊效果，根据分辨率区分
+                if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
+                    loadLocalImageNoThumbnail(imageUri);
+                } else {
+                    loadLocalImage(imageUri);
+                }
+            }
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             loadNetImage(imageUri);
@@ -190,85 +220,6 @@ public class ImageFrameView extends FrameLayout {
     }
 
     /**
-     * 加载网络图片
-     *
-     * @param imageUri
-     */
-    private void loadNetImage(final String imageUri) {
-        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                mImgWidth = resource.getWidth();
-                mImgHeight = resource.getHeight();
-                Log.i(TAG, "onResourceReady: " + mImgWidth + "*" + mImgHeight);
-                Bitmap bitmap = null;
-                if (mImgHeight != (int) mActivity.screenWidth && mImgWidth != (int) mActivity.screenHeight) {
-                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
-                }
-                mBitmap = bitmap;
-                mImageView.setImageBitmap(mBitmap);
-                dismissProgressBar();
-                mImageView.setVisibility(View.VISIBLE);
-
-                if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccess(true);
-                    mLoadingImgListener.bitmapSize(mImgWidth, mImgHeight);
-                    mLoadingImgListener.loadResourceReady(true);
-                    if (mImgHeight < (int) mActivity.screenHeight && mImgWidth < (int) mActivity.screenWidth) {
-                        mLoadingImgListener.isFullScreen(false);
-                    } else {
-                        mLoadingImgListener.isFullScreen(true);
-                    }
-                }
-
-                if (mBitmap != null && !mBitmap.isRecycled()) {
-                    mBitmap = null;
-                    resource = null;
-                }
-            }
-
-            @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
-                //解决图片加载不出来的情况下，页面一直处于加载中
-                //重试3次后弹出异常提示
-                if (loadError >= 3) {
-                    loadError = 0;
-                    dismissProgressBar();
-                    if (null != mLoadingImgListener) {
-                        mLoadingImgListener.loadSuccess(false);
-                    }
-                } else {
-                    loadNetImage(imageUri);
-                    loadError++;
-                }
-            }
-        });
-    }
-
-    /**
-     * 模糊加载图片
-     *
-     * @param imageUri
-     */
-    private void loadThumbnailImage(String imageUri) {
-        mImageView.setVisibility(View.VISIBLE);
-        Glide.with(mContext).load(imageUri).thumbnail(0.1f).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.RESULT).listener(new RequestListener<String, GlideDrawable>() {
-            @Override
-            public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(GlideDrawable glideDrawable, String s, Target<GlideDrawable> target, boolean b, boolean b1) {
-
-                return false;
-            }
-        }).into(mImageView);
-    }
-
-    /**
      * 获取网络图片尺寸
      *
      * @param imageUri
@@ -289,41 +240,97 @@ public class ImageFrameView extends FrameLayout {
     }
 
     /**
+     * 加载网络图片
+     *
+     * @param imageUri
+     */
+    private void loadNetImage(final String imageUri) {
+        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                mImgWidth = resource.getWidth();
+                mImgHeight = resource.getHeight();
+                Log.i(TAG, "onResourceReady: " + mImgWidth + "*" + mImgHeight);
+                Bitmap bitmap = null;
+                if (mImgHeight != (int) mActivity.screenWidth && mImgWidth != (int) mActivity.screenHeight) {
+                    bitmap = getBitmap(resource, (int) mActivity.screenWidth, (int) mActivity.screenHeight);
+                }
+                mBitmap = bitmap;
+                mImageView.setImageBitmap(mBitmap);
+                dismissProgressBar();
+                mImageView.setVisibility(View.VISIBLE);
+                if (null != mLoadingImgListener) {
+                    mLoadingImgListener.loadSuccess(true);
+                    mLoadingImgListener.bitmapSize(mImgWidth, mImgHeight);
+                    mLoadingImgListener.loadResourceReady(true);
+                    if (mImgHeight < (int) mActivity.screenHeight && mImgWidth < (int) mActivity.screenWidth) {
+                        mLoadingImgListener.isFullScreen(false);
+                    } else {
+                        mLoadingImgListener.isFullScreen(true);
+                    }
+                }
+                if (mBitmap != null && !mBitmap.isRecycled()) {
+                    mBitmap = null;
+                    resource = null;
+                }
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                //解决图片加载不出来的情况下，页面一直处于加载中
+                //重试3次后弹出异常提示
+                if (loadError >= 3) {
+                    loadError = 0;
+                    loadImageFail();
+                } else {
+                    loadNetImage(imageUri);
+                    loadError++;
+                }
+            }
+        });
+    }
+
+    /**
      * 加载本地图片
      *
      * @param imageUri
      */
     private void loadLocalImage(final String imageUri) {
-        mImageView.setVisibility(View.VISIBLE);
         Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
             @Override
             public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
-                dismissProgressBar();
-                if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccess(false);
-                }
+                loadImageFail();
                 Log.i(TAG, "onException: " + s);
                 return false;
             }
 
             @Override
             public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
-                dismissProgressBar();
-                mImgWidth = bitmap.getWidth();
-                mImgHeight = bitmap.getHeight();
-                Log.i(TAG, "尺寸1:" + mImgWidth + "*" + mImgHeight);
                 loadResourceReady += 1;
-                if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccess(true);
-                    mLoadingImgListener.bitmapSize(sizeArray[0], sizeArray[1]);
-                    Log.i(TAG, "尺寸2:" + sizeArray[0] + "*" + sizeArray[1]);
-                    if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
-                        mLoadingImgListener.isFullScreen(false);
-                    } else {
-                        mLoadingImgListener.isFullScreen(true);
-                    }
-                    mLoadingImgListener.loadResourceReady(loadResourceReady == 2 ? true : false);
-                }
+                loadImageSuccess(callbackW, callbackH);
+                return false;
+            }
+        }).into(mImageView);
+    }
+
+    /**
+     * 加载本地图片无模糊
+     *
+     * @param imageUri
+     */
+    private void loadLocalImageNoThumbnail(final String imageUri) {
+        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
+            @Override
+            public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
+                loadImageFail();
+                Log.i(TAG, "onException: " + s);
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                loadImageSuccessNoThumb(callbackW, callbackH);
                 return false;
             }
         }).into(mImageView);
@@ -385,36 +392,92 @@ public class ImageFrameView extends FrameLayout {
      * @param imageUri
      */
     private void loadLocalGif(final String imageUri) {
-        mImageView.setVisibility(View.VISIBLE);
-        Glide.with(mContext).load(imageUri).thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
+        Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
+            @Override
+            public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
+                loadImageFail();
+                Log.i(TAG, "onException: " + s);
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                loadResourceReady += 1;
+                loadImageSuccess(sizeArray[0], sizeArray[1]);
+                return false;
+            }
+        }).into(mImageView);
+    }
+
+    /**
+     * 加载动态图片无模糊
+     *
+     * @param imageUri
+     */
+    private void loadLocalGifNoThumbnail(final String imageUri) {
+        Glide.with(mContext).load(imageUri).crossFade(0).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
-                dismissProgressBar();
-                if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccess(false);
-                }
+                loadImageFail();
                 Log.i(TAG, "onException: " + s);
                 return false;
             }
 
             @Override
             public boolean onResourceReady(GlideDrawable glideDrawable, String s, Target<GlideDrawable> target, boolean b, boolean b1) {
-                dismissProgressBar();
-                Log.i(TAG, "尺寸1:" + mImgWidth + "*" + mImgHeight);
-                loadResourceReady += 1;
-                if (null != mLoadingImgListener) {
-                    mLoadingImgListener.loadSuccess(true);
-                    mLoadingImgListener.bitmapSize(sizeArray[0], sizeArray[1]);
-                    Log.i(TAG, "尺寸2:" + sizeArray[0] + "*" + sizeArray[1]);
-                    if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
-                        mLoadingImgListener.isFullScreen(false);
-                    } else {
-                        mLoadingImgListener.isFullScreen(true);
-                    }
-                    mLoadingImgListener.loadResourceReady(loadResourceReady == 2 ? true : false);
-                }
+                loadImageSuccessNoThumb(sizeArray[0], sizeArray[1]);
                 return false;
             }
         }).into(mImageView);
+    }
+
+    /**
+     * 本地加载图片失败
+     */
+    private void loadImageFail() {
+        dismissProgressBar();
+        if (null != mLoadingImgListener) {
+            mLoadingImgListener.loadSuccess(false);
+        }
+    }
+
+    /**
+     * 本地图片加载成功无模糊
+     *
+     * @param callbackW
+     * @param callbackH
+     */
+    private void loadImageSuccessNoThumb(int callbackW, int callbackH) {
+        dismissProgressBar();
+        if (null != mLoadingImgListener) {
+            mLoadingImgListener.loadSuccess(true);
+            mLoadingImgListener.bitmapSize(callbackW, callbackH);
+            mLoadingImgListener.loadResourceReady(true);
+            if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
+                mLoadingImgListener.isFullScreen(false);
+            } else {
+                mLoadingImgListener.isFullScreen(true);
+            }
+        }
+    }
+
+    /**
+     * 本地图片加载成功
+     *
+     * @param width
+     * @param height
+     */
+    private void loadImageSuccess(int width, int height) {
+        dismissProgressBar();
+        if (null != mLoadingImgListener) {
+            mLoadingImgListener.loadSuccess(true);
+            mLoadingImgListener.bitmapSize(width, height);
+            mLoadingImgListener.loadResourceReady(loadResourceReady == 2 ? true : false);
+            if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
+                mLoadingImgListener.isFullScreen(false);
+            } else {
+                mLoadingImgListener.isFullScreen(true);
+            }
+        }
     }
 }
