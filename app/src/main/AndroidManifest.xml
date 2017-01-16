@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cantv.media"
-          android:versionCode="148"
-          android:versionName="20170113_v1.4.8.2">
-    <!--android:sharedUserId="android.uid.system"-->
+          android:sharedUserId="android.uid.system"
+          android:versionCode="149"
+          android:versionName="20170116_v1.4.9">
 
 
     <uses-sdk
@@ -112,10 +112,6 @@
                 <data android:scheme="file"/>
             </intent-filter>
         </receiver>
-        <!--Glide图片格式配置-->
-        <meta-data
-            android:name="com.cantv.media.center.utils.GlideConfiguration"
-            android:value="GlideModule"/>
     </application>
 
 </manifest>
