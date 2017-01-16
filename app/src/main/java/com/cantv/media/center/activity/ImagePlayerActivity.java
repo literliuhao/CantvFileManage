@@ -31,7 +31,6 @@ import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.UsbMounted;
-import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.ui.image.ImageBrowser;
 import com.cantv.media.center.ui.image.ImageFrameView;
 import com.cantv.media.center.ui.image.ImageFrameView.NotifyParentUpdate;
@@ -40,6 +39,7 @@ import com.cantv.media.center.ui.player.MediaControllerBar;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -740,12 +740,13 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 isIN = false;
             } else if (status.equals("true")) {
                 isIN = false;
-                if (MediaGridView.flag) {
+                int photoModel = SharedPreferenceUtil.getPhotoModel();
+                if (photoModel == 1) {
+                    SharedPreferenceUtil.setPhotoModel(0);
                     Toast.makeText(this,"Close",Toast.LENGTH_LONG).show();
-                    MediaGridView.flag = false;
                 } else {
+                    SharedPreferenceUtil.setPhotoModel(1);
                     Toast.makeText(this,"Open",Toast.LENGTH_LONG).show();
-                    MediaGridView.flag = true;
                 }
             }
         }

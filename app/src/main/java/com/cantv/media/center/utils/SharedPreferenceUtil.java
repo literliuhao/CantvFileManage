@@ -23,6 +23,7 @@ public class SharedPreferenceUtil {
     private static final String DISCLAIMER_TEXT = "disclaimer_text";
     private static final String SHARE_GUIDE = "share_guide";
     private static final String SHARE_DEFAULT_CONFIG = "default_config";
+    private static final String PHOTO_MODEL = "photo_Model";
     private static SharedPreferences mSp = MyApplication.mContext.getSharedPreferences(SHARE_DEFAULT_CONFIG, Context.MODE_PRIVATE);
     private static SharedPreferences.Editor mEditor = mSp.edit();
 
@@ -210,6 +211,25 @@ public class SharedPreferenceUtil {
      */
     public static String getShareUserInfo() {
         return mSp.getString(SHARE_USER_INFO_FLAG, "");
+    }
+
+    /**
+     * 获取图片显示模式，1为ARGB_8888否则RGB_565
+     *
+     * @return
+     */
+    public static int getPhotoModel() {
+        return mSp.getInt(PHOTO_MODEL, 0);
+    }
+
+    /**
+     *
+     * @param photoModel
+     * @return
+     */
+    public static Boolean setPhotoModel(int photoModel){
+        mEditor.putInt(PHOTO_MODEL, photoModel);
+        return commitInfo(mEditor);
     }
 
     /**

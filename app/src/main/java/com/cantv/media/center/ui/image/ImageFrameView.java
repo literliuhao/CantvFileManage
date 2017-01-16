@@ -17,10 +17,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.PreloadTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.cantv.media.R;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
 
@@ -415,7 +413,7 @@ public class ImageFrameView extends FrameLayout {
      * @param imageUri
      */
     private void loadLocalGifNoThumbnail(final String imageUri) {
-        Glide.with(mContext).using.load(imageUri).crossFade(0).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
+        Glide.with(mContext).load(imageUri).crossFade(0).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
                 loadImageFail();
