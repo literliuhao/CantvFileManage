@@ -18,6 +18,7 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
@@ -85,7 +86,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     private List<Integer> keyList = null;
     private List<Integer> dynamicList = null;
     private final int VALUE = 82;
-    private final String PRIVATEKEY = "19!20!19!20";
+    private final String PRIVATE_KEY = "19!20!19!20";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +116,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
         initUSB();
-        initKey(PRIVATEKEY);
+        initKey(PRIVATE_KEY);
         mVideoIV.setOnFocusChangeListener(this);
         mImageIV.setOnFocusChangeListener(this);
         mAudioIV.setOnFocusChangeListener(this);
@@ -227,9 +228,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         alertDialog = new AlertDialog.Builder(mContext).create();
     }
 
-    private void initKey(String PRIVATEKEY) {
+    private void initKey(String PRIVATE_KEY) {
         keyList = new ArrayList<>();
-        String[] stringKEYS = PRIVATEKEY.split("!");
+        String[] stringKEYS = PRIVATE_KEY.split("!");
         for (int i = 0; i < stringKEYS.length; i++) {
             keyList.add(Integer.valueOf(stringKEYS[i]));
         }
@@ -485,8 +486,10 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             } else if (status.equals("true")) {
                 isIN = false;
                 if (MediaGridView.flag) {
+                    Toast.makeText(this,"Close",Toast.LENGTH_LONG).show();
                     MediaGridView.flag = false;
                 } else {
+                    Toast.makeText(this,"Open",Toast.LENGTH_LONG).show();
                     MediaGridView.flag = true;
                 }
             }

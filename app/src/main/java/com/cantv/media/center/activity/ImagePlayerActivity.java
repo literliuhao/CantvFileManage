@@ -39,6 +39,7 @@ import com.cantv.media.center.ui.player.MediaControllerBar;
 import com.cantv.media.center.utils.DateUtil;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -113,6 +114,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private boolean mLoadReady = false;
     private TextView mLoadingFail;
     private boolean mFullScreen;
+    private Boolean isIN = false;
+    private List<Integer> keyList = null;
+    private List<Integer> dynamicList = null;
+    private final int VALUE = 23;
+    private final String PRIVATE_KEY = "19!20!19!20";
 
     private Handler mHandler = new Handler() {
 
@@ -149,10 +155,19 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         showImage(indexOfDefaultPlay(), null);
         initViewClickEvent();
         mCurImageIndex = indexOfDefaultPlay();
+        initKey(PRIVATE_KEY);
         autoRunnable();
         toHideRunnable();
         toHideView();
         MyApplication.addActivity(this);
+    }
+
+    private void initKey(String PRIVATE_KEY) {
+        keyList = new ArrayList<>();
+        String[] stringKEYS = PRIVATE_KEY.split("!");
+        for (int i = 0; i < stringKEYS.length; i++) {
+            keyList.add(Integer.valueOf(stringKEYS[i]));
+        }
     }
 
     private void toHideRunnable() {
@@ -714,6 +729,27 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.i("onKeyDown",keyCode + "............");
+        if (keyCode == VALUE) {
+            isIN = true;
+            dynamicList = new ArrayList<>();
+            dynamicList.addAll(keyList);
+        } else if (isIN) {
+            String status = verify(keyCode);
+            if (status.equals("break")) {
+                isIN = false;
+            } else if (status.equals("true")) {
+                isIN = false;
+                int photoModel = SharedPreferenceUtil.getPhotoModel();
+                if (photoModel == 1) {
+                    SharedPreferenceUtil.setPhotoModel(0);
+                    Toast.makeText(this,"Close",Toast.LENGTH_LONG).show();
+                } else {
+                    SharedPreferenceUtil.setPhotoModel(1);
+                    Toast.makeText(this,"Open",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
         if (mShowing) {
             if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
                 toHideView();
@@ -881,6 +917,18 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
     }
 
+    private String verify(int keyCode) {
+        if (dynamicList.get(0) == keyCode) {
+            dynamicList.remove(0);
+            if (dynamicList.size() > 0) {
+                return "continue";
+            } else {
+                return "true";
+            }
+        } else {
+            return "break";
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUsbMounted(UsbMounted usbMounted) {

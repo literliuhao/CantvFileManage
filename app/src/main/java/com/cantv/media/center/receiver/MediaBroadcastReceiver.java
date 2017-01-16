@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.UsbMounted;
@@ -20,11 +21,13 @@ import java.util.List;
 public class MediaBroadcastReceiver extends BroadcastReceiver {
     private static String TAG = "MediaBroadcastReceiver";
     private Context mContext;
+    private final int minNumber = 1;
 
     public MediaBroadcastReceiver() {
     }
 
     private static MediaBroadcastReceiver mediaBroadcastReceiver;
+    private static IMediaListener iMediaListener;
 
     public static MediaBroadcastReceiver getInstance() {
         if (null == mediaBroadcastReceiver) {
@@ -50,10 +53,10 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
             EventBus.getDefault().post(new UsbMounted(true, intent.getDataString()));
 
             List<String> currPathList = MediaUtils.getCurrPathList();
-            if (currPathList.size() < 1) {
-//                if (isShow()) {
-//                    dialog.dismiss();
-//                }
+            if (currPathList.size() < minNumber) {
+                if (null != iMediaListener) {
+                    iMediaListener.onFinish();
+                }
             }
         } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
             EventBus.getDefault().post(new UsbMounted(true, intent.getDataString()));
@@ -62,6 +65,10 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(Intent.ACTION_MEDIA_EJECT)) {
             EventBus.getDefault().post(new UsbMounted(true, intent.getDataString()));
         }
+    }
+
+    public void setListener(IMediaListener mediaListener) {
+        iMediaListener = mediaListener;
     }
 
     private void showMountedDialog() {
