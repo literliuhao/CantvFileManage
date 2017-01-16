@@ -8,11 +8,13 @@ import android.widget.FrameLayout;
 
 import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.GridViewActivity;
+import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.utils.MediaUtils;
 
-public class DialogActivity extends Activity implements View.OnFocusChangeListener{
+public class DialogActivity extends Activity implements View.OnFocusChangeListener,IMediaListener{
     private static float mDialogWidth = 0.85f;
     private static float mDialogHeight = 0.91f;
     private FocusScaleUtils mFocusScaleUtils;
@@ -22,6 +24,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_mounted);
+        MediaBroadcastReceiver.getInstance().setListener(this);
         focusUtils = new FocusUtils(DialogActivity.this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.06f, null, null);
         FrameLayout dialogImage = (FrameLayout) this.findViewById(R.id.dialog_image);
@@ -94,5 +97,10 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         } else {
             mFocusScaleUtils.scaleToNormal(v);
         }
+    }
+
+    @Override
+    public void onFinish() {
+        this.finish();
     }
 }

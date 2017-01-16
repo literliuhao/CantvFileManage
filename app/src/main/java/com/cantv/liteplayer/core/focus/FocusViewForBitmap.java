@@ -94,8 +94,8 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
         this.movingTime = 1000;
         this.movingNumber = 15;
         this.movingVelocity = 0;
-        this.movingNumberDefault = 15;
-        this.movingVelocityDefault = 4;
+        this.movingNumberDefault = 8;
+        this.movingVelocityDefault = 10;
         this.movingNumberTemporary = -1;
         this.movingVelocityTemporary = -1;
         this.handler = new Handler() {
