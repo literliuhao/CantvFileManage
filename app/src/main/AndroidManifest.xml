@@ -113,9 +113,9 @@
             </intent-filter>
         </receiver>
         <!--Glide图片格式配置-->
-        <!--<meta-data
+        <meta-data
             android:name="com.cantv.media.center.utils.GlideConfiguration"
-            android:value="GlideModule"/>-->
+            android:value="GlideModule"/>
     </application>
 
 </manifest>
