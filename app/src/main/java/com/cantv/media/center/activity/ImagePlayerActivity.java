@@ -117,7 +117,6 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private Boolean isIN = false;
     private List<Integer> keyList = null;
     private List<Integer> dynamicList = null;
-    private final int VALUE = 23;
     private final String PRIVATE_KEY = "19!20!19!20";
 
     private Handler mHandler = new Handler() {
@@ -730,7 +729,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.i("onKeyDown",keyCode + "............");
-        if (keyCode == VALUE) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
             isIN = true;
             dynamicList = new ArrayList<>();
             dynamicList.addAll(keyList);
