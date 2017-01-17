@@ -420,4 +420,31 @@ public class MediaGridView extends CustomGridView {
         });
         apkDialog.show();
     }
+
+    /**
+     * 重置资源类型
+     *
+     * @param sourceType
+     */
+    public void resetSourceType(SourceType sourceType) {
+        msSourceType = sourceType;
+        switch (msSourceType) {
+            case MOIVE:
+                currentType = "暂无视频";
+                break;
+            case PICTURE:
+                currentType = "暂无图片";
+                break;
+            case MUSIC:
+                currentType = "暂无音频";
+                break;
+            case APP:
+                currentType = "暂无应用";
+                break;
+            default:
+                currentType = "暂无数据";
+                break;
+        }
+    }
+
 }

@@ -566,9 +566,8 @@ public class GridViewActivity extends Activity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResetType(YSourceType sourceType) {
-        SourceType type = sourceType.mType;
         mTitleTV.setText(sourceType.mTypeName);
-        mGridView.msSourceType=type;
+        mGridView.resetSourceType(sourceType.mType);
         isExternal=true;
     }
 
