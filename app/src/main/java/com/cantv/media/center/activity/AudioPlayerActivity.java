@@ -216,7 +216,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onDestroy() {
-        muUITask.cancel(true);
+        if (null != muUITask) {
+            muUITask.cancel(true);
+        }
         releaseWakeLock();
         hideMenuDialog();
         mMenuDialog = null;

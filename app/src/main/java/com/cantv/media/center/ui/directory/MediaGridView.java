@@ -44,7 +44,7 @@ public class MediaGridView extends CustomGridView {
     public Stack<Integer> mPosStack = new Stack<>();
     public Stack<List<Media>> mMediaStack = new Stack<>();// 记录上一级目录结构
     private String devicePath;
-    private SourceType msSourceType;
+    public SourceType msSourceType;
     private boolean misShowProcess = false;
     private Boolean mFirst = false;
     private Context mContext;

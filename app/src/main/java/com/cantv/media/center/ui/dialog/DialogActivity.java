@@ -11,10 +11,14 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.GridViewActivity;
+import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.data.YSourceType;
 import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.utils.MediaUtils;
 
-public class DialogActivity extends Activity implements View.OnFocusChangeListener,IMediaListener{
+import org.greenrobot.eventbus.EventBus;
+
+public class DialogActivity extends Activity implements View.OnFocusChangeListener, IMediaListener {
     private static float mDialogWidth = 0.85f;
     private static float mDialogHeight = 0.91f;
     private FocusScaleUtils mFocusScaleUtils;
@@ -37,6 +41,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
                 if (MediaUtils.getCurrPathList().size() > 1) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
+                EventBus.getDefault().post(new YSourceType(SourceType.PICTURE, "图片"));
                 DialogActivity.this.startActivity(intent);
                 DialogActivity.this.finish();
             }
@@ -51,6 +56,9 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
                 if (MediaUtils.getCurrPathList().size() > 1) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
+
+                EventBus.getDefault().post(new YSourceType(SourceType.MOIVE, "视频"));
+
                 DialogActivity.this.startActivity(intent);
                 DialogActivity.this.finish();
             }
@@ -65,6 +73,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
                 if (MediaUtils.getCurrPathList().size() > 1) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
+                EventBus.getDefault().post(new YSourceType(SourceType.MUSIC, "音频"));
                 DialogActivity.this.startActivity(intent);
                 DialogActivity.this.finish();
             }
@@ -79,6 +88,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("type", "device1");
+                EventBus.getDefault().post(new YSourceType(SourceType.DEVICE, "外接设备"));
                 DialogActivity.this.startActivity(intent);
                 DialogActivity.this.finish();
             }

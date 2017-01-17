@@ -319,7 +319,7 @@ public class MediaUtils {
             currClass = ImagePlayerActivity.class;
         }
         intent.setClass(context, currClass);
-//        if (sourceType == SourceType.PICTURE || sourceType == SourceType.MUSIC) {
+//        if (sourceType == YSourceType.PICTURE || sourceType == YSourceType.MUSIC) {
         intent.putParcelableArrayListExtra("data_list", pathList);
 //        } else {
 //            intent.putStringArrayListExtra("data_list", pathList);
@@ -385,6 +385,7 @@ public class MediaUtils {
      */
     public static String getRealTotalSize(String path) {
 
+//        Log.w("路径",path);
         StatFs stat = new StatFs(path); // 创建StatFs对象
 
         long blockSize = stat.getBlockSizeLong(); // 获取block的size
