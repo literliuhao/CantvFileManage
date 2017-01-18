@@ -24,6 +24,7 @@ import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.constants.MediaFormat;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Audio;
+import com.cantv.media.center.data.Constant;
 import com.cantv.media.center.data.Media;
 
 import java.io.BufferedReader;
@@ -320,7 +321,11 @@ public class MediaUtils {
         }
         intent.setClass(context, currClass);
 //        if (sourceType == YSourceType.PICTURE || sourceType == YSourceType.MUSIC) {
-        intent.putParcelableArrayListExtra("data_list", pathList);
+        if (sourceType == SourceType.PICTURE) {
+            Constant.list = pathList;
+        } else {
+            intent.putParcelableArrayListExtra("data_list", pathList);
+        }
 //        } else {
 //            intent.putStringArrayListExtra("data_list", pathList);
 //        }
@@ -345,7 +350,7 @@ public class MediaUtils {
     public static void loadPicImg(Context context, String path, ImageView imageView) {
         try {
             Glide.with(context).load(path).asBitmap().centerCrop().into(imageView);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
