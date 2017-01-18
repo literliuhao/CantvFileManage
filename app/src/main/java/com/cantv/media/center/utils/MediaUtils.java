@@ -321,11 +321,11 @@ public class MediaUtils {
         }
         intent.setClass(context, currClass);
 //        if (sourceType == YSourceType.PICTURE || sourceType == YSourceType.MUSIC) {
-        if (sourceType == SourceType.PICTURE) {
-            Constant.list = pathList;
-        } else {
-            intent.putParcelableArrayListExtra("data_list", pathList);
-        }
+//        if (sourceType == SourceType.PICTURE) {
+        Constant.list = pathList;
+//        } else {
+//            intent.putParcelableArrayListExtra("data_list", pathList);
+//        }
 //        } else {
 //            intent.putStringArrayListExtra("data_list", pathList);
 //        }

@@ -11,6 +11,7 @@ import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.Listener.PlayMode;
+import com.cantv.media.center.data.Constant;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.player.PlayerControllerBar.CoverFlowViewListener;
 import com.cantv.media.center.ui.player.PlayerControllerBar.PlayerCtrlBarContext;
@@ -39,7 +40,8 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDataList = getIntent().getParcelableArrayListExtra("data_list");
+//        mDataList = getIntent().getParcelableArrayListExtra("data_list");
+        mDataList= Constant.list;
         if (mDataList == null) {
             mDataList = new ArrayList<>();
         }
