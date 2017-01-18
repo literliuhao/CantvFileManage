@@ -261,26 +261,26 @@ public class SmbFileUtils {
     public static SourceType getFileType(SmbFile file) {
 
 //		if (file.isDirectory()) {
-//			return SourceType.FOLDER;
+//			return YSourceType.FOLDER;
 //		}
 
 //		String extFromFilename = SmbFileUtils.getExtFromFilename(file.getAbsolutePath());
 //		int fileType = FileCategoryHelper.getFileType(extFromFilename);
 //		switch (fileType) {
 //		case FileCategoryHelper.TYPE_MOIVE:
-//			return SourceType.MOIVE;
+//			return YSourceType.MOIVE;
 //
 //		case FileCategoryHelper.TYPE_MUSIC:
-//			return SourceType.MUSIC;
+//			return YSourceType.MUSIC;
 //
 //		case FileCategoryHelper.TYPE_PICTURE:
-//			return SourceType.PICTURE;
+//			return YSourceType.PICTURE;
 //
 //		case FileCategoryHelper.TYPE_APP:
-//			return SourceType.APP;
+//			return YSourceType.APP;
 //
 //		case FileCategoryHelper.TYPE_UNKNOW:
-//			return SourceType.UNKNOW;
+//			return YSourceType.UNKNOW;
 //
 //		}
 
