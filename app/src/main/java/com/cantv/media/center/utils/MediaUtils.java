@@ -320,7 +320,6 @@ public class MediaUtils {
             currClass = ImagePlayerActivity.class;
         }
         intent.setClass(context, currClass);
-//        if (sourceType == YSourceType.PICTURE || sourceType == YSourceType.MUSIC) {
 //        if (sourceType == SourceType.PICTURE) {
         Constant.list = pathList;
 //        } else {
