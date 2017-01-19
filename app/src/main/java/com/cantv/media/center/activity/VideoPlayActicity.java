@@ -914,7 +914,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
             if (file.exists() && file.canRead()) {
-                savePathList.add(pathList.get(i));
+                if (pathList.get(i).endsWith(".sub")) { //sub需要和idx一起使用
+                    File file1 = new File(stPath + ".idx");
+                    if (file1.exists() && file1.canRead()) {
+                        savePathList.add(pathList.get(i));
+                    }
+                } else {
+                    savePathList.add(pathList.get(i));
+                }
             }
         }
         return savePathList;
