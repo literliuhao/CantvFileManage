@@ -13,12 +13,14 @@ import com.cantv.media.R;
 import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SystemCateUtil;
 
-public class DialogActivity extends Activity implements View.OnFocusChangeListener,IMediaListener{
+public class DialogActivity extends Activity implements View.OnFocusChangeListener, IMediaListener {
     private static float mDialogWidth = 0.85f;
     private static float mDialogHeight = 0.91f;
     private FocusScaleUtils mFocusScaleUtils;
     private FocusUtils focusUtils;
+    private final String SETTING = "android.intent.action.LINK_NETWORK_TOAST";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,62 +33,90 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         dialogImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DialogActivity.this, GridViewActivity.class);
-                intent.putExtra("type", "image");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (MediaUtils.getCurrPathList().size() > 1) {
-                    intent.putExtra("toListFlag", "ListFlag");
+                try {
+                    if (!SystemCateUtil.getServerData().equals("1")) {
+                        startSetting();
+                    } else {
+                        startGridView("image");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    DialogActivity.this.finish();
                 }
-                DialogActivity.this.startActivity(intent);
-                DialogActivity.this.finish();
             }
         });
         FrameLayout dialogVideo = (FrameLayout) this.findViewById(R.id.dialog_video);
         dialogVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DialogActivity.this, GridViewActivity.class);
-                intent.putExtra("type", "video");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (MediaUtils.getCurrPathList().size() > 1) {
-                    intent.putExtra("toListFlag", "ListFlag");
+                try {
+                    if (!SystemCateUtil.getServerData().equals("1")) {
+                        startSetting();
+                    } else {
+                        startGridView("video");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    DialogActivity.this.finish();
                 }
-                DialogActivity.this.startActivity(intent);
-                DialogActivity.this.finish();
             }
         });
         FrameLayout dialogAudio = (FrameLayout) this.findViewById(R.id.dialog_audio);
         dialogAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DialogActivity.this, GridViewActivity.class);
-                intent.putExtra("type", "audio");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (MediaUtils.getCurrPathList().size() > 1) {
-                    intent.putExtra("toListFlag", "ListFlag");
+                try {
+                    if (!SystemCateUtil.getServerData().equals("1")) {
+                        startSetting();
+                    } else {
+                        startGridView("audio");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    DialogActivity.this.finish();
                 }
-                DialogActivity.this.startActivity(intent);
-                DialogActivity.this.finish();
             }
         });
         FrameLayout dialogFile = (FrameLayout) this.findViewById(R.id.dialog_file);
         dialogFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DialogActivity.this, GridViewActivity.class);
-                if (MediaUtils.getCurrPathList().size() > 1) {
-                    intent.putExtra("toListFlag", "ListFlag");
+                try {
+                    if (!SystemCateUtil.getServerData().equals("1")) {
+                        startSetting();
+                    } else {
+                        startGridView("device1");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    DialogActivity.this.finish();
                 }
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("type", "device1");
-                DialogActivity.this.startActivity(intent);
-                DialogActivity.this.finish();
             }
         });
         dialogVideo.setOnFocusChangeListener(this);
         dialogAudio.setOnFocusChangeListener(this);
         dialogImage.setOnFocusChangeListener(this);
         dialogFile.setOnFocusChangeListener(this);
+    }
+
+    private void startSetting() {
+        Intent intent = new Intent(SETTING);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        DialogActivity.this.startActivity(intent);
+    }
+
+    private void startGridView(String type) {
+        Intent intent = new Intent(DialogActivity.this, GridViewActivity.class);
+        intent.putExtra("type", type);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (MediaUtils.getCurrPathList().size() > 1) {
+            intent.putExtra("toListFlag", "ListFlag");
+        }
+        DialogActivity.this.startActivity(intent);
     }
 
     @Override
