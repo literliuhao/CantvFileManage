@@ -11,11 +11,15 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.liteplayer.core.interfaces.IMediaListener;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.GridViewActivity;
+import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.data.YSourceType;
 import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SystemCateUtil;
 
-public class DialogActivity extends Activity implements View.OnFocusChangeListener, IMediaListener {
+import org.greenrobot.eventbus.EventBus;
+
+public class DialogActivity extends Activity implements View.OnFocusChangeListener, IMediaListener, View.OnClickListener {
     private static float mDialogWidth = 0.85f;
     private static float mDialogHeight = 0.91f;
     private FocusScaleUtils mFocusScaleUtils;
@@ -30,73 +34,13 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         focusUtils = new FocusUtils(DialogActivity.this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.06f, null, null);
         FrameLayout dialogImage = (FrameLayout) this.findViewById(R.id.dialog_image);
-        dialogImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (!SystemCateUtil.getServerData().equals("1")) {
-                        startSetting();
-                    } else {
-                        startGridView("image");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    DialogActivity.this.finish();
-                }
-            }
-        });
         FrameLayout dialogVideo = (FrameLayout) this.findViewById(R.id.dialog_video);
-        dialogVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (!SystemCateUtil.getServerData().equals("1")) {
-                        startSetting();
-                    } else {
-                        startGridView("video");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    DialogActivity.this.finish();
-                }
-            }
-        });
         FrameLayout dialogAudio = (FrameLayout) this.findViewById(R.id.dialog_audio);
-        dialogAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (!SystemCateUtil.getServerData().equals("1")) {
-                        startSetting();
-                    } else {
-                        startGridView("audio");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    DialogActivity.this.finish();
-                }
-            }
-        });
         FrameLayout dialogFile = (FrameLayout) this.findViewById(R.id.dialog_file);
-        dialogFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (!SystemCateUtil.getServerData().equals("1")) {
-                        startSetting();
-                    } else {
-                        startGridView("device1");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    DialogActivity.this.finish();
-                }
-            }
-        });
+        dialogImage.setOnClickListener(this);
+        dialogVideo.setOnClickListener(this);
+        dialogAudio.setOnClickListener(this);
+        dialogFile.setOnClickListener(this);
         dialogVideo.setOnFocusChangeListener(this);
         dialogAudio.setOnFocusChangeListener(this);
         dialogImage.setOnFocusChangeListener(this);
@@ -109,7 +53,8 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         DialogActivity.this.startActivity(intent);
     }
 
-    private void startGridView(String type) {
+    private void startGridView(String type, int typeInt) {
+        EventBus.getDefault().post(new YSourceType(SourceType.PICTURE, typeInt));
         Intent intent = new Intent(DialogActivity.this, GridViewActivity.class);
         intent.putExtra("type", type);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -132,5 +77,34 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
     @Override
     public void onFinish() {
         this.finish();
+    }
+
+    @Override
+    public void onClick(View v) {
+        try {
+            if (!SystemCateUtil.getServerData().equals("1")) {
+                startSetting();
+            } else {
+                switch (v.getId()) {
+                    case R.id.dialog_image:
+                        startGridView("image", R.string.str_photo);
+                        break;
+                    case R.id.dialog_video:
+                        startGridView("video", R.string.str_movie);
+                        break;
+                    case R.id.dialog_audio:
+                        startGridView("audio", R.string.str_music);
+                        break;
+                    case R.id.dialog_file:
+                        startGridView("device1", R.string.str_external);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DialogActivity.this.finish();
+        }
+
     }
 }

@@ -20,6 +20,7 @@ import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.UsbMounted;
+import com.cantv.media.center.data.YSourceType;
 import com.cantv.media.center.ui.dialog.ConfirmDialog;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
@@ -78,6 +79,33 @@ public class GridViewActivity extends Activity {
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
         mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
         mRTCountView = (TextView) findViewById(R.id.file_count);
+        getType();
+        if (mGridView == null) {
+            return;
+        }
+        mGridView.show();
+        mContentView.removeAllViews();
+        switch (SharedPreferenceUtil.getGridStyle()) {
+            case 1:
+                setGridStyle(MediaOrientation.THUMBNAIL);
+                break;
+            case 0:
+                setGridStyle(MediaOrientation.LIST);
+                break;
+        }
+        mContentView.addView(mGridView);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isStartAc = false;
+    }
+
+    /**
+     * 得到类型
+     */
+    private void getType() {
         Intent intent = getIntent();
         String type = intent.getStringExtra("type");
         if ("video".equalsIgnoreCase(type)) {
@@ -124,26 +152,6 @@ public class GridViewActivity extends Activity {
             mGridView.setDevicePath(intent.getStringExtra("path"));
             isExternal = false;
         }
-        if (mGridView == null) {
-            return;
-        }
-        mGridView.show();
-        mContentView.removeAllViews();
-        switch (SharedPreferenceUtil.getGridStyle()) {
-            case 1:
-                setGridStyle(MediaOrientation.THUMBNAIL);
-                break;
-            case 0:
-                setGridStyle(MediaOrientation.LIST);
-                break;
-        }
-        mContentView.addView(mGridView);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isStartAc = false;
     }
 
     @Override
@@ -553,6 +561,14 @@ public class GridViewActivity extends Activity {
                 updateSDMounted(usbMounted.mUsbPath);
             }
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResetType(YSourceType sourceType) {
+        mTitleTV.setText(getResources().getString(sourceType.mTypeName));
+        mGridView.resetSourceType(sourceType.mType);
+        isExternal=true;
     }
 
 }
