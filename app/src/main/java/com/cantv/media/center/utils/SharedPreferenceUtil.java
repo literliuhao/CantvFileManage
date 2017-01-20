@@ -66,8 +66,8 @@ public class SharedPreferenceUtil {
         return mSp.getInt(FILE_SORT_TYPE, FileComparator.SORT_TYPE_NAME_UP);
     }
 
-    public static boolean setGridStyle(int gridSytle) {
-        mEditor.putInt(GRID_STYLE, gridSytle);
+    public static boolean setGridStyle(int gridStyle) {
+        mEditor.putInt(GRID_STYLE, gridStyle);
         return commitInfo(mEditor);
     }
 

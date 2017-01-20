@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 
 import com.app.core.utils.UiUtils;
+import com.cantv.media.center.data.Constant;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.player.MediaControllerBar;
 
@@ -26,7 +27,8 @@ public abstract class MediaPlayerActivity extends Activity {
             url = Uri.decode(getIntent().getDataString()).substring(7);
         } catch (Exception e) {
         }
-        mDataList = getIntent().getParcelableArrayListExtra("data_list");
+        //修复MASERATI-230USB播放图片，选择文件名为超过1000张图片文件夹打开任意相片，电视提示很抱歉，文件管理已停止运行
+        mDataList = Constant.list;
         if (!TextUtils.isEmpty(url)) {
             if (mDataList == null) {
                 mDataList = new ArrayList<Media>();

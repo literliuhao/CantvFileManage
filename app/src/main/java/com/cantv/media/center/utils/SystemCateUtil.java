@@ -18,17 +18,10 @@ public class SystemCateUtil {
     public static String model;
     public static String systemVersion;
     public static String persis;
+    public static String server_data;
 
     static {
-        productmodeList = Arrays.asList(
-                "F55", "U65KE660", "W55KE590", "F55SD160", "V50SD160", "V43SD160", "X55KE560", "X55QE190", "C43SD120", "C43",
-                "C42SD320", "C32KD210", "C32KD110", "C40KD120", "C50SD120", "C49CD120", "C49SD320", "CANbox C1", "CANbox Z1", "CANbox F1",
-                "CANbox F2", "Can C1", "Can C2", "Can C3", "Can C4", "Can C5", "Can C6", "Can C7", "Can C8", "Can C9",
-                "changhong_F3", "AMOI_B5", "AMOI_B6", "AMOI_B8", "AMOI_B9", "Linkin_H3", "Linkin_H6", "mohe_TVB10", "mohe_TVB11", "MALATA_F4",
-                "JOHE.LIVE_F6", "QHTF_F5", "EARISE_K1", "YUANJING_V30", "EARISE_K2", "EARISE_K3", "EARISE_K5", "EARISE_K6", "EARISE_K8", "EARISE_K9",
-                "WZHT_OS", "EARISE_M1", "EARISE_M2", "EARISE_M3", "EARISE_M5", "EARISE_M6", "EARISE_M8", "EARISE_M9", "LW8000U7", "ctv638",
-                "JRX338", "TM6", "TM6_64", "HiDPTAndroid", "TT338512", "TT3381G", "TT6381GB", "H8", "H9", "N8",
-                "N360", "T8", "R1", "DYOS", "SP3811", "JCG-Lebo-H3", "ADA.S338A", "X6", "HK-T.RT2968P61");
+        productmodeList = Arrays.asList("F55", "U65KE660", "W55KE590", "F55SD160", "V50SD160", "V43SD160", "X55KE560", "X55QE190", "C43SD120", "C43", "C42SD320", "C32KD210", "C32KD110", "C40KD120", "C50SD120", "C49CD120", "C49SD320", "CANbox C1", "CANbox Z1", "CANbox F1", "CANbox F2", "Can C1", "Can C2", "Can C3", "Can C4", "Can C5", "Can C6", "Can C7", "Can C8", "Can C9", "changhong_F3", "AMOI_B5", "AMOI_B6", "AMOI_B8", "AMOI_B9", "Linkin_H3", "Linkin_H6", "mohe_TVB10", "mohe_TVB11", "MALATA_F4", "JOHE.LIVE_F6", "QHTF_F5", "EARISE_K1", "YUANJING_V30", "EARISE_K2", "EARISE_K3", "EARISE_K5", "EARISE_K6", "EARISE_K8", "EARISE_K9", "WZHT_OS", "EARISE_M1", "EARISE_M2", "EARISE_M3", "EARISE_M5", "EARISE_M6", "EARISE_M8", "EARISE_M9", "LW8000U7", "ctv638", "JRX338", "TM6", "TM6_64", "HiDPTAndroid", "TT338512", "TT3381G", "TT6381GB", "H8", "H9", "N8", "N360", "T8", "R1", "DYOS", "SP3811", "JCG-Lebo-H3", "ADA.S338A", "X6", "HK-T.RT2968P61");
     }
 
 
@@ -74,7 +67,7 @@ public class SystemCateUtil {
      * @return
      */
     public static String getSystemVersion() {
-        if(null == systemVersion || systemVersion.equals("")){
+        if (null == systemVersion || systemVersion.equals("")) {
             systemVersion = get("ro.build.version.firmware");
         }
         Log.i("SystemCateUtil", get("ro.build.version.firmware"));
@@ -87,10 +80,46 @@ public class SystemCateUtil {
      * @return
      */
     public static String getPersist() {
-        if(null == persis || persis.equals("")){
+        if (null == persis || persis.equals("")) {
             persis = get("persist.sys.burningmode");
         }
         return persis;
+    }
+
+    /**
+     * 表示是否连通服务器:
+     * 1 表示已经连通服务器，否则为未连同服务器
+     *
+     * @return
+     */
+    public static String getServerData() {
+        if (getEnable()) {
+            String status = get("cantv.sys.has_server_data");
+            Log.i("SystemCateUtil", "getServerData  = " + status);
+            if (null == server_data || server_data.equals("")) {
+                if (status.equals("1")) {
+                    server_data = "1";
+                } else {
+                    return status;
+                }
+            }
+        } else {
+            return "1";
+        }
+        return server_data;
+    }
+
+    /**
+     * 表示是否需要无网弹窗功能:  0 表示开（默认） 1 表示关
+     *
+     * @return
+     */
+    public static Boolean getEnable() {
+        if (get("persist.sys.network.enable").equals("0")) {
+            return true;
+        }
+        return false;
+
     }
 
     /**

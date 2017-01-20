@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -26,7 +25,6 @@ import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.StringUtil;
-import com.cantv.media.center.utils.SystemCateUtil;
 import com.cantv.media.center.utils.ToastUtils;
 import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.FileServer.OnInitlizedListener;
@@ -44,7 +42,7 @@ public class MediaGridView extends CustomGridView {
     public Stack<Integer> mPosStack = new Stack<>();
     public Stack<List<Media>> mMediaStack = new Stack<>();// 记录上一级目录结构
     private String devicePath;
-    private SourceType msSourceType;
+    public SourceType msSourceType;
     private boolean misShowProcess = false;
     private Boolean mFirst = false;
     private Context mContext;
@@ -125,23 +123,23 @@ public class MediaGridView extends CustomGridView {
                 } else {
                     if (item.mType == SourceType.APP) {
                         //添加APP安装设置弹框(OS1.2)
-                        if (SystemCateUtil.isContainsCurrModel()) {
-                            install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
-                            if (null == install_app) {
-                                getApkForbidDialog();
-                            } else if (install_app.equals("1")) {
-                                getDisclaimerDialog(item);
-                            } else if (install_app.equals("0")) {
-                                getSettingDialog();
-                            }
-                        } else {
+//                        if (SystemCateUtil.isContainsCurrModel()) {
+//                            install_app = Settings.System.getString(mActivity.getContentResolver(), "install_app");
+//                            if (null == install_app) {
+//                                getApkForbidDialog();
+//                            } else if (install_app.equals("1")) {
+//                                getDisclaimerDialog(item);
+//                            } else if (install_app.equals("0")) {
+//                                getSettingDialog();
+//                            }
+//                        } else {
                             //添加APP弹框(OS1.1)
                             if (flag) {
                                 getDisclaimerDialog(item);
                             } else {
                                 getApkForbidDialog();
                             }
-                        }
+//                        }
                     } else {
                         mActivity.isStartAc = true;
                         MediaUtils.openMedia(mActivity, item.isSharing ? item.sharePath : item.mUri);
@@ -420,4 +418,31 @@ public class MediaGridView extends CustomGridView {
         });
         apkDialog.show();
     }
+
+    /**
+     * 重置资源类型
+     *
+     * @param sourceType
+     */
+    public void resetSourceType(SourceType sourceType) {
+        msSourceType = sourceType;
+        switch (msSourceType) {
+            case MOIVE:
+                currentType = "暂无视频";
+                break;
+            case PICTURE:
+                currentType = "暂无图片";
+                break;
+            case MUSIC:
+                currentType = "暂无音频";
+                break;
+            case APP:
+                currentType = "暂无应用";
+                break;
+            default:
+                currentType = "暂无数据";
+                break;
+        }
+    }
+
 }

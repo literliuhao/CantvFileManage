@@ -336,7 +336,8 @@ public class ImageFrameView extends FrameLayout {
             @Override
             public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
                 loadResourceReady += 1;
-                loadImageSuccess(callbackW, callbackH);
+                Log.i(TAG, "onResourceReady: " + bitmap.getWidth() + "*" + bitmap.getHeight());
+                loadImageSuccess(callbackW, callbackH, bitmap);
                 return false;
             }
         }).into(mImageView);
@@ -431,7 +432,8 @@ public class ImageFrameView extends FrameLayout {
             @Override
             public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
                 loadResourceReady += 1;
-                loadImageSuccess(sizeArray[0], sizeArray[1]);
+                Log.i(TAG, "onResourceReady: " + bitmap.getWidth() + "*" + bitmap.getHeight());
+                loadImageSuccess(sizeArray[0], sizeArray[1], bitmap);
                 return false;
             }
         }).into(mImageView);
@@ -495,12 +497,21 @@ public class ImageFrameView extends FrameLayout {
      * @param width
      * @param height
      */
-    private void loadImageSuccess(int width, int height) {
+    private void loadImageSuccess(int width, int height, Bitmap bitmap) {
         dismissProgressBar();
         if (null != mLoadingImgListener) {
             mLoadingImgListener.loadSuccess(true);
             mLoadingImgListener.bitmapSize(width, height);
-            mLoadingImgListener.loadResourceReady(loadResourceReady == 2 ? true : false);
+            //修复OS-2080 USB幻灯片播测试图片文件夹内图片,出现自动停止幻灯片播放
+            if (loadResourceReady == 2) {
+                mLoadingImgListener.loadResourceReady(true);
+            } else {
+                if (bitmap.getWidth() >= mActivity.screenWidth - 50 || bitmap.getHeight() >= mActivity.screenHeight - 50) {
+                    mLoadingImgListener.loadResourceReady(true);
+                }else{
+                    mLoadingImgListener.loadResourceReady(false);
+                }
+            }
             if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
                 mLoadingImgListener.isFullScreen(false);
             } else {

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.data.Constant;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.greendao.DaoOpenHelper;
 import com.cantv.media.center.greendao.VideoPlayer;
@@ -38,7 +39,8 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDataList = getIntent().getParcelableArrayListExtra("data_list");
+//        mDataList = getIntent().getParcelableArrayListExtra("data_list");
+        mDataList = Constant.list;
         mDefaultPlayIndex = getIntent().getIntExtra("data_index", 0);
         if (mDataList == null) {
             mDefaultPlayIndex = 0;
@@ -201,7 +203,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     protected void onStop() {
-        Log.w("BasePlayer","onStop");
+        Log.w("BasePlayer", "onStop");
         setVideoStop = true;
         if (getProxyPlayer().isPlaying()) {
             getProxyPlayer().stop();
