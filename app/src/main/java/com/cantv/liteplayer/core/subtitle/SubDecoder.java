@@ -356,14 +356,28 @@ public class SubDecoder extends StDecoder {
 
         while (start_off != next_off) {
             start_off = next_off;
-            if (filepos + start_off > bytesReadAhead.length) {
+            if (filepos + start_off >= bytesReadAhead.length) {
                 continue;
             }
             date = (((bytesReadAhead[filepos + start_off] & 0xff) << 8) | (bytesReadAhead[filepos + start_off + 1] & 0xff)); // *1024;
             next_off = ((bytesReadAhead[filepos + start_off + 2] & 0xff) << 8) | (bytesReadAhead[filepos + start_off + 3] & 0xff);
             off = start_off + 4;
 
-            for (type = bytesReadAhead[filepos + off++] & 0xff; type != 0xff; type = bytesReadAhead[filepos + off++] & 0xff) {
+            //这里这样写是有原因的
+            int i = filepos + off++;
+            int i1 = filepos + off++;
+            if (i >= bytesReadAhead.length) {
+                continue;
+            }
+
+            if (i1 >= bytesReadAhead.length) {
+                continue;
+            }
+
+            for (type = bytesReadAhead[i] & 0xff; type != 0xff; type = bytesReadAhead[i1] & 0xff) {
+                if (filepos + off >= bytesReadAhead.length) {
+                    continue;
+                }
                 switch (type) {
                     case 0x0:
                         vobsub_ds.sub_disp = true;
@@ -377,6 +391,9 @@ public class SubDecoder extends StDecoder {
                         // subtitle
                         break;
                     case 0x03:
+                        if (filepos + off + 1 >= bytesReadAhead.length) {
+                            continue;
+                        }
                         vobsub_ds.sub_color_map[3] = ((bytesReadAhead[filepos + off] & 0xff) >> 4) & 0x0f;
                         vobsub_ds.sub_color_map[2] = (bytesReadAhead[filepos + off] & 0xff) & 0x0f;
                         vobsub_ds.sub_color_map[1] = ((bytesReadAhead[filepos + off + 1] & 0xff) >> 4) & 0x0f;
@@ -384,6 +401,9 @@ public class SubDecoder extends StDecoder {
                         off += 0x02;
                         break;
                     case 0x04:
+                        if (filepos + off + 1 >= bytesReadAhead.length) {
+                            continue;
+                        }
                         vobsub_ds.sub_alpha_bit[3] = ((bytesReadAhead[filepos + off] & 0xff) >> 4) & 0x0f;
                         vobsub_ds.sub_alpha_bit[2] = (bytesReadAhead[filepos + off] & 0xff) & 0x0f;
                         vobsub_ds.sub_alpha_bit[1] = ((bytesReadAhead[filepos + off + 1] & 0xff) >> 4) & 0x0f;
@@ -392,6 +412,9 @@ public class SubDecoder extends StDecoder {
                         break;
                     case 0x05:
                     case 0x85:
+                        if (filepos + off + 5 >= bytesReadAhead.length) {
+                            continue;
+                        }
 
                         a = ((bytesReadAhead[filepos + off] & 0xff) << 16) | ((bytesReadAhead[filepos + off + 1] & 0xff) << 8)
                                 | ((bytesReadAhead[filepos + off + 2] & 0xff));
@@ -407,6 +430,9 @@ public class SubDecoder extends StDecoder {
                         off += 0x06;
                         break;
                     case 0x06:
+                        if (filepos + off + 3 >= bytesReadAhead.length) {
+                            continue;
+                        }
                         vobsub_ds.f_offset[0] = ((bytesReadAhead[filepos + off] & 0xff) << 8) | (bytesReadAhead[filepos + off + 1]);
                         vobsub_ds.f_offset[1] = ((bytesReadAhead[filepos + off + 2] & 0xff) << 8) | ((bytesReadAhead[filepos + off + 3] & 0xff));
                         vobsub_ds.f_offset[0] = (vobsub_ds.f_offset[0]) << 1;
@@ -430,6 +456,10 @@ public class SubDecoder extends StDecoder {
         int pos = nibblep >> 1;
 
         if (pos >= vobsub_ds.control_start) {
+            return 0;
+        }
+
+        if (filepos + pos >= bytesReadAhead.length) {
             return 0;
         }
 

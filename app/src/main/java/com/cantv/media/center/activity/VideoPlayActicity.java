@@ -42,6 +42,7 @@ import com.cantv.media.center.ui.player.ExternalSurfaceView;
 import com.cantv.media.center.ui.player.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.player.PlayerController;
 import com.cantv.media.center.ui.player.SrcParser;
+import com.cantv.media.center.ui.player.SubParser;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 
@@ -77,6 +78,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private String mLastStr;   //当前外置字幕的后缀
     private String subName = "";
     private ImageView mSubtitle_bt;
+    private SubParser mSubParser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,6 +264,22 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     }
 
+    public void parseSub(final String srtUrl) {
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+        Log.w("url ", srtUrl);
+        mSubParser = new SubParser();
+        mSubParser.onlySubFromPath(srtUrl);
+//        if (null != mCtrBar) {
+//            mCtrBar.subSendMsg();
+//        }
+//            }
+//        }).start();
+
+    }
+
     public boolean isSrtExist() {
         return isSrtExist;
     }
@@ -302,7 +320,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     //字幕修改
     public void setSrts(int time) {
-
+        Log.w("setSrts", "----setSrts");
         if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().contains("srt")) {
             return;
         }
@@ -311,6 +329,20 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         final String srtByTime = parser.getSrtByTime(time);
         mSubTitle.setText(srtByTime);
     }
+
+    //字幕修改
+    public void setSub(int time) {
+        Log.w("setSub", "----sub");
+        if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().endsWith("sub") || null == mSubParser) {
+            return;
+        }
+
+        time += mMoveTime;
+        final String srtByTime = mSubParser.getSrtByTime(time);
+        Log.w("currTime--content", time + "--" + srtByTime);
+        mSubTitle.setText(srtByTime);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -888,8 +920,18 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             if (mOpenExternalSubtitle) {
                 mOpenInSubtitle = false;
                 mLastStr = getExternalSubList().get(index - 1);
-                if (!mLastStr.contains("srt")) {
-                    getProxyPlayer().setSubPath(mLastStr);
+                if (!mLastStr.endsWith("srt")) {
+                    if (mLastStr.endsWith(".sub")) {
+                        String idxPath = mLastStr.substring(0, mLastStr.lastIndexOf(".")) + ".idx";
+                        File file1 = new File(idxPath);
+                        if (file1.exists() && file1.canRead()) {
+                            getProxyPlayer().setSubPath(mLastStr);
+                        } else {
+                            parseSub(mLastStr);
+                        }
+                    } else {
+                        getProxyPlayer().setSubPath(mLastStr);
+                    }
                 }
             }
         }
@@ -914,14 +956,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
             if (file.exists() && file.canRead()) {
-                if (pathList.get(i).endsWith(".sub")) { //sub需要和idx一起使用
-                    File file1 = new File(stPath + ".idx");
-                    if (file1.exists() && file1.canRead()) {
-                        savePathList.add(pathList.get(i));
-                    }
-                } else {
-                    savePathList.add(pathList.get(i));
-                }
+//                if (pathList.get(i).endsWith(".sub")) { //sub需要和idx一起使用
+//                    File file1 = new File(stPath + ".idx");
+//                    if (file1.exists() && file1.canRead()) {
+//                        savePathList.add(pathList.get(i));
+//                    }
+//                } else {
+                savePathList.add(pathList.get(i));
+//                }
             }
         }
         return savePathList;

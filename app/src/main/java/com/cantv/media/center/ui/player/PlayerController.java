@@ -116,6 +116,8 @@ public class PlayerController extends RelativeLayout {
                     break;
                 case CHANG_SRT:
                     ((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
+                    ((VideoPlayActicity) mContext).setSub(mCtrlBarContext.getPlayerCurPosition());
+
                     handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
                     break;
 
@@ -526,6 +528,13 @@ public class PlayerController extends RelativeLayout {
         formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         String continueTime = formatter.format(timeInMillis);
         return continueTime;
+    }
+
+    /**
+     * 发送消息,开始执行sub字幕(不含idx)相关的内容
+     */
+    public void subSendMsg(){
+        handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
     }
 
 }

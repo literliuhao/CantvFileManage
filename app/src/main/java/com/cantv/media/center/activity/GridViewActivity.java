@@ -524,6 +524,11 @@ public class GridViewActivity extends Activity {
                             if (FileUtil.deleteFile(f)) {
                                 datas.remove(mDeleteItem);
                                 mGridView.mListAdapter.bindData(datas);
+                                //刷新界面
+                                if (!(datas.size() > 0)) {
+                                    mGridView.showNoDataPage();
+                                    mRTCountView.setText("");
+                                }
                             } else {
                                 Toast.makeText(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG).show();
                             }
@@ -568,7 +573,7 @@ public class GridViewActivity extends Activity {
     public void onResetType(YSourceType sourceType) {
         mTitleTV.setText(getResources().getString(sourceType.mTypeName));
         mGridView.resetSourceType(sourceType.mType);
-        isExternal=true;
+        isExternal = true;
     }
 
 }
