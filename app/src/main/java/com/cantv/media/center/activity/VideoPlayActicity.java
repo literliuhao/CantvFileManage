@@ -144,7 +144,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //开启内置字幕
         mOpenInSubtitle = true;
         if (isFirst) {
-            mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
+            mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_16_9);
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
         }
     }
