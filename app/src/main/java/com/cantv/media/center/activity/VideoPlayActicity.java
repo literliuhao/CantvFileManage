@@ -688,14 +688,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         // 画面比例
         MenuItem imageScaleMenuItem = new MenuItem("画面比例", MenuItem.TYPE_SELECTOR);
-        MenuItem imageScaleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL, MenuItem.TYPE_SELECTOR);
-        imageScaleMenuItem.setSelectedChild(imageScaleSubMenuOriginal);
-        imageScaleSubMenuOriginal.setSelected(true);
-        List<MenuItem> imageScaleMenuItems = new ArrayList<MenuItem>();
-        imageScaleMenuItems.add(imageScaleSubMenuOriginal);
+        List<MenuItem> imageScaleMenuItems = new ArrayList<>();
+        imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_FULL, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_4_3, MenuItem.TYPE_SELECTOR));
-        imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_16_9, MenuItem.TYPE_SELECTOR));
+        //修复OS-3901播放本地视频时，画面比例默认为16:9，目前默认为原始比例
+        MenuItem imageScaleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_16_9, MenuItem.TYPE_SELECTOR);
+        imageScaleMenuItem.setSelectedChild(imageScaleSubMenuOriginal);
+        imageScaleSubMenuOriginal.setSelected(true);
+        imageScaleMenuItems.add(imageScaleSubMenuOriginal);
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_21_9, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItem.setChildren(imageScaleMenuItems);
         menuList.add(imageScaleMenuItem);
