@@ -191,6 +191,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         if (isSrtExist) {
             parseSrts(srtUrl);
+//            发个广告广告
         }
 
         if (mMenuDialog != null) {
@@ -234,6 +235,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         }
     }
+
+
 
     public String checkSrt() {
         String url = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
@@ -928,6 +931,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                         if (file1.exists() && file1.canRead()) {
                             getProxyPlayer().setSubPath(mLastStr);
                         } else {
+                            Log.w("设置sub字幕", "");
                             parseSub(mLastStr);
                         }
                     } else {

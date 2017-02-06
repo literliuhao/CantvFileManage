@@ -48,6 +48,14 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (null != mPlayer) {
+            mPlayer.setOnCompletionListener(this);
+        }
+    }
+
     protected ProxyPlayer getProxyPlayer() {
         if (mPlayer == null) {
             mPlayer = new ProxyPlayer();
