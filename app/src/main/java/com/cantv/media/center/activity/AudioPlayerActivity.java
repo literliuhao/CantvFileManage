@@ -366,6 +366,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
                 break;
 
+            //暂停/开始
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                mPlayPauseBtn.callOnClick();
+                break;
 
         }
 
