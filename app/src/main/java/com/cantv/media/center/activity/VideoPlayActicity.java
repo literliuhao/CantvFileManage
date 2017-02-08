@@ -129,6 +129,25 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
+
+        //暂停的时候切换画面比例
+        mSurfaceView.setChangeScreenListener(new ExternalSurfaceView.ChangeScreenListener() {
+            @Override
+            public void changeBefore() {
+                if (isPlayerPaused()) {
+                    Log.w("changeBefore","");
+//                    getProxyPlayer().start();
+                }
+            }
+
+            @Override
+            public void changeAfter() {
+                if (!isPlayerPaused()) {
+                    Log.w("changeAfter","");
+//                    getProxyPlayer().pause();
+                }
+            }
+        });
     }
 
     @Override
@@ -235,7 +254,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         }
     }
-
 
 
     public String checkSrt() {

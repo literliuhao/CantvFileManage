@@ -1,6 +1,7 @@
 package com.cantv.media.center.ui.player;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
 
@@ -50,9 +51,35 @@ public class ExternalSurfaceView extends SurfaceView {
             getHolder().setFixedSize(width, newheight);
             super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(newheight, MeasureSpec.EXACTLY));
         }
+
+        if (null != mChangeScreenListener) {
+
+            mChangeScreenListener.changeBefore();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mChangeScreenListener.changeAfter();
+                }
+            }, 500);
+        }
+
     }
 
     public enum ShowType {
         WIDTH_HEIGHT_ORIGINAL, WIDTH_HEIGHT_4_3, WIDTH_HEIGHT_16_9, WIDTH_HEIGHT_21_9, WIDTH_HEIGHT_FULL_SCREEN,
     }
+
+    public interface ChangeScreenListener {
+        void changeBefore();
+
+        void changeAfter();
+    }
+
+    public ChangeScreenListener mChangeScreenListener;
+
+    public void setChangeScreenListener(ChangeScreenListener changeScreenListener) {
+        this.mChangeScreenListener = changeScreenListener;
+    }
+
+
 }
