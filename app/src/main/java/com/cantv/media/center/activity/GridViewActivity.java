@@ -31,6 +31,7 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -522,10 +523,17 @@ public class GridViewActivity extends Activity {
                         @Override
                         public void run() {
                             if (FileUtil.deleteFile(f)) {
+                                int tempCount;
                                 datas.remove(mDeleteItem);
+                                if (datas.size() <= 0) {
+                                    mGridView.setTextRTview("", "");
+                                } else {
+                                    tempCount = 1;
+                                    mGridView.setTextRTview(mGridView.mSelectItemPosition + tempCount + " / ", datas.size() + "");
+                                }
                                 mGridView.mListAdapter.bindData(datas);
                             } else {
-                                Toast.makeText(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG).show();
+                                ToastUtils.showMessage(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG);
                             }
                         }
                     });
@@ -563,12 +571,11 @@ public class GridViewActivity extends Activity {
         }
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResetType(YSourceType sourceType) {
         mTitleTV.setText(getResources().getString(sourceType.mTypeName));
         mGridView.resetSourceType(sourceType.mType);
-        isExternal=true;
+        isExternal = true;
     }
 
 }
