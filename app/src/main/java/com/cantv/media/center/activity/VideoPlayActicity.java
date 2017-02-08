@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StContent;
@@ -45,6 +44,7 @@ import com.cantv.media.center.ui.player.SrcParser;
 import com.cantv.media.center.ui.player.SubParser;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -204,8 +204,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             final int positon = list.get(0).getPosition();
             if (positon > 1000) {
                 if (positon < getPlayerDuration()) {
-                    //当当前时长小于视频总时长时
-                    mCtrBar.showContinuePaly(positon);
+                    //当前时长小于视频总时长时
+                    mCtrBar.showContinuePlay(positon);
                 } else {
                     //当发生当前时长超过视频总时长时(名称替换可能会造成这种结果,或者其他未知意外情况)
                     mCtrBar.seekToDuration(0);
@@ -582,11 +582,11 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         switch (mSubSelectedMenu.getTitle()) {
             case MenuConstant.SUBMENU_ADJUSTSUBTITLE_FORWORD:
                 mMoveTime += 200;
-                Toast.makeText(this, "提前0.2秒", Toast.LENGTH_SHORT).show();
+                ToastUtils.showMessage(MyApplication.getContext(), "提前0.2秒");
                 break;
             case MenuConstant.SUBMENU_ADJUSTSUBTITLE_BACKWORD:
                 mMoveTime -= 200;
-                Toast.makeText(this, "延迟0.2秒", Toast.LENGTH_SHORT).show();
+                ToastUtils.showMessage(MyApplication.getContext(), "延迟0.2秒");
                 break;
 
         }

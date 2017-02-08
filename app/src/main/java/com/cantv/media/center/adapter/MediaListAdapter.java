@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MediaListAdapter extends BaseAdapter {
-    private List<Media> mMediaList = new ArrayList<Media>();
+    private List<Media> mMediaList = new ArrayList<>();
     private MediaOrientation mStyle = MediaOrientation.THUMBNAIL;
     private List<String> mUsbRootPaths;
 

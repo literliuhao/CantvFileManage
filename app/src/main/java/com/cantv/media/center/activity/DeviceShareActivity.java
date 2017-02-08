@@ -307,21 +307,13 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             mAddDeviceDialog = new DeviceAddDialog(this);
         }
         mAddDeviceDialog.setOnShowListener(new OnShowListener() {
-
             @Override
             public void onShow(DialogInterface dialog) {
-                ((DeviceAddDialog) dialog).reset();
-                // Bitmap decodeResource =
-                // BitmapFactory.decodeResource(getResources(),
-                // R.drawable.folder_photo);
                 if (null == mBlurDrawable) {
                     mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
                 }
-                ((DeviceAddDialog) dialog)
-                        // .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.bg));
-                        // .updateBackground(BitmapUtils.blurBitmap(decodeResource,
-                        // DeviceShareActivity.this));
-                        .updateBackground(mBlurDrawable);
+                ((DeviceAddDialog) dialog).updateBackground(mBlurDrawable);
+                ((DeviceAddDialog) dialog).reset();
             }
         });
         mAddDeviceDialog.setOnIpConfirmedListener(new OnIpConfirmedListener() {
@@ -446,19 +438,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
             @Override
             public void onShow(DialogInterface dialog) {
-                ((DeviceLoginDialog) dialog).reset();
-                // Bitmap decodeResource =
-                // BitmapFactory.decodeResource(getResources(),
-                // R.drawable.folder_photo);
                 if (null == mBlurDrawable) {
                     mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
                 }
-                ((DeviceLoginDialog) dialog)
-                        // .updateBackground(BitmapUtils.blurBitmap(getScreenShot(),
-                        // DeviceShareActivity.this));
-//					 .updateBackground(MyApplication.mContext.getResources().getDrawable(R.drawable.home_devices_background));
-                        .updateBackground(mBlurDrawable);
-                // .updateBackgroundColor(MyApplication.mContext.getResources().getColor(R.color.per50_white));
+                ((DeviceLoginDialog) dialog).updateBackground(mBlurDrawable);
+                ((DeviceLoginDialog) dialog).reset();
             }
         });
         mLoginDeviceDialog.setOnLoginListener(new OnLoginListener() {
@@ -478,7 +462,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mLoginDeviceDialog.show();
     }
 
-
     /**
      * 不用输入用户名密码,直接登录
      */
@@ -489,7 +472,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         deviceInfo.setFileItem(new FileItem(ipVal, "smb://" + ipVal + "/", false));
         loginDevice(deviceInfo);
     }
-
 
     public void hideLoginDeviceDialog() {
         if (mLoginDeviceDialog != null) {
@@ -555,12 +537,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     }
 
     // --> loginDevice
-
     private void showLoadingDialog() {
         if (mLoadingDialog == null) {
             mLoadingDialog = new LoadingDialog(this);
             mLoadingDialog.setOnCancelListener(new OnCancelListener() {
-
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     if (mScanSambaTask != null) {
@@ -599,12 +579,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
      */
     private void checkIPAccess(final List<String> ips, final boolean isFirst) {
         startCheckIpAccess(ips, new OnNetCheckCallback() {
-
             @Override
             public void onStartCheck() {
                 showLoadingDialog();
             }
-
             @Override
             public void onGetResult(List<String> resultIPs) {
                 if (resultIPs.size() > 0) {
@@ -633,9 +611,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         if (shareGuide == 0) {
             if (mCommonDialog == null) {
                 mCommonDialog = new CommonDialog(this);
-                mCommonDialog.setTitle(getString(R.string.device_share_title))
-                        .setContent(getString(R.string.device_share_content), 0)
-                        .setButtonContent(getString(R.string.device_share_ok), getString(R.string.device_share_cancel));
+                mCommonDialog.setTitle(getString(R.string.device_share_title)).setContent(getString(R.string.device_share_content), 0).setButtonContent(getString(R.string.device_share_ok), getString(R.string.device_share_cancel));
                 mCommonDialog.setOnClickableListener(new CommonDialog.OnClickableListener() {
                     @Override
                     public void onConfirmClickable() {
@@ -654,7 +630,12 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             mCommonDialog.show();
         } else {
             mScrollView.setVisibility(View.VISIBLE);
-            mAddDeviceView.setFocusable(false);
+            String linkHostList = SharedPreferenceUtil.getLinkHostList();
+            if (TextUtils.isEmpty(linkHostList) ) {
+                mAddDeviceView.setFocusable(true);
+            }else{
+                mAddDeviceView.setFocusable(false);
+            }
         }
     }
 }

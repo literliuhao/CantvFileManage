@@ -60,8 +60,8 @@ public class ToastUtils {
 			mToast.cancel();
 		}
 		//适配分辨率
-		final int left = (int) act.getResources().getDimension(R.dimen.px50);
-		final int up = (int) act.getResources().getDimension(R.dimen.px50);
+		final int LR = (int) act.getResources().getDimension(R.dimen.px50);
+		final int UD = (int) act.getResources().getDimension(R.dimen.px20);
 		final int fontSize = (int) act.getResources().getDimension(R.dimen.px30);
 
 		new Thread(new Runnable() {
@@ -78,7 +78,7 @@ public class ToastUtils {
 								mTextView = new TextView(act);
 								mTextView.setBackgroundResource(R.drawable.shape_toast);
 								mTextView.setTextColor(Color.WHITE);
-								mTextView.setPadding(left, up, left, up);
+								mTextView.setPadding(LR, UD, LR, UD);
 								mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
 							}
 							mTextView.setText(msg);
