@@ -15,7 +15,6 @@ import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.YSourceType;
 import com.cantv.media.center.receiver.MediaBroadcastReceiver;
 import com.cantv.media.center.utils.MediaUtils;
-import com.cantv.media.center.utils.SystemCateUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -82,9 +81,9 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
     @Override
     public void onClick(View v) {
         try {
-            if (!SystemCateUtil.getServerData().equals("1")) {
-                startSetting();
-            } else {
+//            if (!SystemCateUtil.getServerData().equals("1")) {
+//                startSetting();
+//            } else {
                 switch (v.getId()) {
                     case R.id.dialog_image:
                         startGridView("image", R.string.str_photo);
@@ -99,7 +98,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
                         startGridView("device1", R.string.str_external);
                         break;
                 }
-            }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
