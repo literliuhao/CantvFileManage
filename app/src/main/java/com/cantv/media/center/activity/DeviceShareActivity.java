@@ -654,7 +654,12 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             mCommonDialog.show();
         } else {
             mScrollView.setVisibility(View.VISIBLE);
-            mAddDeviceView.setFocusable(false);
+            String linkHostList = SharedPreferenceUtil.getLinkHostList();
+            if (TextUtils.isEmpty(linkHostList) ) {
+                mAddDeviceView.setFocusable(true);
+            }else{
+                mAddDeviceView.setFocusable(false);
+            }
         }
     }
 }
