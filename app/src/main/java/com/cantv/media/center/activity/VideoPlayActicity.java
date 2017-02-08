@@ -41,6 +41,7 @@ import com.cantv.media.center.ui.player.ExternalSurfaceView;
 import com.cantv.media.center.ui.player.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.player.PlayerController;
 import com.cantv.media.center.ui.player.SrcParser;
+import com.cantv.media.center.ui.player.SubParser;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.ToastUtils;
@@ -77,6 +78,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private String mLastStr;   //当前外置字幕的后缀
     private String subName = "";
     private ImageView mSubtitle_bt;
+    private SubParser mSubParser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,25 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
+
+        //暂停的时候切换画面比例
+        mSurfaceView.setChangeScreenListener(new ExternalSurfaceView.ChangeScreenListener() {
+            @Override
+            public void changeBefore() {
+                if (isPlayerPaused()) {
+                    Log.w("changeBefore","");
+//                    getProxyPlayer().start();
+                }
+            }
+
+            @Override
+            public void changeAfter() {
+                if (!isPlayerPaused()) {
+                    Log.w("changeAfter","");
+//                    getProxyPlayer().pause();
+                }
+            }
+        });
     }
 
     @Override
@@ -142,7 +163,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //开启内置字幕
         mOpenInSubtitle = true;
         if (isFirst) {
-            mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_ORIGINAL);
+            mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_16_9);
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
         }
     }
@@ -189,6 +210,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         if (isSrtExist) {
             parseSrts(srtUrl);
+//            发个广告广告
         }
 
         if (mMenuDialog != null) {
@@ -233,6 +255,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         }
     }
 
+
     public String checkSrt() {
         String url = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
         final String srt = url.substring(0, url.lastIndexOf(".")) + ".srt";
@@ -259,6 +282,22 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 parser.parseFromPath(srtUrl);
             }
         }).start();
+
+    }
+
+    public void parseSub(final String srtUrl) {
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+        Log.w("url ", srtUrl);
+        mSubParser = new SubParser();
+        mSubParser.onlySubFromPath(srtUrl);
+//        if (null != mCtrBar) {
+//            mCtrBar.subSendMsg();
+//        }
+//            }
+//        }).start();
 
     }
 
@@ -302,7 +341,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     //字幕修改
     public void setSrts(int time) {
-
+        Log.w("setSrts", "----setSrts");
         if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().contains("srt")) {
             return;
         }
@@ -311,6 +350,20 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         final String srtByTime = parser.getSrtByTime(time);
         mSubTitle.setText(srtByTime);
     }
+
+    //字幕修改
+    public void setSub(int time) {
+        Log.w("setSub", "----sub");
+        if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().endsWith("sub") || null == mSubParser) {
+            return;
+        }
+
+        time += mMoveTime;
+        final String srtByTime = mSubParser.getSrtByTime(time);
+        Log.w("currTime--content", time + "--" + srtByTime);
+        mSubTitle.setText(srtByTime);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -656,14 +709,15 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         // 画面比例
         MenuItem imageScaleMenuItem = new MenuItem("画面比例", MenuItem.TYPE_SELECTOR);
-        MenuItem imageScaleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL, MenuItem.TYPE_SELECTOR);
-        imageScaleMenuItem.setSelectedChild(imageScaleSubMenuOriginal);
-        imageScaleSubMenuOriginal.setSelected(true);
-        List<MenuItem> imageScaleMenuItems = new ArrayList<MenuItem>();
-        imageScaleMenuItems.add(imageScaleSubMenuOriginal);
+        List<MenuItem> imageScaleMenuItems = new ArrayList<>();
+        imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_ORIGINAL, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_FULL, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_4_3, MenuItem.TYPE_SELECTOR));
-        imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_16_9, MenuItem.TYPE_SELECTOR));
+        //修复OS-3901播放本地视频时，画面比例默认为16:9，目前默认为原始比例
+        MenuItem imageScaleSubMenuOriginal = new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_16_9, MenuItem.TYPE_SELECTOR);
+        imageScaleMenuItem.setSelectedChild(imageScaleSubMenuOriginal);
+        imageScaleSubMenuOriginal.setSelected(true);
+        imageScaleMenuItems.add(imageScaleSubMenuOriginal);
         imageScaleMenuItems.add(new MenuItem(MenuConstant.SUBMENU_IMAGESCALE_21_9, MenuItem.TYPE_SELECTOR));
         imageScaleMenuItem.setChildren(imageScaleMenuItems);
         menuList.add(imageScaleMenuItem);
@@ -888,8 +942,19 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             if (mOpenExternalSubtitle) {
                 mOpenInSubtitle = false;
                 mLastStr = getExternalSubList().get(index - 1);
-                if (!mLastStr.contains("srt")) {
-                    getProxyPlayer().setSubPath(mLastStr);
+                if (!mLastStr.endsWith("srt")) {
+                    if (mLastStr.endsWith(".sub")) {
+                        String idxPath = mLastStr.substring(0, mLastStr.lastIndexOf(".")) + ".idx";
+                        File file1 = new File(idxPath);
+                        if (file1.exists() && file1.canRead()) {
+                            getProxyPlayer().setSubPath(mLastStr);
+                        } else {
+                            Log.w("设置sub字幕", "");
+                            parseSub(mLastStr);
+                        }
+                    } else {
+                        getProxyPlayer().setSubPath(mLastStr);
+                    }
                 }
             }
         }
@@ -914,14 +979,14 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         for (int i = 0; i < pathList.size(); i++) {
             File file = new File(pathList.get(i));
             if (file.exists() && file.canRead()) {
-                if (pathList.get(i).endsWith(".sub")) { //sub需要和idx一起使用
-                    File file1 = new File(stPath + ".idx");
-                    if (file1.exists() && file1.canRead()) {
-                        savePathList.add(pathList.get(i));
-                    }
-                } else {
-                    savePathList.add(pathList.get(i));
-                }
+//                if (pathList.get(i).endsWith(".sub")) { //sub需要和idx一起使用
+//                    File file1 = new File(stPath + ".idx");
+//                    if (file1.exists() && file1.canRead()) {
+//                        savePathList.add(pathList.get(i));
+//                    }
+//                } else {
+                savePathList.add(pathList.get(i));
+//                }
             }
         }
         return savePathList;

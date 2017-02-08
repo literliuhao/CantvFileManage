@@ -80,6 +80,13 @@ public class GridViewActivity extends Activity {
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);
         mCurrGridStyle = SharedPreferenceUtil.getGridStyle();
         mRTCountView = (TextView) findViewById(R.id.file_count);
+        initData();
+    }
+
+    /**
+     * 获取数据
+     */
+    private void initData() {
         getType();
         if (mGridView == null) {
             return;
@@ -101,6 +108,14 @@ public class GridViewActivity extends Activity {
     protected void onResume() {
         super.onResume();
         isStartAc = false;
+    }
+
+    //修復OS-3825从发现设备弹窗入口和媒体中心入口进入外接设备浏览本地文件过程中按设置键，再按返回键退出设置后，文件管理器直接退出到入口界面
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        initData();
     }
 
     /**
@@ -532,6 +547,11 @@ public class GridViewActivity extends Activity {
                                     mGridView.setTextRTview(mGridView.mSelectItemPosition + tempCount + " / ", datas.size() + "");
                                 }
                                 mGridView.mListAdapter.bindData(datas);
+                                //刷新界面
+                                if (!(datas.size() > 0)) {
+                                    mGridView.showNoDataPage();
+                                    mRTCountView.setText("");
+                                }
                             } else {
                                 ToastUtils.showMessage(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG);
                             }
@@ -552,9 +572,9 @@ public class GridViewActivity extends Activity {
     protected void onStop() {
         super.onStop();
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
-        if (!isStartAc && !(MyApplication.mHomeActivityList.size() > 0)) {
+        /*if (!isStartAc && !(MyApplication.mHomeActivityList.size() > 0)) {
             finish();
-        }
+        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

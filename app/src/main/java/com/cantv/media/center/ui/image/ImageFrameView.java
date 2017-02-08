@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -119,6 +120,8 @@ public class ImageFrameView extends FrameLayout {
         Log.i("playImage", imageUri);
         //计算本地图片的实际宽高
         if (!isSharing) {
+            //修复OS-3831偶现在本地文件中用图片播放幻灯片，在播放中拔出U盘，提示文件管理器已停止运行
+            getImageFile(imageUri);
             getLocalImageSize(imageUri);
             convertW = callbackW;
             convertH = callbackH;
@@ -158,6 +161,24 @@ public class ImageFrameView extends FrameLayout {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             loadNetImage(imageUri);
         }
+    }
+
+    /**
+     * 通过路径判断图片文件是否存在
+     *
+     * @param imageUri
+     */
+    private void getImageFile(final String imageUri) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                File imageFile = new File(imageUri);
+                if (!imageFile.exists()) {
+                    mActivity.finish();
+                    return;
+                }
+            }
+        }, 0);
     }
 
     /**
@@ -508,7 +529,7 @@ public class ImageFrameView extends FrameLayout {
             } else {
                 if (bitmap.getWidth() >= mActivity.screenWidth - 50 || bitmap.getHeight() >= mActivity.screenHeight - 50) {
                     mLoadingImgListener.loadResourceReady(true);
-                }else{
+                } else {
                     mLoadingImgListener.loadResourceReady(false);
                 }
             }

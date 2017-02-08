@@ -1,6 +1,7 @@
 package com.cantv.liteplayer.core.subtitle;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Matrix;
 
 import java.io.BufferedReader;
@@ -13,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static android.graphics.Bitmap.Config.ARGB_8888;
 
 public class SubDecoder extends StDecoder {
 
@@ -189,7 +188,6 @@ public class SubDecoder extends StDecoder {
         boolean isFirstLine = false;
         int lastY = 0;
 
-        //可能存在数组越界异常
         if (vobsub_getcom(bytesReadAhead, fileoffset) == -1) {
             ;
         }
@@ -275,14 +273,7 @@ public class SubDecoder extends StDecoder {
 
         vobsub_ds.sub_ysize = y;
 
-        if (vobsub_ds.sub_xsize <= 0) {
-            return;
-        }
-        if (vobsub_ds.sub_ysize <= 0) {
-            return;
-        }
-
-        mVobBitmap = Bitmap.createBitmap(colors, 0, vobsub_ds.sub_xsize, vobsub_ds.sub_xsize, vobsub_ds.sub_ysize, ARGB_8888);
+        mVobBitmap = Bitmap.createBitmap(colors, 0, vobsub_ds.sub_xsize, vobsub_ds.sub_xsize, vobsub_ds.sub_ysize, Config.ARGB_8888);
     }
 
     private int[] guess_palette() {
@@ -356,7 +347,7 @@ public class SubDecoder extends StDecoder {
 
         while (start_off != next_off) {
             start_off = next_off;
-            if (filepos + start_off > bytesReadAhead.length) {
+            if (filepos + start_off + 1 >= bytesReadAhead.length) {
                 continue;
             }
             date = (((bytesReadAhead[filepos + start_off] & 0xff) << 8) | (bytesReadAhead[filepos + start_off + 1] & 0xff)); // *1024;
@@ -622,27 +613,15 @@ public class SubDecoder extends StDecoder {
         long time = System.currentTimeMillis();
         SubLoadMutiLine_VOBSUB(subtitleContent.getmFilepos(), subtitlePath);
         subtitleContent.setSubtitleEndTime(subtitleContent.getSubtitleStartTime() + VobSubEndTime);
-        if (null == mVobBitmap) {
-            return;
-        }
         int frameWidth = vobsub_ds.frame_width;
         if (frameWidth > 0) {
             float scale = (screenWidth + frameWidth) * 1.5f / (2 * frameWidth);
             mVobBitmap = bitmapScale(mVobBitmap, scale);
-
         }
-        Bitmap copyBt = mVobBitmap.copy(ARGB_8888, false);
-        subtitleContent.setSubtitleBmp(copyBt);
-        if (null != mVobBitmap) {
-            mVobBitmap.recycle();
-            mVobBitmap = null;
-        }
+        subtitleContent.setSubtitleBmp(mVobBitmap);
     }
 
     private static Bitmap bitmapScale(Bitmap bitmap, float scale) {
-        if (null == bitmap) {
-            return null;
-        }
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale); // 长和宽放大缩小的比例
         Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);

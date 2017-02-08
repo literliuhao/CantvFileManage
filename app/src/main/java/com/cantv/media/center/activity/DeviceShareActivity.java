@@ -156,14 +156,17 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     }
 
     private void initUI() {
+        //修复OS-3929偶现文件管理器共享内添加设备后出现焦点变形（出现一次）
+        mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus_full_content);
+        mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
         mNetNameTv = (TextView) findViewById(R.id.tv_net_name);
         mNetIpTv = (TextView) findViewById(R.id.tv_net_ip);
         mScrollView = (HorizontalScrollView) findViewById(R.id.hsv_device_list);
         mDeviceItemGroup = (LinearLayout) findViewById(R.id.ll_device_list);
-        getShareGuideDialog();
         mAddDeviceView = (DeviceShareItemView) mDeviceItemGroup.getChildAt(0);
         mAddDeviceView.setBackgroundResource(getRandomBgRes());
         mAddDeviceView.setOnFocusChangeListener(this);
+        getShareGuideDialog();
         mAddDeviceView.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -171,8 +174,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 showAddDeviceDialog();
             }
         });
-        mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.focus_full_content);
-        mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
     }
 
     private void initData() {
@@ -266,11 +267,13 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mDeviceItemGroup.postDelayed(new Runnable() {
             @Override
             public void run() {
+                //修复OS-3929偶现文件管理器共享内添加设备后出现焦点变形（出现一次）
+                mAddDeviceView.setFocusable(true);
                 mAddDeviceView.requestFocus();
                 onFocusChange(mAddDeviceView, true);
                 mFocusUtils.hideFocusForStartMove(400);
             }
-        }, 700);
+        }, 1000);
 
 
     }
@@ -627,6 +630,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             mCommonDialog.show();
         } else {
             mScrollView.setVisibility(View.VISIBLE);
+            mAddDeviceView.setFocusable(false);
         }
     }
 }

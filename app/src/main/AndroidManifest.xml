@@ -44,7 +44,8 @@
         </activity>
         <activity android:name="com.cantv.media.center.activity.ListViewActivity"/>
         <activity
-            android:name="com.cantv.media.center.activity.GridViewActivity">
+            android:name="com.cantv.media.center.activity.GridViewActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.cantv.action.LOCAL_PLAYER"/>
 
@@ -77,7 +78,8 @@
         </activity>
         <activity
             android:name="com.cantv.media.center.activity.ImagePlayerActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.TranslucentDecor">
             <intent-filter>
                 <action android:name="com.cantv.action.LOCAL_PLAYER"/>
 

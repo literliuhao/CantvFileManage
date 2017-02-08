@@ -85,7 +85,8 @@ public class BitmapUtils {
     private static Bitmap compressImage(Bitmap image) {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        //修复OS-3882文件共享非必现点击登录共享设备时出现一次文件管理停止运行的情况
+        image.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         int options = 100;
         while (baos.toByteArray().length / 1024 > 100) {
             baos.reset();

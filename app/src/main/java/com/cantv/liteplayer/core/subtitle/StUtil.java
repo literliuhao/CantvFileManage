@@ -1,5 +1,7 @@
 package com.cantv.liteplayer.core.subtitle;
 
+import android.text.TextUtils;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,9 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import android.text.TextUtils;
-import android.util.Log;
 
 /*".srt", ".smi", ".ass", ".ssa", ".sub"*/
 public class StUtil {
@@ -182,6 +181,13 @@ public class StUtil {
 		return null;
 	}
 
+	/**
+	 * 解析成图片
+	 * @param subtitlePath
+	 * @param content
+	 * @param decoderResult
+	 * @param screenWidth
+     */
 	public static void decodePictureSubtitle(String subtitlePath, StContent content, StDecodeResult decoderResult, int screenWidth) {
 		if (decoderResult.isSuccess && decoderResult.isPictureSub) {
 			SubDecoder subdecoder = (SubDecoder) decoderResult.subtitleDecoder;// Idx+Sub

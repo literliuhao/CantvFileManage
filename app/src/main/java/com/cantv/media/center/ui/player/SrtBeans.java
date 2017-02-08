@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class SrtBeans implements Comparable<Long> {
 
     private int lineIndex;
+    public String mContent; //字幕内容(sub字幕专用)
     public List<String> src = new ArrayList<String>();// 字幕元数据
     public static Pattern matchTimePattern = Pattern.compile("(\\d{1,2}:\\d{1,2}:\\d{1,2},\\d{1,3}).*(\\d{1,2}:\\d{1,2}:\\d{1,2},\\d{1,3})");
     public static Pattern convertTimePattern = Pattern.compile("(\\d{1,2}):(\\d{1,2}):(\\d{1,2}),(\\d{1,3})");

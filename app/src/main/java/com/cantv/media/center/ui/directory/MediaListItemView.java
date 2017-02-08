@@ -151,7 +151,7 @@ public class MediaListItemView extends MediaItemView {
                 mTvSize.setText("大小: " + FileUtil.convertStorage(media.fileSize));
             }
         }
-        mTvDate.setText("日期: " + DateUtil.onDate2String(new Date(media.modifiedDate), "yyyy.MM.dd HH:mm"));
+        mTvDate.setText("日期: " + DateUtil.onDate2String(new Date(media.modifiedDate), "yyyy.MM.dd HH:mm:ss"));
         mNumDrawable.setNum(media.getSubMediasCount());
         LayoutParams mediaParams;
         switch (media.getMediaFormat()) {
