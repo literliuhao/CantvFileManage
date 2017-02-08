@@ -52,7 +52,9 @@ public class PlayerController extends RelativeLayout {
     private TextView mTip, mContinueText;
     private ImageView mTipImage;
     private LinearLayout mContinuePlay;
-
+    private long currentTime = 0;
+    private long lastClickTime = 0;
+    public static final int MIN_CLICK_DELAY_TIME = 2000;
     /**
      * 长按步长
      */
@@ -87,13 +89,10 @@ public class PlayerController extends RelativeLayout {
                     if (mCtrlBarContext.isPlayerPaused()) {
                         mPlayImage.setVisibility(VISIBLE);
                         mPlayImage.setBackgroundResource(R.drawable.play_play);
-                    } else {
-//                        mPlayImage.setBackgroundResource(R.drawable.play_stop);
                     }
                     break;
 
                 case CHANG_VISIBLE:
-
                     if (mCtrlBarContext.isPlayerPaused()) {
                         showPause(false);
                     } else {
@@ -187,8 +186,8 @@ public class PlayerController extends RelativeLayout {
 
         mProgressBar = (TimeProgressBar) findViewById(R.id.pb_progress);
         mTime = (TextView) findViewById(R.id.tv_time);
-        mPlayImage = (ImageView) findViewById(R.id.iv_play);
         mTitle = (TextView) findViewById(R.id.tv_name);
+        mPlayImage = (ImageView) findViewById(R.id.iv_play);
         mPlayImage.setFocusable(false);
         mDefinitionTv = (TextView) findViewById(R.id.tv_definiton);
         mTip = (TextView) findViewById(R.id.tv_menu);
@@ -251,17 +250,16 @@ public class PlayerController extends RelativeLayout {
         mMovieTimeTv.setText(time2String(0) + " / " + time2String(mDuration));
     }
 
-
-    public void showContinuePaly(int position) {
+    public void showContinuePlay(int position) {
         //大于一千毫秒才有意义,否则time2String(position)转化的也是0
         if (!(position > 1000)) {
             return;
         }
         seekToDuration(position);
+        mPlayImage.setVisibility(INVISIBLE);
         mContinuePlay.setVisibility(VISIBLE);
         mContinueText.setText("从" + time2String(position) + "开始，继续为您播放");
         isShowTip = true;
-        mPlayImage.setVisibility(INVISIBLE);
         handler.sendEmptyMessageDelayed(CONTINUE_PLAY, 5000);
     }
 
@@ -284,6 +282,15 @@ public class PlayerController extends RelativeLayout {
             default:
                 break;
         }
+    }
+
+    private Boolean isContuine() {
+        currentTime = System.currentTimeMillis();
+        if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+            lastClickTime = currentTime;
+            return true;
+        }
+        return false;
     }
 
     public void onKeyDownEvent(int keyCode, KeyEvent event) {
@@ -327,33 +334,34 @@ public class PlayerController extends RelativeLayout {
                 }
                 break;
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                boolean isPre = mCoverFlowViewListener.scrollPre(new OnCompletionListener() {
-
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        mTmpSecondProgress = 0;
+                if (isContuine()) {
+                    mPlayImage.setVisibility(INVISIBLE);
+                    boolean isPre = mCoverFlowViewListener.scrollPre(new OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mTmpSecondProgress = 0;
+                        }
+                    });
+                    if (isPre) {
+                        handler.removeMessages(PlayerController.CHANG_PROGRESS);
+                        showController();
                     }
-                });
-
-                if (isPre) {
-                    handler.removeMessages(PlayerController.CHANG_PROGRESS);
-                    showController();
                 }
-
                 break;
-
             case KeyEvent.KEYCODE_MEDIA_NEXT:
+                if (isContuine()) {
+                    mPlayImage.setVisibility(INVISIBLE);
+                    boolean isNext = mCoverFlowViewListener.scrollToNext(new OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mTmpSecondProgress = 0;
+                        }
+                    });
 
-                boolean isNext = mCoverFlowViewListener.scrollToNext(new OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        mTmpSecondProgress = 0;
+                    if (isNext) {
+                        handler.removeMessages(PlayerController.CHANG_PROGRESS);
+                        showController();
                     }
-                });
-
-                if (isNext) {
-                    handler.removeMessages(PlayerController.CHANG_PROGRESS);
-                    showController();
                 }
 
                 break;
@@ -424,8 +432,6 @@ public class PlayerController extends RelativeLayout {
 
     }
 
-    ;
-
     private void toggleSeekImgvi(int keyCode) {
         if (View.INVISIBLE == mPlayImage.getVisibility() && !isShowTip) {
             mPlayImage.setVisibility(View.VISIBLE);
@@ -443,8 +449,6 @@ public class PlayerController extends RelativeLayout {
         setVisibility(VISIBLE);
         showPause(true);
     }
-
-    ;
 
     public void setFullProgress() {
         mProgressBar.setProgress(mDuration);
