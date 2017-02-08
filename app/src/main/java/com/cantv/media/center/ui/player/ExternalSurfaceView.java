@@ -60,7 +60,7 @@ public class ExternalSurfaceView extends SurfaceView {
                 public void run() {
                     mChangeScreenListener.changeAfter();
                 }
-            }, 500);
+            }, 100);
         }
 
     }
