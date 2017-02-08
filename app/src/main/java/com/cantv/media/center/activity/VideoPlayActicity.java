@@ -80,6 +80,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private ImageView mSubtitle_bt;
     private SubParser mSubParser;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,24 +131,30 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
 
-        //暂停的时候切换画面比例
-        mSurfaceView.setChangeScreenListener(new ExternalSurfaceView.ChangeScreenListener() {
+        mSurfaceView.postDelayed(new Runnable() {
             @Override
-            public void changeBefore() {
-                if (isPlayerPaused()) {
-                    Log.w("changeBefore","");
-//                    getProxyPlayer().start();
-                }
-            }
+            public void run() {
 
-            @Override
-            public void changeAfter() {
-                if (!isPlayerPaused()) {
-                    Log.w("changeAfter","");
-//                    getProxyPlayer().pause();
-                }
+                //暂停的时候切换画面比例
+                mSurfaceView.setChangeScreenListener(new ExternalSurfaceView.ChangeScreenListener() {
+                    @Override
+                    public void changeBefore() {
+                        if (isPause) {
+                            Log.w("changeBefore", "");
+                            getProxyPlayer().start();
+                        }
+                    }
+
+                    @Override
+                    public void changeAfter() {
+                        if (isPause) {
+                            Log.w("changeAfter", "");
+                            getProxyPlayer().pause();
+                        }
+                    }
+                });
             }
-        });
+        }, 2000);
     }
 
     @Override
