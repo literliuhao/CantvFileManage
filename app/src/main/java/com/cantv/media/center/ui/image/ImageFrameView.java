@@ -135,7 +135,7 @@ public class ImageFrameView extends FrameLayout {
                 SharedPreferenceUtil.setPhotoModel(0);
                 loadImageUsePicasso(imageUri);
             } else {
-                if (getDeviceTotalMemory() > 1500) {
+                if (getDeviceTotalMemory() > 1800) {
                     MAX_WIDTH = MAX_LENGTH;
                     MAX_HEIGHT = MAX_LENGTH;
                     sizeArray = convertImage(convertW, convertH);

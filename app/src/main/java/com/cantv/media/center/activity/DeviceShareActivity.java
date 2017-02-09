@@ -271,7 +271,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 mAddDeviceView.setFocusable(true);
                 mAddDeviceView.requestFocus();
                 onFocusChange(mAddDeviceView, true);
-                mFocusUtils.hideFocusForStartMove(400);
+                mFocusUtils.hideFocusForStartMove(800);
             }
         }, 1000);
 
@@ -597,6 +597,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     if (!isFirst) {
                         ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_not_found), Toast.LENGTH_SHORT);
                     }
+                    mAddDeviceView.setFocusable(true);
                 }
                 hideLoadingDialog();
             }
