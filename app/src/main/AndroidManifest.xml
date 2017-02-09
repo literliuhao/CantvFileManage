@@ -2,6 +2,7 @@
           package="com.cantv.media"
           android:versionCode="152"
           android:versionName="20170208_v1.5.2">
+          <!--android:sharedUserId="android.uid.system"-->
 
 
     <uses-sdk
@@ -43,8 +44,7 @@
         </activity>
         <activity android:name="com.cantv.media.center.activity.ListViewActivity"/>
         <activity
-            android:name="com.cantv.media.center.activity.GridViewActivity"
-            android:launchMode="singleTask">
+            android:name="com.cantv.media.center.activity.GridViewActivity">
             <intent-filter>
                 <action android:name="com.cantv.action.LOCAL_PLAYER"/>
 

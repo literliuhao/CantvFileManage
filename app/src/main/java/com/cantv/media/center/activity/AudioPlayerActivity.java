@@ -720,28 +720,33 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
      * 设置背景
      */
     private void loadUI() {
-        //有些机器可能出现内存溢出
-        final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
-        if (icon != null) {
-            //耗时操作,在主线程中执行
+        if (!mUri.contains(":")) {  //非共享文件才进行获取封面
+            //有些机器可能出现内存溢出
+            final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
+
+            if (icon != null) {
+                //耗时操作,在主线程中执行
 //            final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
-            final Bitmap bitmap = FastBlurUtil.toBlur(icon, 6);
-            final BitmapDrawable drawable = new BitmapDrawable(MyApplication.getContext().getResources(), bitmap);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (null != mCDView) {
-                        mCDView.setCoverBitmap(icon);
+                final Bitmap bitmap = FastBlurUtil.toBlur(icon, 6);
+                final BitmapDrawable drawable = new BitmapDrawable(MyApplication.getContext().getResources(), bitmap);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != mCDView) {
+                            mCDView.setCoverBitmap(icon);
+                        }
+                        if (null != mContentBg) {
+                            mContentBg.setBackground(drawable);
+                            mContentBg.setImageResource(R.color.per40_black);
+                        }
                     }
-                    if (null != mContentBg) {
-                        mContentBg.setBackground(drawable);
-                        mContentBg.setImageResource(R.color.per40_black);
-                    }
-                }
-            });
+                });
+            }
         }
 
-        mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
+        if (!mUri.contains(":")) {
+            mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
+        }
         if (mLyricInfo == null) {
             runOnUiThread(new Runnable() {
                 @Override
