@@ -222,7 +222,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
         if (getProxyPlayer().isPlaying()) {
             getProxyPlayer().stop();
         }
-        getProxyPlayer().reset();
+//        getProxyPlayer().reset();
         getProxyPlayer().release();
         super.onStop();
     }
