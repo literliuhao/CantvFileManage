@@ -14,7 +14,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -271,9 +273,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 mAddDeviceView.setFocusable(true);
                 mAddDeviceView.requestFocus();
                 onFocusChange(mAddDeviceView, true);
-                mFocusUtils.hideFocusForStartMove(800);
+                mFocusUtils.hideFocusForStartMove(1000);
             }
-        }, 1000);
+        }, 1200);
 
 
     }
@@ -599,7 +601,13 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     }
                     mAddDeviceView.setFocusable(true);
                 }
-                hideLoadingDialog();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideLoadingDialog();
+                    }
+                },100);
+                //hideLoadingDialog();
             }
         });
     }
