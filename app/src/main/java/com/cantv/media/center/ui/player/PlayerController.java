@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -122,6 +123,8 @@ public class PlayerController extends RelativeLayout {
 
                 case SEEK_DURATION:
                     mProgressBar.setSecondProgressEnable(false);
+                    Log.w("SEEK_DURATION",mTmpSecondProgress+"  进度");
+
                     seekToDuration(mTmpSecondProgress);
                     break;
                 case CHANGE_PLAY_VISIBILITY:
@@ -379,6 +382,7 @@ public class PlayerController extends RelativeLayout {
         mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
             @Override
             public void onSeekComplete(MediaPlayer arg0) {
+                Log.w("onSeekComplete",duration+" ~~~");
                 delayHidePlayImgvi();
                 handler.sendEmptyMessageDelayed(PlayerController.CHANG_PLAYIMAGE, 200);
                 handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);

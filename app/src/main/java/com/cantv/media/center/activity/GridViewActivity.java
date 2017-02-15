@@ -433,32 +433,37 @@ public class GridViewActivity extends Activity {
         }
         final List<Media> mediaList = new ArrayList<>();
         List<String> currPathList = MediaUtils.getCurrPathList();
-        for (String path : currPathList) {
-            File file = new File(path);
-            Media fileInfo = FileUtil.getFileInfo(file, null, false);
-            mediaList.add(fileInfo);
-        }
+        if (mGridView.mMediaStack.isEmpty() && currPathList.size() == 1) {
+            mGridView.show();
+        } else {
+            for (String path : currPathList) {
+                File file = new File(path);
+                Media fileInfo = FileUtil.getFileInfo(file, null, false);
+                mediaList.add(fileInfo);
+            }
 
-        boolean isUpdate = true;    //
-        if (!mGridView.mMediaStack.isEmpty()) { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
+            boolean isUpdate = true;    //
+            if (!mGridView.mMediaStack.isEmpty())
 
-            if (mGridView.mMediaStack.size() > 1) { //取第二级目录中第一个地址,和还存在的外接设备地址进行比较
-                String uri = mGridView.mMediaStack.get(1).get(0).mUri;
-                for (int i = 0; i < mediaList.size(); i++) {
-                    if (uri.contains(mediaList.get(i).mUri)) {
-                        isUpdate = false;
-                        break;
+            { //不在根目录下有可能会进行刷新(这是发生在移出外接存储时)
+
+                if (mGridView.mMediaStack.size() > 1) { //取第二级目录中第一个地址,和还存在的外接设备地址进行比较
+                    String uri = mGridView.mMediaStack.get(1).get(0).mUri;
+                    for (int i = 0; i < mediaList.size(); i++) {
+                        if (uri.contains(mediaList.get(i).mUri)) {
+                            isUpdate = false;
+                            break;
+                        }
                     }
                 }
+
+            }
+
+            if (isUpdate) {
+                updateRootUI(mediaList);
             }
 
         }
-
-        if (isUpdate) {
-            updateRootUI(mediaList);
-        }
-
-
     }
 
     /**
