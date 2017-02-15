@@ -557,6 +557,7 @@ public class GridViewActivity extends Activity {
                                     mGridView.showNoDataPage();
                                     mRTCountView.setText("");
                                 }
+                                ToastUtils.showMessage(MyApplication.getContext(), "删除成功!", Toast.LENGTH_LONG);
                             } else {
                                 ToastUtils.showMessage(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG);
                             }
