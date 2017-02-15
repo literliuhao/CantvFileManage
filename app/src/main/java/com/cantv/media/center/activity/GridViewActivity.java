@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -519,7 +521,7 @@ public class GridViewActivity extends Activity {
             Media media = datas.get(mDeleteItem);
             delete(datas, media);
         } else {
-            Toast.makeText(GridViewActivity.this, R.string.null_data, Toast.LENGTH_SHORT).show();
+            ToastUtils.showMessageLong(GridViewActivity.this, R.string.null_data);
         }
     }
 
@@ -538,23 +540,21 @@ public class GridViewActivity extends Activity {
                         @Override
                         public void run() {
                             if (FileUtil.deleteFile(f)) {
-                                int tempCount;
-                                datas.remove(mDeleteItem);
-                                if (datas.size() <= 0) {
-                                    mGridView.setTextRTview("", "");
-                                } else {
-                                    tempCount = 1;
-                                    mGridView.setTextRTview(mGridView.mSelectItemPosition + tempCount + " / ", datas.size() + "");
-                                }
-                                mGridView.mListAdapter.bindData(datas);
-                                //刷新界面
-                                if (!(datas.size() > 0)) {
-                                    mGridView.showNoDataPage();
-                                    mRTCountView.setText("");
-                                }
-                                ToastUtils.showMessage(MyApplication.getContext(), "删除成功!", Toast.LENGTH_LONG);
+                                refreshAfterDel(datas);
                             } else {
-                                ToastUtils.showMessage(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG);
+                                //修复OS-3850偶现删除蓝牙接收的图片，删除失败
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!f.isSharing) {
+                                            if (getFile(f.mUri)) {
+                                                ToastUtils.showMessage(MyApplication.getContext(), "删除失败!", Toast.LENGTH_LONG);
+                                            } else {
+                                                refreshAfterDel(datas);
+                                            }
+                                        }
+                                    }
+                                }, 300);
                             }
                         }
                     });
@@ -599,4 +599,41 @@ public class GridViewActivity extends Activity {
         isExternal = true;
     }
 
+    /**
+     * 通过路径判断文件是否存在
+     *
+     * @param fileUri
+     */
+    private boolean getFile(final String fileUri) {
+        if (!TextUtils.isEmpty(fileUri)) {
+            File file = new File(fileUri);
+            if (file.exists()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 删除后刷新界面
+     *
+     * @param datas
+     */
+    private void refreshAfterDel(List<Media> datas) {
+        int tempCount;
+        datas.remove(mDeleteItem);
+        if (datas.size() <= 0) {
+            mGridView.setTextRTview("", "");
+        } else {
+            tempCount = 1;
+            mGridView.setTextRTview(mGridView.mSelectItemPosition + tempCount + " / ", datas.size() + "");
+        }
+        mGridView.mListAdapter.bindData(datas);
+        //刷新界面
+        if (!(datas.size() > 0)) {
+            mGridView.showNoDataPage();
+            mRTCountView.setText("");
+        }
+        ToastUtils.showMessage(MyApplication.getContext(), "删除成功!", Toast.LENGTH_LONG);
+    }
 }
