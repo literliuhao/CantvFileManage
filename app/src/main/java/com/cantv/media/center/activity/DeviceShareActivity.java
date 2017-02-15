@@ -16,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -36,8 +35,8 @@ import com.cantv.media.center.ui.dialog.DeviceAddDialog;
 import com.cantv.media.center.ui.dialog.DeviceAddDialog.OnIpConfirmedListener;
 import com.cantv.media.center.ui.dialog.DeviceLoginDialog;
 import com.cantv.media.center.ui.dialog.DeviceLoginDialog.OnLoginListener;
-import com.cantv.media.center.ui.share.DeviceShareItemView;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
+import com.cantv.media.center.ui.share.DeviceShareItemView;
 import com.cantv.media.center.utils.BitmapUtils;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
@@ -607,7 +606,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                         hideLoadingDialog();
                     }
                 },100);
-                //hideLoadingDialog();
             }
         });
     }
