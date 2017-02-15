@@ -547,6 +547,7 @@ public class GridViewActivity extends Activity {
                             if (FileUtil.deleteFile(f)) {
                                 refreshAfterDel(datas);
                             } else {
+                                
                                 //修复OS-3850偶现删除蓝牙接收的图片，删除失败
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
