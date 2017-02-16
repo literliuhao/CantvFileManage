@@ -25,6 +25,7 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
+import com.cantv.media.center.data.Constant;
 import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
@@ -131,7 +132,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onClick(View v) {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
-                intent.putExtra("type", "video");
+                intent.putExtra("type", Constant.MEDIA_VIDEO);
                 if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
@@ -143,7 +144,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onClick(View v) {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
-                intent.putExtra("type", "image");
+                intent.putExtra("type", Constant.MEDIA_IMAGE);
                 if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
@@ -155,7 +156,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             public void onClick(View v) {
                 closeTimer();
                 Intent intent = new Intent(mContext, GridViewActivity.class);
-                intent.putExtra("type", "audio");
+                intent.putExtra("type", Constant.MEDIA_AUDIO);
                 if (mUsbRootPaths.size() > SINGLE_DEVICE) {
                     intent.putExtra("toListFlag", "ListFlag");
                 }
@@ -486,10 +487,10 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             } else if (status.equals("true")) {
                 isIN = false;
                 if (MediaGridView.flag) {
-                    Toast.makeText(this,"Close",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Close", Toast.LENGTH_LONG).show();
                     MediaGridView.flag = false;
                 } else {
-                    Toast.makeText(this,"Open",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Open", Toast.LENGTH_LONG).show();
                     MediaGridView.flag = true;
                 }
             }
