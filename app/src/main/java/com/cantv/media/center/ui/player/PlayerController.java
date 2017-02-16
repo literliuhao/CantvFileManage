@@ -137,6 +137,7 @@ public class PlayerController extends RelativeLayout {
         }
 
     };
+    private RelativeLayout mRlProgress;
 
     public interface PlayerCtrlBarContext {
         String getPlayerTitle();
@@ -187,6 +188,7 @@ public class PlayerController extends RelativeLayout {
         setWillNotDraw(false);
         setDrawingCacheEnabled(false);
 
+        mRlProgress = (RelativeLayout) findViewById(R.id.rl_progress);
         mProgressBar = (TimeProgressBar) findViewById(R.id.pb_progress);
         mTime = (TextView) findViewById(R.id.tv_time);
         mTitle = (TextView) findViewById(R.id.tv_name);
@@ -369,7 +371,7 @@ public class PlayerController extends RelativeLayout {
 
                 break;
             case KeyEvent.KEYCODE_MENU:
-//                setVisibility(INVISIBLE);
+                mRlProgress.setVisibility(INVISIBLE);
             default:
                 break;
         }
