@@ -106,6 +106,7 @@ public class GridViewActivity extends Activity {
                 break;
         }
         mContentView.addView(mGridView);
+        //此处为了修复OS-3938的bug
         if (mType.equalsIgnoreCase(Constant.MEDIA_IMAGE_SPE)
                 || mType.equalsIgnoreCase(Constant.MEDIA_VIDEO_SPE)
                 || mType.equalsIgnoreCase(Constant.MEDIA_AUDIO_SPE)) {
