@@ -293,7 +293,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 } else {
                     onPlayNext();
                 }
-
                 break;
             case R.id.iv_bg_play_mode:
                 cycleChangePlayMode();
