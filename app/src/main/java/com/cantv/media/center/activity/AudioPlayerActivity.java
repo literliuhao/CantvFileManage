@@ -419,7 +419,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
                 @Override
                 public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
-
+                    if (mCurPlayIndex == position) {
+                        view.setSelected(true);
+                    }else{
+                        view.setSelected(hasFocus);
+                    }
                 }
             });
             mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
@@ -527,6 +531,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(1).getSelectedChildIndex());
             }
         }
+        //修复OS-3286进入本地播放的视频或音频时，第一次按菜单键呼出菜单栏时，焦点光标从最上方的空白处移动到正在播放的节目上
+        mMenuDialog.showSubMenuFocus(false);
         if (mSelectedMenuPosi != 1) {
             MenuItem menuItemData = mMenuList.get(1);
             View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
@@ -535,6 +541,12 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             }
         }
         mMenuDialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMenuDialog.showSubMenuFocus(true);
+            }
+        },500);
     }
 
     public void hideMenuDialog() {

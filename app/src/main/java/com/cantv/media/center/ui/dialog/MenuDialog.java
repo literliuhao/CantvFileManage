@@ -377,4 +377,8 @@ public class MenuDialog extends Dialog {
     public void closeSubMenuItem() {
         mMenuView.closeSubMenu();
     }
+
+    public void showSubMenuFocus(boolean isshow) {
+        mMenuView.showSubMenuFocus(isshow);
+    }
 }

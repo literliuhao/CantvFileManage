@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.media.TimedText;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -481,7 +482,12 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
                 @Override
                 public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
-
+                    //修复OS-4061播放共享设备中视频，按菜单键，播放列表中，将焦点移动到名称较长的视频上，视频名称没有实现滚动显示
+                    if (mCurPlayIndex == position) {
+                        view.setSelected(true);
+                    }else{
+                        view.setSelected(hasFocus);
+                    }
                 }
             });
             mMenuDialog.setOnItemClickListener(new OnItemClickListener() {
@@ -548,16 +554,25 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
                 @Override
                 public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+
                     return false;
                 }
             });
         }
+        //修复OS-3286进入本地播放的视频或音频时，第一次按菜单键呼出菜单栏时，焦点光标从最上方的空白处移动到正在播放的节目上
+        mMenuDialog.showSubMenuFocus(false);
         if (mSelectedPosi == 0) {
             list.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedChildIndex());
         }
         mMenuDialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMenuDialog.showSubMenuFocus(true);
+            }
+        },500);
     }
 
     private void performSubmenuClickEvent(MenuItem mSubSelectedMenu, int position) {

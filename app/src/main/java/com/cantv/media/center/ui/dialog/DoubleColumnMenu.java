@@ -893,4 +893,9 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
     public void setSubMenuSelectPosi(int position) {
         mSubMenuSelectedPosi = position;
     }
+
+    public void showSubMenuFocus(boolean isShow) {
+        mSubMenuFocusView.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+    }
+
 }

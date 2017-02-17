@@ -114,6 +114,7 @@
     <string name="add_device">添加设备</string>
     <string name="local_connection">本地连接</string>
     <string name="no_connection">无网络连接</string>
+    <string name="connection_fail">网络连接异常，请检查您的网络</string>
     <string name="pls_input_device_ip">请输入设备的IP地址</string>
     <string name="ip_addr">IP地址</string>
     <string name="user_login">用户登录</string>

@@ -304,6 +304,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     // <-- addDevice
     public void showAddDeviceDialog() {
+        //修复OS-4040TV端未连接网络，进入文件管理，文件共享中，点击添加设备，提示文管理停止件运行
+        if(!NetworkUtils.isNetworkAvailable(this)){
+            ToastUtils.showMessage(MyApplication.mContext, getString(R.string.connection_fail), Toast.LENGTH_LONG);
+            return;
+        }
         if (mAddDeviceDialog == null) {
             mAddDeviceDialog = new DeviceAddDialog(this);
         }

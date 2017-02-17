@@ -94,6 +94,11 @@ public class MenuItem {
         return 0;
     }
 
+    //默认选中第一个
+    public int getSelectedFirst() {
+        return 0;
+    }
+
     public MenuItem getChildAt(int index) {
         int childrenCount = getChildrenCount();
         if (childrenCount == 0 || index < 0 || index >= childrenCount) {
