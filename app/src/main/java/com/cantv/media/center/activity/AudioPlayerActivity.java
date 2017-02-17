@@ -280,7 +280,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 break;
             case R.id.ib_previous:
                 if (mCurPlayIndex == 0 && mPlayMode != PlayMode.RANDOM_ORDER) {
-                    //修复OS-4163在文件管理器中播放本地音频，在播放最后一个音频的时候一直按下一曲，一直按多按几次提示“无下一首”该提示语按的次数越多消失的越慢
+                    //修复OS-4163在文件管理器中播放本地音频，在播放最后一个音频的时候一直按下一曲，一直按多按几次提示无下一首该提示语按的次数越多消失的越慢
                     ToastUtils.showMessage(MyApplication.getContext(), "无上一首");
                 } else {
                     onPlayPrev();
