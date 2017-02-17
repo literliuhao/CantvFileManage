@@ -8,8 +8,9 @@ public class MenuConstant {
     public static final String SUBMENU_INSUBTITLE = "字幕";
     public static final String SUBMENU_OUTSUBTITLE = "字幕";
 
+    //修复OS-4014本地播放时，画面比例没有更改为强制全屏
     public static final String SUBMENU_IMAGESCALE_ORIGINAL = "原始比例";
-    public static final String SUBMENU_IMAGESCALE_FULL = "全屏播放";
+    public static final String SUBMENU_IMAGESCALE_FULL = "强制全屏";
     public static final String SUBMENU_IMAGESCALE_4_3 = "4:3";
     public static final String SUBMENU_IMAGESCALE_16_9 = "16:9";
     public static final String SUBMENU_IMAGESCALE_21_9 = "21:9";

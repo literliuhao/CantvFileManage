@@ -457,6 +457,7 @@ public class PlayerController extends RelativeLayout {
         handler.removeMessages(PlayerController.CHANG_VISIBLE);
         handler.sendEmptyMessageDelayed(PlayerController.CHANG_VISIBLE, 5000);
         setVisibility(VISIBLE);
+        mRlProgress.setVisibility(VISIBLE);
         showPause(true);
     }
 
