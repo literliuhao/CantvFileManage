@@ -128,7 +128,11 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
 
     @Override
     public void onPlaySeekTo(int duration, OnSeekCompleteListener listener) {
-        getProxyPlayer().seekTo(duration, listener);
+        if (getPlayerDuration()-duration<600){
+            scrollToNext(this);
+        }else {
+            getProxyPlayer().seekTo(duration, listener);
+        }
     }
 
     @Override
