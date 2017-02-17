@@ -123,7 +123,7 @@ public class PlayerController extends RelativeLayout {
 
                 case SEEK_DURATION:
                     mProgressBar.setSecondProgressEnable(false);
-                    Log.w("SEEK_DURATION",mTmpSecondProgress+"  进度");
+                    Log.w("SEEK_DURATION", mTmpSecondProgress + "  进度");
 
                     seekToDuration(mTmpSecondProgress);
                     break;
@@ -137,6 +137,7 @@ public class PlayerController extends RelativeLayout {
         }
 
     };
+    private RelativeLayout mRlProgress;
 
     public interface PlayerCtrlBarContext {
         String getPlayerTitle();
@@ -187,6 +188,7 @@ public class PlayerController extends RelativeLayout {
         setWillNotDraw(false);
         setDrawingCacheEnabled(false);
 
+        mRlProgress = (RelativeLayout) findViewById(R.id.rl_progress);
         mProgressBar = (TimeProgressBar) findViewById(R.id.pb_progress);
         mTime = (TextView) findViewById(R.id.tv_time);
         mTitle = (TextView) findViewById(R.id.tv_name);
@@ -369,20 +371,24 @@ public class PlayerController extends RelativeLayout {
 
                 break;
             case KeyEvent.KEYCODE_MENU:
-//                setVisibility(INVISIBLE);
+                mRlProgress.setVisibility(INVISIBLE);
             default:
                 break;
         }
 
     }
 
-    public void seekToDuration(final int duration) {
+    public void seekToDuration(int duration) {
         handler.removeMessages(PlayerController.CHANG_PROGRESS);
         handler.removeMessages(PlayerController.CHANG_SRT);
+        if (mCtrlBarContext.getPlayerDuration() == duration) {
+            duration = mCtrlBarContext.getPlayerDuration() - 2000;
+        }
+        Log.w("onSeekComplete", duration + " ~~~");
         mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
             @Override
             public void onSeekComplete(MediaPlayer arg0) {
-                Log.w("onSeekComplete",duration+" ~~~");
+                Log.w("onSeekComplete~~ ", mCtrlBarContext.getPlayerDuration() + " ~~~");
                 delayHidePlayImgvi();
                 handler.sendEmptyMessageDelayed(PlayerController.CHANG_PLAYIMAGE, 200);
                 handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);
@@ -541,7 +547,7 @@ public class PlayerController extends RelativeLayout {
     /**
      * 发送消息,开始执行sub字幕(不含idx)相关的内容
      */
-    public void subSendMsg(){
+    public void subSendMsg() {
         handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
     }
 

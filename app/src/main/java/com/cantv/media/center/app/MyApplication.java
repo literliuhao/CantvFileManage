@@ -70,4 +70,11 @@ public class MyApplication extends Application {
         mHomeActivityList.clear();
     }
 
+    //关闭首页activity
+    public static void onFinishHomeActivity() {
+        if (mHomeActivityList.size() > 0) {
+            mHomeActivityList.get(0).finish();
+        }
+    }
+
 }

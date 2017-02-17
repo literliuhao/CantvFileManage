@@ -245,7 +245,7 @@ public class MediaGridView extends CustomGridView {
                     mMediaes.addAll(smbFileList);
                 } else {
                     List<String> usbRootPaths = MediaUtils.getCurrPathList();
-                    // 外接设备选择
+                    // 外接设备选择(多个外接设备)
                     if (MediaUtils.getUSBNum() > 1 && devicePath == null && mSourceType != SourceType.LOCAL) {
                         for (int i = 0; i < usbRootPaths.size(); i++) {
                             File file = new File(usbRootPaths.get(i));
@@ -253,9 +253,11 @@ public class MediaGridView extends CustomGridView {
                             mMediaes.add(fileInfo);
                         }
                     } else {
+                        //本机
                         if (mSourceType == SourceType.LOCAL) {
                             mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
                         } else if (mSourceType == SourceType.DEVICE || devicePath != null) {
+                            //外接设备
                             mMediaes.addAll(FileUtil.getFileList(devicePath));
                         } else {
                             if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误

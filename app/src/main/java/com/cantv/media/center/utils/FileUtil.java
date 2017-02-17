@@ -219,6 +219,7 @@ public class FileUtil {
      */
     public static List<Media> getFileList(String path) {
         List<Media> tList = new ArrayList<>();
+        ArrayList<String> nameList = new ArrayList<>();
         if (null == path) {
             return tList;
         }
@@ -235,14 +236,17 @@ public class FileUtil {
                 // 是常见文件,并且是非隐藏文件
                 if (FileUtil.isShowFile(childFile)) {
                     Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
-                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName)) {
+                    //可能存在相同名称的情况(外接设备的问题,极少数出现)
+                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && !nameList.contains(fileInfo.mName)) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
                             if (fileInfo.fileSize > 1024 * 6) {
                                 tList.add(fileInfo);
+                                nameList.add(fileInfo.mName);
                             }
                         } else {
                             tList.add(fileInfo);
+                            nameList.add(fileInfo.mName);
                         }
                     }
                 }

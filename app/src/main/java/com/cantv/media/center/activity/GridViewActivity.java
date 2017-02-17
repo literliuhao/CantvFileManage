@@ -19,6 +19,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.MediaOrientation;
 import com.cantv.media.center.constants.SourceType;
+import com.cantv.media.center.data.Constant;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.UsbMounted;
@@ -70,6 +71,7 @@ public class GridViewActivity extends Activity {
     private ConfirmDialog mConfirmDialog;
     private boolean mClickDelete = false;
     public boolean isStartAc;   //用来判断是否处于打开二级activity中
+    private String mType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,12 @@ public class GridViewActivity extends Activity {
                 break;
         }
         mContentView.addView(mGridView);
+        //此处为了修复OS-3938的bug
+        if (mType.equalsIgnoreCase(Constant.MEDIA_IMAGE_SPE)
+                || mType.equalsIgnoreCase(Constant.MEDIA_VIDEO_SPE)
+                || mType.equalsIgnoreCase(Constant.MEDIA_AUDIO_SPE)) {
+            MyApplication.onFinishHomeActivity();
+        }
     }
 
     @Override
@@ -125,28 +133,28 @@ public class GridViewActivity extends Activity {
      */
     private void getType() {
         Intent intent = getIntent();
-        String type = intent.getStringExtra("type");
-        if ("video".equalsIgnoreCase(type)) {
+        mType = intent.getStringExtra("type");
+        if (Constant.MEDIA_VIDEO_SPE.equalsIgnoreCase(mType) || Constant.MEDIA_VIDEO.equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_movie);
             mGridView = new MediaGridView(this, SourceType.MOIVE);
             isExternal = true;
-        } else if ("image".equalsIgnoreCase(type)) {
+        } else if (Constant.MEDIA_IMAGE_SPE.equalsIgnoreCase(mType) || Constant.MEDIA_IMAGE.equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_photo);
             mGridView = new MediaGridView(this, SourceType.PICTURE);
             isExternal = true;
-        } else if ("audio".equalsIgnoreCase(type)) {
+        } else if (Constant.MEDIA_AUDIO_SPE.equalsIgnoreCase(mType) || Constant.MEDIA_AUDIO.equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_music);
             mGridView = new MediaGridView(this, SourceType.MUSIC);
             isExternal = true;
-        } else if ("app".equalsIgnoreCase(type)) {
+        } else if ("app".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_app);
             mGridView = new MediaGridView(this, SourceType.APP);
             isExternal = true;
-        } else if ("local".equalsIgnoreCase(type)) {
+        } else if ("local".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_file);
             mGridView = new MediaGridView(this, SourceType.LOCAL);
             isExternal = false;
-        } else if ("device1".equalsIgnoreCase(type)) {
+        } else if ("device1".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
             if (MediaUtils.getUSBNum() > 0 && MediaUtils.getUSBNum() < 3) {
@@ -157,14 +165,14 @@ public class GridViewActivity extends Activity {
                 }
             }
             isExternal = true;
-        } else if ("device2".equalsIgnoreCase(type)) {
+        } else if ("device2".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
             if (MediaUtils.getUSBNum() > 1) {
                 mGridView.setDevicePath(MediaUtils.getCurrPathList().get(1));
             }
             isExternal = true;
-        } else if ("share".equalsIgnoreCase(type)) {
+        } else if ("share".equalsIgnoreCase(mType)) {
             mTitleTV.setText(intent.getStringExtra("title"));
             mGridView = new MediaGridView(this, SourceType.SHARE);
             mGridView.setDevicePath(intent.getStringExtra("path"));
@@ -547,7 +555,7 @@ public class GridViewActivity extends Activity {
                             if (FileUtil.deleteFile(f)) {
                                 refreshAfterDel(datas);
                             } else {
-                                
+
                                 //修复OS-3850偶现删除蓝牙接收的图片，删除失败
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
