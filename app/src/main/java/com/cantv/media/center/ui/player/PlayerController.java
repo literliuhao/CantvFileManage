@@ -381,9 +381,6 @@ public class PlayerController extends RelativeLayout {
     public void seekToDuration(int duration) {
         handler.removeMessages(PlayerController.CHANG_PROGRESS);
         handler.removeMessages(PlayerController.CHANG_SRT);
-        if (mCtrlBarContext.getPlayerDuration() == duration) {
-            duration = mCtrlBarContext.getPlayerDuration() - 2000;
-        }
         Log.w("onSeekComplete", duration + " ~~~");
         mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
             @Override
