@@ -612,6 +612,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (position == mCurPlayIndex) {
             return;
         }
+        storeDuration();    //切换视频前先将上个视频记录保存
         playMedia(position);
     }
 
