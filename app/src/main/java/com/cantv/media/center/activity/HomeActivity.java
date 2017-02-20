@@ -95,7 +95,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_home);
-        MyApplication.onFinishActivity();
+//        MyApplication.onFinishActivity();
         MyApplication.addHomeActivity(this);
         EventBus.getDefault().register(this);
         mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
@@ -529,5 +529,13 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mFocusUtils != null) {
+            mFocusUtils.release();
+        }
     }
 }

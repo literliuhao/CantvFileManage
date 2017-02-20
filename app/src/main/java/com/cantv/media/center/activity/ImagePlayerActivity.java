@@ -28,7 +28,6 @@ import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
-import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.image.ImageBrowser;
@@ -158,7 +157,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         autoRunnable();
         toHideRunnable();
         toHideView();
-        MyApplication.addActivity(this);
+//        MyApplication.addActivity(this);
     }
 
     private void initKey(String PRIVATE_KEY) {
@@ -604,9 +603,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     protected void onStop() {
         super.onStop();
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
-        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
-            MyApplication.onFinishActivity();
-        }
+//        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+//            MyApplication.onFinishActivity();
+//        }
         stopAutoPlay();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
     }
@@ -850,7 +849,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mFrameView.mBitmap = null;
         }
         EventBus.getDefault().unregister(this);
-        MyApplication.removeActivity(this);
+//        MyApplication.removeActivity(this);
     }
 
     @SuppressLint("NewApi")
@@ -955,6 +954,14 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mFocusUtils != null) {
+            mFocusUtils.release();
         }
     }
 }

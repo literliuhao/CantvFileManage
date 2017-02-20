@@ -1,8 +1,5 @@
 package com.cantv.media.center.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +9,9 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
  * 图片高斯模糊
@@ -65,7 +65,7 @@ public class BitmapUtils {
         newOpts.inJustDecodeBounds = false;
         int w = newOpts.outWidth;
         int h = newOpts.outHeight;
-        float hh = 1280;
+        float hh = 1080;
         float ww = 1920;
         int be = 1;
         if (w > h && w > ww) {
@@ -74,7 +74,7 @@ public class BitmapUtils {
             be = (int) (newOpts.outHeight / hh);
         }
         if (be <= 0) {
-            be = 1;
+            be = 4;
         }
         newOpts.inSampleSize = be;
         isBm = new ByteArrayInputStream(baos.toByteArray());

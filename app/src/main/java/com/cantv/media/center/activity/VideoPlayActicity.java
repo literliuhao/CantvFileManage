@@ -93,7 +93,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         acquireWakeLock();// 禁止屏保弹出
         initView();
         registerTimeReceiver();
-        MyApplication.addActivity(this);
+//        MyApplication.addActivity(this);
     }
 
     private void initView() {
@@ -856,7 +856,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             unregisterReceiver(mTimeReceiver);
         }
         EventBus.getDefault().unregister(this);
-        MyApplication.removeActivity(this);
+//        MyApplication.removeActivity(this);
     }
 
     private void registerTimeReceiver() {
@@ -898,9 +898,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     protected void onStop() {
         storeDuration();    //保存进度
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
-        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
-            MyApplication.onFinishActivity();
-        }
+//        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+//            MyApplication.onFinishActivity();
+//        }
         super.onStop();
     }
 
