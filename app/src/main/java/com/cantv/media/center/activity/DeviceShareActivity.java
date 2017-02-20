@@ -94,7 +94,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         setContentView(R.layout.activity_device_share);
         initUI();
         initData();
-        MyApplication.addActivity(this);
+//        MyApplication.addActivity(this);
     }
 
     @Override
@@ -122,6 +122,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     protected void onStop() {
         unregisterReceiver(mNetChangeReceiver);
         super.onStop();
+        mFocusUtils.release();
     }
 
     @Override
@@ -152,8 +153,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             mBlurDrawable.setCallback(null);
             mBlurDrawable = null;
         }
-        MyApplication.removeActivity(this);
+//        MyApplication.removeActivity(this);
         super.onDestroy();
+        mFocusUtils.release();
+        mFocusUtils = null;
+//        MyApplication.getRefWatcher(this.getApplicationContext()).watch(this);
     }
 
     private void initUI() {
@@ -315,9 +319,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mAddDeviceDialog.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                if (null == mBlurDrawable) {
-                    mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+                if (null != mBlurDrawable) {
+                    mBlurDrawable.setCallback(null);
+                    mBlurDrawable = null;
                 }
+                mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), MyApplication.getContext());
                 ((DeviceAddDialog) dialog).updateBackground(mBlurDrawable);
                 ((DeviceAddDialog) dialog).reset();
             }
@@ -444,9 +450,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
             @Override
             public void onShow(DialogInterface dialog) {
-                if (null == mBlurDrawable) {
-                    mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), DeviceShareActivity.this);
+                if (null != mBlurDrawable) {
+                    mBlurDrawable.setCallback(null);
+                    mBlurDrawable = null;
                 }
+                mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), MyApplication.getContext());
                 ((DeviceLoginDialog) dialog).updateBackground(mBlurDrawable);
                 ((DeviceLoginDialog) dialog).reset();
             }
