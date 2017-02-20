@@ -155,7 +155,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         }
 //        MyApplication.removeActivity(this);
         super.onDestroy();
-        mFocusUtils.release();
+        if (mFocusUtils != null) {
+            mFocusUtils.release();
+        }
+
         mFocusUtils = null;
 //        MyApplication.getRefWatcher(this.getApplicationContext()).watch(this);
     }
@@ -656,6 +659,14 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }else{
                 mAddDeviceView.setFocusable(false);
             }
+        }
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mFocusUtils != null) {
+            mFocusUtils.release();
         }
     }
 }

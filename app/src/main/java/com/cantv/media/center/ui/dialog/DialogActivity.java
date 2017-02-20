@@ -22,7 +22,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
     private static float mDialogWidth = 0.85f;
     private static float mDialogHeight = 0.91f;
     private FocusScaleUtils mFocusScaleUtils;
-    private FocusUtils focusUtils;
+    private FocusUtils mFocusUtils;
     private final String SETTING = "android.intent.action.LINK_NETWORK_TOAST";
 
     @Override
@@ -30,7 +30,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_mounted);
         MediaBroadcastReceiver.getInstance().setListener(this);
-        focusUtils = new FocusUtils(DialogActivity.this, getWindow().getDecorView(), R.drawable.image_focus);
+        mFocusUtils = new FocusUtils(DialogActivity.this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.06f, null, null);
         FrameLayout dialogImage = (FrameLayout) this.findViewById(R.id.dialog_image);
         FrameLayout dialogVideo = (FrameLayout) this.findViewById(R.id.dialog_video);
@@ -67,7 +67,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             mFocusScaleUtils.scaleToLarge(v);
-            focusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
+            mFocusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
         } else {
             mFocusScaleUtils.scaleToNormal(v);
         }
@@ -104,6 +104,13 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         } finally {
             DialogActivity.this.finish();
         }
+    }
 
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mFocusUtils != null) {
+            mFocusUtils.release();
+        }
     }
 }

@@ -21,7 +21,7 @@ import com.cantv.media.R;
 public class ActivityDialog extends Activity {
     private FocusScaleUtils mFocusScaleUtils;
     private Context mContext;
-
+    private FocusUtils mFocusUtils;
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
@@ -33,7 +33,7 @@ public class ActivityDialog extends Activity {
         window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         window.setContentView(R.layout.dialog_mounted);
         window.setBackgroundDrawableResource(R.color.transparent);
-        final FocusUtils focusUtils = new FocusUtils(this, window.getDecorView(), R.drawable.focus);
+        mFocusUtils = new FocusUtils(this, window.getDecorView(), R.drawable.focus);
         View dialogImage = window.findViewById(R.id.dialog_image);
         dialogImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +75,7 @@ public class ActivityDialog extends Activity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.85f);
+                    mFocusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
@@ -86,7 +86,7 @@ public class ActivityDialog extends Activity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.85f);
+                    mFocusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
@@ -97,7 +97,7 @@ public class ActivityDialog extends Activity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.85f);
+                    mFocusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
@@ -108,11 +108,17 @@ public class ActivityDialog extends Activity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mFocusScaleUtils.scaleToLarge(v);
-                    focusUtils.startMoveFocus(v, true, 0.85f);
+                    mFocusUtils.startMoveFocus(v, true, 0.85f);
                 } else {
                     mFocusScaleUtils.scaleToNormal(v);
                 }
             }
         });
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mFocusUtils.release();
     }
 }
