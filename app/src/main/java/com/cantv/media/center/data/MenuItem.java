@@ -94,8 +94,19 @@ public class MenuItem {
         return 0;
     }
 
-    //默认选中第一个
-    public int getSelectedFirst() {
+    /**
+     * 默认选中位置
+     * @param isLast(true为默认选中第一个,false为默认选中最后一个)
+     * @return
+     */
+    public int getSelectedIndex(boolean isLast) {
+        if(isLast){
+            return 0;
+        }else{
+            if (children != null && selectedChild != null) {
+                return children.size()-1;
+            }
+        }
         return 0;
     }
 

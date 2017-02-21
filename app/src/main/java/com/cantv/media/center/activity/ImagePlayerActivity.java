@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -54,6 +55,8 @@ import java.util.List;
  * 浏览图片页面
  */
 public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyParentUpdate {
+
+    private static final String TAG = "ImagePlayerActivity";
     private int mCurImageIndex;
     private ImageFrameView mFrameView;
     private ImageBrowser mImageBrowser;
@@ -118,6 +121,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private List<Integer> keyList = null;
     private List<Integer> dynamicList = null;
     private final String PRIVATE_KEY = "19!20!19!20";
+    private int mKeytone;
+    private boolean isAutoPlay;//是否在开启幻灯片
 
     private Handler mHandler = new Handler() {
 
@@ -150,6 +155,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         screenHeight = getWindowManager().getDefaultDisplay().getHeight();
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+        getKeytoneSetting();
         initView();
         showImage(indexOfDefaultPlay(), null);
         initViewClickEvent();
@@ -601,13 +607,24 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(isAutoPlay){
+            startAutoPlay();
+            closeVolume();
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
         if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
             MyApplication.onFinishActivity();
         }
+        isAutoPlay = mAutoPlay;
         stopAutoPlay();
+        openVolume();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
     }
 
@@ -616,14 +633,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mAutoPlay = true;
             getScreenLock().acquire();
         }
-        //startMusicAnimation();
         MainThread.runLater(mAutoRunnable, 5000);
     }
 
     private void stopAutoPlay() {
         if (mAutoPlay) {
             mAutoPlay = false;
-            //endMusicAnimation();
             MainThread.cancel(mAutoRunnable);
             //修复OS-2665播放幻灯片时有破损图片文件管理器崩溃问题
             try {
@@ -728,7 +743,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i("onKeyDown",keyCode + "............");
+        Log.i("onKeyDown", keyCode + "............");
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
             isIN = true;
             dynamicList = new ArrayList<>();
@@ -742,10 +757,10 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int photoModel = SharedPreferenceUtil.getPhotoModel();
                 if (photoModel == 1) {
                     SharedPreferenceUtil.setPhotoModel(0);
-                    Toast.makeText(this,"Close",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Close", Toast.LENGTH_LONG).show();
                 } else {
                     SharedPreferenceUtil.setPhotoModel(1);
-                    Toast.makeText(this,"Open",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Open", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -899,21 +914,34 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         super.onBackPressed();
     }
 
+    //获取系统按键音设置
+    //修复OS-4037进入图片，开启幻灯片播放，系统音量显示零
+    public void getKeytoneSetting() {
+        mKeytone = Settings.System.getInt(getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
+        Log.i(TAG, "getKeytoneSetting: " + mKeytone);
+    }
+
     /**
      * 修复OS-795本地播放幻灯片，没有背景音乐，切换图片时会响应按键音。
      * 关闭按键音
+     * 0关闭，1开启
      */
     public void closeVolume() {
-        mImageBrowser.setSoundEffectsEnabled(false);
-        mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
+        boolean isClose = Settings.System.putInt(getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
+        int keytone = Settings.System.getInt(getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
+        Log.i(TAG, isClose ? "closeVolume: " + keytone : "");
     }
 
     /**
      * 打开按键音
+     * 0关闭，1开启
      */
     public void openVolume() {
-        mImageBrowser.setSoundEffectsEnabled(true);
-        mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, mCurrentVolume, 0);
+        if (mKeytone == 1) {
+            boolean isOpen = Settings.System.putInt(getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
+            int keytone = Settings.System.getInt(getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
+            Log.i(TAG, isOpen ? "openVolume: " + keytone : "");
+        }
     }
 
     private String verify(int keyCode) {

@@ -28,6 +28,7 @@ public class MenuDialog extends Dialog {
     private DoubleColumnMenu.OnItemClickListener mItemClickListener;
     private DoubleColumnMenu.OnItemFocusChangeListener mItemFocusListener;
     private DoubleColumnMenu.OnKeyEventListener mOnKeyListener;
+    private long moveTime;
 
     public MenuDialog(Context context) {
         super(context, R.style.dialog_menu);
@@ -63,6 +64,26 @@ public class MenuDialog extends Dialog {
             dismiss();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * 限制按键移动速度
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        switch (event.getAction()) {
+            //控制按键响应的速度
+            case KeyEvent.ACTION_DOWN:
+                if (System.currentTimeMillis() - moveTime > 200) {
+                    moveTime = System.currentTimeMillis();
+                } else {
+                    return true;
+                }
+        }
+        return super.dispatchKeyEvent(event);
+
     }
 
     public void setMenuList(List<MenuItem> list) {

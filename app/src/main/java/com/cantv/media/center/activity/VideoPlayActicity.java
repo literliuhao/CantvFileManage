@@ -2,6 +2,7 @@ package com.cantv.media.center.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
@@ -57,6 +58,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener, StDisplayCallBack {
+    private static final String TAG = "VideoPlayActicity";
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -80,7 +82,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private String subName = "";
     private ImageView mSubtitle_bt;
     private SubParser mSubParser;
-
+    private List<MenuItem> playListSubMenuItems;
+    private List<MenuItem> mCurrentSubMenuList;
+    private int mCurrentSubMenuPos;//当前二级菜单位置
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,14 +326,12 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     showMenuDialog();
                 }
                 break;
-
             default:
                 break;
         }
         if (mCtrBar != null) {
             mCtrBar.onKeyDownEvent(keyCode, event);
         }
-
         return super.onKeyDown(keyCode, event);
 
     }
@@ -483,6 +485,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 @Override
                 public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
                     //修复OS-4061播放共享设备中视频，按菜单键，播放列表中，将焦点移动到名称较长的视频上，视频名称没有实现滚动显示
+                    mCurrentSubMenuPos = position;
                     if (mCurPlayIndex == position) {
                         view.setSelected(true);
                     }else{
@@ -554,7 +557,42 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
                 @Override
                 public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-
+                        //修复OS-3900浏览音频视频和图片文件时，点击菜单按钮，在显示的文件列表页，不支持循环选择
+                        Log.i(TAG, "onKeyDown: "+TAG);
+                        if(mSelectedPosi == 0){
+                            mCurrentSubMenuList = playListSubMenuItems;
+                        }else {
+                            return false;
+                        }
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN ) {
+                            if (mCurrentSubMenuPos == mCurrentSubMenuList.size() - 1) {
+                                mMenuDialog.showSubMenuFocus(false);
+                                mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedIndex(true));
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMenuDialog.showSubMenuFocus(true);
+                                    }
+                                }, 300);
+                                return true;
+                            }else {
+                                return false;
+                            }
+                        }else if(keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN ) {
+                            if (mCurrentSubMenuPos == 0) {
+                                mMenuDialog.showSubMenuFocus(false);
+                                mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedIndex(false));
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMenuDialog.showSubMenuFocus(true);
+                                    }
+                                }, 300);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
                     return false;
                 }
             });
@@ -696,12 +734,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     }
 
     private List<MenuItem> createMenuData() {
-        List<MenuItem> menuList = new ArrayList<MenuItem>();
+        List<MenuItem> menuList = new ArrayList<>();
+        mCurrentSubMenuList = new ArrayList<>();
         // 播放列表
         MenuItem playListMenuItem = new MenuItem("播放列表");
         playListMenuItem.setType(MenuItem.TYPE_LIST);
         playListMenuItem.setSelected(true);
-        List<MenuItem> playListSubMenuItems = new ArrayList<MenuItem>();
+        playListSubMenuItems = new ArrayList<>();
         for (int i = 0; i < mDataList.size(); i++) {
             MenuItem item = new MenuItem(mDataList.get(i).mName);
             item.setType(MenuItem.TYPE_SELECTOR_MARQUEE);

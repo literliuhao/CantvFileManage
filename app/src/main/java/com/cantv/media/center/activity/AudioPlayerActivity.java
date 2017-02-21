@@ -95,6 +95,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private String mUri;
     private LoadingMuUITask muUITask;
     private int currentMode = 5;
+    private List<MenuItem> playListSubMenuItems;
+    private List<MenuItem> mCurrentSubMenuList;
+    private int mCurrentSubMenuPos;//当前二级菜单位置
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -420,9 +423,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
                 @Override
                 public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
+                    mCurrentSubMenuPos = position;
                     if (mCurPlayIndex == position) {
                         view.setSelected(true);
-                    }else{
+                    } else {
                         view.setSelected(hasFocus);
                     }
                 }
@@ -517,6 +521,40 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
                 @Override
                 public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
+                    if (mSelectedMenuPosi == 0) {
+                        mCurrentSubMenuList = playListSubMenuItems;
+                    } else {
+                        return false;
+                    }
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (mCurrentSubMenuPos == mCurrentSubMenuList.size() - 1) {
+                            mMenuDialog.showSubMenuFocus(false);
+                            mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedIndex(true));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMenuDialog.showSubMenuFocus(true);
+                                }
+                            }, 300);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (mCurrentSubMenuPos == 0) {
+                            mMenuDialog.showSubMenuFocus(false);
+                            mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedIndex(false));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMenuDialog.showSubMenuFocus(true);
+                                }
+                            }, 300);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
                     return false;
                 }
             });
@@ -547,7 +585,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             public void run() {
                 mMenuDialog.showSubMenuFocus(true);
             }
-        },500);
+        }, 500);
     }
 
     public void hideMenuDialog() {
@@ -557,12 +595,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     private List<MenuItem> createMenuData() {
-        List<MenuItem> menuList = new ArrayList<MenuItem>();
+        List<MenuItem> menuList = new ArrayList<>();
+        mCurrentSubMenuList = new ArrayList<>();
 
         MenuItem playListMenuItem = new MenuItem(getString(R.string.play_list));
         playListMenuItem.setType(MenuItem.TYPE_LIST);
         playListMenuItem.setSelected(true);
-        List<MenuItem> playListSubMenuItems = new ArrayList<MenuItem>();
+        playListSubMenuItems = new ArrayList<>();
         for (int i = 0, dataCount = mDataList.size(); i < dataCount; i++) {
             MenuItem item = new MenuItem(mDataList.get(i).mName);
             item.setType(MenuItem.TYPE_SELECTOR_MARQUEE);
