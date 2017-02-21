@@ -118,7 +118,6 @@ public class ImageFrameView extends FrameLayout {
 
     public void loadImage(final String imageUri, boolean isSharing, String imageName) {
         Log.i("playImage", imageUri);
-        //计算本地图片的实际宽高
         if (!isSharing) {
             //修复OS-3831偶现在本地文件中用图片播放幻灯片，在播放中拔出U盘，提示文件管理器已停止运行
             getImageFile(imageUri);
@@ -127,35 +126,16 @@ public class ImageFrameView extends FrameLayout {
             convertH = callbackH;
             //判断机型运行内存，重新赋值MAX_LENGTH,MAX_WIDTH
             Log.i(TAG, "deviceTotalMemory: " + getDeviceTotalMemory());
-            int photoModel = SharedPreferenceUtil.getPhotoModel();
-            if (photoModel == 1) {
-                MAX_WIDTH = (int) mActivity.screenWidth;
-                MAX_HEIGHT = (int) mActivity.screenHeight;
-                sizeArray = convertImage(convertW, convertH);
-                SharedPreferenceUtil.setPhotoModel(0);
-                loadImageUsePicasso(imageUri);
+            MAX_WIDTH = (int) mActivity.screenWidth;
+            MAX_HEIGHT = (int) mActivity.screenHeight;
+            sizeArray = convertImage(convertW, convertH);
+            //是否加载gif，是否带有模糊效果
+            if (imageName.endsWith(".gif") && getDeviceTotalMemory() > 1800) {
+                loadLocalGifNoThumbnail(imageUri);
+            } else if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
+                loadLocalImageNoThumbnail(imageUri);
             } else {
-                if (getDeviceTotalMemory() > 1800) {
-                    MAX_WIDTH = MAX_LENGTH;
-                    MAX_HEIGHT = MAX_LENGTH;
-                    sizeArray = convertImage(convertW, convertH);
-                    //是否带有模糊效果，根据分辨率区分,是否是gif
-                    if ((callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) || imageName.endsWith(".gif")) {
-                        loadLocalGifNoThumbnail(imageUri);
-                    } else {
-                        loadLocalGif(imageUri);
-                    }
-                } else {
-                    MAX_WIDTH = (int) mActivity.screenWidth;
-                    MAX_HEIGHT = (int) mActivity.screenHeight;
-                    sizeArray = convertImage(convertW, convertH);
-                    //是否带有模糊效果，根据分辨率区分
-                    if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
-                        loadLocalImageNoThumbnail(imageUri);
-                    } else {
-                        loadLocalImage(imageUri);
-                    }
-                }
+                loadLocalImage(imageUri);
             }
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
@@ -476,7 +456,7 @@ public class ImageFrameView extends FrameLayout {
 
             @Override
             public boolean onResourceReady(GlideDrawable glideDrawable, String s, Target<GlideDrawable> target, boolean b, boolean b1) {
-                loadImageSuccessNoThumb(sizeArray[0], sizeArray[1]);
+                loadImageSuccessNoThumb(callbackW, callbackH);
                 return false;
             }
         }).into(mImageView);
