@@ -150,4 +150,12 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener {
             mPasswordEt.setText(password);
         }
     }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (mFocusUtils != null) {
+            mFocusUtils.release();
+        }
+    }
 }

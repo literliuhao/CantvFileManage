@@ -43,7 +43,7 @@ public class CustomDialog extends Dialog {
     public static class Builder implements View.OnFocusChangeListener {
 
         private FocusScaleUtils mFocusScaleUtils;
-        private FocusUtils focusUtils;
+        private FocusUtils mFocusUtils;
         private Context mContext;
 
         public Builder(Context context) {
@@ -64,7 +64,7 @@ public class CustomDialog extends Dialog {
             int layoutHeight = (int) mContext.getResources().getDimension(R.dimen.px1080);
 
             dialog.addContentView(layout, new LayoutParams(layoutWidth, layoutHeight));
-            focusUtils = new FocusUtils(mContext, layout, R.drawable.image_focus);
+            mFocusUtils = new FocusUtils(mContext, layout, R.drawable.image_focus);
             mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.06f, null, null);
 
             FrameLayout dialogImage = (FrameLayout) layout.findViewById(R.id.dialog_image);
@@ -136,10 +136,22 @@ public class CustomDialog extends Dialog {
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 mFocusScaleUtils.scaleToLarge(v);
-                focusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
+                mFocusUtils.startMoveFocus(v, null, true, mDialogWidth, mDialogHeight, 0f, 0f);
             } else {
                 mFocusScaleUtils.scaleToNormal(v);
             }
         }
+
+
+        public void release() {
+            if (mFocusUtils != null) {
+                mFocusUtils.release();
+            }
+        }
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
     }
 }

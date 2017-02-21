@@ -80,9 +80,9 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
         int type = NetworkUtils.getNetInfo(mContext).getType();
         String strIP;
         if (type == ConnectivityManager.TYPE_WIFI) {
-            strIP = NetworkUtils.getWiFiIp(mContext);
+            strIP = NetworkUtils.getWiFiIp(mContext.getApplicationContext());
         } else {
-            strIP = NetworkUtils.getEthernetIp(mContext);
+            strIP = NetworkUtils.getEthernetIp(mContext.getApplicationContext());
         }
         mIpEt.setText(strIP.substring(IP_LENGHT, strIP.lastIndexOf(".") + 1));
         mIpEt.requestFocus();
@@ -128,4 +128,11 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener {
         }
     }
 
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (mFocusUtils != null) {
+            mFocusUtils.release();
+        }
+    }
 }

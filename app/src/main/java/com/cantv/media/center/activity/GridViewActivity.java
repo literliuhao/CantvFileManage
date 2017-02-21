@@ -77,8 +77,8 @@ public class GridViewActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gridview);
-        MyApplication.onFinishActivity();
-        MyApplication.addActivity(this);
+//        MyApplication.onFinishActivity();
+//        MyApplication.addActivity(this);
         EventBus.getDefault().register(this);
         mTitleTV = (TextView) findViewById(R.id.title_textview);
         mContentView = (RelativeLayout) findViewById(R.id.gridview_content);

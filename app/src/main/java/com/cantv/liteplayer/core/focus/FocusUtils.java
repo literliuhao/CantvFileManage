@@ -235,4 +235,8 @@ public class FocusUtils {
         return this.focusView;
     }
 
+    public void release() {
+        focusView.release();
+    }
+
 }

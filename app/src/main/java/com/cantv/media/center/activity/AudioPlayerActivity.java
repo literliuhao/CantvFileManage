@@ -104,7 +104,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         super.onCreate(savedInstanceState);
         setupLayout();
         EventBus.getDefault().register(this);
-        MyApplication.addActivity(this);
+//        MyApplication.addActivity(this);
         holdWakeLock();
         initData();
         playDefualt();
@@ -209,9 +209,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     @Override
     protected void onStop() {
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
-        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
-            MyApplication.onFinishActivity();
-        }
+//        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+//            MyApplication.onFinishActivity();
+//        }
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
@@ -231,7 +231,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mCDView = null;
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        MyApplication.removeActivity(this);
+//        MyApplication.removeActivity(this);
     }
 
     @SuppressWarnings("deprecation")

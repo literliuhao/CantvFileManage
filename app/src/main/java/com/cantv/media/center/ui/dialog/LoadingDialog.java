@@ -39,7 +39,9 @@ public class LoadingDialog extends Dialog implements OnDismissListener, OnShowLi
 
     @Override
     public void onDismiss(DialogInterface dialog) {
+        mRotateAnimation.cancel();
         mLoadingView.clearAnimation();
+        mLoadingView = null;
     }
 
     @Override

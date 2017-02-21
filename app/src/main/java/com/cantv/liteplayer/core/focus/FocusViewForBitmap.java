@@ -17,8 +17,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -33,11 +31,11 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
     private int lightStrokeWidth;
     private float roundX;
     private float roundY;
-    private Paint paintDrawBitmap;
+//    private Paint paintDrawBitmap;
     private Paint paintFrame;
     private Paint paintLight;
     private float lightAlpha;
-    private float lightAlphaCopy;
+//    private float lightAlphaCopy;
     private float frameLeft;
     private float frameTop;
     private float frameRight;
@@ -50,7 +48,7 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
     private float frameTopMoveEnd;
     private float frameRightMoveEnd;
     private float frameBottomMoveEnd;
-    private int movingTime;
+//    private int movingTime;
     private int movingNumber;
     private int movingVelocity;
     private int movingNumberDefault;
@@ -66,23 +64,24 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
     private Bitmap bitmap;
     private Rect rectBitmap;
     private NinePatch ninePatch;
-    private Handler handler;
-    private Thread thread;
+//    private Handler handler;
+//    private Thread thread;
     private boolean isThreadRun;
     private boolean isMoveHideFocus;
     private OnFocusMoveEndListener onFocusMoveEndListener;
     private View changeFocusView;
+    private boolean isActived;
 
     public FocusViewForBitmap(Context context) {
-        this(context, (AttributeSet) null);
+        this(context.getApplicationContext(), (AttributeSet) null);
     }
 
     public FocusViewForBitmap(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(context.getApplicationContext(), attrs, 0);
     }
 
     public FocusViewForBitmap(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        super(context.getApplicationContext(), attrs, defStyleAttr);
         this.frameColor = -256;
         this.lightColor = -16776961;
         this.frameWidth = 4;
@@ -91,20 +90,20 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
         this.roundX = 10.0F;
         this.roundY = 10.0F;
         this.lightAlpha = 100.0F;
-        this.movingTime = 1000;
+//        this.movingTime = 1000;
         this.movingNumber = 15;
         this.movingVelocity = 0;
         this.movingNumberDefault = 8;
         this.movingVelocityDefault = 10;
         this.movingNumberTemporary = -1;
         this.movingVelocityTemporary = -1;
-        this.handler = new Handler() {
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                FocusViewForBitmap.this.setVisibility(0);
-            }
-        };
-        this.thread = new Thread();
+//        this.handler = new Handler() {
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                FocusViewForBitmap.this.setVisibility(View.VISIBLE);
+//            }
+//        };
+//        this.thread = new Thread();
         this.isMoveHideFocus = false;
         this.init();
     }
@@ -120,25 +119,27 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
         this.roundX = 10.0F;
         this.roundY = 10.0F;
         this.lightAlpha = 100.0F;
-        this.movingTime = 1000;
+//        this.movingTime = 1000;
         this.movingNumber = 60;
         this.movingVelocity = 0;
         this.movingNumberDefault = 60;
         this.movingVelocityDefault = 4;
         this.movingNumberTemporary = -1;
         this.movingVelocityTemporary = -1;
-        this.handler = new Handler() {
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                FocusViewForBitmap.this.setVisibility(0);
-            }
-        };
-        this.thread = new Thread();
+//        this.handler = new Handler() {
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                FocusViewForBitmap.this.setVisibility(View.VISIBLE);
+//            }
+//        };
+//        this.thread = new Thread();
         this.isMoveHideFocus = false;
         this.init();
     }
 
     private void init() {
+        moveRunnable = new AutoMoveRunnable();
+        isActived = true;
     }
 
     private void initFramePaint() {
@@ -226,9 +227,9 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
         this.ninePatch.draw(canvas, rect);
     }
 
-    private void clearInit() {
-        this.lightAlpha = this.lightAlphaCopy;
-    }
+//    private void clearInit() {
+//        this.lightAlpha = this.lightAlphaCopy;
+//    }
 
     private void drawFrame(Canvas canvas) {
         RectF rectF = new RectF();
@@ -309,39 +310,49 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
 //        Log.i("Focus", "frameBottom " + frameBottom);
         if (!this.isThreadRun) {
             this.isThreadRun = true;
-            FocusViewForBitmap.this.postDelayed(new AutoMoveRunnable(), 16);
+            FocusViewForBitmap.this.postDelayed(moveRunnable, 16);
             FocusViewForBitmap.this.isThreadRun = false;
         }
     }
-
+    AutoMoveRunnable moveRunnable;
     private class AutoMoveRunnable implements Runnable {
         public AutoMoveRunnable() {
         }
 
         @Override
         public void run() {
-            if ((FocusViewForBitmap.this.frameLeftMove <= 0.0F || FocusViewForBitmap.this.frameLeft + FocusViewForBitmap.this.frameLeftMove < FocusViewForBitmap.this.frameLeftMoveEnd) && (FocusViewForBitmap.this.frameLeftMove >= 0.0F || FocusViewForBitmap.this.frameLeft + FocusViewForBitmap.this.frameLeftMove > FocusViewForBitmap.this.frameLeftMoveEnd) && (FocusViewForBitmap.this.frameTopMove <= 0.0F || FocusViewForBitmap.this.frameTop + FocusViewForBitmap.this.frameTopMove < FocusViewForBitmap.this.frameTopMoveEnd) && (FocusViewForBitmap.this.frameTopMove >= 0.0F || FocusViewForBitmap.this.frameTop + FocusViewForBitmap.this.frameTopMove > FocusViewForBitmap.this.frameTopMoveEnd) && (FocusViewForBitmap.this.frameRightMove <= 0.0F || FocusViewForBitmap.this.frameRight + FocusViewForBitmap.this.frameRightMove < FocusViewForBitmap.this.frameRightMoveEnd) && (FocusViewForBitmap.this.frameRightMove >= 0.0F || FocusViewForBitmap.this.frameRight + FocusViewForBitmap.this.frameRightMove > FocusViewForBitmap.this.frameRightMoveEnd) && (FocusViewForBitmap.this.frameBottomMove <= 0.0F || FocusViewForBitmap.this.frameBottom + FocusViewForBitmap.this.frameBottomMove < FocusViewForBitmap.this.frameBottomMoveEnd) && (FocusViewForBitmap.this.frameBottomMove >= 0.0F || FocusViewForBitmap.this.frameBottom + FocusViewForBitmap.this.frameBottomMove > FocusViewForBitmap.this.frameBottomMoveEnd)) {
-                FocusViewForBitmap.this.frameLeft = FocusViewForBitmap.this.frameLeft + FocusViewForBitmap.this.frameLeftMove;
-                FocusViewForBitmap.this.frameTop = FocusViewForBitmap.this.frameTop + FocusViewForBitmap.this.frameTopMove;
-                FocusViewForBitmap.this.frameRight = FocusViewForBitmap.this.frameRight + FocusViewForBitmap.this.frameRightMove;
-                FocusViewForBitmap.this.frameBottom = FocusViewForBitmap.this.frameBottom + FocusViewForBitmap.this.frameBottomMove;
-                FocusViewForBitmap.this.postInvalidateDelayed(0);
-                FocusViewForBitmap.this.postDelayed(new AutoMoveRunnable(), 16);
+            Log.e("Focus", "************AutoMoveRunnable************ ");
+            if (!isActived) {
+                return;
+            }
+            if ((frameLeftMove <= 0.0F || frameLeft + frameLeftMove < frameLeftMoveEnd)
+                    && (frameLeftMove >= 0.0F || frameLeft + frameLeftMove > frameLeftMoveEnd)
+                    && (frameTopMove <= 0.0F || frameTop + frameTopMove < frameTopMoveEnd)
+                    && (frameTopMove >= 0.0F || frameTop + frameTopMove > frameTopMoveEnd)
+                    && (frameRightMove <= 0.0F || frameRight + frameRightMove < frameRightMoveEnd)
+                    && (frameRightMove >= 0.0F || frameRight + frameRightMove > frameRightMoveEnd)
+                    && (frameBottomMove <= 0.0F || frameBottom + frameBottomMove < frameBottomMoveEnd)
+                    && (frameBottomMove >= 0.0F || frameBottom + frameBottomMove > frameBottomMoveEnd)) {
+                frameLeft = frameLeft + frameLeftMove;
+                frameTop = frameTop + frameTopMove;
+                frameRight = frameRight + frameRightMove;
+                frameBottom = frameBottom + frameBottomMove;
+                postInvalidateDelayed(0);
+                postDelayed(moveRunnable, 16);
             } else {
-                FocusViewForBitmap.this.frameLeft = FocusViewForBitmap.this.frameLeftMoveEnd;
-                FocusViewForBitmap.this.frameTop = FocusViewForBitmap.this.frameTopMoveEnd;
-                FocusViewForBitmap.this.frameRight = FocusViewForBitmap.this.frameRightMoveEnd;
-                FocusViewForBitmap.this.frameBottom = FocusViewForBitmap.this.frameBottomMoveEnd;
-                FocusViewForBitmap.this.postInvalidateDelayed((long) FocusViewForBitmap.this.movingVelocity);
-//                Log.i("Focus", "FocusViewForBitmap.this.frameLeft " + FocusViewForBitmap.this.frameLeft);
-//                Log.i("Focus", "FocusViewForBitmap.this.frameRight " + FocusViewForBitmap.this.frameRight);
-                if (FocusViewForBitmap.this.isMoveHideFocus) {
-                    FocusViewForBitmap.this.handler.sendMessage(FocusViewForBitmap.this.handler.obtainMessage());
-                    FocusViewForBitmap.this.isMoveHideFocus = false;
+                frameLeft = frameLeftMoveEnd;
+                frameTop = frameTopMoveEnd;
+                frameRight = frameRightMoveEnd;
+                frameBottom = frameBottomMoveEnd;
+                postInvalidateDelayed((long) movingVelocity);
+                if (isMoveHideFocus) {
+//                    handler.sendMessage(handler.obtainMessage());
+                    setVisibility(View.VISIBLE);
+                    isMoveHideFocus = false;
                 }
 
-                if (FocusViewForBitmap.this.onFocusMoveEndListener != null) {
-                    FocusViewForBitmap.this.onFocusMoveEndListener.focusEnd(FocusViewForBitmap.this.changeFocusView);
+                if (onFocusMoveEndListener != null) {
+                    onFocusMoveEndListener.focusEnd(changeFocusView);
                 }
             }
         }
@@ -368,11 +379,11 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
     }
 
     public void hideFocus() {
-        this.setVisibility(4);
+        this.setVisibility(View.INVISIBLE);
     }
 
     public void showFocus() {
-        this.setVisibility(0);
+        this.setVisibility(View.VISIBLE);
     }
 
     public void setFocusBitmap(int resId) {
@@ -403,5 +414,13 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
     public void setOnFocusMoveEndListener(OnFocusMoveEndListener onFocusMoveEndListener, View changeFocusView) {
         this.onFocusMoveEndListener = onFocusMoveEndListener;
         this.changeFocusView = changeFocusView;
+    }
+
+    public void release() {
+        isActived = false;
+        removeCallbacks(null);
+        clearAnimation();
+        clearFocus();
+
     }
 }
