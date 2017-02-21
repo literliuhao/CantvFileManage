@@ -1,6 +1,7 @@
 package com.cantv.media.center.ui.player;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -270,8 +271,14 @@ public class PlayerController extends RelativeLayout {
 
     @SuppressLint("SimpleDateFormat")
     public void refreshTime() {
-        if (format == null) {
+        ContentResolver cv = mContext.getContentResolver(); // 获取当前系统设置
+        String strTimeFormat = android.provider.Settings.System.getString(cv, android.provider.Settings.System.TIME_12_24);
+        if (strTimeFormat.equals("24")) {
+            Log.i("activity", "当前是24制式");
             format = new SimpleDateFormat("HH:mm");
+        } else {
+//        strTimeFormat.equals("12")
+            format = new SimpleDateFormat("hh:mm");
         }
         String time = format.format(new Date(System.currentTimeMillis()));
         mTime.setText(time);

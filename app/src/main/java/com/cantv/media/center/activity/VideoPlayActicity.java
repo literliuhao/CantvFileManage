@@ -2,7 +2,6 @@ package com.cantv.media.center.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
@@ -488,7 +487,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     mCurrentSubMenuPos = position;
                     if (mCurPlayIndex == position) {
                         view.setSelected(true);
-                    }else{
+                    } else {
                         view.setSelected(hasFocus);
                     }
                 }
@@ -557,42 +556,42 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
                 @Override
                 public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-                        //修复OS-3900浏览音频视频和图片文件时，点击菜单按钮，在显示的文件列表页，不支持循环选择
-                        Log.i(TAG, "onKeyDown: "+TAG);
-                        if(mSelectedPosi == 0){
-                            mCurrentSubMenuList = playListSubMenuItems;
-                        }else {
+                    //修复OS-3900浏览音频视频和图片文件时，点击菜单按钮，在显示的文件列表页，不支持循环选择
+                    Log.i(TAG, "onKeyDown: " + TAG);
+                    if (mSelectedPosi == 0) {
+                        mCurrentSubMenuList = playListSubMenuItems;
+                    } else {
+                        return false;
+                    }
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (mCurrentSubMenuPos == mCurrentSubMenuList.size() - 1) {
+                            mMenuDialog.showSubMenuFocus(false);
+                            mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedIndex(true));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMenuDialog.showSubMenuFocus(true);
+                                }
+                            }, 300);
+                            return true;
+                        } else {
                             return false;
                         }
-                        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN ) {
-                            if (mCurrentSubMenuPos == mCurrentSubMenuList.size() - 1) {
-                                mMenuDialog.showSubMenuFocus(false);
-                                mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedIndex(true));
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mMenuDialog.showSubMenuFocus(true);
-                                    }
-                                }, 300);
-                                return true;
-                            }else {
-                                return false;
-                            }
-                        }else if(keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN ) {
-                            if (mCurrentSubMenuPos == 0) {
-                                mMenuDialog.showSubMenuFocus(false);
-                                mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedIndex(false));
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mMenuDialog.showSubMenuFocus(true);
-                                    }
-                                }, 300);
-                                return true;
-                            } else {
-                                return false;
-                            }
+                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (mCurrentSubMenuPos == 0) {
+                            mMenuDialog.showSubMenuFocus(false);
+                            mMenuDialog.getMenu().focusSubMenuItem2(list.get(0).getSelectedIndex(false));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMenuDialog.showSubMenuFocus(true);
+                                }
+                            }, 300);
+                            return true;
+                        } else {
+                            return false;
                         }
+                    }
                     return false;
                 }
             });
@@ -610,7 +609,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             public void run() {
                 mMenuDialog.showSubMenuFocus(true);
             }
-        },500);
+        }, 500);
     }
 
     private void performSubmenuClickEvent(MenuItem mSubSelectedMenu, int position) {
