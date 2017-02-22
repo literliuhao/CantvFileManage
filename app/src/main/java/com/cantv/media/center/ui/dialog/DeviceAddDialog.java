@@ -75,7 +75,6 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener{
                 return false;
             }
         });
-
         mConfirmBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
