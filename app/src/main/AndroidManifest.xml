@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cantv.media"
-          android:versionCode="152"
-          android:versionName="20170208_v1.5.2">
-          <!--android:sharedUserId="android.uid.system"-->
+          android:sharedUserId="android.uid.system"
+          android:versionCode="153"
+          android:versionName="20170222_v1.5.3">
 
 
     <uses-sdk
@@ -116,7 +116,7 @@
         </receiver>
         <meta-data
             android:name="com.cantv.media.center.Listener.SimpleGlideModule"
-            android:value="GlideModule" />
+            android:value="GlideModule"/>
     </application>
 
 </manifest>
