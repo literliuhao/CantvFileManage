@@ -210,20 +210,24 @@ public class ProxyPlayer {
         if (sourceUri.equals("") || sourceUri.contains("//")) {
             return saveSubIndexList;
         }
-        TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
-        if (trackInfos != null && trackInfos.length > 0) {
-            for (int i = 0; i < trackInfos.length; i++) {
-                TrackInfo info = trackInfos[i];
-                if (info.getTrackType() == MEDIA_TRACK_TYPE_TIMEDTEXT) {
-                    String language = info.getLanguage();
-                    if (!"und".equals(language)) {
-                        language = StringUtil.getLanguage(language);
-                        saveSubIndexList.add(saveSubIndexList.size(), i + "." + language);
-                    } else {
-                        saveSubIndexList.add(0, i + "." + language);
+        try {
+            TrackInfo[] trackInfos = getLitePlayer().getTrackInfo();
+            if (trackInfos != null && trackInfos.length > 0) {
+                for (int i = 0; i < trackInfos.length; i++) {
+                    TrackInfo info = trackInfos[i];
+                    if (info.getTrackType() == MEDIA_TRACK_TYPE_TIMEDTEXT) {
+                        String language = info.getLanguage();
+                        if (!"und".equals(language)) {
+                            language = StringUtil.getLanguage(language);
+                            saveSubIndexList.add(saveSubIndexList.size(), i + "." + language);
+                        } else {
+                            saveSubIndexList.add(0, i + "." + language);
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return getLanguageList(saveSubIndexList);
     }
