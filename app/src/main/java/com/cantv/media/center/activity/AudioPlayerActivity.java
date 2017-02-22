@@ -28,6 +28,7 @@ import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
 import com.cantv.media.center.Listener.PlayMode;
 import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Audio;
 import com.cantv.media.center.data.LyricInfo;
 import com.cantv.media.center.data.Media;
@@ -43,8 +44,10 @@ import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnKeyEventListener;
 import com.cantv.media.center.ui.dialog.MenuDialog;
 import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
 import com.cantv.media.center.utils.FastBlurUtil;
+import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -192,6 +195,30 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onResume() {
+        if (mDataList.size() < 1) {
+//            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
+            String mediaPath = SharedPreferenceUtil.getMediaPath();
+            mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
+            List<Media> fileList = FileUtil.getFileList(mediaPath, false, SourceType.MUSIC);
+            FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
+            if (fileList.size() > 0) {
+                mDataList.clear();
+                mDataList.addAll(fileList);
+            }
+            for (int i = 0; i < fileList.size(); i++) {
+                String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
+                if (SharedPreferenceUtil.getMediaPath().equals(path)) {
+                    mCurPlayIndex = i;
+                    mDefaultPlayIndex = i;
+                    break;
+                }
+            }
+            if (mDataList.size() > 0) {
+                playDefualt();
+            }
+
+        }
+
         if (!ismManualPaused()) {
             mCDView.start();
             mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
@@ -339,6 +366,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         setmPaused(false);  //暂停时,在列表中播放别的曲目,这个参数可能不准确
         mHandler.sendEmptyMessage(0);   //避免没有进度
         mDurationTv.setText(" / " + formatTime(duration));
+
+        //保存当前播放的路径
+        String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
+        SharedPreferenceUtil.saveMediaPath(path);
     }
 
     @Override
