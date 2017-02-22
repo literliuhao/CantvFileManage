@@ -20,7 +20,7 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.utils.NetworkUtils;
 
-public class DeviceAddDialog extends Dialog implements OnFocusChangeListener, TextView.OnEditorActionListener {
+public class DeviceAddDialog extends Dialog implements OnFocusChangeListener{
     private OnIpConfirmedListener listener;
     private View contentView;
     private EditText mIpEt;
@@ -53,7 +53,28 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener, Te
         mConfirmBtn.setOnFocusChangeListener(this);
         mCancelBtn.setOnFocusChangeListener(this);
         //修复OS-3907进入文件共享页面，点击界面键盘上的下一个按钮，多个页面焦点出现错误
-        mIpEt.setOnEditorActionListener(this);
+        mIpEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                //判断是否是下一个键
+                InputMethodManager imm = (InputMethodManager) mIpEt.getContext().getSystemService(mContext.INPUT_METHOD_SERVICE);
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    //隐藏软键盘
+                    if (imm.isActive()) {
+                        imm.hideSoftInputFromWindow(
+                                v.getApplicationWindowToken(), 0);
+                        mConfirmBtn.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mConfirmBtn.requestFocus();
+                            }
+                        }, 300);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
 
         mConfirmBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -140,26 +161,5 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener, Te
         if (mFocusUtils != null) {
             mFocusUtils.release();
         }
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        //判断是否是下一个键
-        InputMethodManager imm = (InputMethodManager) mIpEt.getContext().getSystemService(mContext.INPUT_METHOD_SERVICE);
-        if (actionId == EditorInfo.IME_ACTION_NEXT) {
-            //隐藏软键盘
-            if (imm.isActive()) {
-                imm.hideSoftInputFromWindow(
-                        v.getApplicationWindowToken(), 0);
-                mConfirmBtn.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mConfirmBtn.requestFocus();
-                    }
-                }, 300);
-            }
-            return true;
-        }
-        return false;
     }
 }

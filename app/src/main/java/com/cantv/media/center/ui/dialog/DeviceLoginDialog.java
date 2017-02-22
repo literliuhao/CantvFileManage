@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 
-public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener,TextView.OnEditorActionListener {
+public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener{
     private OnLoginListener listener;
     private View contentView;
     private EditText mUserNameEt;
@@ -61,7 +61,28 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener,T
         mConfirmBtn.setOnFocusChangeListener(this);
         mCancelBtn.setOnFocusChangeListener(this);
         //修复OS-3907进入文件共享页面，点击界面键盘上的下一个按钮，多个页面焦点出现错误
-        mPasswordEt.setOnEditorActionListener(this);
+        mPasswordEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                //判断是否是下一个键
+                InputMethodManager imm = (InputMethodManager) mPasswordEt.getContext().getSystemService(mContext.INPUT_METHOD_SERVICE);
+                if(actionId == EditorInfo.IME_ACTION_NEXT){
+                    //隐藏软键盘
+                    if (imm.isActive()) {
+                        imm.hideSoftInputFromWindow(
+                                v.getApplicationWindowToken(), 0);
+                        mShowPwdCb.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mShowPwdCb.requestFocus();
+                            }
+                        },300);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
 
         mShowPwdCb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -146,27 +167,6 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener,T
                 }, 100);
             }
         }
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        //判断是否是下一个键
-        InputMethodManager imm = (InputMethodManager) mPasswordEt.getContext().getSystemService(mContext.INPUT_METHOD_SERVICE);
-        if(actionId == EditorInfo.IME_ACTION_NEXT){
-            //隐藏软键盘
-            if (imm.isActive()) {
-                imm.hideSoftInputFromWindow(
-                        v.getApplicationWindowToken(), 0);
-                mShowPwdCb.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mShowPwdCb.requestFocus();
-                    }
-                },300);
-            }
-            return true;
-        }
-        return false;
     }
 
     public void refreshData(String userName, String password) {
