@@ -309,7 +309,7 @@ public class MediaUtils {
      * @param currIndex
      * @param sourceType
      */
-    public static void openMediaActivity(Context context, ArrayList pathList, int currIndex, SourceType sourceType, boolean isLocal) {
+    public static void openMediaActivity(Context context, final ArrayList pathList, int currIndex, SourceType sourceType, boolean isLocal) {
         Intent intent = new Intent();
         Class currClass = null;
         if (sourceType == SourceType.MOIVE) {

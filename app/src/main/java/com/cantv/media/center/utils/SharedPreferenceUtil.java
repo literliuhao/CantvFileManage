@@ -24,6 +24,7 @@ public class SharedPreferenceUtil {
     private static final String SHARE_GUIDE = "share_guide";
     private static final String SHARE_DEFAULT_CONFIG = "default_config";
     private static final String PHOTO_MODEL = "photo_Model";
+    private static final String MEDIA_PATH = "mediaPath";
     private static SharedPreferences mSp = MyApplication.mContext.getSharedPreferences(SHARE_DEFAULT_CONFIG, Context.MODE_PRIVATE);
     private static SharedPreferences.Editor mEditor = mSp.edit();
 
@@ -223,11 +224,10 @@ public class SharedPreferenceUtil {
     }
 
     /**
-     *
      * @param photoModel
      * @return
      */
-    public static Boolean setPhotoModel(int photoModel){
+    public static Boolean setPhotoModel(int photoModel) {
         mEditor.putInt(PHOTO_MODEL, photoModel);
         return commitInfo(mEditor);
     }
@@ -253,6 +253,25 @@ public class SharedPreferenceUtil {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * 保存当前打开的路径
+     *
+     * @param path
+     */
+    public static void saveMediaPath(String path) {
+        mEditor.putString(MEDIA_PATH, path);
+        applyInfo(mEditor);
+    }
+
+    /**
+     * 获取保存的路径
+     *
+     * @return
+     */
+    public static String getMediaPath() {
+        return mSp.getString(MEDIA_PATH, "");
     }
 
 }

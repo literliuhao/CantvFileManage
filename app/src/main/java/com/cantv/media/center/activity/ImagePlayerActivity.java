@@ -29,7 +29,7 @@ import com.app.core.sys.MainThread;
 import com.app.core.utils.UiUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
-import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.image.ImageBrowser;
@@ -38,6 +38,7 @@ import com.cantv.media.center.ui.image.ImageFrameView.NotifyParentUpdate;
 import com.cantv.media.center.ui.image.ImageFrameView.onLoadingImgListener;
 import com.cantv.media.center.ui.player.MediaControllerBar;
 import com.cantv.media.center.utils.DateUtil;
+import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
@@ -609,7 +610,32 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     protected void onResume() {
         super.onResume();
-        if(isAutoPlay){
+
+        if (mDataList.size() < 1) {
+//            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
+            String mediaPath = SharedPreferenceUtil.getMediaPath();
+            mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
+            List<Media> fileList = FileUtil.getFileList(mediaPath, false, SourceType.PICTURE);
+            FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
+            if (fileList.size() > 0) {
+                mDataList.clear();
+                mDataList.addAll(fileList);
+            }
+            for (int i = 0; i < fileList.size(); i++) {
+                String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
+                if (SharedPreferenceUtil.getMediaPath().equals(path)) {
+                    mDefaultPlayIndex = i;
+                    break;
+                }
+            }
+            if (mDataList.size() > 0) {
+                showImage(mDefaultPlayIndex, null);
+            }
+
+        }
+
+
+        if (isAutoPlay) {
             startAutoPlay();
             closeVolume();
         }
@@ -626,6 +652,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         stopAutoPlay();
         openVolume();
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+        //保存当前播放的路径
+        String path = mDataList.get(mCurImageIndex).isSharing ? mDataList.get(mCurImageIndex).sharePath : mDataList.get(mCurImageIndex).mUri;
+        SharedPreferenceUtil.saveMediaPath(path);
     }
 
     private void startAutoPlay() {

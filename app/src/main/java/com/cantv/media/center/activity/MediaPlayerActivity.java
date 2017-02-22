@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MediaPlayerActivity extends Activity {
-    private int mDefaultPlayIndex;
-    private List<Media> mDataList;
+    public int mDefaultPlayIndex;
+    public List<Media> mDataList;
     private boolean mOnKeyPressedContinuity = false;
 
     @Override

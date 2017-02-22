@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceHolder.Callback;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +25,7 @@ import com.cantv.liteplayer.core.subtitle.StContent;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
+import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuConstant;
 import com.cantv.media.center.data.MenuItem;
@@ -43,8 +43,10 @@ import com.cantv.media.center.ui.player.ExternalSurfaceView.ShowType;
 import com.cantv.media.center.ui.player.PlayerController;
 import com.cantv.media.center.ui.player.SrcParser;
 import com.cantv.media.center.ui.player.SubParser;
+import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -99,6 +101,34 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 //        MyApplication.addActivity(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mDataList.size() < 1) {
+//            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
+            String mediaPath = SharedPreferenceUtil.getMediaPath();
+            mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
+            List<Media> fileList = FileUtil.getFileList(mediaPath, false, SourceType.MOIVE);
+            FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
+            if (fileList.size() > 0) {
+                mDataList.clear();
+                mDataList.addAll(fileList);
+            }
+            for (int i = 0; i < fileList.size(); i++) {
+                String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
+                if (SharedPreferenceUtil.getMediaPath().equals(path)) {
+                    mCurPlayIndex = i;
+                    mDefaultPlayIndex = i;
+                    break;
+                }
+            }
+            if (mDataList.size() > 0) {
+                initView();
+            }
+
+        }
+    }
+
     private void initView() {
         getProxyPlayer().setSubTitleDisplayCallBack(this);
         mSubTitle = (TextView) findViewById(R.id.media__video_view__subtitle1);
@@ -108,7 +138,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar = (PlayerController) findViewById(R.id.media__video_view__ctrlbar);
         mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mSurfaceView.getHolder().setFormat(PixelFormat.OPAQUE);
-        mSurfaceView.getHolder().addCallback(new Callback() {
+        mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceDestroyed(SurfaceHolder arg0) {
                 curindex = mCurPlayIndex;
@@ -168,6 +198,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         //解决内置字幕切换后不消失
 //        getProxyPlayer().setMovieSubTitle(0);
 //        getProxyPlayer().setMovieAudioTrack(0);
+
+        //保存当前播放的路径
+        String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
+        SharedPreferenceUtil.saveMediaPath(path);
 
         //给外挂字幕关闭
         mOpenExternalSubtitle = false;
