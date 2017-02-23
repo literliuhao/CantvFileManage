@@ -22,7 +22,7 @@
         zby:subMenuFocusResId="@drawable/menufocus"
         zby:subMenuWidth="@dimen/px340"
         zby:subMenuPaddingTop="@dimen/px160"
-        zby:subMenuPaddingBottom="@dimen/px50"
+        zby:subMenuPaddingBottom="@dimen/px20"
         ></com.cantv.media.center.ui.dialog.DoubleColumnMenu>
 
 </LinearLayout>

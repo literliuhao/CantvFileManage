@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,6 +47,7 @@ import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.ScanSambaTask;
 import com.cantv.media.center.utils.cybergarage.ScanSambaTask.IScanFileListener;
 
+import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -85,6 +87,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     private boolean isFirst = true;
     Drawable mBlurDrawable;
     private CommonDialog mCommonDialog;
+    private Bitmap mScreenShot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -312,13 +315,11 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     // <-- addDevice
     public void showAddDeviceDialog() {
         //修复OS-4040TV端未连接网络，进入文件管理，文件共享中，点击添加设备，提示文管理停止件运行
-        if(!NetworkUtils.isNetworkAvailable(this)){
+        if (!NetworkUtils.isNetworkAvailable(this)) {
             ToastUtils.showMessage(MyApplication.mContext, getString(R.string.connection_fail), Toast.LENGTH_LONG);
             return;
         }
-        if (mAddDeviceDialog == null) {
-            mAddDeviceDialog = new DeviceAddDialog(this);
-        }
+        mAddDeviceDialog = new DeviceAddDialog(this);
         mAddDeviceDialog.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -326,7 +327,8 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     mBlurDrawable.setCallback(null);
                     mBlurDrawable = null;
                 }
-                mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), MyApplication.getContext());
+                mScreenShot = getScreenShot();
+                mBlurDrawable = BitmapUtils.blurBitmap(mScreenShot, MyApplication.getContext());
                 ((DeviceAddDialog) dialog).updateBackground(mBlurDrawable);
                 ((DeviceAddDialog) dialog).reset();
             }
@@ -347,6 +349,19 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 List<String> strings = new ArrayList<>();
                 strings.add(ip);
                 checkIPAccess(strings, false);
+            }
+        });
+        mAddDeviceDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (null != mBlurDrawable) {
+                    mBlurDrawable.setCallback(null);
+                    mBlurDrawable = null;
+                }
+                if (null != mScreenShot && !mScreenShot.isRecycled()) {
+                    mScreenShot.recycle();
+                    mScreenShot = null;
+                }
             }
         });
         mAddDeviceDialog.show();
@@ -446,9 +461,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     // <-- loginDevice
     public void showLoginDeviceDialog(final DeviceInfo deviceInfo) {
-        if (mLoginDeviceDialog == null) {
-            mLoginDeviceDialog = new DeviceLoginDialog(this);
-        }
+        mLoginDeviceDialog = new DeviceLoginDialog(this);
         mLoginDeviceDialog.setOnShowListener(new OnShowListener() {
 
             @Override
@@ -457,7 +470,8 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     mBlurDrawable.setCallback(null);
                     mBlurDrawable = null;
                 }
-                mBlurDrawable = BitmapUtils.blurBitmap(getScreenShot(), MyApplication.getContext());
+                mScreenShot = getScreenShot();
+                mBlurDrawable = BitmapUtils.blurBitmap(mScreenShot, MyApplication.getContext());
                 ((DeviceLoginDialog) dialog).updateBackground(mBlurDrawable);
                 ((DeviceLoginDialog) dialog).reset();
             }
@@ -476,6 +490,19 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
         });
         mLoginDeviceDialog.refreshData(deviceInfo.getUserName(), deviceInfo.getPassword());
+        mLoadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (null != mBlurDrawable) {
+                    mBlurDrawable.setCallback(null);
+                    mBlurDrawable = null;
+                }
+                if (null != mScreenShot && !mScreenShot.isRecycled()) {
+                    mScreenShot.recycle();
+                    mScreenShot = null;
+                }
+            }
+        });
         mLoginDeviceDialog.show();
     }
 
@@ -600,6 +627,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             public void onStartCheck() {
                 showLoadingDialog();
             }
+
             @Override
             public void onGetResult(List<String> resultIPs) {
                 if (resultIPs.size() > 0) {
@@ -621,7 +649,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     public void run() {
                         hideLoadingDialog();
                     }
-                },100);
+                }, 100);
             }
         });
     }
@@ -654,9 +682,9 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         } else {
             mScrollView.setVisibility(View.VISIBLE);
             String linkHostList = SharedPreferenceUtil.getLinkHostList();
-            if (TextUtils.isEmpty(linkHostList) ) {
+            if (TextUtils.isEmpty(linkHostList)) {
                 mAddDeviceView.setFocusable(true);
-            }else{
+            } else {
                 mAddDeviceView.setFocusable(false);
             }
         }

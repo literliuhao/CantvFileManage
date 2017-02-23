@@ -53,7 +53,7 @@ public class BitmapUtils {
     private static Bitmap compress(Bitmap image) {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        image.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         if (baos.toByteArray().length / 1024 > 1024) {
             baos.reset();
             image.compress(Bitmap.CompressFormat.JPEG, 50, baos);
