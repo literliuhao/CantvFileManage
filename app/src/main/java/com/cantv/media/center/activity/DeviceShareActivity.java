@@ -327,6 +327,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     mBlurDrawable.setCallback(null);
                     mBlurDrawable = null;
                 }
+
                 mScreenShot = getScreenShot();
                 mBlurDrawable = BitmapUtils.blurBitmap(mScreenShot, MyApplication.getContext());
                 ((DeviceAddDialog) dialog).updateBackground(mBlurDrawable);
