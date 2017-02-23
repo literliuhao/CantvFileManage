@@ -88,7 +88,7 @@ public class MediaGridView extends CustomGridView {
         setGridViewSelector(new ColorDrawable(Color.TRANSPARENT));
         setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 // 1,如果是文件夹则继续显示下级列表
                 // 2,如果是文件则全屏显示
                 final Media item = mListAdapter.getItem(position);
@@ -96,27 +96,30 @@ public class MediaGridView extends CustomGridView {
                     if (msSourceType == SourceType.SHARE) {
                         try {
                             String proxyPathPrefix = fileServer.getProxyPathPrefix();
-                            mCurrMediaList = FileUtil.getSmbFileList(item.mUri, proxyPathPrefix);
+                            FileUtil.getSmbFileList(item.mUri, proxyPathPrefix, new FileUtil.OnSmbFileListListener() {
+                                @Override
+                                public void findSmbFileListFinish(List<Media> list) {
+                                    mCurrMediaList = list;
+                                    mActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            clickSetData(position);
+                                        }
+                                    });
+                                }
+                            });
                         } catch (Exception e) {
                             e.printStackTrace();
                             ToastUtils.showMessage(mContext, getResources().getString(R.string.data_exception));
                         }
                     } else if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
                         mCurrMediaList = FileUtil.getFileList(item.mUri, true, msSourceType);
+                        clickSetData(position);
                     } else {
                         mCurrMediaList = FileUtil.getFileList(item.mUri);
+                        clickSetData(position);
                     }
-                    FileUtil.sortList(mCurrMediaList, FileComparator.SORT_TYPE_DEFAULT, true);
-                    mPosStack.push(position);
-                    mMediaStack.push(mListAdapter.getData());
-                    mListAdapter.bindData(mCurrMediaList);
-                    if (mCurrMediaList.size() == 0) {
-                        showNoDataPage(currentType);
-                        mActivity.mRTCountView.setVisibility(View.GONE);
-                    } else {
-                        setTextRTview(1 + "", " / " + mCurrMediaList.size());
-                    }
-                    MediaGridView.this.setSelection(0);
+
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
                     mActivity.isStartAc = true;
                     openMediaActivity(item);
@@ -133,12 +136,12 @@ public class MediaGridView extends CustomGridView {
 //                                getSettingDialog();
 //                            }
 //                        } else {
-                            //添加APP弹框(OS1.1)
-                            if (flag) {
-                                getDisclaimerDialog(item);
-                            } else {
-                                getApkForbidDialog();
-                            }
+                        //添加APP弹框(OS1.1)
+                        if (flag) {
+                            getDisclaimerDialog(item);
+                        } else {
+                            getApkForbidDialog();
+                        }
 //                        }
                     } else {
                         mActivity.isStartAc = true;
@@ -172,6 +175,25 @@ public class MediaGridView extends CustomGridView {
             });
             fileServer.start();
         }
+    }
+
+    /**
+     * 点击设置数据
+     *
+     * @param position
+     */
+    private void clickSetData(int position) {
+        FileUtil.sortList(mCurrMediaList, FileComparator.SORT_TYPE_DEFAULT, true);
+        mPosStack.push(position);
+        mMediaStack.push(mListAdapter.getData());
+        mListAdapter.bindData(mCurrMediaList);
+        if (mCurrMediaList.size() == 0) {
+            showNoDataPage(currentType);
+            mActivity.mRTCountView.setVisibility(View.GONE);
+        } else {
+            setTextRTview(1 + "", " / " + mCurrMediaList.size());
+        }
+        MediaGridView.this.setSelection(0);
     }
 
     public void setStyle(MediaOrientation orientation) {

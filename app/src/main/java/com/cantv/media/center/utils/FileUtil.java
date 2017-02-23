@@ -257,6 +257,11 @@ public class FileUtil {
         return tList;
     }
 
+
+    public interface OnSmbFileListListener {
+        void findSmbFileListFinish(List<Media> list);
+    }
+
     /**
      * 返回指定路径的文件/夹 列表
      *
@@ -264,6 +269,56 @@ public class FileUtil {
      * @param proxyPathPrefix
      * @return
      */
+    public static void getSmbFileList(final String path, final String proxyPathPrefix, final OnSmbFileListListener onSmbFileListListener) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Media> tList = new ArrayList<>();
+
+                try {
+                    SmbFile file = new SmbFile(path);
+                    if (!file.exists() || !file.isDirectory()) {
+                        if (onSmbFileListListener != null) {
+                            onSmbFileListListener.findSmbFileListFinish(tList);
+                        }
+                        return;
+                    }
+                    SmbFile[] listfiles = file.listFiles();
+                    if (listfiles == null) {
+                        if (onSmbFileListListener != null) {
+                            onSmbFileListListener.findSmbFileListFinish(tList);
+                        }
+                        return;
+                    }
+                    for (SmbFile childFile : listfiles) {
+                        // 是常见文件,并且是非隐藏文件
+                        if (FileUtil.isShowFile(childFile)) {
+                            Media fileInfo = FileUtil.getSmbFileInfo(childFile, null, false, proxyPathPrefix);
+                            if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && (!fileInfo.mName.contains("$/"))) {
+                                // 当文件是图片类型,并且大于10k,才进行显示
+                                if (fileInfo.mType == SourceType.PICTURE) {
+                                    if (fileInfo.fileSize > 1024 * 6) {
+                                        tList.add(fileInfo);
+                                    }
+                                } else {
+                                    tList.add(fileInfo);
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (onSmbFileListListener != null) {
+                    onSmbFileListListener.findSmbFileListFinish(tList);
+                }
+
+            }
+        }).start();
+
+    }
+
+
     public static List<Media> getSmbFileList(String path, String proxyPathPrefix) {
         List<Media> tList = new ArrayList<>();
         try {
@@ -296,6 +351,7 @@ public class FileUtil {
         }
         return tList;
     }
+
 
     /**
      * 返回指定路径指定类型的文件/夹 列表
