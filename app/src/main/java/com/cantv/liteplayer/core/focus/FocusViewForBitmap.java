@@ -18,7 +18,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 public class FocusViewForBitmap extends View implements BaseFocusView {
@@ -321,7 +320,7 @@ public class FocusViewForBitmap extends View implements BaseFocusView {
 
         @Override
         public void run() {
-            Log.e("Focus", "************AutoMoveRunnable************ ");
+//            Log.e("Focus", "************AutoMoveRunnable************ ");
             if (!isActived) {
                 return;
             }

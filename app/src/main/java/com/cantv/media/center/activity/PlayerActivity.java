@@ -245,7 +245,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
                 index = index % mDataList.size();
             }
             mCurPlayIndex = index;
-            Log.w("path", mDataList.get(index).getmUri());
+//            Log.w("path", mDataList.get(index).getmUri());
             getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
                 @Override
                 public void run() {
