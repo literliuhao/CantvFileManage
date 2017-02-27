@@ -273,12 +273,12 @@ public class PlayerController extends RelativeLayout {
     public void refreshTime() {
         ContentResolver cv = mContext.getContentResolver(); // 获取当前系统设置
         String strTimeFormat = android.provider.Settings.System.getString(cv, android.provider.Settings.System.TIME_12_24);
-        if (strTimeFormat.equals("24")) {
-            Log.i("activity", "当前是24制式");
-            format = new SimpleDateFormat("HH:mm");
-        } else {
-//        strTimeFormat.equals("12")
+        if ("12".equals(strTimeFormat)) {
+            Log.i("activity", "当前是12制式");
+            //strTimeFormat.equals("12")
             format = new SimpleDateFormat("hh:mm");
+        } else {
+            format = new SimpleDateFormat("HH:mm");
         }
         String time = format.format(new Date(System.currentTimeMillis()));
         mTime.setText(time);

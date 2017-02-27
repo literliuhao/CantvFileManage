@@ -2121,4 +2121,6 @@
     <dimen name="fontsize_60">40sp</dimen>
     <dimen name="fontsize_66">42sp</dimen>
 
+
+    <dimen name="textlightsize">30sp</dimen>
 </resources>
