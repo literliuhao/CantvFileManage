@@ -11,8 +11,6 @@ apply plugin: 'com.android.application'
 //}
 //
 //loadProperties()
-ext.SIGN_CONFIG_FILE = ['sign_828.properties'] // 签名配置文件
-apply from: 'sign.gradle' // 自动签名配置，勿删
 
 android {
     compileSdkVersion 22
@@ -44,36 +42,38 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
     }
     productFlavors {
+        common{}
+        sign828{}
+        sign628{}
     }
 
     lintOptions {
         abortOnError false
     }
+}
 
-    applicationVariants.all { variant ->
-//        //修改生成的apk名字
-//        variant.outputs.each { output ->
-//            def oldFile = output.outputFile
-//            if (variant.buildType.name in ['release']) {
-//                def releaseApkName = 'mediaCenter_v' + variant.versionCode + ".apk";
-//                output.outputFile = new File(oldFile.parent+"/release", releaseApkName);
-//            }
-//        }
-        //修改生成的apk名字
-        variant.outputs.each { output ->
-            def oldFile = output.outputFile
-            if (variant.buildType.name in ['release']) {
-                def releaseApkName = 'CantvFileManager_v' + variant.versionCode + ".apk";
-                if (project.hasProperty("appReleaseDir")) {
-                    File releasePath = new File(project.property("appReleaseDir"), getDate());
-                    output.outputFile = new File(releasePath, releaseApkName);
-                } else {
-                    output.outputFile = new File(oldFile.parent, releaseApkName)
-                }
+/**
+ * 注意事项
+ * 1、不要调整节点的顺序
+ * 2、签名配置中的 空字符串 代表默认签名（即android.defaultConfig.signingConfig）
+ * 3、要让不同的渠道使用不同签名时，不要在android.buildType下指定签名，否则无法生效
+ */
+ext.SIGN_CONFIG_FILE = ["",'sign_828.properties','sign_628.properties'] // 签名配置文件
+apply from: 'sign.gradle' // 自动签名配置，勿删
+android.applicationVariants.all { variant ->
+    //修改生成的apk名字
+    variant.outputs.each { output ->
+        def oldFile = output.outputFile
+        if (variant.buildType.name in ['release']) {
+            def releaseApkName = "CantvFileManager_${variant.productFlavors[0].name}_v${variant.versionCode}.apk";
+            if (project.hasProperty("appReleaseDir")) {
+                File releasePath = new File(project.property("appReleaseDir"), "CantvFileManager/${getDate()}");
+                output.outputFile = new File(releasePath, releaseApkName);
+            } else {
+                output.outputFile = new File(oldFile.parent, releaseApkName)
             }
         }
     }
