@@ -8,7 +8,7 @@ if (file('debugKeystore.properties').exists()) {
 }
 // 本地 release 签名配置
 if (file('releaseKeystore.properties').exists()) {
-    configSigningConfigs(file('keystore.properties'), false, true)
+    configSigningConfigs(file('releaseKeystore.properties'), false, true)
 }
 
 // for jenkins
@@ -24,12 +24,15 @@ if (!ext.SIGN_CONFIG_FILE.isEmpty() && project.hasProperty('sign_config_path')) 
         println "找到${SIGN_CONFIG_FILE.size()}个签名配置文件"
         def i = 0;
         for (flavor in android.productFlavors) {
-            def configFileName = ext.SIGN_CONFIG_FILE[i];
-            println "正在配置签名：${configFileName}"
+            def configFileName = ext.SIGN_CONFIG_FILE[i++];
+            if (configFileName == "") {
+                println "跳过签名配置：${flavor.name}"
+                continue
+            }
+            println "正在配置签名：${flavor.name} ==> ${configFileName}"
             def configFile = new File(sign_config_path, configFileName);
             def config = createSigningConfig(configFile, configFileName.replaceAll("\\.[\\w\\d]{2,}\$", ""))
             flavor.signingConfig = config
-            i++
         }
     } else {
         System.err.println('配置文件数量与 productFlavors 数量不一致')
