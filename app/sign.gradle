@@ -1,41 +1,47 @@
 // 本地签名配置
 if (file('keystore.properties').exists()) {
     configSigningConfigs(file('keystore.properties'))
+    return
 }
 // 本地 debug 签名配置
 if (file('debugKeystore.properties').exists()) {
     configSigningConfigs(file('debugKeystore.properties'), true, false)
+    return
 }
 // 本地 release 签名配置
 if (file('releaseKeystore.properties').exists()) {
     configSigningConfigs(file('releaseKeystore.properties'), false, true)
+    return
 }
 
 // for jenkins
-if (!ext.SIGN_CONFIG_FILE.isEmpty() && project.hasProperty('sign_config_path')) {
-    if (ext.SIGN_CONFIG_FILE.size() == 1) {
-        println "找到配置文件：${ext.SIGN_CONFIG_FILE[0]}"
-        def file = new File(sign_config_path, ext.SIGN_CONFIG_FILE[0]);
+if (ext.has("SIGN_CONFIG_FILE") && project.hasProperty('sign_config_path')) {
+    if (ext.SIGN_CONFIG_FILE instanceof String) {
+        println "找到配置文件：${ext.SIGN_CONFIG_FILE}"
+        def file = new File(sign_config_path, ext.SIGN_CONFIG_FILE);
         if (file.exists()) {
-            println "正在配置签名：${ext.SIGN_CONFIG_FILE[0]}"
+            println "正在配置签名：${ext.SIGN_CONFIG_FILE}"
             configSigningConfigs(file)
         }
-    } else if (ext.SIGN_CONFIG_FILE.size() == android.productFlavors.size()) {
-        println "找到${SIGN_CONFIG_FILE.size()}个签名配置文件"
-        def i = 0;
+    } else if (ext.SIGN_CONFIG_FILE instanceof Map) {
+        println "找到${SIGN_CONFIG_FILE.size()}个签名配置"
         for (flavor in android.productFlavors) {
-            def configFileName = ext.SIGN_CONFIG_FILE[i++];
-            if (configFileName == "") {
-                println "跳过签名配置：${flavor.name}"
-                continue
+            def configFileName = ext.SIGN_CONFIG_FILE.get(flavor.name, null)
+            if (configFileName == null) {
+                println "配置签名失败：${flavor.name} ==> 未配置"
+                continue;
+            }
+            def configFile = new File(sign_config_path, configFileName);
+            if (!configFile.exists()) {
+                println "配置签名失败：${flavor.name} ==> ${configFileName}(不存在)"
+                continue;
             }
             println "正在配置签名：${flavor.name} ==> ${configFileName}"
-            def configFile = new File(sign_config_path, configFileName);
             def config = createSigningConfig(configFile, configFileName.replaceAll("\\.[\\w\\d]{2,}\$", ""))
             flavor.signingConfig = config
         }
     } else {
-        System.err.println('配置文件数量与 productFlavors 数量不一致')
+        println "ext.SIGN_CONFIG_FILE 仅支持 String、Map<String,String>"
     }
 }
 
