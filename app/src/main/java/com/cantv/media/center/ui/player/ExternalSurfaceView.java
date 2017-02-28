@@ -1,7 +1,6 @@
 package com.cantv.media.center.ui.player;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
 
@@ -53,14 +52,7 @@ public class ExternalSurfaceView extends SurfaceView {
         }
 
         if (null != mChangeScreenListener) {
-
-            mChangeScreenListener.changeBefore();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mChangeScreenListener.changeAfter();
-                }
-            }, 100);
+            mChangeScreenListener.changeAfter();
         }
 
     }
@@ -70,7 +62,6 @@ public class ExternalSurfaceView extends SurfaceView {
     }
 
     public interface ChangeScreenListener {
-        void changeBefore();
 
         void changeAfter();
     }

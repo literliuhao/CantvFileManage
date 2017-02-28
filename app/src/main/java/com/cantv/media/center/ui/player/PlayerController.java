@@ -124,7 +124,6 @@ public class PlayerController extends RelativeLayout {
 
                 case SEEK_DURATION:
                     mProgressBar.setSecondProgressEnable(false);
-                    Log.w("SEEK_DURATION", mTmpSecondProgress + "  进度");
 
                     seekToDuration(mTmpSecondProgress);
                     break;
@@ -388,11 +387,11 @@ public class PlayerController extends RelativeLayout {
     public void seekToDuration(int duration) {
         handler.removeMessages(PlayerController.CHANG_PROGRESS);
         handler.removeMessages(PlayerController.CHANG_SRT);
-        Log.w("onSeekComplete", duration + " ~~~");
+//        Log.w("onSeekComplete", duration + " ~~~");
         mCtrlBarListener.onPlaySeekTo(duration, new OnSeekCompleteListener() {
             @Override
             public void onSeekComplete(MediaPlayer arg0) {
-                Log.w("onSeekComplete~~ ", mCtrlBarContext.getPlayerDuration() + " ~~~");
+//                Log.w("onSeekComplete~~ ", mCtrlBarContext.getPlayerDuration() + " ~~~");
                 delayHidePlayImgvi();
                 handler.sendEmptyMessageDelayed(PlayerController.CHANG_PLAYIMAGE, 200);
                 handler.sendEmptyMessage(PlayerController.CHANG_PROGRESS);

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -33,6 +34,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import jcifs.smb.SmbFile;
 
 @SuppressLint("ResourceAsColor")
 public class MediaGridView extends CustomGridView {
@@ -89,9 +92,26 @@ public class MediaGridView extends CustomGridView {
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                final Media item = mListAdapter.getItem(position);
+                if (null != item && item.isSharing) {   //判断共享是否还存在
+                    try {
+                        Log.w("共享路径", item.getSharePath());
+                        Log.w("共享路径muri", item.mUri);
+//                        // TODO: 2017/2/27 明天处理这个异常
+                        SmbFile file = new SmbFile(item.mUri);
+                        if (!file.exists()) {
+                            ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
+                            return;
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+//                        ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
+                        return;
+                    }
+                }
                 // 1,如果是文件夹则继续显示下级列表
                 // 2,如果是文件则全屏显示
-                final Media item = mListAdapter.getItem(position);
                 if (item.isDir) {
                     if (msSourceType == SourceType.SHARE) {
                         try {
