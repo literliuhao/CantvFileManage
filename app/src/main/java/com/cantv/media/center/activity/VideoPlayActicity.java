@@ -170,8 +170,8 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
             @Override
             public void changeAfter() {
-                if (isPause) {
-                    Log.w("changeAfter", "");
+                Log.w("changeAfter", "");
+                if (null != mMenuDialog) {
                     mMenuDialog.dismiss();
                 }
             }
