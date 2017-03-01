@@ -155,8 +155,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-
+            public void surfaceChanged(SurfaceHolder holder, int arg1, int width, int height) {
             }
         });
 
@@ -164,31 +163,31 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
-
-        mSurfaceView.postDelayed(new Runnable() {
+        //暂停的时候切换画面比例
+        mSurfaceView.setChangeScreenListener(new ExternalSurfaceView.ChangeScreenListener() {
             @Override
-            public void run() {
-
-                //暂停的时候切换画面比例
-                mSurfaceView.setChangeScreenListener(new ExternalSurfaceView.ChangeScreenListener() {
-                    @Override
-                    public void changeBefore() {
-                        if (isPause) {
-                            Log.w("changeBefore", "");
-                            getProxyPlayer().start();
-                        }
-                    }
-
-                    @Override
-                    public void changeAfter() {
-                        if (isPause) {
-                            Log.w("changeAfter", "");
-                            getProxyPlayer().pause();
-                        }
-                    }
-                });
+            public void changeBefore() {
+                if (isPause) {
+                    Log.w("changeBefore", "");
+                    getProxyPlayer().start();
+                }
             }
-        }, 2000);
+
+            @Override
+            public void changeAfter() {
+                if (isPause) {
+                    Log.w("changeAfter", "");
+                    getProxyPlayer().pause();
+                }
+            }
+        });
+//        mSurfaceView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//
+//            }
+//        }, 2000);
     }
 
     @Override
@@ -209,6 +208,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mOpenInSubtitle = true;
         if (isFirst) {
             mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_16_9);
+
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
         }
     }
