@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -602,16 +603,22 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
         newView.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+            public void onFocusChange(final View v, final boolean hasFocus) {
                 if (hasFocus) {
                     mMenuFocusTmpPosi = position;
                     mMenuSelectedPosi = position;
                     animateMenuSelectView(v);
-                    //openSubMenu(true);
-                    animateFocusView(v, true, null);
-                }
-                if (mFocusChangeListener != null) {
-                    mFocusChangeListener.onMenuItemFocusChanged(mMenuContainer, v, position, hasFocus);
+                    //修复OS-4479播放音频时在歌曲列表移动焦点，焦点会移出屏幕。
+                    //修复OS-4480播放音频时，当焦点位于播放列表最后一个节目时按下键，焦点消失
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            animateFocusView(v, true, null);
+                        }
+                    },100);
+                    if (mFocusChangeListener != null) {
+                        mFocusChangeListener.onMenuItemFocusChanged(mMenuContainer, v, position, hasFocus);
+                    }
                 }
             }
         });
@@ -727,29 +734,18 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
         newView.setOnFocusChangeListener(new OnFocusChangeListener() {
 
             @Override
-            public void onFocusChange(final View v, boolean hasFocus) {
+            public void onFocusChange(final View v, final boolean hasFocus) {
                 v.clearAnimation();
                 if (hasFocus) {
                     mSubMenuFocusTmpPosi = position;
-                    animateFocusView(newView, false, new Runnable() {
-
+                    new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            /*ScaleAnimation mZoomInAnim = new ScaleAnimation(1, 1.125f, 1, 1.125f, ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-                            mZoomInAnim.setInterpolator(new DecelerateInterpolator());
-                            mZoomInAnim.setFillAfter(true);
-                            mZoomInAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
-                            newView.clearAnimation();
-                            newView.startAnimation(mZoomInAnim);*/
+                            animateFocusView(newView, false, null);
                         }
-                    });
+                    },100);
                 } else {
-                    /*ScaleAnimation mZoomOutAnim = new ScaleAnimation(1.125f, 1, 1.125f, 1, ScaleAnimation.RELATIVE_TO_SELF, 0.3f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
-                    mZoomOutAnim.setInterpolator(new DecelerateInterpolator());
-                    mZoomOutAnim.setFillAfter(true);
-                    mZoomOutAnim.setDuration(TIME_FOCUS_TRANSLATE_ANIM);
-                    newView.clearAnimation();
-                    newView.startAnimation(mZoomOutAnim);*/
+
                 }
                 if (mFocusChangeListener != null) {
                     mFocusChangeListener.onSubMenuItemFocusChanged(mSubMenuContainer, newView, position, hasFocus);

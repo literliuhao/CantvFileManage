@@ -564,7 +564,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -578,7 +578,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -614,7 +614,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             public void run() {
                 mMenuDialog.showSubMenuFocus(true);
             }
-        }, 500);
+        }, 1200);
     }
 
     public void hideMenuDialog() {
