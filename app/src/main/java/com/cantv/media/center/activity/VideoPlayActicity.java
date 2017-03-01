@@ -595,7 +595,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -609,7 +609,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -632,7 +632,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             public void run() {
                 mMenuDialog.showSubMenuFocus(true);
             }
-        }, 500);
+        }, 1200);
     }
 
     private void performSubmenuClickEvent(MenuItem mSubSelectedMenu, int position) {
