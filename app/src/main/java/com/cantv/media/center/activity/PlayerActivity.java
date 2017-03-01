@@ -41,7 +41,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        mDataList = getIntent().getParcelableArrayListExtra("data_list");
-        mDataList= Constant.list;
+        mDataList = Constant.list;
         if (mDataList == null) {
             mDataList = new ArrayList<>();
         }
@@ -151,7 +151,11 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         } else {
             mAutoPaused = false;
             mPlayer.setOnCompletionListener(null);
-            playMedia(mCurPlayIndex - 1);
+            if (mCurPlayIndex != 0) {
+                playMedia(mCurPlayIndex - 1);
+            } else {
+                playMedia(mDataList.size() - 1);
+            }
         }
 
     }

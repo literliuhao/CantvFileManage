@@ -55,13 +55,7 @@ android {
     }
 }
 
-/**
- * 注意事项
- * 1、不要调整节点的顺序
- * 2、签名配置中的 空字符串 代表默认签名（即android.defaultConfig.signingConfig）
- * 3、要让不同的渠道使用不同签名时，不要在android.buildType下指定签名，否则无法生效
- */
-ext.SIGN_CONFIG_FILE = ["",'sign_828.properties','sign_628.properties'] // 签名配置文件
+ext.SIGN_CONFIG_FILE = ["sign828": 'sign_828.properties', "sign628": 'sign_628.properties'] // 签名配置文件
 apply from: 'sign.gradle' // 自动签名配置，勿删
 android.applicationVariants.all { variant ->
     //修改生成的apk名字
