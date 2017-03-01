@@ -403,15 +403,15 @@ public class PlayerController extends RelativeLayout {
             }
         });
 
-        if (preIsPause) {    //之前是暂停状态就依然保持暂停
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mCtrlBarListener.onPlayerPlayOrPause();
-                    handler.sendEmptyMessage(PlayerController.CHANG_PLAYIMAGE);
-                }
-            }, 200);
-        }
+//        if (preIsPause) {    //之前是暂停状态就依然保持暂停(新需求快进快退后继续播放)
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mCtrlBarListener.onPlayerPlayOrPause();
+//                    handler.sendEmptyMessage(PlayerController.CHANG_PLAYIMAGE);
+//                }
+//            }, 200);
+//        }
 
     }
 

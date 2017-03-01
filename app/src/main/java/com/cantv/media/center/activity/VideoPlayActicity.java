@@ -373,7 +373,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     //字幕修改
     public void setSrts(int time) {
-        Log.w("setSrts", "----setSrts");
+//        Log.w("setSrts", "----setSrts");
         if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().contains("srt")) {
             return;
         }
@@ -385,7 +385,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     //字幕修改
     public void setSub(int time) {
-        Log.w("setSub", "----sub");
+//        Log.w("setSub", "----sub");
         if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().endsWith("sub") || null == mSubParser) {
             return;
         }
