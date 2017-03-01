@@ -33,4 +33,6 @@
     
     <color name="black">#ff000000</color>
 
+    <color name="white_opa80">#CCFFFFFF</color>
+
 </resources>

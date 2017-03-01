@@ -125,7 +125,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     protected void onStop() {
         unregisterReceiver(mNetChangeReceiver);
         super.onStop();
-        mFocusUtils.release();
     }
 
     @Override
@@ -315,6 +314,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     // <-- addDevice
     public void showAddDeviceDialog() {
         //修复OS-4040TV端未连接网络，进入文件管理，文件共享中，点击添加设备，提示文管理停止件运行
+        //修复OS-4439文件共享输入错误的账号密码点击确定弹出提示后，按设置键进入设置菜单，按返回退出时提示文件管理已停止运行
         if (!NetworkUtils.isNetworkAvailable(this)) {
             ToastUtils.showMessage(MyApplication.mContext, getString(R.string.connection_fail), Toast.LENGTH_LONG);
             return;
@@ -326,6 +326,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 if (null != mBlurDrawable) {
                     mBlurDrawable.setCallback(null);
                     mBlurDrawable = null;
+                }
+                if (null != mScreenShot && !mScreenShot.isRecycled()) {
+                    mScreenShot.recycle();
+                    mScreenShot = null;
                 }
                 mScreenShot = getScreenShot();
                 mBlurDrawable = BitmapUtils.blurBitmap(mScreenShot, MyApplication.getContext());
@@ -349,19 +353,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                 List<String> strings = new ArrayList<>();
                 strings.add(ip);
                 checkIPAccess(strings, false);
-            }
-        });
-        mAddDeviceDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (null != mBlurDrawable) {
-                    mBlurDrawable.setCallback(null);
-                    mBlurDrawable = null;
-                }
-                if (null != mScreenShot && !mScreenShot.isRecycled()) {
-                    mScreenShot.recycle();
-                    mScreenShot = null;
-                }
             }
         });
         mAddDeviceDialog.show();
@@ -470,6 +461,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     mBlurDrawable.setCallback(null);
                     mBlurDrawable = null;
                 }
+                if (null != mScreenShot && !mScreenShot.isRecycled()) {
+                    mScreenShot.recycle();
+                    mScreenShot = null;
+                }
                 mScreenShot = getScreenShot();
                 mBlurDrawable = BitmapUtils.blurBitmap(mScreenShot, MyApplication.getContext());
                 ((DeviceLoginDialog) dialog).updateBackground(mBlurDrawable);
@@ -490,19 +485,6 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             }
         });
         mLoginDeviceDialog.refreshData(deviceInfo.getUserName(), deviceInfo.getPassword());
-        mLoadingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (null != mBlurDrawable) {
-                    mBlurDrawable.setCallback(null);
-                    mBlurDrawable = null;
-                }
-                if (null != mScreenShot && !mScreenShot.isRecycled()) {
-                    mScreenShot.recycle();
-                    mScreenShot = null;
-                }
-            }
-        });
         mLoginDeviceDialog.show();
     }
 
@@ -693,8 +675,5 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mFocusUtils != null) {
-            mFocusUtils.release();
-        }
     }
 }

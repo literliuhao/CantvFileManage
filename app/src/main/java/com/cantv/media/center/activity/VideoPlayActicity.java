@@ -163,31 +163,18 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mCtrBar.setPlayerCtrlBarListener(this);
         mCtrBar.setPlayerControllerBarContext(this);
         mCtrBar.setPlayerCoverFlowViewListener(this);
+
         //暂停的时候切换画面比例
         mSurfaceView.setChangeScreenListener(new ExternalSurfaceView.ChangeScreenListener() {
-            @Override
-            public void changeBefore() {
-                if (isPause) {
-                    Log.w("changeBefore", "");
-                    getProxyPlayer().start();
-                }
-            }
 
             @Override
             public void changeAfter() {
-                if (isPause) {
-                    Log.w("changeAfter", "");
-                    getProxyPlayer().pause();
+                Log.w("changeAfter", "");
+                if (null != mMenuDialog) {
+                    mMenuDialog.dismiss();
                 }
             }
         });
-//        mSurfaceView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//
-//            }
-//        }, 2000);
     }
 
     @Override
@@ -384,7 +371,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     //字幕修改
     public void setSrts(int time) {
-        Log.w("setSrts", "----setSrts");
+//        Log.w("setSrts", "----setSrts");
         if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().contains("srt")) {
             return;
         }
@@ -396,7 +383,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     //字幕修改
     public void setSub(int time) {
-        Log.w("setSub", "----sub");
+//        Log.w("setSub", "----sub");
         if (!mOpenExternalSubtitle || !mLastStr.toLowerCase().endsWith("sub") || null == mSubParser) {
             return;
         }
@@ -606,7 +593,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -620,7 +607,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -643,7 +630,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             public void run() {
                 mMenuDialog.showSubMenuFocus(true);
             }
-        }, 500);
+        }, 1200);
     }
 
     private void performSubmenuClickEvent(MenuItem mSubSelectedMenu, int position) {

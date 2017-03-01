@@ -31,7 +31,6 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     protected VideoPlayer mRecord;
     private boolean setVideoStop;   //为了解决OS-1677,回到主页视频会重试播放的异常
     public boolean isPressback;
-    public boolean isPause;    //判断是否手动暂停了视频,为了处理暂停时切换画面比例
 
     protected abstract void runAfterPlay(boolean isFirst);
 
@@ -119,10 +118,8 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
     public void onPlayerPlayOrPause() {
         if (!isPlayerPaused()) {
             getProxyPlayer().pause();
-            isPause = true;
         } else {
             getProxyPlayer().start();
-            isPause = false;
         }
     }
 

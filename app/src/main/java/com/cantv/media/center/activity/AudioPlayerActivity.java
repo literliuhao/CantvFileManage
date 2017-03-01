@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
@@ -48,7 +47,6 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
-import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -309,20 +307,20 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 }
                 break;
             case R.id.ib_previous:
-                if (mCurPlayIndex == 0 && mPlayMode != PlayMode.RANDOM_ORDER) {
-                    //修复OS-4163在文件管理器中播放本地音频，在播放最后一个音频的时候一直按下一曲，一直按多按几次提示无下一首该提示语按的次数越多消失的越慢
-                    ToastUtils.showMessage(MyApplication.getContext(), "无上一首");
-                } else {
-                    onPlayPrev();
-                }
+//                if (mCurPlayIndex == 0 && mPlayMode != PlayMode.RANDOM_ORDER) {
+//                    //修复OS-4163在文件管理器中播放本地音频，在播放最后一个音频的时候一直按下一曲，一直按多按几次提示无下一首该提示语按的次数越多消失的越慢
+//                    ToastUtils.showMessage(MyApplication.getContext(), "无上一首");
+//                } else {
+                onPlayPrev();
+//                }
                 break;
             case R.id.ib_next:
                 // 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
-                if (mDataList.size() - 1 == mCurPlayIndex && mPlayMode != PlayMode.RANDOM_ORDER) {
-                    ToastUtils.showMessage(MyApplication.getContext(), "无下一首");
-                } else {
-                    onPlayNext();
-                }
+//                if (mDataList.size() - 1 == mCurPlayIndex && mPlayMode != PlayMode.RANDOM_ORDER) {
+//                    ToastUtils.showMessage(MyApplication.getContext(), "无下一首");
+//                } else {
+                onPlayNext();
+//                }
                 break;
             case R.id.iv_bg_play_mode:
                 cycleChangePlayMode();
@@ -383,21 +381,21 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
             //上一曲
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                if (mCurPlayIndex == 0) {
-                    Toast.makeText(AudioPlayerActivity.this, R.string.pr_music, Toast.LENGTH_LONG).show();
-                } else {
-                    onPlayPrev();
-                }
+//                if (mCurPlayIndex == 0) {
+//                    Toast.makeText(AudioPlayerActivity.this, R.string.pr_music, Toast.LENGTH_LONG).show();
+//                } else {
+                onPlayPrev();
+//                }
                 break;
 
             //下一曲
             case KeyEvent.KEYCODE_MEDIA_NEXT:
                 // 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
-                if (mDataList.size() - 1 == mCurPlayIndex) {
-                    Toast.makeText(AudioPlayerActivity.this, R.string.next_music, Toast.LENGTH_LONG).show();
-                } else {
-                    onPlayNext();
-                }
+//                if (mDataList.size() - 1 == mCurPlayIndex) {
+//                    Toast.makeText(AudioPlayerActivity.this, R.string.next_music, Toast.LENGTH_LONG).show();
+//                } else {
+                onPlayNext();   //
+//                }
 
                 break;
 
@@ -566,7 +564,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -580,7 +578,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                                 public void run() {
                                     mMenuDialog.showSubMenuFocus(true);
                                 }
-                            }, 300);
+                            }, 500);
                             return true;
                         } else {
                             return false;
@@ -616,7 +614,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             public void run() {
                 mMenuDialog.showSubMenuFocus(true);
             }
-        }, 500);
+        }, 1200);
     }
 
     public void hideMenuDialog() {

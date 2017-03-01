@@ -11,8 +11,6 @@ apply plugin: 'com.android.application'
 //}
 //
 //loadProperties()
-ext.SIGN_CONFIG_FILE = ['sign_828.properties'] // 签名配置文件
-apply from: 'sign.gradle' // 自动签名配置，勿删
 
 android {
     compileSdkVersion 22
@@ -31,6 +29,8 @@ android {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
+        versionCode 153
+        versionName "20170223_v1.5.3"
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
             targetCompatibility JavaVersion.VERSION_1_7
@@ -42,36 +42,32 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
     }
     productFlavors {
+        common{}
+        sign828{}
+        sign628{}
     }
 
     lintOptions {
         abortOnError false
     }
+}
 
-    applicationVariants.all { variant ->
-//        //修改生成的apk名字
-//        variant.outputs.each { output ->
-//            def oldFile = output.outputFile
-//            if (variant.buildType.name in ['release']) {
-//                def releaseApkName = 'mediaCenter_v' + variant.versionCode + ".apk";
-//                output.outputFile = new File(oldFile.parent+"/release", releaseApkName);
-//            }
-//        }
-        //修改生成的apk名字
-        variant.outputs.each { output ->
-            def oldFile = output.outputFile
-            if (variant.buildType.name in ['release']) {
-                def releaseApkName = 'CantvFileManager_v' + variant.versionCode + ".apk";
-                if (project.hasProperty("appReleaseDir")) {
-                    File releasePath = new File(project.property("appReleaseDir"), getDate());
-                    output.outputFile = new File(releasePath, releaseApkName);
-                } else {
-                    output.outputFile = new File(oldFile.parent, releaseApkName)
-                }
+ext.SIGN_CONFIG_FILE = ["sign828": 'sign_828.properties', "sign628": 'sign_628.properties'] // 签名配置文件
+apply from: 'sign.gradle' // 自动签名配置，勿删
+android.applicationVariants.all { variant ->
+    //修改生成的apk名字
+    variant.outputs.each { output ->
+        def oldFile = output.outputFile
+        if (variant.buildType.name in ['release']) {
+            def releaseApkName = "CantvFileManager_${variant.productFlavors[0].name}_v${variant.versionCode}.apk";
+            if (project.hasProperty("appReleaseDir")) {
+                File releasePath = new File(project.property("appReleaseDir"), "CantvFileManager/${getDate()}");
+                output.outputFile = new File(releasePath, releaseApkName);
+            } else {
+                output.outputFile = new File(oldFile.parent, releaseApkName)
             }
         }
     }
@@ -90,15 +86,22 @@ dependencies {
 //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
 //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 //    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+
+    compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+    compile 'com.tencent.bugly:nativecrashreport:latest.release'
+
 }
 
 
 def getDate() {
     return formatDateTime('yyyyMMdd');
 }
+
 def getDateTime() {
     return formatDateTime('yyyyMMddHHmmss')
 }
+
 def formatDateTime(String format) {
     return new Date().format(format)
 }

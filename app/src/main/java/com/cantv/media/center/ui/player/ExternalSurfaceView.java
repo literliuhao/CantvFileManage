@@ -51,18 +51,9 @@ public class ExternalSurfaceView extends SurfaceView {
             super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(newheight, MeasureSpec.EXACTLY));
         }
 
-//        if (null != mChangeScreenListener) {
-//
-//            mChangeScreenListener.changeBefore();
-//            mChangeScreenListener.changeAfter();
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                }
-//            }, 100);
-//        }
-
+        if (null != mChangeScreenListener) {
+            mChangeScreenListener.changeAfter();
+        }
     }
 
 
@@ -71,7 +62,6 @@ public class ExternalSurfaceView extends SurfaceView {
     }
 
     public interface ChangeScreenListener {
-        void changeBefore();
 
         void changeAfter();
     }
