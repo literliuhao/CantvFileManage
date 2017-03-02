@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cantv.cec.CecManager;
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StContent;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
@@ -346,9 +347,27 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                     showMenuDialog();
                 }
                 break;
-            default:
-                break;
         }
+
+        /*
+            Key code constant: Volume Up key. Adjusts the speaker volume up.
+            Key code constant: Volume Down key. Adjusts the speaker volume down.
+            Key code constant: Volume Mute key. Mute the speaker volume.
+        */
+        try {
+            if (KeyEvent.KEYCODE_VOLUME_UP == keyCode || KeyEvent.KEYCODE_VOLUME_DOWN == keyCode ||
+                    KeyEvent.KEYCODE_VOLUME_MUTE == keyCode) {
+                if (CecManager.getInstance().getCecConfiguration().cecStatus == 1) {
+                    if (CecManager.getInstance().sendCecKey(keyCode)) {
+                        Log.d(TAG, "send Cec key,keyCode is " + keyCode + ", localmm don't handl the key");
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (mCtrBar != null) {
             mCtrBar.onKeyDownEvent(keyCode, event);
         }

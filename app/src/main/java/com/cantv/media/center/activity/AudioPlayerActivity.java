@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cantv.cec.CecManager;
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
 import com.cantv.media.center.Listener.PlayMode;
@@ -58,6 +59,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.ContentValues.TAG;
 import static com.cantv.media.R.string.singer;
 
 /**
@@ -411,6 +413,27 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 showMenuDialog();
             }
         }
+
+        /*
+            Key code constant: Volume Up key. Adjusts the speaker volume up.
+            Key code constant: Volume Down key. Adjusts the speaker volume down.
+            Key code constant: Volume Mute key. Mute the speaker volume.
+        */
+        try {
+            if (KeyEvent.KEYCODE_VOLUME_UP == keyCode || KeyEvent.KEYCODE_VOLUME_DOWN == keyCode ||
+                    KeyEvent.KEYCODE_VOLUME_MUTE == keyCode) {
+                if (CecManager.getInstance().getCecConfiguration().cecStatus == 1) {
+                    if (CecManager.getInstance().sendCecKey(keyCode)) {
+                        Log.d(TAG, "send Cec key,keyCode is " + keyCode + ", localmm don't handl the key");
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         return super.onKeyDown(keyCode, event);
     }
 
