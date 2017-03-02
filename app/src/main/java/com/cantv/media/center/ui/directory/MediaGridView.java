@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -30,9 +31,12 @@ import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.FileServer.OnInitlizedListener;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import jcifs.smb.SmbFile;
 
 @SuppressLint("ResourceAsColor")
 public class MediaGridView extends CustomGridView {
@@ -124,6 +128,16 @@ public class MediaGridView extends CustomGridView {
                                         }
                                     });
                                 }
+
+                                @Override
+                                public void findSmbFileListFiled() {
+                                    mActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
+                                        }
+                                    });
+                                }
                             });
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -138,8 +152,36 @@ public class MediaGridView extends CustomGridView {
                     }
 
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
-                    mActivity.isStartAc = true;
-                    openMediaActivity(item);
+                    Log.w("共享路径", item.getSharePath());
+                    Log.w("共享路径muri", item.mUri);
+                    if (item.mUri.contains(":")) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+
+                                    SmbFile file = new SmbFile(item.mUri);
+                                    Log.w("文件大小", file.getContentLength() + "");
+                                    if (file.getContentLength() > 0) {
+                                        mActivity.isStartAc = true;
+                                        openMediaActivity(item);
+                                    } else {
+                                        mActivity.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
+                                            }
+                                        });
+                                    }
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    } else {
+                        mActivity.isStartAc = true;
+                        openMediaActivity(item);
+                    }
                 } else {
                     if (item.mType == SourceType.APP) {
                         //添加APP安装设置弹框(OS1.2)
