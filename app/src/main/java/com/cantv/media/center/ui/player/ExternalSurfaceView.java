@@ -54,8 +54,8 @@ public class ExternalSurfaceView extends SurfaceView {
         if (null != mChangeScreenListener) {
             mChangeScreenListener.changeAfter();
         }
-
     }
+
 
     public enum ShowType {
         WIDTH_HEIGHT_ORIGINAL, WIDTH_HEIGHT_4_3, WIDTH_HEIGHT_16_9, WIDTH_HEIGHT_21_9, WIDTH_HEIGHT_FULL_SCREEN,

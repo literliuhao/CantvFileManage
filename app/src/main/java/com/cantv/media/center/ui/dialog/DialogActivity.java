@@ -1,8 +1,10 @@
 package com.cantv.media.center.ui.dialog;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -46,6 +48,12 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         dialogFile.setOnFocusChangeListener(this);
     }
 
+    public void acquireLock() {
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
+        wl.acquire();
+    }
+
     private void startSetting() {
         Intent intent = new Intent(SETTING);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -84,20 +92,20 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
 //            if (!SystemCateUtil.getServerData().equals("1")) {
 //                startSetting();
 //            } else {
-                switch (v.getId()) {
-                    case R.id.dialog_image:
-                        startGridView("image", R.string.str_photo);
-                        break;
-                    case R.id.dialog_video:
-                        startGridView("video", R.string.str_movie);
-                        break;
-                    case R.id.dialog_audio:
-                        startGridView("audio", R.string.str_music);
-                        break;
-                    case R.id.dialog_file:
-                        startGridView("device1", R.string.str_external);
-                        break;
-                }
+            switch (v.getId()) {
+                case R.id.dialog_image:
+                    startGridView("image", R.string.str_photo);
+                    break;
+                case R.id.dialog_video:
+                    startGridView("video", R.string.str_movie);
+                    break;
+                case R.id.dialog_audio:
+                    startGridView("audio", R.string.str_music);
+                    break;
+                case R.id.dialog_file:
+                    startGridView("device1", R.string.str_external);
+                    break;
+            }
 //            }
         } catch (Exception e) {
             e.printStackTrace();

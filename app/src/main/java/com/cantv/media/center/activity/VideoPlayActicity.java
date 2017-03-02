@@ -155,8 +155,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-
+            public void surfaceChanged(SurfaceHolder holder, int arg1, int width, int height) {
             }
         });
 
@@ -176,8 +175,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 }
             }
         });
-
-
     }
 
     @Override
@@ -198,6 +195,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         mOpenInSubtitle = true;
         if (isFirst) {
             mSurfaceView.setShowType(ShowType.WIDTH_HEIGHT_16_9);
+
             mSurfaceView.setWidthHeightRate(getProxyPlayer().getVideoWidthHeightRate());
         }
     }

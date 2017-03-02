@@ -29,8 +29,8 @@ android {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 153
-        versionName "20170223_v1.5.3"
+        versionCode 154
+        versionName "20170301_v1.5.4"
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
             targetCompatibility JavaVersion.VERSION_1_7
