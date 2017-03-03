@@ -260,6 +260,8 @@ public class FileUtil {
 
     public interface OnSmbFileListListener {
         void findSmbFileListFinish(List<Media> list);
+
+        void findSmbFileListFiled();
     }
 
     /**
@@ -279,7 +281,7 @@ public class FileUtil {
                     SmbFile file = new SmbFile(path);
                     if (!file.exists() || !file.isDirectory()) {
                         if (onSmbFileListListener != null) {
-                            onSmbFileListListener.findSmbFileListFinish(tList);
+                            onSmbFileListListener.findSmbFileListFiled();
                         }
                         return;
                     }
@@ -308,6 +310,9 @@ public class FileUtil {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    if (onSmbFileListListener != null) {
+                        onSmbFileListListener.findSmbFileListFiled();
+                    }
                 }
                 if (onSmbFileListListener != null) {
                     onSmbFileListListener.findSmbFileListFinish(tList);
