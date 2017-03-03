@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#cc000000"
-    android:orientation="horizontal">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#cc000000"
+              android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="@dimen/px1056"
-        android:layout_height="@dimen/px856"
+        android:layout_height="@dimen/px836"
         android:layout_marginBottom="@dimen/px112"
         android:layout_marginEnd="@dimen/px432"
         android:layout_marginStart="@dimen/px432"
@@ -20,9 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/px50"
+            android:layout_marginTop="@dimen/px30"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/px38" />
+            android:textSize="@dimen/px50"/>
 
         <LinearLayout
             android:id="@+id/et_text1"
@@ -44,13 +44,13 @@
                 android:lineSpacingExtra="@dimen/px24"
                 android:textColor="@color/per50_white"
                 android:textSize="@dimen/px28"
-                android:visibility="invisible" />
+                android:visibility="invisible"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/px116"
+            android:layout_height="@dimen/px100"
             android:layout_below="@id/et_text1"
             android:layout_marginEnd="@dimen/px60"
             android:layout_marginStart="@dimen/px80"
@@ -60,19 +60,19 @@
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="@dimen/px396"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_normal_text"
+                android:layout_height="@dimen/px80"
+                android:background="@drawable/share_button_shape"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/px34" />
+                android:textSize="@dimen/px34"/>
 
             <Button
                 android:id="@+id/btn_cancel"
                 android:layout_width="@dimen/px396"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/px80"
                 android:layout_marginStart="@dimen/px24"
-                android:background="@drawable/btn_normal_text"
+                android:background="@drawable/share_button_shape"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/px34" />
+                android:textSize="@dimen/px34"/>
         </LinearLayout>
     </RelativeLayout>
 

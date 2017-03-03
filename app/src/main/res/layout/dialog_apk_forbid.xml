@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#cc000000"
-    android:orientation="horizontal">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#cc000000"
+              android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/rl_content"
@@ -23,7 +23,7 @@
             android:layout_marginTop="@dimen/px50"
             android:text="@string/disclaimer_install"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/px46" />
+            android:textSize="@dimen/px46"/>
 
         <LinearLayout
             android:id="@+id/et_text"
@@ -46,7 +46,7 @@
                 android:paddingStart="@dimen/px15"
                 android:text="@string/disclaimer_apk"
                 android:textColor="@color/per50_white"
-                android:textSize="@dimen/px40" />
+                android:textSize="@dimen/px40"/>
 
         </LinearLayout>
 
@@ -63,11 +63,11 @@
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="@dimen/px396"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_normal_text"
+                android:layout_height="@dimen/px80"
+                android:background="@drawable/share_button_shape"
                 android:text="@string/str_confirm"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/px34" />
+                android:textSize="@dimen/px34"/>
 
         </LinearLayout>
     </RelativeLayout>

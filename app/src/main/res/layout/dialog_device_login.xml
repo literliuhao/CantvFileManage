@@ -2,13 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="#B2000000"
               android:gravity="center"
               android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="@dimen/px1100"
-        android:layout_height="@dimen/px800"
+        android:layout_height="@dimen/px750"
+        android:layout_marginBottom="@dimen/px200"
+        android:layout_marginLeft="@dimen/px200"
+        android:layout_marginRight="@dimen/px200"
+        android:layout_marginTop="@dimen/px200"
         android:background="@drawable/home_devices_background">
 
         <TextView
@@ -16,10 +21,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/px105"
+            android:layout_marginTop="@dimen/px60"
             android:text="@string/user_login"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_40"/>
+            android:textSize="@dimen/px50"/>
 
         <EditText
             android:id="@+id/et_username"
@@ -28,10 +33,10 @@
             android:layout_below="@id/tv_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/px76"
-            android:background="@drawable/youxian_txt"
-            android:gravity="start|center_vertical"
-            android:focusableInTouchMode="true"
+            android:background="@drawable/share_edit_shape"
             android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="start|center_vertical"
             android:inputType="text"
             android:paddingEnd="0dp"
             android:paddingStart="@dimen/px32"
@@ -57,7 +62,7 @@
             android:layout_below="@id/et_username"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/px22"
-            android:background="@drawable/youxian_txt"
+            android:background="@drawable/share_edit_shape"
             android:gravity="start|center_vertical"
             android:inputType="textPassword"
             android:paddingEnd="0dp"
@@ -102,21 +107,19 @@
 
             <Button
                 android:id="@+id/btn_confirm"
-                android:layout_width="@dimen/px336"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn2_normal"
-                android:paddingBottom="@dimen/px15"
+                android:layout_width="@dimen/px328"
+                android:layout_height="@dimen/px80"
+                android:background="@drawable/share_button_shape"
                 android:text="@string/str_confirm"
                 android:textColor="@color/per80_white"
                 android:textSize="@dimen/fontsize_36"/>
 
             <Button
                 android:id="@+id/btn_cancel"
-                android:layout_width="@dimen/px336"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/px328"
+                android:layout_height="@dimen/px80"
                 android:layout_marginStart="@dimen/px24"
-                android:background="@drawable/btn2_normal"
-                android:paddingBottom="@dimen/px15"
+                android:background="@drawable/share_button_shape"
                 android:text="@string/str_cancel"
                 android:textColor="@color/per80_white"
                 android:textSize="@dimen/fontsize_36"/>

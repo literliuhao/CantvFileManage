@@ -74,7 +74,7 @@ public class ApkForbidDialog extends Dialog implements OnFocusChangeListener {
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             if (v == mConfirmBtn) {
-                mFocusUtils.startMoveFocus(v, null, true, 0.96f, 0.80f, 0f, 0f);
+                mFocusUtils.startMoveFocus(v, null, true, 1f, 1f, 0f, 0f);
             }
         }
     }
