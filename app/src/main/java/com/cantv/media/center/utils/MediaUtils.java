@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -280,9 +281,24 @@ public class MediaUtils {
         return selection;
     }
 
+    /**
+     * 不能打开的文件
+     */
+    private static List<String> filterList = Arrays.asList(".txt");
+
+    /**
+     * 交个系统出来,系统自身支持打开就能打开
+     *
+     * @param context
+     * @param path
+     */
     public static void openMedia(Context context, String path) {
         try {
-            IntentBuilder.viewFile(context, path);
+            if (!filterList.contains(path.substring(path.lastIndexOf(".")))) {
+                IntentBuilder.viewFile(context, path);
+            } else {
+                Toast.makeText(context, "系统不支持该格式文件", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             Toast.makeText(context, "系统不支持该格式文件", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
