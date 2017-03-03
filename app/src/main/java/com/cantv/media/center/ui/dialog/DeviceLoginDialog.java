@@ -2,11 +2,9 @@ package com.cantv.media.center.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -113,9 +111,9 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener{
         });
     }
 
-    public void updateBackground(Drawable drawable) {
+    public void updateBackground(int color) {
         contentView.setPadding(0, 0, 0, 0);
-        contentView.setBackground(drawable);
+        contentView.setBackgroundResource(color);
     }
 
     public void reset() {
@@ -162,7 +160,7 @@ public class DeviceLoginDialog extends Dialog implements OnFocusChangeListener{
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mFocusUtils.startMoveFocus(v, null, true, 0.97f, 0.89f, 0f, -7f);
+                        mFocusUtils.startMoveFocus(v, null, true, 1f, 1f, 0f, 0f);
                     }
                 }, 100);
             }

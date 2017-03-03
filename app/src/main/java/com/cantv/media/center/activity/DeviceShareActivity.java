@@ -15,7 +15,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,7 +37,6 @@ import com.cantv.media.center.ui.dialog.DeviceLoginDialog;
 import com.cantv.media.center.ui.dialog.DeviceLoginDialog.OnLoginListener;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
 import com.cantv.media.center.ui.share.DeviceShareItemView;
-import com.cantv.media.center.utils.BitmapUtils;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.ToastUtils;
@@ -47,7 +45,6 @@ import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.ScanSambaTask;
 import com.cantv.media.center.utils.cybergarage.ScanSambaTask.IScanFileListener;
 
-import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -323,17 +320,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mAddDeviceDialog.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                if (null != mBlurDrawable) {
-                    mBlurDrawable.setCallback(null);
-                    mBlurDrawable = null;
-                }
-                if (null != mScreenShot && !mScreenShot.isRecycled()) {
-                    mScreenShot.recycle();
-                    mScreenShot = null;
-                }
-                mScreenShot = getScreenShot();
-                mBlurDrawable = BitmapUtils.blurBitmap(mScreenShot, MyApplication.getContext());
-                ((DeviceAddDialog) dialog).updateBackground(mBlurDrawable);
+//                ((DeviceAddDialog) dialog).updateBackground(R.color.blue_00b7ee);
                 ((DeviceAddDialog) dialog).reset();
             }
         });
@@ -457,17 +444,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
             @Override
             public void onShow(DialogInterface dialog) {
-                if (null != mBlurDrawable) {
-                    mBlurDrawable.setCallback(null);
-                    mBlurDrawable = null;
-                }
-                if (null != mScreenShot && !mScreenShot.isRecycled()) {
-                    mScreenShot.recycle();
-                    mScreenShot = null;
-                }
-                mScreenShot = getScreenShot();
-                mBlurDrawable = BitmapUtils.blurBitmap(mScreenShot, MyApplication.getContext());
-                ((DeviceLoginDialog) dialog).updateBackground(mBlurDrawable);
+//                ((DeviceLoginDialog) dialog).updateBackground(R.color.blue_00b7ee);
                 ((DeviceLoginDialog) dialog).reset();
             }
         });

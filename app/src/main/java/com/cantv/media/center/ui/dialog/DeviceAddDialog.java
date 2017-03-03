@@ -2,10 +2,8 @@ package com.cantv.media.center.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -29,7 +27,7 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener{
     private Button mCancelBtn;
     private Context mContext;
     private boolean isFirst = true;
-    private final int IP_LENGHT = 0;
+    private final int IP_LENGTH = 0;
 
     public DeviceAddDialog(final Context context) {
         super(context, R.style.dialog_device_share);
@@ -94,8 +92,8 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener{
         });
     }
 
-    public void updateBackground(Drawable drawable) {
-        contentView.setBackground(drawable);
+    public void updateBackground(int color) {
+        contentView.setBackgroundColor(color);
     }
 
     public void reset() {
@@ -110,7 +108,7 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener{
         } else {
             strIP = NetworkUtils.getEthernetIp(mContext.getApplicationContext());
         }
-        mIpEt.setText(strIP.substring(IP_LENGHT, strIP.lastIndexOf(".") + 1));
+        mIpEt.setText(strIP.substring(IP_LENGTH, strIP.lastIndexOf(".") + 1));
         mIpEt.requestFocus();
         mIpEt.setSelection(mIpEt.length());
         InputMethodManager imm = (InputMethodManager) mIpEt.getContext().getSystemService(mContext.INPUT_METHOD_SERVICE);
@@ -147,7 +145,7 @@ public class DeviceAddDialog extends Dialog implements OnFocusChangeListener{
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mFocusUtils.startMoveFocus(v, null, true, 0.97f, 0.91f, 0f, -8f);
+                        mFocusUtils.startMoveFocus(v, null, true, 1f, 1f, 0f, 0f);
                     }
                 }, 100);
             }
