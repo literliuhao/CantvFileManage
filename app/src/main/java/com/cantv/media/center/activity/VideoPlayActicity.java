@@ -55,9 +55,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import jcifs.smb.SmbFile;
+
+import static com.cantv.media.center.app.MyApplication.mContext;
 
 public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener, StDisplayCallBack {
     private static final String TAG = "VideoPlayActicity";
@@ -145,13 +150,51 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 curindex = mCurPlayIndex;
             }
 
+            /**
+             * onResume()会走到这
+             * @param arg0
+             */
             @Override
             public void surfaceCreated(SurfaceHolder arg0) {
                 getProxyPlayer().setPlayerDisplay(arg0);
-                if (curindex != 0) {
-                    playMedia(curindex);
-                } else {
-                    playDefualt();
+
+                if (curindex < mDataList.size()) {
+                    final Media media = mDataList.get(curindex);
+                    if (media.isSharing) {
+                        new Thread(new Runnable() { //防止共享无响应
+                            @Override
+                            public void run() {
+                                try {
+                                    SmbFile file = new SmbFile(media.mUri);
+                                    Log.w("文件大小", file.getContentLength() + "");
+                                    if (file.getContentLength() > 0) {
+                                        if (curindex != 0) {
+                                            playMedia(curindex);
+                                        } else {
+                                            playDefualt();
+                                        }
+                                    } else {
+                                        VideoPlayActicity.this.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
+                                                finish();
+                                            }
+                                        });
+                                    }
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                    finish();
+                                }
+                            }
+                        }).start();
+                    } else {
+                        if (curindex != 0) {
+                            playMedia(curindex);
+                        } else {
+                            playDefualt();
+                        }
+                    }
                 }
             }
 

@@ -152,10 +152,8 @@ public class MediaGridView extends CustomGridView {
                     }
 
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
-                    Log.w("共享路径", item.getSharePath());
-                    Log.w("共享路径muri", item.mUri);
                     if (item.mUri.contains(":")) {
-                        new Thread(new Runnable() {
+                        new Thread(new Runnable() { //防止共享无响应
                             @Override
                             public void run() {
                                 try {
