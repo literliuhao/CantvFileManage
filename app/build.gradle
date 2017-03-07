@@ -29,8 +29,8 @@ android {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 154
-        versionName "20170302_v1.5.4"
+        versionCode 155
+        versionName "20170307_v1.5.5"
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
             targetCompatibility JavaVersion.VERSION_1_7
@@ -45,9 +45,18 @@ android {
         }
     }
     productFlavors {
-        common{}
-        sign828{}
-        sign628{}
+        common{
+            buildConfigField("String","CANTV","\"cantv\"")
+        }
+        commonOther{
+            buildConfigField("String","CANTV","\"cantv-other\"")
+        }
+        sign828{
+            buildConfigField("String","CANTV","\"cantv\"")
+        }
+        sign628{
+            buildConfigField("String","CANTV","\"cantv\"")
+        }
     }
 
     lintOptions {

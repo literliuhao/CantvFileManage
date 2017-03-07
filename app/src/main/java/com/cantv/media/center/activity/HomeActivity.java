@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.cantv.liteplayer.core.focus.FocusScaleUtils;
 import com.cantv.liteplayer.core.focus.FocusUtils;
+import com.cantv.media.BuildConfig;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
@@ -111,8 +112,12 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mImageTV = (TextView) findViewById(R.id.textview_image);
         mAudioTV = (TextView) findViewById(R.id.textview_audio);
         mAppTV = (TextView) findViewById(R.id.textview_app);
-        mLocalFreeTV = (TextView) findViewById(R.id.textview_localdiskfree);
-        mLocalTotalTV = (TextView) findViewById(R.id.textview_localdisktotal);
+        if (null != BuildConfig.CANTV) {
+            if (BuildConfig.CANTV.equals("cantv")) {
+                mLocalFreeTV = (TextView) findViewById(R.id.textview_localdiskfree);
+                mLocalTotalTV = (TextView) findViewById(R.id.textview_localdisktotal);
+            }
+        }
         mVersion = (TextView) findViewById(R.id.tv_version);
         mFocusUtils = new FocusUtils(this, getWindow().getDecorView(), R.drawable.image_focus);
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
@@ -223,8 +228,14 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 startActivity(intent);
             }
         });
-        mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
-        mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
+
+        if (null != BuildConfig.CANTV) {
+            if (BuildConfig.CANTV.equals("cantv")) {
+                mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
+                mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
+            }
+        }
+
         mVersion.setText(FileUtil.getVersionName(this));
         alertDialog = new AlertDialog.Builder(mContext).create();
     }
@@ -519,7 +530,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         }
         sendUSBRefreshMsg();
     }
-
 
     @Override
     protected void onStart() {
