@@ -48,7 +48,7 @@ android {
         common{
             buildConfigField("String","CANTV","\"cantv\"")
         }
-        commonOther{
+        other{
             buildConfigField("String","CANTV","\"cantv-other\"")
         }
         sign828{
