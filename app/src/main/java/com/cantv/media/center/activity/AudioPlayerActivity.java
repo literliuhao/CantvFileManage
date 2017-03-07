@@ -101,6 +101,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private List<MenuItem> playListSubMenuItems;
     private List<MenuItem> mCurrentSubMenuList;
     private int mCurrentSubMenuPos;//当前二级菜单位置
+    private int mDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +109,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         setupLayout();
         EventBus.getDefault().register(this);
 //        MyApplication.addActivity(this);
+        initHandler();
         holdWakeLock();
         initData();
         playDefualt();
-        initHandler();
     }
 
     private void setupLayout() {
@@ -361,11 +362,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mPlayPauseBtn.requestFocus();
         }
         ProxyPlayer player = getProxyPlayer();
-        int duration = player.getDuration();
-        mProgressBar.setMax(duration);
+        mDuration = player.getDuration();
+        mProgressBar.setMax(mDuration);
         setmPaused(false);  //暂停时,在列表中播放别的曲目,这个参数可能不准确
         mHandler.sendEmptyMessage(0);   //避免没有进度
-        mDurationTv.setText(" / " + formatTime(duration));
+        mDurationTv.setText(" / " + formatTime(mDuration));
 
         //保存当前播放的路径
         String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
@@ -743,7 +744,17 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private void resetUI() {
         mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
-        mProgressBar.setProgress(0);
+        if (mDataList.get(mCurPlayIndex).isSharing) {   //共享会受网络影响
+            mProgressBar.setMax(mDuration);
+            mProgressBar.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setProgress(1);
+                }
+            }, 500);
+        } else {
+            mProgressBar.setProgress(0);
+        }
         mCDView.setCoverBitmap(null);
         mContentBg.setBackgroundResource(0);
         mContentBg.setImageResource(0);
