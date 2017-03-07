@@ -37,27 +37,35 @@ public class MediaBroadcastReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, final Intent intent) {
         mContext = context;
         if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
             EventBus.getDefault().post(new UsbMounted(false, intent.getDataString()));
-
-            String path = intent.getData().getPath();
-            //保存路径到本地
-            SharedPreferenceUtil.saveDevice(path);
-            //老化模式下不弹出U盘提示
-            if (!SystemCateUtil.getPersist().equals("1")) {
-                showMountedDialog();
-            }
+            final String path = intent.getData().getPath();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //保存路径到本地
+                    SharedPreferenceUtil.saveDevice(path);
+                    //老化模式下不弹出U盘提示
+                    if (!SystemCateUtil.getPersist().equals("1")) {
+                        showMountedDialog();
+                    }
+                }
+            }).start();
         } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
             EventBus.getDefault().post(new UsbMounted(true, intent.getDataString()));
-
-            List<String> currPathList = MediaUtils.getCurrPathList();
-            if (currPathList.size() < minNumber) {
-                if (null != iMediaListener) {
-                    iMediaListener.onFinish();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<String> currPathList = MediaUtils.getCurrPathList();
+                    if (currPathList.size() < minNumber) {
+                        if (null != iMediaListener) {
+                            iMediaListener.onFinish();
+                        }
+                    }
                 }
-            }
+            }).start();
         } else if (intent.getAction().equals(Intent.ACTION_MEDIA_REMOVED)) {
             EventBus.getDefault().post(new UsbMounted(true, intent.getDataString()));
             //添加移除U盘提示

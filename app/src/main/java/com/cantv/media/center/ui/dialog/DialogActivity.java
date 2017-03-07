@@ -46,9 +46,10 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         dialogAudio.setOnFocusChangeListener(this);
         dialogImage.setOnFocusChangeListener(this);
         dialogFile.setOnFocusChangeListener(this);
+//        acquireWakeLock();
     }
 
-    public void acquireLock() {
+    private void acquireWakeLock() {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
         wl.acquire();
@@ -83,6 +84,11 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
 
     @Override
     public void onFinish() {
+//        if (mWakeLock == null) {
+//            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+//            mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getClass().getCanonicalName());
+//        }
+//        mWakeLock.release();
         this.finish();
     }
 
