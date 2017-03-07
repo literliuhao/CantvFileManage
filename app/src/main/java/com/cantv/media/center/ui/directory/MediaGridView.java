@@ -127,11 +127,32 @@ public class MediaGridView extends CustomGridView {
                             ToastUtils.showMessage(mContext, getResources().getString(R.string.data_exception));
                         }
                     } else if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
-                        mCurrMediaList = FileUtil.getFileList(item.mUri, true, msSourceType);
-                        clickSetData(position);
+                        FileUtil.getFileList(item.mUri, true, new FileUtil.OnFileListListener() {
+                            @Override
+                            public void findFileListFinish(List<Media> list) {
+                                mCurrMediaList = list;
+                                mActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        clickSetData(position);
+                                    }
+                                });
+                            }
+
+                        }, msSourceType);
                     } else {
-                        mCurrMediaList = FileUtil.getFileList(item.mUri);
-                        clickSetData(position);
+                        FileUtil.getFileList(item.mUri, new FileUtil.OnFileListListener() {
+                            @Override
+                            public void findFileListFinish(List<Media> list) {
+                                mCurrMediaList = list;
+                                mActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        clickSetData(position);
+                                    }
+                                });
+                            }
+                        });
                     }
 
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
@@ -317,14 +338,31 @@ public class MediaGridView extends CustomGridView {
                     } else {
                         //本机
                         if (mSourceType == SourceType.LOCAL) {
-                            mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
+                            FileUtil.getFileList(MediaUtils.getLocalPath(), new FileUtil.OnFileListListener() {
+                                @Override
+                                public void findFileListFinish(List<Media> list) {
+
+                                    mMediaes.addAll(list);
+                                }
+                            });
                         } else if (mSourceType == SourceType.DEVICE || devicePath != null) {
                             //外接设备
-                            mMediaes.addAll(FileUtil.getFileList(devicePath));
+                            FileUtil.getFileList(devicePath, new FileUtil.OnFileListListener() {
+                                @Override
+                                public void findFileListFinish(List<Media> list) {
+                                    mMediaes.addAll(list);
+                                }
+                            });
                         } else {
                             if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误
-                                List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
-                                mMediaes.addAll(fileList);
+
+                                FileUtil.getFileList(usbRootPaths.get(0), true, new FileUtil.OnFileListListener() {
+                                    @Override
+                                    public void findFileListFinish(List<Media> list) {
+                                        List<Media> fileList = list;
+                                        mMediaes.addAll(fileList);
+                                    }
+                                }, msSourceType);
                             }
                         }
                     }

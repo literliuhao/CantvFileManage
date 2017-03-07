@@ -198,23 +198,29 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
             String mediaPath = SharedPreferenceUtil.getMediaPath();
             mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
-            List<Media> fileList = FileUtil.getFileList(mediaPath, false, SourceType.MUSIC);
-            FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
-            if (fileList.size() > 0) {
-                mDataList.clear();
-                mDataList.addAll(fileList);
-            }
-            for (int i = 0; i < fileList.size(); i++) {
-                String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
-                if (SharedPreferenceUtil.getMediaPath().equals(path)) {
-                    mCurPlayIndex = i;
-                    mDefaultPlayIndex = i;
-                    break;
+
+            FileUtil.getFileList(mediaPath, false, new FileUtil.OnFileListListener() {
+                @Override
+                public void findFileListFinish(List<Media> list) {
+                    List<Media> fileList =list;
+                    FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
+                    if (fileList.size() > 0) {
+                        mDataList.clear();
+                        mDataList.addAll(fileList);
+                    }
+                    for (int i = 0; i < fileList.size(); i++) {
+                        String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
+                        if (SharedPreferenceUtil.getMediaPath().equals(path)) {
+                            mCurPlayIndex = i;
+                            mDefaultPlayIndex = i;
+                            break;
+                        }
+                    }
+                    if (mDataList.size() > 0) {
+                        playDefualt();
+                    }
                 }
-            }
-            if (mDataList.size() > 0) {
-                playDefualt();
-            }
+            }, SourceType.MUSIC);
 
         }
 
