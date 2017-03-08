@@ -346,6 +346,9 @@ public class MediaGridView extends CustomGridView {
                                 }
                             });
                         } else if (mSourceType == SourceType.DEVICE || devicePath != null) {
+                            if (null == devicePath && MediaUtils.getCurrPathList().size() > 0) {
+                                devicePath = MediaUtils.getCurrPathList().get(0);
+                            }
                             //外接设备
                             FileUtil.getFileList(devicePath, new FileUtil.OnFileListListener() {
                                 @Override

@@ -43,7 +43,7 @@ public class SubDecoder extends StDecoder {
         int[] sub_palette = new int[16];
     }
 
-    private static int SUB_NK = 10 * 1024;
+    private static int SUB_NK = 20 * 1024;
     private VobSub_Data_S vobsub_ds = new VobSub_Data_S();
     private Bitmap mVobBitmap = null;
 
@@ -91,7 +91,7 @@ public class SubDecoder extends StDecoder {
         int streamId = 0;
         int i, j, k;
         int packets = 1, iPackets = 0;
-        int[] nextPackPos = new int[5];
+        int[] nextPackPos = new int[10];
 
         VobSubHead subhead;
 
