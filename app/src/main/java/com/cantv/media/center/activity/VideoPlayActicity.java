@@ -116,7 +116,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             FileUtil.getFileList(mediaPath, false, new FileUtil.OnFileListListener() {
                 @Override
                 public void findFileListFinish(List<Media> list) {
-                    List<Media> fileList =list;
+                    List<Media> fileList = list;
 
                     FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
                     if (fileList.size() > 0) {
@@ -508,7 +508,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             if (mRecord != null) {
                 DaoOpenHelper.getInstance(this).deleteInfo(mRecord);
             }
-            super.onCompletion(arg0);
+//            Log.w("getPlayerDuration", getPlayerDuration() + "");
+            if (getPlayerDuration() > 3000) { //可能出现不支持格式,直接调用onCompletion方法而造成播放下个视频的情况(暂时这么改,不建议这么做)
+                super.onCompletion(arg0);
+            } else {
+                ToastUtils.showMessage(MyApplication.getContext(), getResources().getString(R.string.format_not_support));
+                finish();
+            }
         }
     }
 
