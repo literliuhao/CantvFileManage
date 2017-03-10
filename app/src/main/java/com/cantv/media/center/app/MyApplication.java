@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyApplication extends Application {
-    public static final String APP_ID = "12345"; // TODO 替换成bugly上注册的appid
+    public static final String APP_ID = "af99255c0f"; //文件管理器的APP_ID TODO 替换成bugly上注册的appid
     public static Context mContext;
     //目前只为了存GridViewActivity,播放视频/音频/图片的Activity,为了解决0S/1439问题
 //    private static List<Activity> activityList;
@@ -132,7 +132,7 @@ public class MyApplication extends Application {
         //设置开发设备
         Bugly.setIsDevelopmentDevice(mContext, true);
         // 这里实现SDK初始化，appId替换成你的在Bugly平台申请的appId
-//        Bugly.init(mContext, APP_ID, BuildConfig.DEBUG, strategy);
+//        Bugly.init(mContext, APP_ID, BuildConfig.DEBUG, strategy);    //1.6.0版本这句取消注释
 //        Bugly.init(mContext, APP_ID, false, strategy);
 
         /**
