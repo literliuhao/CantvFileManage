@@ -82,8 +82,5 @@ public class ApkForbidDialog extends Dialog implements OnFocusChangeListener {
     @Override
     public void dismiss() {
         super.dismiss();
-        if (mFocusUtils != null) {
-            mFocusUtils.release();
-        }
     }
 }

@@ -164,8 +164,5 @@ public class CommonDialog extends Dialog implements View.OnFocusChangeListener {
     @Override
     public void dismiss() {
         super.dismiss();
-        if (mFocusUtils != null) {
-            mFocusUtils.release();
-        }
     }
 }

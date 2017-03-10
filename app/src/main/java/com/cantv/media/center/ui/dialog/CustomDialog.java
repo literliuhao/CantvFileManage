@@ -144,9 +144,6 @@ public class CustomDialog extends Dialog {
 
 
         public void release() {
-            if (mFocusUtils != null) {
-                mFocusUtils.release();
-            }
         }
     }
 

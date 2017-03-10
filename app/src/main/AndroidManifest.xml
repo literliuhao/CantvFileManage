@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.cantv.media"
-          android:sharedUserId="android.uid.system">
+          package="com.cantv.media">
 
 
+    <!--android:sharedUserId="android.uid.system"-->
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="23"/>
@@ -136,7 +136,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
-
+        <meta-data android:name="channelID" android:value="cantv"/>
     </application>
 
 </manifest>

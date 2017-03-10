@@ -46,7 +46,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
         dialogAudio.setOnFocusChangeListener(this);
         dialogImage.setOnFocusChangeListener(this);
         dialogFile.setOnFocusChangeListener(this);
-//        acquireWakeLock();
+        acquireWakeLock();
     }
 
     private void acquireWakeLock() {
@@ -123,8 +123,5 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mFocusUtils != null) {
-            mFocusUtils.release();
-        }
     }
 }
