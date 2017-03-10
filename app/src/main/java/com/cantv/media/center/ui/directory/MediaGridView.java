@@ -94,23 +94,6 @@ public class MediaGridView extends CustomGridView {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final Media item = mListAdapter.getItem(position);
-//                if (null != item && item.isSharing) {   //判断共享是否还存在
-//                    try {
-//                        Log.w("共享路径", item.getSharePath());
-//                        Log.w("共享路径muri", item.mUri);
-////                        // TODO: 2017/2/27 明天处理这个异常
-//                        SmbFile file = new SmbFile(item.mUri);
-//                        if (null == file || !file.exists()) {
-//                            ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
-//                            return;
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-////                        ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
-//                        return;
-//                    }
-//                }
                 // 1,如果是文件夹则继续显示下级列表
                 // 2,如果是文件则全屏显示
                 if (item.isDir) {
@@ -144,11 +127,32 @@ public class MediaGridView extends CustomGridView {
                             ToastUtils.showMessage(mContext, getResources().getString(R.string.data_exception));
                         }
                     } else if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
-                        mCurrMediaList = FileUtil.getFileList(item.mUri, true, msSourceType);
-                        clickSetData(position);
+                        FileUtil.getFileList(item.mUri, true, new FileUtil.OnFileListListener() {
+                            @Override
+                            public void findFileListFinish(List<Media> list) {
+                                mCurrMediaList = list;
+                                mActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        clickSetData(position);
+                                    }
+                                });
+                            }
+
+                        }, msSourceType);
                     } else {
-                        mCurrMediaList = FileUtil.getFileList(item.mUri);
-                        clickSetData(position);
+                        FileUtil.getFileList(item.mUri, new FileUtil.OnFileListListener() {
+                            @Override
+                            public void findFileListFinish(List<Media> list) {
+                                mCurrMediaList = list;
+                                mActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        clickSetData(position);
+                                    }
+                                });
+                            }
+                        });
                     }
 
                 } else if ((item.mType == SourceType.MOIVE) || (item.mType == SourceType.MUSIC) || (item.mType == SourceType.PICTURE)) {
@@ -334,14 +338,34 @@ public class MediaGridView extends CustomGridView {
                     } else {
                         //本机
                         if (mSourceType == SourceType.LOCAL) {
-                            mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
+                            FileUtil.getFileList(MediaUtils.getLocalPath(), new FileUtil.OnFileListListener() {
+                                @Override
+                                public void findFileListFinish(List<Media> list) {
+
+                                    mMediaes.addAll(list);
+                                }
+                            });
                         } else if (mSourceType == SourceType.DEVICE || devicePath != null) {
+                            if (null == devicePath && MediaUtils.getCurrPathList().size() > 0) {
+                                devicePath = MediaUtils.getCurrPathList().get(0);
+                            }
                             //外接设备
-                            mMediaes.addAll(FileUtil.getFileList(devicePath));
+                            FileUtil.getFileList(devicePath, new FileUtil.OnFileListListener() {
+                                @Override
+                                public void findFileListFinish(List<Media> list) {
+                                    mMediaes.addAll(list);
+                                }
+                            });
                         } else {
                             if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误
-                                List<Media> fileList = FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType);
-                                mMediaes.addAll(fileList);
+
+                                FileUtil.getFileList(usbRootPaths.get(0), true, new FileUtil.OnFileListListener() {
+                                    @Override
+                                    public void findFileListFinish(List<Media> list) {
+                                        List<Media> fileList = list;
+                                        mMediaes.addAll(fileList);
+                                    }
+                                }, msSourceType);
                             }
                         }
                     }

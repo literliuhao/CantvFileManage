@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cantv.cec.CecManager;
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
 import com.cantv.media.center.Listener.PlayMode;
@@ -59,7 +58,6 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-import static android.content.ContentValues.TAG;
 import static com.cantv.media.R.string.singer;
 
 /**
@@ -101,6 +99,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private List<MenuItem> playListSubMenuItems;
     private List<MenuItem> mCurrentSubMenuList;
     private int mCurrentSubMenuPos;//当前二级菜单位置
+    private int mDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +107,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         setupLayout();
         EventBus.getDefault().register(this);
 //        MyApplication.addActivity(this);
+        initHandler();
         holdWakeLock();
         initData();
         playDefualt();
-        initHandler();
     }
 
     private void setupLayout() {
@@ -199,23 +198,29 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
             String mediaPath = SharedPreferenceUtil.getMediaPath();
             mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
-            List<Media> fileList = FileUtil.getFileList(mediaPath, false, SourceType.MUSIC);
-            FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
-            if (fileList.size() > 0) {
-                mDataList.clear();
-                mDataList.addAll(fileList);
-            }
-            for (int i = 0; i < fileList.size(); i++) {
-                String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
-                if (SharedPreferenceUtil.getMediaPath().equals(path)) {
-                    mCurPlayIndex = i;
-                    mDefaultPlayIndex = i;
-                    break;
+
+            FileUtil.getFileList(mediaPath, false, new FileUtil.OnFileListListener() {
+                @Override
+                public void findFileListFinish(List<Media> list) {
+                    List<Media> fileList =list;
+                    FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
+                    if (fileList.size() > 0) {
+                        mDataList.clear();
+                        mDataList.addAll(fileList);
+                    }
+                    for (int i = 0; i < fileList.size(); i++) {
+                        String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
+                        if (SharedPreferenceUtil.getMediaPath().equals(path)) {
+                            mCurPlayIndex = i;
+                            mDefaultPlayIndex = i;
+                            break;
+                        }
+                    }
+                    if (mDataList.size() > 0) {
+                        playDefualt();
+                    }
                 }
-            }
-            if (mDataList.size() > 0) {
-                playDefualt();
-            }
+            }, SourceType.MUSIC);
 
         }
 
@@ -361,11 +366,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mPlayPauseBtn.requestFocus();
         }
         ProxyPlayer player = getProxyPlayer();
-        int duration = player.getDuration();
-        mProgressBar.setMax(duration);
+        mDuration = player.getDuration();
+        mProgressBar.setMax(mDuration);
         setmPaused(false);  //暂停时,在列表中播放别的曲目,这个参数可能不准确
         mHandler.sendEmptyMessage(0);   //避免没有进度
-        mDurationTv.setText(" / " + formatTime(duration));
+        mDurationTv.setText(" / " + formatTime(mDuration));
 
         //保存当前播放的路径
         String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
@@ -413,26 +418,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 showMenuDialog();
             }
         }
-
-        /*
-            Key code constant: Volume Up key. Adjusts the speaker volume up.
-            Key code constant: Volume Down key. Adjusts the speaker volume down.
-            Key code constant: Volume Mute key. Mute the speaker volume.
-        */
-        try {
-            if (KeyEvent.KEYCODE_VOLUME_UP == keyCode || KeyEvent.KEYCODE_VOLUME_DOWN == keyCode ||
-                    KeyEvent.KEYCODE_VOLUME_MUTE == keyCode) {
-                if (CecManager.getInstance().getCecConfiguration().cecStatus == 1) {
-                    if (CecManager.getInstance().sendCecKey(keyCode)) {
-                        Log.d(TAG, "send Cec key,keyCode is " + keyCode + ", localmm don't handl the key");
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
 
         return super.onKeyDown(keyCode, event);
     }
@@ -743,7 +728,17 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private void resetUI() {
         mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
-        mProgressBar.setProgress(0);
+        if (mDataList.get(mCurPlayIndex).isSharing) {   //共享会受网络影响
+            mProgressBar.setMax(mDuration);
+            mProgressBar.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setProgress(1);
+                }
+            }, 500);
+        } else {
+            mProgressBar.setProgress(0);
+        }
         mCDView.setCoverBitmap(null);
         mContentBg.setBackgroundResource(0);
         mContentBg.setImageResource(0);

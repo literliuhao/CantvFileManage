@@ -29,8 +29,8 @@ android {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 155
-        versionName "20170307_v1.5.5"
+        versionCode 156
+        versionName "20170310_v1.5.6"
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
             targetCompatibility JavaVersion.VERSION_1_7
@@ -98,7 +98,6 @@ dependencies {
     compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
-    compile files('libs/tvapi.jar')
 }
 
 

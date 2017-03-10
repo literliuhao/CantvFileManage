@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cantv.cec.CecManager;
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StContent;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
@@ -114,23 +113,29 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
             String mediaPath = SharedPreferenceUtil.getMediaPath();
             mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
-            List<Media> fileList = FileUtil.getFileList(mediaPath, false, SourceType.MOIVE);
-            FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
-            if (fileList.size() > 0) {
-                mDataList.clear();
-                mDataList.addAll(fileList);
-            }
-            for (int i = 0; i < fileList.size(); i++) {
-                String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
-                if (SharedPreferenceUtil.getMediaPath().equals(path)) {
-                    mCurPlayIndex = i;
-                    mDefaultPlayIndex = i;
-                    break;
+            FileUtil.getFileList(mediaPath, false, new FileUtil.OnFileListListener() {
+                @Override
+                public void findFileListFinish(List<Media> list) {
+                    List<Media> fileList = list;
+
+                    FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
+                    if (fileList.size() > 0) {
+                        mDataList.clear();
+                        mDataList.addAll(fileList);
+                    }
+                    for (int i = 0; i < fileList.size(); i++) {
+                        String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
+                        if (SharedPreferenceUtil.getMediaPath().equals(path)) {
+                            mCurPlayIndex = i;
+                            mDefaultPlayIndex = i;
+                            break;
+                        }
+                    }
+                    if (mDataList.size() > 0) {
+                        initView();
+                    }
                 }
-            }
-            if (mDataList.size() > 0) {
-                initView();
-            }
+            }, SourceType.MOIVE);
 
         }
     }
@@ -392,25 +397,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 break;
         }
 
-        /*
-            Key code constant: Volume Up key. Adjusts the speaker volume up.
-            Key code constant: Volume Down key. Adjusts the speaker volume down.
-            Key code constant: Volume Mute key. Mute the speaker volume.
-        */
-        try {
-            if (KeyEvent.KEYCODE_VOLUME_UP == keyCode || KeyEvent.KEYCODE_VOLUME_DOWN == keyCode ||
-                    KeyEvent.KEYCODE_VOLUME_MUTE == keyCode) {
-                if (CecManager.getInstance().getCecConfiguration().cecStatus == 1) {
-                    if (CecManager.getInstance().sendCecKey(keyCode)) {
-                        Log.d(TAG, "send Cec key,keyCode is " + keyCode + ", localmm don't handl the key");
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         if (mCtrBar != null) {
             mCtrBar.onKeyDownEvent(keyCode, event);
         }
@@ -522,7 +508,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             if (mRecord != null) {
                 DaoOpenHelper.getInstance(this).deleteInfo(mRecord);
             }
-            super.onCompletion(arg0);
+//            Log.w("getPlayerDuration", getPlayerDuration() + "");
+            if (getPlayerDuration() > 3000) { //可能出现不支持格式,直接调用onCompletion方法而造成播放下个视频的情况(暂时这么改,不建议这么做)
+                super.onCompletion(arg0);
+            } else {
+                ToastUtils.showMessage(MyApplication.getContext(), getResources().getString(R.string.format_not_support));
+                finish();
+            }
         }
     }
 

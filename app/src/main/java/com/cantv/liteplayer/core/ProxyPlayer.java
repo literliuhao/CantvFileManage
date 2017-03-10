@@ -12,7 +12,6 @@ import android.media.MediaPlayer.TrackInfo;
 import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
@@ -20,6 +19,7 @@ import com.cantv.liteplayer.core.subtitle.SubTitle;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.StringUtil;
+import com.cantv.media.center.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,14 +181,15 @@ public class ProxyPlayer {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.w("异常", "文件播放发生异常!");
                 if (null != mExceptionListener && !mRetryPlaye) {
-                    Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
+                    ToastUtils.showMessage(MyApplication.getContext(), MyApplication.getContext().getResources().getString(R.string.format_not_support));
                     mExceptionListener.ExceHappen();
                 } else if (mRetryPlaye) {
                     mRetryPlaye = false;
                     if (null != mExceptionListener) {
                         mExceptionListener.RetryPlay();
                     } else {
-                        Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
+                        ToastUtils.showMessage(MyApplication.getContext(), MyApplication.getContext().getResources().getString(R.string.format_not_support));
+                        mExceptionListener.ExceHappen();
                     }
                 }
 

@@ -159,6 +159,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             mCurPlayIndex = index;
             final String url = mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri;
 //            Log.w("video_path", url);
+//            final String url="http://oc9fyu8fo.bkt.clouddn.com/%E7%99%BE%E6%80%9D%E4%B8%8D%E5%BE%97%E5%A7%90....mkv";
             getProxyPlayer().playMedia(url, new Runnable() {
                 @Override
                 public void run() {
