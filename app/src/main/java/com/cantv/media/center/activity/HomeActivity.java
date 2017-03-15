@@ -229,12 +229,17 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             }
         });
 
+        //之后在Jenkins构建时内部版本versionName为 *.1 外部为 *.2
         if (null != BuildConfig.CANTV) {
             if (BuildConfig.CANTV.equals("can")) {
+                mVersion.setText(FileUtil.getVersionName(this) + ".1");
                 mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
                 mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
+            } else {
+                mVersion.setText(FileUtil.getVersionName(this) + ".2");
             }
         }
+        //之后在Jenkins构建时内部版本versionName为 *.1 外部为 *.2
 
         mVersion.setText(FileUtil.getVersionName(this));
         alertDialog = new AlertDialog.Builder(mContext).create();
