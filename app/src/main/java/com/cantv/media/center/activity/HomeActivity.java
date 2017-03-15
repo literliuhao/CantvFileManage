@@ -113,7 +113,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         mAudioTV = (TextView) findViewById(R.id.textview_audio);
         mAppTV = (TextView) findViewById(R.id.textview_app);
         if (null != BuildConfig.CANTV) {
-            if (BuildConfig.CANTV.equals("cantv")) {
+            if (BuildConfig.CANTV.equals("can")) {
                 mLocalFreeTV = (TextView) findViewById(R.id.textview_localdiskfree);
                 mLocalTotalTV = (TextView) findViewById(R.id.textview_localdisktotal);
             }
@@ -230,7 +230,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         });
 
         if (null != BuildConfig.CANTV) {
-            if (BuildConfig.CANTV.equals("cantv")) {
+            if (BuildConfig.CANTV.equals("can")) {
                 mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
                 mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
             }

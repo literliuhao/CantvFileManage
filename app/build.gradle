@@ -45,17 +45,17 @@ android {
         }
     }
     productFlavors {
-        common{
-            buildConfigField("String","CANTV","\"cantv\"")
+        can{
+            buildConfigField("String","CANTV","\"can\"")
         }
         other{
-            buildConfigField("String","CANTV","\"cantv-other\"")
+            buildConfigField("String","CANTV","\"other\"")
         }
         sign828{
-            buildConfigField("String","CANTV","\"cantv\"")
+            buildConfigField("String","CANTV","\"can\"")
         }
         sign628{
-            buildConfigField("String","CANTV","\"cantv\"")
+            buildConfigField("String","CANTV","\"can\"")
         }
     }
 
