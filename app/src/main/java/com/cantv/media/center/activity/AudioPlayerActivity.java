@@ -108,7 +108,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         EventBus.getDefault().register(this);
 //        MyApplication.addActivity(this);
         initHandler();
-        holdWakeLock();
         initData();
         playDefualt();
     }
@@ -194,6 +193,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onResume() {
+        holdWakeLock();
         if (mDataList.size() < 1) {
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
             String mediaPath = SharedPreferenceUtil.getMediaPath();
@@ -202,7 +202,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             FileUtil.getFileList(mediaPath, false, new FileUtil.OnFileListListener() {
                 @Override
                 public void findFileListFinish(List<Media> list) {
-                    List<Media> fileList =list;
+                    List<Media> fileList = list;
                     FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
                     if (fileList.size() > 0) {
                         mDataList.clear();
@@ -244,6 +244,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 //        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
 //            MyApplication.onFinishActivity();
 //        }
+        releaseWakeLock();
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
@@ -255,7 +256,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         if (null != muUITask) {
             muUITask.cancel(true);
         }
-        releaseWakeLock();
         hideMenuDialog();
         mMenuDialog = null;
         mHandler.removeCallbacksAndMessages(null);

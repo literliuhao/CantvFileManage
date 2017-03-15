@@ -100,7 +100,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mDataList == null || mDataList.size() == 0) {
             return;
         }
-        acquireWakeLock();// 禁止屏保弹出
         initView();
         registerTimeReceiver();
 //        MyApplication.addActivity(this);
@@ -109,6 +108,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     @Override
     protected void onResume() {
         super.onResume();
+        acquireWakeLock();// 禁止屏保弹出
         if (mDataList.size() < 1) {
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
             String mediaPath = SharedPreferenceUtil.getMediaPath();
@@ -256,6 +256,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
             mWakeLock.acquire();
         }
 
+    }
+
+    private void releaseWakeLock() {
+        if (mWakeLock != null && mWakeLock.isHeld()) {
+            mWakeLock.release();
+            mWakeLock = null;
+        }
     }
 
     @Override
@@ -1010,6 +1017,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void onStop() {
+        releaseWakeLock();  //释放屏保
         storeDuration();    //保存进度
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
 //        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
