@@ -31,6 +31,7 @@ import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.StatisticsUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -226,6 +227,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, DeviceShareActivity.class);
                 startActivity(intent);
+                StatisticsUtil.customEvent(HomeActivity.this,"share_page");
             }
         });
 
@@ -469,7 +471,15 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     @Override
     protected void onResume() {
         super.onResume();
+        StatisticsUtil.registerResume(this);
+        StatisticsUtil.customEvent(HomeActivity.this,"home_page");
         sendUSBRefreshMsg();
+    }
+
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
     }
 
     @Override

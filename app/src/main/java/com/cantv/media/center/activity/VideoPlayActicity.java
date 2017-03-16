@@ -47,6 +47,7 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.utils.StatisticsUtil;
 import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,11 +104,13 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         initView();
         registerTimeReceiver();
 //        MyApplication.addActivity(this);
+        StatisticsUtil.customEvent(VideoPlayActicity.this, "video_player");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        StatisticsUtil.registerResume(this);
         acquireWakeLock();// 禁止屏保弹出
         if (mDataList.size() < 1) {
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
@@ -1014,6 +1017,11 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         }
     }
 
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
+    }
 
     @Override
     protected void onStop() {

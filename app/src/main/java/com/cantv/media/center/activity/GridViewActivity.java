@@ -34,6 +34,7 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.utils.StatisticsUtil;
 import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -118,6 +119,13 @@ public class GridViewActivity extends Activity {
     protected void onResume() {
         super.onResume();
         isStartAc = false;
+        StatisticsUtil.registerResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
     }
 
     //修復OS-3825从发现设备弹窗入口和媒体中心入口进入外接设备浏览本地文件过程中按设置键，再按返回键退出设置后，文件管理器直接退出到入口界面
@@ -138,22 +146,27 @@ public class GridViewActivity extends Activity {
             mTitleTV.setText(R.string.str_movie);
             mGridView = new MediaGridView(this, SourceType.MOIVE);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "video_page");
         } else if (Constant.MEDIA_IMAGE_SPE.equalsIgnoreCase(mType) || Constant.MEDIA_IMAGE.equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_photo);
             mGridView = new MediaGridView(this, SourceType.PICTURE);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "picture_page");
         } else if (Constant.MEDIA_AUDIO_SPE.equalsIgnoreCase(mType) || Constant.MEDIA_AUDIO.equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_music);
             mGridView = new MediaGridView(this, SourceType.MUSIC);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "music_page");
         } else if ("app".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_app);
             mGridView = new MediaGridView(this, SourceType.APP);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "install_page");
         } else if ("local".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_file);
             mGridView = new MediaGridView(this, SourceType.LOCAL);
             isExternal = false;
+            StatisticsUtil.customEvent(GridViewActivity.this, "local_page");
         } else if ("device1".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
@@ -165,6 +178,7 @@ public class GridViewActivity extends Activity {
                 }
             }
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "usb_page");
         } else if ("device2".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
@@ -172,6 +186,7 @@ public class GridViewActivity extends Activity {
                 mGridView.setDevicePath(MediaUtils.getCurrPathList().get(1));
             }
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "usb_page");
         } else if ("share".equalsIgnoreCase(mType)) {
             mTitleTV.setText(intent.getStringExtra("title"));
             mGridView = new MediaGridView(this, SourceType.SHARE);

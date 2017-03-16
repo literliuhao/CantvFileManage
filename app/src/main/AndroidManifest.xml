@@ -139,6 +139,12 @@
         <meta-data
             android:name="channelID"
             android:value="cantv"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="58ca34daae1bf8263e001e2c" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="CANOS" />
     </application>
 
 </manifest>

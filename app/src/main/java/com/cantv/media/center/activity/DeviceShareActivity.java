@@ -40,6 +40,7 @@ import com.cantv.media.center.ui.share.DeviceShareItemView;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.ToastUtils;
+import com.cantv.media.center.utils.StatisticsUtil;
 import com.cantv.media.center.utils.cybergarage.FileItem;
 import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.ScanSambaTask;
@@ -106,6 +107,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     @Override
     protected void onResume() {
         super.onResume();
+        StatisticsUtil.registerResume(this);
         updatePageNetInfo();
     }
 
@@ -116,6 +118,12 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
             isFirst = false;
             mAddDeviceView.requestFocus();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
     }
 
     @Override

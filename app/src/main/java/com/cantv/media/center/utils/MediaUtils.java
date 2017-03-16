@@ -334,6 +334,7 @@ public class MediaUtils {
             currClass = AudioPlayerActivity.class;
         } else if (sourceType == SourceType.PICTURE) {
             currClass = ImagePlayerActivity.class;
+            //StatisticsUtil.customEvent(MyApplication.getContext(), "picture_player");
         }
         intent.setClass(context, currClass);
 //        if (sourceType == SourceType.PICTURE) {

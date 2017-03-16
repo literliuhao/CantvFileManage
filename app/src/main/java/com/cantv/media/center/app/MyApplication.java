@@ -9,6 +9,7 @@ import com.cantv.media.center.ui.upgrade.MyUpgradeListener;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class MyApplication extends Application {
 //            return;
 //        }
 //        refWatcher = LeakCanary.install(this);
+        MobclickAgent.enableEncrypt(true);
     }
 
     public static Context getContext() {
