@@ -7,7 +7,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -126,7 +125,7 @@ public class LyricParser {
         return null;
     }
 
-    private static void parseLine(List<Lyric> lyrics, String line) {
+    public static void parseLine(List<Lyric> lyrics, String line) {
         String reg = "\\[(\\d{2}:\\d{2}\\.\\d{2})\\]";
         Pattern pattern = Pattern.compile(reg);
         Matcher matcher = pattern.matcher(line);
@@ -150,14 +149,14 @@ public class LyricParser {
         }
     }
 
-    private static long shortTimeStr2Long(String timeStr) {
+    public static long shortTimeStr2Long(String timeStr) {
         String[] splitMinute = timeStr.split(":");
         int min = Integer.parseInt(splitMinute[0]);
         int sec = Integer.parseInt(splitMinute[0]);
         return min * 60000 + sec * 1000;
     }
 
-    private static long timeStr2Long(String timeStr) {
+    public static long timeStr2Long(String timeStr) {
         String[] splitMinute = timeStr.split(":");
         int min = Integer.parseInt(splitMinute[0]);
         String[] splitSecond = splitMinute[1].split("\\.");
@@ -166,7 +165,7 @@ public class LyricParser {
         return min * 60000 + sec * 1000 + millis;
     }
 
-    private static void buildRelations(List<Lyric> lyrics) {
+    public static void buildRelations(List<Lyric> lyrics) {
         Lyric preNode = null;
         for (Lyric lyric : lyrics) {
             if (preNode != null) {

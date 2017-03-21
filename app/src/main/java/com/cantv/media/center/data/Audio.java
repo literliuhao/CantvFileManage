@@ -7,13 +7,24 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
+import com.cantv.liteplayer.core.mp3agic.ID3v2;
+import com.cantv.liteplayer.core.mp3agic.InvalidDataException;
+import com.cantv.liteplayer.core.mp3agic.Mp3File;
+import com.cantv.liteplayer.core.mp3agic.UnsupportedTagException;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.MediaFormat;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.utils.LyricParser;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import static com.cantv.media.center.utils.LyricParser.buildRelations;
+import static com.cantv.media.center.utils.LyricParser.shortTimeStr2Long;
 
 @SuppressLint("NewApi")
 public class Audio extends Media {
@@ -133,6 +144,43 @@ public class Audio extends Media {
     }
 
     public static LyricInfo getAudioLyric(String uri) {
+        if (!TextUtils.isEmpty(uri)) {
+            try {
+                Mp3File mp3File = new Mp3File(uri);
+                if (mp3File.hasId3v2Tag()) {
+//                    String[] lrcs = mp3File.getId3v2Tag().getLyrics().split("\\n");
+
+                    ID3v2 id3v2Tag = mp3File.getId3v2Tag();
+                    String lyrics1 = id3v2Tag.getLyrics();
+
+                    String[] lrcs = lyrics1.split("\\n");
+                    LyricInfo lyricInfo = new LyricInfo();
+                    List<LyricInfo.Lyric> lyrics = lyricInfo.getLyrics();
+                    for (int i = 0; i < lrcs.length; i++) {
+                        if (lrcs[i].startsWith("﻿[ti:")) {
+                            lyricInfo.setTitle(lrcs[i].substring(5, lrcs[i].length() - 1));
+                        } else if (lrcs[i].startsWith("[ar:")) {
+                            lyricInfo.setSinger(lrcs[i].substring(4, lrcs[i].length() - 1));
+                        } else if (lrcs[i].startsWith("[al:")) {
+                            lyricInfo.setAlbum(lrcs[i].substring(4, lrcs[i].length() - 1));
+                        } else if (lrcs[i].startsWith("[t_time:")) {
+                            lyricInfo.setDuration(shortTimeStr2Long(lrcs[i].substring(9, lrcs[i].length() - 1)));
+                        } else {
+                            LyricParser.parseLine(lyrics, lrcs[i]);
+                        }
+                    }
+                    Collections.sort(lyrics);
+                    buildRelations(lyrics);
+                    return lyricInfo;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (UnsupportedTagException e) {
+                e.printStackTrace();
+            } catch (InvalidDataException e) {
+                e.printStackTrace();
+            }
+        }
         String lyricUri = uri.substring(0, uri.lastIndexOf(".")) + "." + "lrc";
         File file = new File(lyricUri);
         if (file.exists() && file.isFile() && file.length() > 0) {
