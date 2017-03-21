@@ -309,11 +309,14 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
                 rotationImage();
                 break;
             case R.id.iv_size:
-                Intent intent = new Intent();
-                intent.setAction("com.cantv.action.LARGE_ACTIVITY");
-                intent.putExtra("path",mDataList.get(mCurrentPosition).mUri);
-                ImageActivity.this.startActivity(intent);
-//                scaleImage();
+                String mName = getData().get(mCurrentPosition).mName;
+                if (mName.endsWith(".gif")) {
+                    scaleImage();
+                } else if (mFullScreen) {
+                    openLargeImageActivity();
+                } else {
+                    scaleImage();
+                }
                 break;
             case R.id.iv_auto:
                 autoPlayImage();
@@ -329,6 +332,13 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
             default:
                 break;
         }
+    }
+
+    private void openLargeImageActivity() {
+        Intent intent = new Intent();
+        intent.setAction("com.cantv.action.LARGE_ACTIVITY");
+        intent.putExtra("path", mDataList.get(mCurrentPosition).mUri);
+        ImageActivity.this.startActivity(intent);
     }
 
     @Override

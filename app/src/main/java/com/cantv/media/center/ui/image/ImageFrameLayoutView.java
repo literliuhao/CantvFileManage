@@ -123,7 +123,6 @@ public class ImageFrameLayoutView extends FrameLayout {
                 loadLocalImageNoThumbnail(imageUri, position);
             } else {
                 loadLocalImage(imageUri, position);
-                //loadLocalImageNoThumbnail(imageUri, position);
             }
         } else {
             loadNetImage(imageUri, position);
@@ -465,7 +464,7 @@ public class ImageFrameLayoutView extends FrameLayout {
 
     //传递尺寸
     private void getImageListener(int width, int height, int position) {
-        if (sizeArray[1] < (int) mActivity.screenHeight && sizeArray[0] < (int) mActivity.screenWidth) {
+        if (sizeArray[1] <= (int) mActivity.screenHeight && sizeArray[0] <= (int) mActivity.screenWidth) {
             mLoadingImgListener.getImageSize(width, height, false, position);
         } else {
             mLoadingImgListener.getImageSize(width, height, true, position);
