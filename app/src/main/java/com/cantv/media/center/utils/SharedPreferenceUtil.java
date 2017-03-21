@@ -25,6 +25,7 @@ public class SharedPreferenceUtil {
     private static final String SHARE_DEFAULT_CONFIG = "default_config";
     private static final String PHOTO_MODEL = "photo_Model";
     private static final String MEDIA_PATH = "mediaPath";
+    private static final String COPY_PATH = "copyFilePath";
     private static SharedPreferences mSp = MyApplication.mContext.getSharedPreferences(SHARE_DEFAULT_CONFIG, Context.MODE_PRIVATE);
     private static SharedPreferences.Editor mEditor = mSp.edit();
 
@@ -272,6 +273,20 @@ public class SharedPreferenceUtil {
      */
     public static String getMediaPath() {
         return mSp.getString(MEDIA_PATH, "");
+    }
+
+
+    /**
+     * @param path 被复制的路径
+     * @return 是否复制成功
+     */
+    public static boolean saveCopyFilePath(String path) {
+        mEditor.putString(COPY_PATH, path);
+        return commitInfo(mEditor);
+    }
+
+    public static String getCopyFilePath() {
+        return mSp.getString(COPY_PATH, "");
     }
 
 }

@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cantv.media.R;
 
@@ -17,12 +18,14 @@ public class LoadingDialog extends Dialog implements OnDismissListener, OnShowLi
     private ImageView mLoadingView;
     private RotateAnimation mRotateAnimation;
     private Activity mActivity;
+    private final TextView mLoadTextView;
 
     public LoadingDialog(Activity context) {
         super(context, R.style.dialog_loading);
         setContentView(R.layout.dialog_loading);
         mActivity = context;
         mLoadingView = (ImageView) findViewById(R.id.iv_loading);
+        mLoadTextView = (TextView) findViewById(R.id.load_text);
         mRotateAnimation = new RotateAnimation(0, 360, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
         mRotateAnimation.setInterpolator(new LinearInterpolator());
         mRotateAnimation.setDuration(900);
@@ -30,6 +33,14 @@ public class LoadingDialog extends Dialog implements OnDismissListener, OnShowLi
         mRotateAnimation.setRepeatCount(Animation.INFINITE);
         setOnShowListener(this);
         setOnDismissListener(this);
+    }
+
+    /**
+     * 设置文字
+     * @param str
+     */
+    public void setLoadingText(String str) {
+        mLoadTextView.setText(str);
     }
 
     @Override

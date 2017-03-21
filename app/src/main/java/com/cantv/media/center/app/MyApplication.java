@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyApplication extends Application {
-    public static final String APP_ID = "af99255c0f"; //文件管理器的APP_ID TODO 替换成bugly上注册的appid
+//    public static final String APP_ID = "af99255c0f"; //文件管理器的APP_ID TODO 替换成bugly上注册的appid
+//    public static final String APP_ID = "22b100f58c"; //测试用的文件管理器的APP_ID TODO 替换成bugly上注册的appid
     public static Context mContext;
     //目前只为了存GridViewActivity,播放视频/音频/图片的Activity,为了解决0S/1439问题
 //    private static List<Activity> activityList;
