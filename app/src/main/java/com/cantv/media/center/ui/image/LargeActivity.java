@@ -31,9 +31,11 @@ public class LargeActivity extends Activity {
                 mLargeImageView.setInputStream(new File(path).getPath());
             } else {
                 ToastUtils.showMessage(this, "本地图片地址有误，请重试");
+                this.finish();
             }
         } else {
             ToastUtils.showMessage(this, "本地图片地址有误，请重试");
+            this.finish();
         }
     }
 

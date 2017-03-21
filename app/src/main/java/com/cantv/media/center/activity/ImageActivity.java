@@ -1,5 +1,6 @@
 package com.cantv.media.center.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -308,7 +309,11 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
                 rotationImage();
                 break;
             case R.id.iv_size:
-                scaleImage();
+                Intent intent = new Intent();
+                intent.setAction("com.cantv.action.LARGE_ACTIVITY");
+                intent.putExtra("path",mDataList.get(mCurrentPosition).mUri);
+                ImageActivity.this.startActivity(intent);
+//                scaleImage();
                 break;
             case R.id.iv_auto:
                 autoPlayImage();
