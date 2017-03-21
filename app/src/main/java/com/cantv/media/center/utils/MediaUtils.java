@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.cantv.liteplayer.core.interfaces.ICallBack;
 import com.cantv.media.R;
 import com.cantv.media.center.activity.AudioPlayerActivity;
+import com.cantv.media.center.activity.GridViewActivity;
+import com.cantv.media.center.activity.ImageActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
 import com.cantv.media.center.activity.VideoPlayActicity;
 import com.cantv.media.center.app.MyApplication;
@@ -333,8 +335,11 @@ public class MediaUtils {
         } else if (sourceType == SourceType.MUSIC) {
             currClass = AudioPlayerActivity.class;
         } else if (sourceType == SourceType.PICTURE) {
-            currClass = ImagePlayerActivity.class;
-            //StatisticsUtil.customEvent(MyApplication.getContext(), "picture_player");
+            if("share".equalsIgnoreCase(GridViewActivity.mType)){
+                currClass = ImagePlayerActivity.class;
+            }else{
+                currClass = ImageActivity.class;
+            }
         }
         intent.setClass(context, currClass);
 //        if (sourceType == SourceType.PICTURE) {

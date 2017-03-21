@@ -1033,8 +1033,5 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mFocusUtils != null) {
-            mFocusUtils.release();
-        }
     }
 }

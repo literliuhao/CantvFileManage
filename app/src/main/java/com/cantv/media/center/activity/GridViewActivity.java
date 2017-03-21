@@ -72,7 +72,7 @@ public class GridViewActivity extends Activity {
     private ConfirmDialog mConfirmDialog;
     private boolean mClickDelete = false;
     public boolean isStartAc;   //用来判断是否处于打开二级activity中
-    private String mType;
+    public static String mType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
