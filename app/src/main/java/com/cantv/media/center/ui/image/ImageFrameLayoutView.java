@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -19,20 +18,15 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.cantv.media.center.Listener.OnLoadingImageListener;
 import com.cantv.media.center.activity.ImageActivity;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 @SuppressLint("ResourceAsColor")
 public class ImageFrameLayoutView extends FrameLayout {
@@ -464,7 +458,7 @@ public class ImageFrameLayoutView extends FrameLayout {
 
     //传递尺寸
     private void getImageListener(int width, int height, int position) {
-        if (sizeArray[1] <= (int) mActivity.screenHeight && sizeArray[0] <= (int) mActivity.screenWidth) {
+        if (width <= (int) mActivity.screenHeight && height <= (int) mActivity.screenWidth) {
             mLoadingImgListener.getImageSize(width, height, false, position);
         } else {
             mLoadingImgListener.getImageSize(width, height, true, position);
