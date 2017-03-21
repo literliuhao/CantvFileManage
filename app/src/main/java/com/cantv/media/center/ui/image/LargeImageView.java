@@ -38,11 +38,11 @@ public class LargeImageView extends View {
     private Bitmap mBitmapThumb;
 
     //缩略图
-    private int mThumbW = 324, mThumbH = 216;
+    private int mThumbW, mThumbH;
     //大图尺寸
     private int mImageWidth, mImageHeight;
     //缩略图与屏幕比例
-    private float thumbScreenScale = 0.2f;
+    private float thumbScreenScale = 0.15f;
     //移动步长
     private float MOVE_SCALE = 0.33f;
     //大图移动量
@@ -60,6 +60,9 @@ public class LargeImageView extends View {
 
     private static final BitmapFactory.Options options = new BitmapFactory.Options();
 
+    private String mImagePath;
+
+    private int onMeasureCount = 0;
 
     static {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -71,26 +74,25 @@ public class LargeImageView extends View {
 
     public void setInputStream(String path) {
         try {
+            mImagePath = path;
             mDecoder = BitmapRegionDecoder.newInstance(path, false);
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, options);
+            BitmapFactory.decodeFile(mImagePath, options);
             mImageWidth = options.outWidth;
             mImageHeight = options.outHeight;
-            //缩略图大小
-            mBitmapThumb = decodeThumb(path);
-            init();
             requestLayout();
+            init();
             invalidate();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Bitmap decodeThumb(String path) {
+    private Bitmap decodeThumb() {
         BitmapFactory.Options thumbOptions = new BitmapFactory.Options();
         thumbOptions.inSampleSize = calculateInSampleSize(options, mThumbW, mThumbH);
         thumbOptions.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(path, thumbOptions);
+        return BitmapFactory.decodeFile(mImagePath, thumbOptions);
     }
 
     public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -186,7 +188,7 @@ public class LargeImageView extends View {
             rectSmall.left = mThumbRect.right - mSmallRangeX;
         }
 
-        if(rectSmall.left < mThumbRect.left){
+        if (rectSmall.left < mThumbRect.left) {
             rectSmall.left = mThumbRect.left;
             rectSmall.right = mThumbRect.left + mSmallRangeX;
         }
@@ -196,7 +198,6 @@ public class LargeImageView extends View {
         Rect rect = mRectLarge;
         RectF rectSmall = mRectSmall;
         int imageHeight = mImageHeight;
-
 
         if (rect.top < 0) {
             rect.top = 0;
@@ -208,14 +209,12 @@ public class LargeImageView extends View {
             rect.top = imageHeight - getHeight();
         }
 
-
-
         if (rectSmall.top < mThumbRect.top) {
             rectSmall.top = mThumbRect.top;
             rectSmall.bottom = mThumbRect.top + mSmallRangeY;
         }
 
-        if(rectSmall.bottom > mThumbRect.bottom){
+        if (rectSmall.bottom > mThumbRect.bottom) {
             rectSmall.bottom = mThumbRect.bottom;
             rectSmall.top = mThumbRect.bottom - mSmallRangeY;
         }
@@ -243,55 +242,65 @@ public class LargeImageView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (onMeasureCount == 0) {
+            int width = getMeasuredWidth();
+            int height = getMeasuredHeight();
 
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
+            int imageWidth = mImageWidth;
+            int imageHeight = mImageHeight;
 
-        int imageWidth = mImageWidth;
-        int imageHeight = mImageHeight;
+            float widthMax = (float) width / (float) mImageWidth;
+            float heightMax = (float) height / (float) mImageHeight;
+            float thumbScaleMax;
+            if (widthMax > heightMax) {
+                thumbScaleMax = widthMax;
+            } else {
+                thumbScaleMax = heightMax;
+            }
 
+            //缩略图大小
+            mThumbW = (int) ((float) imageWidth * thumbScaleMax * thumbScreenScale);
+            mThumbH = (int) ((float) imageHeight * thumbScaleMax * thumbScreenScale);
 
-        //缩略图大小
-        mThumbW = (int) (width * thumbScreenScale);
-        mThumbH = (int) (height * thumbScreenScale);
+            mBitmapThumb = decodeThumb();
 
-        //小框大小
-        zoomScaleWH = scaleWH(options, width, height);
-        mSmallRangeX = mThumbW / zoomScaleWH[0];
-        mSmallRangeY = mThumbH / zoomScaleWH[0];
+            //小框大小
+            zoomScaleWH = scaleWH(options, width, height);
+            mSmallRangeX = mThumbW / zoomScaleWH[0];
+            mSmallRangeY = mThumbH / zoomScaleWH[1];
 
-        //大图移动步长
-        mMoveX = (int) (width * MOVE_SCALE);
-        mMoveY = (int) (height * MOVE_SCALE);
+            //大图移动步长
+            mMoveX = (int) (width * MOVE_SCALE);
+            mMoveY = (int) (height * MOVE_SCALE);
 
-        //局部小框移动步长
-        mZoomMoveX = (int) (mSmallRangeX * MOVE_SCALE);
-        mZoomMoveY = (int) (mSmallRangeY * MOVE_SCALE);
+            //局部小框移动步长
+            mZoomMoveX = (int) (mSmallRangeX * MOVE_SCALE);
+            mZoomMoveY = (int) (mSmallRangeY * MOVE_SCALE);
 
-        //默认直接显示图片的中心区域
-        mRectLarge.left = imageWidth / 2 - width / 2;
-        mRectLarge.top = imageHeight / 2 - height / 2;
-        mRectLarge.right = mRectLarge.left + width;
-        mRectLarge.bottom = mRectLarge.top + height;
+            //默认直接显示图片的中心区域
+            mRectLarge.left = imageWidth / 2 - width / 2;
+            mRectLarge.top = imageHeight / 2 - height / 2;
+            mRectLarge.right = mRectLarge.left + width;
+            mRectLarge.bottom = mRectLarge.top + height;
 
-        mThumbX = width - mThumbX - mThumbW;
+            mThumbX = width - mThumbX - mThumbW;
 
-        mThumbRect.left = mThumbX;
-        mThumbRect.top = mThumbY;
-        mThumbRect.right = mThumbX + mThumbW;
-        mThumbRect.bottom = mThumbRect.top + mThumbH;
+            mThumbRect.left = mThumbX;
+            mThumbRect.top = mThumbY;
+            mThumbRect.right = mThumbX + mThumbW;
+            mThumbRect.bottom = mThumbRect.top + mThumbH;
 
-        mRect.left = mThumbX;
-        mRect.top = mThumbY;
-        mRect.right = mThumbX + mThumbW;
-        mRect.bottom = mRect.top + mThumbH;
+            mRect.left = mThumbX;
+            mRect.top = mThumbY;
+            mRect.right = mThumbX + mThumbW;
+            mRect.bottom = mRect.top + mThumbH;
 
-        mRectSmall.left = (mThumbW / 2) - (mSmallRangeX / 2) + mThumbX;
-        mRectSmall.top = (mThumbH / 2) - (mSmallRangeY / 2) + mThumbY;
-        mRectSmall.right = (mThumbW / 2) + mThumbX + (mSmallRangeX / 2);
-        mRectSmall.bottom = (mThumbH / 2) + mThumbY + (mSmallRangeY / 2);
-
-
+            mRectSmall.left = (mThumbW / 2) - (mSmallRangeX / 2) + mThumbX;
+            mRectSmall.top = (mThumbH / 2) - (mSmallRangeY / 2) + mThumbY;
+            mRectSmall.right = (mThumbW / 2) + mThumbX + (mSmallRangeX / 2);
+            mRectSmall.bottom = (mThumbH / 2) + mThumbY + (mSmallRangeY / 2);
+        }
+        onMeasureCount++;
     }
 
     public void moveEvent(EKeyEvent keyEvent) {

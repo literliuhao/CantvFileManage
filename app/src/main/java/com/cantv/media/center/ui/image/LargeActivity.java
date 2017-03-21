@@ -12,7 +12,6 @@ import java.io.File;
 
 public class LargeActivity extends Activity {
     private LargeImageView mLargeImageView;
-    private EKeyEvent keyEvent;
     public final int UP = 19, DOWN = 20, LEFT = 21, RIGHT = 22;
 //    private String filePath = "/sdcard/DCIM/sample5_zoom-19.1M.jpg";
 //    private String filePath = "/sdcard/DCIM/IMG_4991.JPG";
@@ -44,22 +43,21 @@ public class LargeActivity extends Activity {
 //        Log.i("LargeActivity", "keyCode " + keyCode);
         switch (keyCode) {
             case UP:
-                keyEvent = EKeyEvent.UP;
+                mLargeImageView.moveEvent(EKeyEvent.UP);
                 break;
             case DOWN:
-                keyEvent = EKeyEvent.DOWN;
+                mLargeImageView.moveEvent(EKeyEvent.DOWN);
                 break;
             case LEFT:
-                keyEvent = EKeyEvent.LEFT;
+                mLargeImageView.moveEvent(EKeyEvent.LEFT);
                 break;
             case RIGHT:
-                keyEvent = EKeyEvent.RIGHT;
+                mLargeImageView.moveEvent(EKeyEvent.RIGHT);
                 break;
             default:
                 break;
         }
 
-        mLargeImageView.moveEvent(keyEvent);
         return super.onKeyDown(keyCode, event);
     }
 }
