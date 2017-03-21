@@ -2,6 +2,7 @@ package com.cantv.media.center.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -474,14 +475,18 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     return;
                 }
                 //修复OS-2838大图浏览本地图片，按遥控器菜单键切换图片比例无效,再次切换才有效
+                Intent intent = new Intent();
+                intent.setAction("com.cantv.action.LARGE_ACTIVITY");
+                intent.putExtra("path","");
+                ImagePlayerActivity.this.startActivity(intent);
                 if (!mSizeType) {
                     resetTvSize();
                 } else {
                     changeTvSize();
                 }
-                float calc = calcByWH(mWidth, mHeight, mSizeType);
-                Log.i("ImagePlayerActivity", "calc " + calc);
-                mImageBrowser.onZoomScale(calc);
+//                float calc = calcByWH(mWidth, mHeight, mSizeType);
+//                Log.i("ImagePlayerActivity", "calc " + calc);
+//                mImageBrowser.onZoomScale(calc);
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, DELAYED_TIME);
             }
