@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.cantv.media"
-          android:sharedUserId="android.uid.system">
+          package="com.cantv.media">
+
+    <!--android:sharedUserId="android.uid.system"-->
 
     <uses-sdk
         android:minSdkVersion="19"
@@ -136,15 +137,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+
         <meta-data
             android:name="channelID"
             android:value="cantv"/>
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="58ca34daae1bf8263e001e2c" />
+            android:value="58ca34daae1bf8263e001e2c"/>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="CANOS" />
+            android:value="CANOS"/>
     </application>
 
 </manifest>
