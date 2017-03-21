@@ -136,6 +136,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+        <activity
+            android:name="com.cantv.media.center.ui.image.LargeActivity">
+            <intent-filter>
+                <action android:name="com.cantv.action.LARGE_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="channelID"
