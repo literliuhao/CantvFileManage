@@ -149,8 +149,6 @@ public class Audio extends Media {
                     if (!TextUtils.isEmpty(lyrics1)) {
                         return LyricParser.parseFromStream(lyrics1);
                     }
-                } else {
-                    return parsingLrc(uri);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -159,6 +157,7 @@ public class Audio extends Media {
             } catch (InvalidDataException e) {
                 e.printStackTrace();
             }
+            return parsingLrc(uri);
         }
         return null;
     }
