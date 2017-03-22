@@ -125,6 +125,40 @@ public class LyricParser {
         return null;
     }
 
+    /**
+     * 传递歌词字符串
+     *
+     * @param lyrics1
+     * @return
+     */
+    public static LyricInfo parseFromStream(String lyrics1) {
+        if (lyrics1 == null) {
+            return null;
+        } else {
+            String[] lrcs = lyrics1.split("\\n");
+            LyricInfo lyricInfo = new LyricInfo();
+            List<LyricInfo.Lyric> lyrics = lyricInfo.getLyrics();
+            for (int i = 0; i < lrcs.length; i++) {
+                if (lrcs[i].startsWith("﻿[ti:")) {
+                    lyricInfo.setTitle(lrcs[i].substring(5, lrcs[i].length() - 1));
+                } else if (lrcs[i].startsWith("[ar:")) {
+                    lyricInfo.setSinger(lrcs[i].substring(4, lrcs[i].length() - 1));
+                } else if (lrcs[i].startsWith("[al:")) {
+                    lyricInfo.setAlbum(lrcs[i].substring(4, lrcs[i].length() - 1));
+                } else if (lrcs[i].startsWith("[t_time:")) {
+                    lyricInfo.setDuration(shortTimeStr2Long(lrcs[i].substring(9, lrcs[i].length() - 1)));
+                } else {
+                    LyricParser.parseLine(lyrics, lrcs[i]);
+                }
+            }
+            Collections.sort(lyrics);
+            buildRelations(lyrics);
+            return lyricInfo;
+        }
+
+    }
+
+
     public static void parseLine(List<Lyric> lyrics, String line) {
         String reg = "\\[(\\d{2}:\\d{2}\\.\\d{2})\\]";
         Pattern pattern = Pattern.compile(reg);

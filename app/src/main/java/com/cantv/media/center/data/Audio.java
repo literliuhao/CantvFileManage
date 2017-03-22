@@ -20,11 +20,6 @@ import com.cantv.media.center.utils.LyricParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import static com.cantv.media.center.utils.LyricParser.buildRelations;
-import static com.cantv.media.center.utils.LyricParser.shortTimeStr2Long;
 
 @SuppressLint("NewApi")
 public class Audio extends Media {
@@ -149,38 +144,13 @@ public class Audio extends Media {
                 Mp3File mp3File = new Mp3File(uri);
                 if (mp3File.hasId3v2Tag()) {
 //                    String[] lrcs = mp3File.getId3v2Tag().getLyrics().split("\\n");
-
                     ID3v2 id3v2Tag = mp3File.getId3v2Tag();
                     String lyrics1 = id3v2Tag.getLyrics();  //可能报空指针异常
-                    if (null != lyrics1) {
-                        String[] lrcs = lyrics1.split("\\n");
-                        LyricInfo lyricInfo = new LyricInfo();
-                        List<LyricInfo.Lyric> lyrics = lyricInfo.getLyrics();
-                        for (int i = 0; i < lrcs.length; i++) {
-                            if (lrcs[i].startsWith("﻿[ti:")) {
-                                lyricInfo.setTitle(lrcs[i].substring(5, lrcs[i].length() - 1));
-                            } else if (lrcs[i].startsWith("[ar:")) {
-                                lyricInfo.setSinger(lrcs[i].substring(4, lrcs[i].length() - 1));
-                            } else if (lrcs[i].startsWith("[al:")) {
-                                lyricInfo.setAlbum(lrcs[i].substring(4, lrcs[i].length() - 1));
-                            } else if (lrcs[i].startsWith("[t_time:")) {
-                                lyricInfo.setDuration(shortTimeStr2Long(lrcs[i].substring(9, lrcs[i].length() - 1)));
-                            } else {
-                                LyricParser.parseLine(lyrics, lrcs[i]);
-                            }
-                        }
-                        Collections.sort(lyrics);
-                        buildRelations(lyrics);
-                        return lyricInfo;
-                    }else {
-
-                        String lyricUri = uri.substring(0, uri.lastIndexOf(".")) + "." + "lrc";
-                        File file = new File(lyricUri);
-                        if (file.exists() && file.isFile() && file.length() > 0) {
-                            return LyricParser.parseFromFile(file);
-                        }
-
+                    if (!TextUtils.isEmpty(lyrics1)) {
+                        return LyricParser.parseFromStream(lyrics1);
                     }
+                } else {
+                    return parsingLrc(uri);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -190,11 +160,16 @@ public class Audio extends Media {
                 e.printStackTrace();
             }
         }
-//        String lyricUri = uri.substring(0, uri.lastIndexOf(".")) + "." + "lrc";
-//        File file = new File(lyricUri);
-//        if (file.exists() && file.isFile() && file.length() > 0) {
-//            return LyricParser.parseFromFile(file);
-//        }
         return null;
     }
+
+    private static LyricInfo parsingLrc(String uri) {
+        String lyricUri = uri.substring(0, uri.lastIndexOf(".")) + "." + "lrc";
+        File file = new File(lyricUri);
+        if (file.exists() && file.isFile() && file.length() > 0) {
+            return LyricParser.parseFromFile(file);
+        }
+        return null;
+    }
+
 }
