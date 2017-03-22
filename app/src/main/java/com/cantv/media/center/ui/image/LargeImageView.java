@@ -1,5 +1,6 @@
 package com.cantv.media.center.ui.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.cantv.media.R;
+import com.cantv.media.center.ui.dialog.LoadingDialog;
 
 import java.io.IOException;
 
@@ -64,6 +66,10 @@ public class LargeImageView extends View {
 
     private int onMeasureCount = 0;
 
+    private LoadingDialog mLoadingDialog;
+
+    private Activity mActivity;
+
     static {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
     }
@@ -73,19 +79,7 @@ public class LargeImageView extends View {
     }
 
     public void setInputStream(String path) {
-        try {
-            mImagePath = path;
-            mDecoder = BitmapRegionDecoder.newInstance(path, false);
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(mImagePath, options);
-            mImageWidth = options.outWidth;
-            mImageHeight = options.outHeight;
-            requestLayout();
-            init();
-            invalidate();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mImagePath = path;
     }
 
     private Bitmap decodeThumb() {
@@ -243,6 +237,18 @@ public class LargeImageView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (onMeasureCount == 0) {
+            try {
+                mDecoder = BitmapRegionDecoder.newInstance(mImagePath, false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(mImagePath, options);
+            mImageWidth = options.outWidth;
+            mImageHeight = options.outHeight;
+
+            requestLayout();
+            init();
             int width = getMeasuredWidth();
             int height = getMeasuredHeight();
 
@@ -336,4 +342,8 @@ public class LargeImageView extends View {
         checkHeight();
         invalidate();
     }
+
+
+    
+
 }
