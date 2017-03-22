@@ -313,7 +313,9 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
                 if (mName.endsWith(".gif")) {
                     scaleImage();
                 } else if (mFullScreen) {
+                    showProgressBar();
                     openLargeImageActivity();
+//                    dismissProgressBar();
                 } else {
                     scaleImage();
                 }
@@ -338,7 +340,13 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         Intent intent = new Intent();
         intent.setAction("com.cantv.action.LARGE_ACTIVITY");
         intent.putExtra("path", mDataList.get(mCurrentPosition).mUri);
-        ImageActivity.this.startActivity(intent);
+        ImageActivity.this.startActivityForResult(intent,0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        dismissProgressBar();
     }
 
     @Override
