@@ -473,6 +473,9 @@ public class PlayerController extends RelativeLayout {
             if (INVISIBLE == mProgressBar.getVisibility() && mCtrlBarContext.isPlayerPaused()) {
                 mPlayImage.setVisibility(INVISIBLE);
                 context.finish();
+            } else if (VISIBLE == mProgressBar.getVisibility() && mCtrlBarContext.isPlayerPaused()) {
+                mProgressBar.setVisibility(INVISIBLE);
+                mPlayImage.setVisibility(VISIBLE);
             } else {
                 setVisibility(INVISIBLE);
             }
