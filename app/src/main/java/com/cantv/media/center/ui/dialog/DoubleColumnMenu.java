@@ -607,12 +607,12 @@ public class DoubleColumnMenu extends RelativeLayout implements Observer {
                 if (hasFocus) {
                     mMenuFocusTmpPosi = position;
                     mMenuSelectedPosi = position;
-                    animateMenuSelectView(v);
                     //修复OS-4479播放音频时在歌曲列表移动焦点，焦点会移出屏幕。
                     //修复OS-4480播放音频时，当焦点位于播放列表最后一个节目时按下键，焦点消失
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            animateMenuSelectView(v);
                             animateFocusView(v, true, null);
                         }
                     },100);

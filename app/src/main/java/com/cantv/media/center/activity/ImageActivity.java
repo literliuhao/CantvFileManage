@@ -201,8 +201,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         super.onResume();
         StatisticsUtil.registerResume(this);
         if (isAutoPlay) {
-            startAutoPlay();
-            closeVolume();
+            startAutoPlayImage();
         }
 
         if (mDataList.size() < 1) {
@@ -1057,9 +1056,9 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
     protected void onStop() {
         super.onStop();
         isAutoPlay = mAutoPlay;
-        stopAutoPlay();
-        openVolume();
-        mAuto.setImageResource(R.drawable.photo_info3);
+        if(mAutoPlay){
+            stopAutoPlayImage();
+        }
         //保存当前播放的路径
         String path = mDataList.get(mCurrentPosition).isSharing ? mDataList.get(mCurrentPosition).sharePath : mDataList.get(mCurrentPosition).mUri;
         SharedPreferenceUtil.saveMediaPath(path);
