@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.dialog.ApkForbidDialog;
 import com.cantv.media.center.ui.dialog.CommonDialog;
 import com.cantv.media.center.ui.dialog.LoadingDialog;
+import com.cantv.media.center.utils.CopyPasUtils;
 import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
@@ -63,6 +65,7 @@ public class MediaGridView extends CustomGridView {
     private String install_app = "0";
     private CommonDialog mDisclaimerDialog;
     private CommonDialog apkDialog = null;
+    private String mCurrFolderPath;
 
     public MediaGridView(Context context, SourceType sourceType) {
         super(context);
@@ -127,6 +130,7 @@ public class MediaGridView extends CustomGridView {
                             ToastUtils.showMessage(mContext, getResources().getString(R.string.data_exception));
                         }
                     } else if (!(msSourceType == SourceType.LOCAL || msSourceType == SourceType.DEVICE)) {
+                        mCurrFolderPath = item.mUri;
                         FileUtil.getFileList(item.mUri, true, new FileUtil.OnFileListListener() {
                             @Override
                             public void findFileListFinish(List<Media> list) {
@@ -141,6 +145,7 @@ public class MediaGridView extends CustomGridView {
 
                         }, msSourceType);
                     } else {
+                        mCurrFolderPath = item.mUri;
                         FileUtil.getFileList(item.mUri, new FileUtil.OnFileListListener() {
                             @Override
                             public void findFileListFinish(List<Media> list) {
@@ -547,6 +552,117 @@ public class MediaGridView extends CustomGridView {
             default:
                 currentType = "暂无数据";
                 break;
+        }
+    }
+
+    /**
+     * 粘贴监听
+     */
+    public interface YPasteListener {
+        void onStartPaste();
+
+        void onPasteFailed();
+
+        void onPasteSucceed();
+
+        void onRefreshList(String currPath);   //拷贝到当前根目录,需要刷新当前数据
+    }
+
+    /**
+     * @param isCopy 是否是拷贝文件,true 拷贝,false 粘贴
+     */
+    public void copyPasteFile(final boolean isCopy, final YPasteListener yPasteListener) {
+        String path1 = "";
+        Media item = null;
+        if (mCurrMediaList.size() > 0) {
+            item = mListAdapter.getItem(mSelectItemPosition);
+            path1 = item.mUri;
+        } else {
+            path1 = mCurrFolderPath;
+            item = new Media(SourceType.FOLDER, "");
+            item.isDir = true;
+        }
+
+        final String path = path1;
+
+        if (item.isDir) {
+            if (isCopy) {
+                ToastUtils.showMessage(mContext, "暂不支持复制文件夹");
+                return;
+            }
+
+            final String copyFilePath = SharedPreferenceUtil.getCopyFilePath();
+            if (!TextUtils.isEmpty(copyFilePath)) {
+//                        File.separator
+                if (null != yPasteListener) {
+                    yPasteListener.onStartPaste();
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        String newPath = path + copyFilePath.substring(copyFilePath.lastIndexOf("/"));
+                        boolean isFuccessed = CopyPasUtils.nioTransferCopy(copyFilePath, newPath);
+//                boolean isFuccessed = CopyPasUtils.moveFile(copyFilePath, item.mUri);
+                        if (isFuccessed) {
+                            ToastUtils.showMessage(mContext, "粘贴成功");
+                            SharedPreferenceUtil.saveCopyFilePath("");  //相当于清空粘贴板
+                            if (null != yPasteListener) {
+                                yPasteListener.onPasteSucceed();
+                                if (!(mCurrMediaList.size() > 0)) {
+                                    yPasteListener.onRefreshList(path);
+                                }
+                            }
+                        } else {
+                            ToastUtils.showMessage(mContext, "粘贴失败");
+                            if (null != yPasteListener) {
+                                yPasteListener.onPasteFailed();
+                            }
+                        }
+                    }
+                }).start();
+            } else {
+                ToastUtils.showMessage(mContext, "请先复制文件");
+            }
+        } else {
+            if (isCopy) {
+                if (SharedPreferenceUtil.saveCopyFilePath(path)) {
+                    ToastUtils.showMessage(mContext, "复制成功");
+                } else {
+                    ToastUtils.showMessage(mContext, "复制失败");
+                }
+            } else { //粘贴在当前文件同级目录
+                final String copyFilePath = SharedPreferenceUtil.getCopyFilePath();
+                if (TextUtils.isEmpty(copyFilePath)) {
+                    ToastUtils.showMessage(mContext, "请先复制文件");
+                    return;
+                }
+
+                if (null != yPasteListener) {
+                    yPasteListener.onStartPaste();
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        String newPath = path.substring(0, path.lastIndexOf("/")) + copyFilePath.substring(copyFilePath.lastIndexOf("/"));
+                        boolean isFuccessed = CopyPasUtils.nioTransferCopy(copyFilePath, newPath);
+                        if (isFuccessed) {
+                            ToastUtils.showMessage(mContext, "粘贴成功");
+                            SharedPreferenceUtil.saveCopyFilePath("");  //相当于清空粘贴板
+                            if (null != yPasteListener) {
+                                yPasteListener.onPasteSucceed();
+                                yPasteListener.onRefreshList(newPath.substring(0, newPath.lastIndexOf("/") + 1));
+                            }
+                        } else {
+                            ToastUtils.showMessage(mContext, "粘贴失败");
+                            if (null != yPasteListener) {
+                                yPasteListener.onPasteFailed();
+                            }
+                        }
+                    }
+                }).start();
+            }
         }
     }
 

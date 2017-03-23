@@ -31,6 +31,7 @@ import com.cantv.media.center.data.UsbMounted;
 import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
+import com.cantv.media.center.utils.StatisticsUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -226,20 +227,16 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, DeviceShareActivity.class);
                 startActivity(intent);
+                StatisticsUtil.customEvent(HomeActivity.this,"share_page");
             }
         });
 
-        //之后在Jenkins构建时内部版本versionName为 *.1 外部为 *.2
         if (null != BuildConfig.CANTV) {
             if (BuildConfig.CANTV.equals("can")) {
-                mVersion.setText(FileUtil.getVersionName(this) + ".1");
                 mLocalFreeTV.setText(getString(R.string.str_localdiskfree) + MediaUtils.getInternalFree());
                 mLocalTotalTV.setText(getString(R.string.str_localdisktotal) + MediaUtils.getInternalTotal());
-            } else {
-                mVersion.setText(FileUtil.getVersionName(this) + ".2");
             }
         }
-        //之后在Jenkins构建时内部版本versionName为 *.1 外部为 *.2
 
         mVersion.setText(FileUtil.getVersionName(this));
         alertDialog = new AlertDialog.Builder(mContext).create();
@@ -469,7 +466,15 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     @Override
     protected void onResume() {
         super.onResume();
+        StatisticsUtil.registerResume(this);
+        StatisticsUtil.customEvent(HomeActivity.this,"home_page");
         sendUSBRefreshMsg();
+    }
+
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
     }
 
     @Override

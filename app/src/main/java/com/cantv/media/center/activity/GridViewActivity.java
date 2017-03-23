@@ -27,6 +27,7 @@ import com.cantv.media.center.data.YSourceType;
 import com.cantv.media.center.ui.dialog.ConfirmDialog;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
+import com.cantv.media.center.ui.dialog.LoadingDialog;
 import com.cantv.media.center.ui.dialog.MenuDialog;
 import com.cantv.media.center.ui.dialog.MenuDialog.MenuAdapter;
 import com.cantv.media.center.ui.directory.MediaGridView;
@@ -34,6 +35,7 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.utils.StatisticsUtil;
 import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -57,6 +59,8 @@ public class GridViewActivity extends Activity {
     private MenuItem sortListMenuItem;
     private MenuItem viewModeMenuItem;
     private MenuItem deleteMenuItem;
+    private MenuItem copyFileMenuItem;
+    private MenuItem pasteFileMenuItem;
     private MenuItem sortMenuItem;
     private MenuItem viewItem;
     private MenuItem mSortMenu;
@@ -71,7 +75,7 @@ public class GridViewActivity extends Activity {
     private ConfirmDialog mConfirmDialog;
     private boolean mClickDelete = false;
     public boolean isStartAc;   //用来判断是否处于打开二级activity中
-    private String mType;
+    public static String mType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,6 +122,13 @@ public class GridViewActivity extends Activity {
     protected void onResume() {
         super.onResume();
         isStartAc = false;
+        StatisticsUtil.registerResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
     }
 
     //修復OS-3825从发现设备弹窗入口和媒体中心入口进入外接设备浏览本地文件过程中按设置键，再按返回键退出设置后，文件管理器直接退出到入口界面
@@ -138,22 +149,27 @@ public class GridViewActivity extends Activity {
             mTitleTV.setText(R.string.str_movie);
             mGridView = new MediaGridView(this, SourceType.MOIVE);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "video_page");
         } else if (Constant.MEDIA_IMAGE_SPE.equalsIgnoreCase(mType) || Constant.MEDIA_IMAGE.equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_photo);
             mGridView = new MediaGridView(this, SourceType.PICTURE);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "picture_page");
         } else if (Constant.MEDIA_AUDIO_SPE.equalsIgnoreCase(mType) || Constant.MEDIA_AUDIO.equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_music);
             mGridView = new MediaGridView(this, SourceType.MUSIC);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "music_page");
         } else if ("app".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_app);
             mGridView = new MediaGridView(this, SourceType.APP);
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "install_page");
         } else if ("local".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_file);
             mGridView = new MediaGridView(this, SourceType.LOCAL);
             isExternal = false;
+            StatisticsUtil.customEvent(GridViewActivity.this, "local_page");
         } else if ("device1".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
@@ -165,6 +181,7 @@ public class GridViewActivity extends Activity {
                 }
             }
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "usb_page");
         } else if ("device2".equalsIgnoreCase(mType)) {
             mTitleTV.setText(R.string.str_external);
             mGridView = new MediaGridView(this, SourceType.DEVICE);
@@ -172,6 +189,7 @@ public class GridViewActivity extends Activity {
                 mGridView.setDevicePath(MediaUtils.getCurrPathList().get(1));
             }
             isExternal = true;
+            StatisticsUtil.customEvent(GridViewActivity.this, "usb_page");
         } else if ("share".equalsIgnoreCase(mType)) {
             mTitleTV.setText(intent.getStringExtra("title"));
             mGridView = new MediaGridView(this, SourceType.SHARE);
@@ -247,10 +265,10 @@ public class GridViewActivity extends Activity {
                             return;
                         }
                     }
-                    if (position == 2) {
+                    if (position == 2 || position == 3 || position == 4) {
                         mMenuDialog.closeSubMenuItem();
                     }
-                    if (position != 2) {
+                    if (position != 2 && position != 3 && position != 4) {
                         mMenuDialog.openSubMenuItem();
                     }
                     mMenuList.get(mSelectedMenuPosi).setSelected(false);
@@ -281,11 +299,11 @@ public class GridViewActivity extends Activity {
 
                 @Override
                 public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
-                    if (position != 2) {
-                        if (mSelectedMenuPosi == position) {
-                            return false;
-                        }
-                    }
+//                    if (position != 2) {
+//                        if (mSelectedMenuPosi == position) {
+//                            return false;
+//                        }
+//                    }
 
                     if (position == 2) {
                         String[] pathList = SharedPreferenceUtil.getDevicesPath().split("abc");
@@ -300,6 +318,58 @@ public class GridViewActivity extends Activity {
                         //hideFocus();
                         deleteItem(datas);
                         return true;
+                    } else if (position == 3) { //复制
+                        mMenuDialog.dismiss();
+                        if (null != mGridView) {
+                            mGridView.copyPasteFile(true, new MediaGridView.YPasteListener() {
+                                @Override
+                                public void onStartPaste() {
+
+                                }
+
+                                @Override
+                                public void onPasteFailed() {
+
+                                }
+
+                                @Override
+                                public void onPasteSucceed() {
+
+                                }
+
+                                @Override
+                                public void onRefreshList(String path) {
+
+                                }
+                            });
+                        }
+                        return true;
+                    } else if (position == 4) { //粘贴
+                        mMenuDialog.dismiss();
+                        if (null != mGridView) {
+                            mGridView.copyPasteFile(false, new MediaGridView.YPasteListener() {
+                                @Override
+                                public void onStartPaste() {
+                                    showLoadingDialog();
+                                }
+
+                                @Override
+                                public void onPasteFailed() {
+                                    hideLoadingDialog();
+                                }
+
+                                @Override
+                                public void onPasteSucceed() {
+                                    hideLoadingDialog();
+                                }
+
+                                @Override
+                                public void onRefreshList(String currPath) {
+                                    refreshCurrList(currPath);
+                                }
+                            });
+                        }
+                        return true;
                     } else {
                         return false;
                     }
@@ -311,6 +381,25 @@ public class GridViewActivity extends Activity {
         }
         mMenuDialog.show();
     }
+
+    private LoadingDialog mLoadingDialog;
+
+    public void showLoadingDialog() {
+        if (mLoadingDialog == null) {
+            mLoadingDialog = new LoadingDialog(this);
+            mLoadingDialog.setLoadingText("正在粘贴,请稍后...");
+        }
+        mLoadingDialog.setCancelable(false);
+        mLoadingDialog.show();
+
+    }
+
+    public void hideLoadingDialog() {
+        if (null != mLoadingDialog) {
+            mLoadingDialog.dismiss();
+        }
+    }
+
 
     private List<MenuItem> createMenuData() {
         mMenuList = new ArrayList<>();
@@ -352,6 +441,16 @@ public class GridViewActivity extends Activity {
             deleteMenuItem = new MenuItem(getString(R.string.delete));
             deleteMenuItem.setType(MenuItem.TYPE_NORMAL);
             mMenuList.add(deleteMenuItem);
+        }
+        if (!"share".equalsIgnoreCase(type)) {
+            //复制item
+            copyFileMenuItem = new MenuItem(getString(R.string.file_copy));
+            copyFileMenuItem.setType(MenuItem.TYPE_NORMAL);
+            mMenuList.add(copyFileMenuItem);
+            //粘贴item
+            pasteFileMenuItem = new MenuItem(getString(R.string.file_paste));
+            pasteFileMenuItem.setType(MenuItem.TYPE_NORMAL);
+            mMenuList.add(pasteFileMenuItem);
         }
         return mMenuList;
     }
@@ -650,4 +749,26 @@ public class GridViewActivity extends Activity {
         }
         ToastUtils.showMessage(MyApplication.getContext(), "删除成功!", Toast.LENGTH_LONG);
     }
+
+    /**
+     * 刷新当前目录
+     */
+    private void refreshCurrList(String path) {
+        FileUtil.getFileList(path, new FileUtil.OnFileListListener() {
+            @Override
+            public void findFileListFinish(final List<Media> list) {
+                if (null != mGridView) {
+                    boolean isSort = FileUtil.sortList(mGridView.mListAdapter.getData(), -1, true);//-1没有意义,起作用的是true
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mGridView.mListAdapter.bindData(list);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
 }

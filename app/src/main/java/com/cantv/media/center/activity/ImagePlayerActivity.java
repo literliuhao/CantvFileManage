@@ -42,6 +42,7 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.utils.StatisticsUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -166,6 +167,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         toHideRunnable();
         toHideView();
 //        MyApplication.addActivity(this);
+        StatisticsUtil.customEvent(ImagePlayerActivity.this, "picture_player");
     }
 
     private void initKey(String PRIVATE_KEY) {
@@ -511,6 +513,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                     Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
                     mAutoRunImageView.setImageResource(R.drawable.photo_info3);
                 } else {
+                    StatisticsUtil.customEvent(ImagePlayerActivity.this, "slide_player");
                     mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
                     closeVolume();
                     startAutoPlay();
@@ -610,7 +613,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     protected void onResume() {
         super.onResume();
-
+        StatisticsUtil.registerResume(this);
         if (mDataList.size() < 1) {
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
             String mediaPath = SharedPreferenceUtil.getMediaPath();
@@ -645,6 +648,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             startAutoPlay();
             closeVolume();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
     }
 
     @Override
@@ -1024,8 +1033,5 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mFocusUtils != null) {
-            mFocusUtils.release();
-        }
     }
 }

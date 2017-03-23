@@ -30,7 +30,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 156
-        versionName "20170310_v1.5.6"
+        versionName "20170310_v1.5.6.1"
+        buildConfigField("String", "CANTV", "\"can\"")
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
             targetCompatibility JavaVersion.VERSION_1_7
@@ -45,17 +46,17 @@ android {
         }
     }
     productFlavors {
-        can{
-            buildConfigField("String","CANTV","\"can\"")
+        can {
         }
-        other{
-            buildConfigField("String","CANTV","\"other\"")
+        other {
+            buildConfigField("String", "CANTV", "\"other\"")
+            versionName "20170310_v1.5.6.2"
         }
-        sign828{
-            buildConfigField("String","CANTV","\"can\"")
+        sign828 {
+
         }
-        sign628{
-            buildConfigField("String","CANTV","\"can\"")
+        sign628 {
+
         }
     }
 
@@ -98,6 +99,8 @@ dependencies {
     compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.jakewharton:butterknife:7.0.0'
 }
 
 

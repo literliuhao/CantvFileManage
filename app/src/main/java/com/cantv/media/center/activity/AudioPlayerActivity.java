@@ -47,6 +47,7 @@ import com.cantv.media.center.utils.FileComparator;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
+import com.cantv.media.center.utils.StatisticsUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -110,6 +111,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         initHandler();
         initData();
         playDefualt();
+        StatisticsUtil.customEvent(AudioPlayerActivity.this, "music_player");
     }
 
     private void setupLayout() {
@@ -193,6 +195,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     protected void onResume() {
+        StatisticsUtil.registerResume(this);
         holdWakeLock();
         if (mDataList.size() < 1) {
 //            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
@@ -231,6 +234,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         super.onResume();
     }
 
+    @Override
+    protected void onPause() {
+        StatisticsUtil.registerPause(this);
+        super.onPause();
+    }
 
     @Override
     public void onBackPressed() {

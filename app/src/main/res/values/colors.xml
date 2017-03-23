@@ -34,5 +34,7 @@
     <color name="black">#ff000000</color>
 
     <color name="white_opa80">#CCFFFFFF</color>
+    <color name="colorWithe">#FFFFFF</color>
+    <color name="colorWithe_40">#96FFFFFF</color>
 
 </resources>

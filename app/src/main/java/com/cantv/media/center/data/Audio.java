@@ -7,13 +7,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
+import com.cantv.liteplayer.core.mp3agic.ID3v2;
+import com.cantv.liteplayer.core.mp3agic.InvalidDataException;
+import com.cantv.liteplayer.core.mp3agic.Mp3File;
+import com.cantv.liteplayer.core.mp3agic.UnsupportedTagException;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.MediaFormat;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.utils.LyricParser;
 
 import java.io.File;
+import java.io.IOException;
 
 @SuppressLint("NewApi")
 public class Audio extends Media {
@@ -133,6 +139,30 @@ public class Audio extends Media {
     }
 
     public static LyricInfo getAudioLyric(String uri) {
+        if (!TextUtils.isEmpty(uri)) {
+            try {
+                Mp3File mp3File = new Mp3File(uri);
+                if (mp3File.hasId3v2Tag()) {
+//                    String[] lrcs = mp3File.getId3v2Tag().getLyrics().split("\\n");
+                    ID3v2 id3v2Tag = mp3File.getId3v2Tag();
+                    String lyrics1 = id3v2Tag.getLyrics();  //可能报空指针异常
+                    if (!TextUtils.isEmpty(lyrics1)) {
+                        return LyricParser.parseFromStream(lyrics1);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (UnsupportedTagException e) {
+                e.printStackTrace();
+            } catch (InvalidDataException e) {
+                e.printStackTrace();
+            }
+            return parsingLrc(uri);
+        }
+        return null;
+    }
+
+    private static LyricInfo parsingLrc(String uri) {
         String lyricUri = uri.substring(0, uri.lastIndexOf(".")) + "." + "lrc";
         File file = new File(lyricUri);
         if (file.exists() && file.isFile() && file.length() > 0) {
@@ -140,4 +170,5 @@ public class Audio extends Media {
         }
         return null;
     }
+
 }

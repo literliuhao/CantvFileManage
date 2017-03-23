@@ -7,7 +7,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -126,7 +125,41 @@ public class LyricParser {
         return null;
     }
 
-    private static void parseLine(List<Lyric> lyrics, String line) {
+    /**
+     * 传递歌词字符串
+     *
+     * @param lyrics1
+     * @return
+     */
+    public static LyricInfo parseFromStream(String lyrics1) {
+        if (lyrics1 == null) {
+            return null;
+        } else {
+            String[] lrcs = lyrics1.split("\\n");
+            LyricInfo lyricInfo = new LyricInfo();
+            List<LyricInfo.Lyric> lyrics = lyricInfo.getLyrics();
+            for (int i = 0; i < lrcs.length; i++) {
+                if (lrcs[i].startsWith("﻿[ti:")) {
+                    lyricInfo.setTitle(lrcs[i].substring(5, lrcs[i].length() - 1));
+                } else if (lrcs[i].startsWith("[ar:")) {
+                    lyricInfo.setSinger(lrcs[i].substring(4, lrcs[i].length() - 1));
+                } else if (lrcs[i].startsWith("[al:")) {
+                    lyricInfo.setAlbum(lrcs[i].substring(4, lrcs[i].length() - 1));
+                } else if (lrcs[i].startsWith("[t_time:")) {
+                    lyricInfo.setDuration(shortTimeStr2Long(lrcs[i].substring(9, lrcs[i].length() - 1)));
+                } else {
+                    LyricParser.parseLine(lyrics, lrcs[i]);
+                }
+            }
+            Collections.sort(lyrics);
+            buildRelations(lyrics);
+            return lyricInfo;
+        }
+
+    }
+
+
+    public static void parseLine(List<Lyric> lyrics, String line) {
         String reg = "\\[(\\d{2}:\\d{2}\\.\\d{2})\\]";
         Pattern pattern = Pattern.compile(reg);
         Matcher matcher = pattern.matcher(line);
@@ -150,14 +183,14 @@ public class LyricParser {
         }
     }
 
-    private static long shortTimeStr2Long(String timeStr) {
+    public static long shortTimeStr2Long(String timeStr) {
         String[] splitMinute = timeStr.split(":");
         int min = Integer.parseInt(splitMinute[0]);
         int sec = Integer.parseInt(splitMinute[0]);
         return min * 60000 + sec * 1000;
     }
 
-    private static long timeStr2Long(String timeStr) {
+    public static long timeStr2Long(String timeStr) {
         String[] splitMinute = timeStr.split(":");
         int min = Integer.parseInt(splitMinute[0]);
         String[] splitSecond = splitMinute[1].split("\\.");
@@ -166,7 +199,7 @@ public class LyricParser {
         return min * 60000 + sec * 1000 + millis;
     }
 
-    private static void buildRelations(List<Lyric> lyrics) {
+    public static void buildRelations(List<Lyric> lyrics) {
         Lyric preNode = null;
         for (Lyric lyric : lyrics) {
             if (preNode != null) {
