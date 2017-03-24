@@ -1,3 +1,4 @@
+
 package com.cantv.media.center.utils;
 
 import com.cantv.media.center.data.LyricInfo;
