@@ -671,11 +671,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MenuItem loadLyricMenuItem = new MenuItem(getString(R.string.load_lyric));
         loadLyricMenuItem.setType(MenuItem.TYPE_SELECTOR);
         List<MenuItem> loadLyricSubMenuItems = new ArrayList<>();
-        MenuItem menuItem2 = new MenuItem(getString(R.string.str_open), MenuItem.TYPE_SELECTOR);
+        MenuItem menuItem2 = new MenuItem(getString(R.string.lrc_in), MenuItem.TYPE_SELECTOR);
         menuItem2.setParent(loadLyricMenuItem);
         menuItem2.setSelected(true);
         loadLyricSubMenuItems.add(menuItem2);
-        loadLyricSubMenuItems.add(new MenuItem(getString(R.string.str_close), MenuItem.TYPE_SELECTOR));
+        loadLyricSubMenuItems.add(new MenuItem(getString(R.string.lrc_out), MenuItem.TYPE_SELECTOR));
         loadLyricMenuItem.setChildren(loadLyricSubMenuItems);
         menuList.add(loadLyricMenuItem);
 
@@ -917,4 +917,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             finish();
         }
     }
+
+
+//    public void switch
+
+
 }
