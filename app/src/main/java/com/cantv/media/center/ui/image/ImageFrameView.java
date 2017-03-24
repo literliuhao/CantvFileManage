@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,11 +43,11 @@ public class ImageFrameView extends FrameLayout {
     private NotifyParentUpdate mNotifyParentUpdate;
     private Context mContext;
     private ImagePlayerActivity mActivity;
-    private int callbackW;
-    private int callbackH;
+    private int callbackW = 1;
+    private int callbackH = 1;
     private String ShareUrl_FLAG = "http://";
-    private int convertW = 0;
-    private int convertH = 0;
+    private int convertW = 1;
+    private int convertH = 1;
     private int[] sizeArray = new int[2];
     private int MAX_HEIGHT = 4096;
     private int MAX_WIDTH = 4096;
@@ -55,6 +56,9 @@ public class ImageFrameView extends FrameLayout {
     private static final String TAG = "imageFrameView";
     private int loadError = 0;
     private boolean mIsShare;
+    private String mImageUrl;
+    public String mImageSavePath;
+    private SaveImageUrlTask mSaveImageUrlTask;
 
     public ImageFrameView(Context context) {
         super(context);
@@ -118,6 +122,7 @@ public class ImageFrameView extends FrameLayout {
 
     public void loadImage(final String imageUri, boolean isSharing, String imageName) {
         Log.i("playImage", imageUri);
+        mImageUrl = imageUri;
         if (!isSharing) {
             //修复OS-3831偶现在本地文件中用图片播放幻灯片，在播放中拔出U盘，提示文件管理器已停止运行
             getImageFile(imageUri);
@@ -139,7 +144,51 @@ public class ImageFrameView extends FrameLayout {
             }
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
-            loadNetImage(imageUri);
+            mSaveImageUrlTask = new SaveImageUrlTask(mContext);
+            mSaveImageUrlTask.execute(imageUri);
+        }
+    }
+
+    private class SaveImageUrlTask extends AsyncTask<String, Void, File> {
+        private final Context context;
+
+        public SaveImageUrlTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected File doInBackground(String... params) {
+            if(isCancelled()){
+                return null;
+            }
+
+            String imgUrl =  params[0];
+            try {
+                return Glide.with(context)
+                        .load(imgUrl)
+                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get();
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(File result) {
+            if (result == null || isCancelled()) {
+                loadImageFail();
+                return;
+            }
+            mImageSavePath = result.getPath();
+            getLocalImageSize(mImageSavePath);
+            loadNetImage(mImageUrl);
+        }
+    }
+
+    //取消加载请求
+    public void cancelAsyncTask(){
+        if(null != mSaveImageUrlTask && mSaveImageUrlTask.getStatus() == AsyncTask.Status.RUNNING){
+            mSaveImageUrlTask.cancel(true);
         }
     }
 
@@ -274,7 +323,7 @@ public class ImageFrameView extends FrameLayout {
      * @param imageUri
      */
     private void loadNetImage(final String imageUri) {
-        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
+        Glide.with(mActivity).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.SOURCE).skipMemoryCache(true).into(new SimpleTarget<Bitmap>((int) mActivity.screenWidth + 50, (int) mActivity.screenHeight + 50) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 mImgWidth = resource.getWidth();
@@ -290,9 +339,9 @@ public class ImageFrameView extends FrameLayout {
                 mImageView.setVisibility(View.VISIBLE);
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccess(true);
-                    mLoadingImgListener.bitmapSize(mImgWidth, mImgHeight);
+                    mLoadingImgListener.bitmapSize(callbackW, callbackH);
                     mLoadingImgListener.loadResourceReady(true);
-                    if (mImgHeight < (int) mActivity.screenHeight && mImgWidth < (int) mActivity.screenWidth) {
+                    if (callbackH < (int) mActivity.screenHeight && callbackW < (int) mActivity.screenWidth) {
                         mLoadingImgListener.isFullScreen(false);
                     } else {
                         mLoadingImgListener.isFullScreen(true);

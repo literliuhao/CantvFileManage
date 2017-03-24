@@ -38,11 +38,11 @@ public class ImageFrameLayoutView extends FrameLayout {
     private NotifyParentUpdate mNotifyParentUpdate;
     private Context mContext;
     private ImageActivity mActivity;
-    private int callbackW;
-    private int callbackH;
+    private int callbackW = 1;
+    private int callbackH = 1;
     //private String ShareUrl_FLAG = "http://";
-    private int convertW = 0;
-    private int convertH = 0;
+    private int convertW = 1;
+    private int convertH = 1;
     private int[] sizeArray = new int[2];
     private int MAX_HEIGHT = 4096;
     private int MAX_WIDTH = 4096;
@@ -97,7 +97,7 @@ public class ImageFrameLayoutView extends FrameLayout {
         return new int[]{(int) imageWidht, (int) imageHeight};
     }
 
-    public void loadImage(final String imageUri, boolean isSharing, String imageName, int position) {
+    private void loadImage(final String imageUri, boolean isSharing, String imageName, final int position) {
         Log.i("playImage", imageUri);
         if (!isSharing) {
             getImageFile(imageUri);
@@ -113,7 +113,7 @@ public class ImageFrameLayoutView extends FrameLayout {
             //是否加载gif，是否带有模糊效果
             if (imageName.endsWith(".gif") && mDeviceTotalMemory > 1800) {
                 loadLocalGifNoThumbnail(imageUri, position);
-            } else if (callbackW <= (int) mActivity.screenWidth && convertH <=(int) mActivity.screenHeight) {
+            } else if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
                 loadLocalImageNoThumbnail(imageUri, position);
             } else {
                 loadLocalImage(imageUri, position);
@@ -232,7 +232,7 @@ public class ImageFrameLayoutView extends FrameLayout {
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadingImageSuccess(true, position);
                     mLoadingImgListener.loadingImageReady(true, position);
-                    if (mImgHeight < (int) mActivity.screenHeight && mImgWidth < (int) mActivity.screenWidth) {
+                    if (mImgHeight <= (int) mActivity.screenHeight && mImgWidth <= (int) mActivity.screenWidth) {
                         mLoadingImgListener.getImageSize(mImgWidth, mImgHeight, false, position);
                     } else {
                         mLoadingImgListener.getImageSize(mImgWidth, mImgHeight, true, position);
@@ -458,7 +458,7 @@ public class ImageFrameLayoutView extends FrameLayout {
 
     //传递尺寸
     private void getImageListener(int width, int height, int position) {
-        if (width <= (int) mActivity.screenHeight && height <= (int) mActivity.screenWidth) {
+        if (height < (int) mActivity.screenHeight && width < (int) mActivity.screenWidth) {
             mLoadingImgListener.getImageSize(width, height, false, position);
         } else {
             mLoadingImgListener.getImageSize(width, height, true, position);

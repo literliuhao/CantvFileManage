@@ -2,6 +2,7 @@ package com.cantv.media.center.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -43,6 +44,7 @@ import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
 import com.cantv.media.center.utils.StatisticsUtil;
+import com.cantv.media.center.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -98,7 +100,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private final int ARROW_SHOW = 1;
     private final int MENU_SHOW = 2;
     private boolean isFirstFocus = true;
-    private boolean isFirstPlayMusic = true;
+    //private boolean isFirstPlayMusic = true;
     private boolean mSizeType = false;
     private boolean isFirstMenu = true;
     private int STOP = 0;
@@ -146,6 +148,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             }
         }
     };
+    private String mImageSavePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,6 +275,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 //修复MASERATI-63USB幻灯片播放破损图片出现很抱歉，文件管理已停止运行，添加文字提示
                 if (!loadSuccess) {
                     mLoadingFail.setVisibility(View.VISIBLE);
+                    mLoadSuccessed = true;
+                    mLoadReady = true;
                     //修复幻灯片播放破损图停止问题
                     if (mAutoPlay) {
                         mAutoPlay = false;
@@ -318,11 +323,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (isLoadReady) {
                     if (!mAutoPlay) {
                         if (curIndex == getData().size() && curIndex != 1) {
-                            mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_last_photo), Toast.LENGTH_LONG);
-                            mToast.show();
+                            ToastUtils.showMessage(getApplicationContext(), getString(R.string.image_last_photo));
                         } else if (curIndex == 1 && getData().size() > 1) {
-                            mToast = Toast.makeText(getApplicationContext(), getString(R.string.image_start_photo), Toast.LENGTH_LONG);
-                            mToast.show();
+                            ToastUtils.showMessage(getApplicationContext(), getString(R.string.image_start_photo));
                         }
                     }
                     //修改幻灯片播放问题，时间不准
@@ -355,6 +358,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         //实际大小
         if (!isFullSize) {
             mSizeType = true;
+            if(width == 0 || height == 0){
+                return 1.0f;
+            }
             if (currentW > screenWidth || currentH > screenHeight) {
                 if (currentW > screenWidth && currentH > screenHeight) {
                     //取最大的进行缩放
@@ -380,6 +386,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             //等比例全屏
             //图片宽高大于屏幕时
             mSizeType = false;
+            if(width == 0 || height == 0){
+                return 1.0f;
+            }
             if (currentW > screenWidth || currentH > screenHeight) {
                 //图片实际宽高都大于屏幕宽高
                 if (currentW > screenWidth && currentH > screenHeight) {
@@ -473,15 +482,15 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (isFastClick() || mAutoPlay) {
                     return;
                 }
-                //修复OS-2838大图浏览本地图片，按遥控器菜单键切换图片比例无效,再次切换才有效
-                if (!mSizeType) {
-                    resetTvSize();
+                mImageSavePath = mFrameView.mImageSavePath;
+                String mName = getData().get(mCurImageIndex).mName;
+                if (mName.endsWith(".gif")) {
+                    scaleImage();
+                } else if (mWidth > screenWidth || mHeight > screenHeight) {
+                    openLargeImageActivity();
                 } else {
-                    changeTvSize();
+                    scaleImage();
                 }
-                float calc = calcByWH(mWidth, mHeight, mSizeType);
-                Log.i("ImagePlayerActivity", "calc " + calc);
-                mImageBrowser.onZoomScale(calc);
                 MainThread.cancel(mToHideRunnable);
                 MainThread.runLater(mToHideRunnable, DELAYED_TIME);
             }
@@ -508,21 +517,11 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 int curIndex = mCurImageIndex + 1;
                 int size = getData().size();
                 if (mAutoPlay) {
-                    stopAutoPlay();
-                    openVolume();
-                    Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+                    stopAutoPlayImage();
                 } else {
                     StatisticsUtil.customEvent(ImagePlayerActivity.this, "slide_player");
                     mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
-                    closeVolume();
-                    startAutoPlay();
-                    if (isFirstPlayMusic) {
-                        isFirstPlayMusic = false;
-                    } else {
-                    }
-                    Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_start_play), Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.photo_info33);
+                    startAutoPlayImage();
                 }
             }
         });
@@ -598,6 +597,39 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         });
     }
 
+    //缩放图片
+    private void scaleImage() {
+        if (!mSizeType) {
+            resetTvSize();
+        } else {
+            changeTvSize();
+        }
+        float calc = calcByWH(mWidth, mHeight, mSizeType);
+        Log.i("ImagePlayerActivity", "calc " + calc);
+        mImageBrowser.onZoomScale(calc);
+    }
+
+    private void stopAutoPlayImage() {
+        stopAutoPlay();
+        openVolume();
+        ToastUtils.showMessage(ImagePlayerActivity.this, getString(R.string.image_end_play));
+        mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+    }
+
+    private void startAutoPlayImage() {
+        closeVolume();
+        startAutoPlay();
+        ToastUtils.showMessage(ImagePlayerActivity.this, getString(R.string.image_start_play));
+        mAutoRunImageView.setImageResource(R.drawable.photo_info33);
+    }
+
+    private void openLargeImageActivity() {
+        Intent intent = new Intent();
+        intent.setAction("com.cantv.action.LARGE_ACTIVITY");
+        intent.putExtra("path", mImageSavePath);
+        ImagePlayerActivity.this.startActivity(intent);
+    }
+
     private PowerManager.WakeLock getScreenLock() {
         if (mScreenLock == null) {
             mScreenLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "");
@@ -645,8 +677,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
 
 
         if (isAutoPlay) {
-            startAutoPlay();
-            closeVolume();
+            startAutoPlayImage();
         }
     }
 
@@ -664,9 +695,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             MyApplication.onFinishActivity();
         }*/
         isAutoPlay = mAutoPlay;
-        stopAutoPlay();
-        openVolume();
-        mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+        if(mAutoPlay){
+            stopAutoPlayImage();
+        }
         //保存当前播放的路径
         String path = mDataList.get(mCurImageIndex).isSharing ? mDataList.get(mCurImageIndex).sharePath : mDataList.get(mCurImageIndex).mUri;
         SharedPreferenceUtil.saveMediaPath(path);
@@ -905,6 +936,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             mHandler.removeMessages(ARROW_SHOW);
             mHandler.removeMessages(MENU_SHOW);
         }
+        mFrameView.cancelAsyncTask();
         if (null != mFrameView.mBitmap) {
             mFrameView.mBitmap = null;
         }

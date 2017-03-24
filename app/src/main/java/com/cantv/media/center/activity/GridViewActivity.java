@@ -647,6 +647,10 @@ public class GridViewActivity extends Activity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
+                //修复OS-4992在文件管理器中更改文视图，删除任意一个文件夹，弹出提示文件管理器停止运行
+                if(null == FileUtil.mCurFileNameList || FileUtil.mCurFileNameList.size() == 0){
+                    return;
+                }
                 for (final Media f : FileUtil.mCurFileNameList) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -695,6 +699,10 @@ public class GridViewActivity extends Activity {
     public void onUsbMounted(UsbMounted usbMounted) {
         if (usbMounted.mIsRemoved) {
             Log.i("Mount", "gridView unmounted...");
+            //修复OS-4985进入文件管理，打开任意外接设备的文件夹，按菜单键选择删除，在删除提示框界面断开外接设备，删除提示框仍显示，选择确定后，界面弹出外接设备文件
+            if(mConfirmDialog != null && mConfirmDialog.isShowing()){
+                mConfirmDialog.dismiss();
+            }
             updateSDMounted(usbMounted.mUsbPath);
         } else {
             Log.i("Mount", "gridView mounted...");

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import com.cantv.media.BuildConfig;
 import com.cantv.media.center.ui.upgrade.MyUpgradeListener;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyApplication extends Application {
-//    public static final String APP_ID = "af99255c0f"; //文件管理器的APP_ID TODO 替换成bugly上注册的appid
+    public static final String APP_ID = "af99255c0f"; //文件管理器的APP_ID TODO 替换成bugly上注册的appid
 //    public static final String APP_ID = "22b100f58c"; //测试用的文件管理器的APP_ID TODO 替换成bugly上注册的appid
     public static Context mContext;
     //目前只为了存GridViewActivity,播放视频/音频/图片的Activity,为了解决0S/1439问题
@@ -36,6 +37,18 @@ public class MyApplication extends Application {
 //            return;
 //        }
 //        refWatcher = LeakCanary.install(this);
+        initUmeng();
+    }
+
+    //初始化友盟统计
+    private void initUmeng() {
+        if (null != BuildConfig.CANTV) {
+            if (BuildConfig.CANTV.equals("can")) {
+                MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","canos000"));
+            }else {
+                MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","hezuo000"));
+            }
+        }
         MobclickAgent.enableEncrypt(true);
     }
 
@@ -135,7 +148,7 @@ public class MyApplication extends Application {
         //设置开发设备
         Bugly.setIsDevelopmentDevice(mContext, true);
         // 这里实现SDK初始化，appId替换成你的在Bugly平台申请的appId
-//        Bugly.init(mContext, APP_ID, BuildConfig.DEBUG, strategy);    //1.6.0版本这句取消注释
+        Bugly.init(mContext, APP_ID, BuildConfig.DEBUG, strategy);    //1.6.0版本这句取消注释
 //        Bugly.init(mContext, APP_ID, false, strategy);
 
         /**

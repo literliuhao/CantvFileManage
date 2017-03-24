@@ -201,8 +201,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         super.onResume();
         StatisticsUtil.registerResume(this);
         if (isAutoPlay) {
-            startAutoPlay();
-            closeVolume();
+            startAutoPlayImage();
         }
 
         if (mDataList.size() < 1) {
@@ -310,9 +309,10 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
                 break;
             case R.id.iv_size:
                 String mName = getData().get(mCurrentPosition).mName;
+                getImageSize();
                 if (mName.endsWith(".gif")) {
                     scaleImage();
-                } else if (mFullScreen) {
+                } else if (mImageWidth > screenWidth || mImageHeight > screenHeight) {
                     openLargeImageActivity();
                 } else {
                     scaleImage();
@@ -535,10 +535,15 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
             mLoadedThumbnailSucceed = true;
             dismissProgressBar();
             if (!loadSuccess) {
+                if (isFirstMenu) {
+                    isFirstMenu = false;
+                    imageHeader.setVisibility(View.VISIBLE);
+                    mHandler.sendEmptyMessageDelayed(MENU_SHOW, DELAYED_TIME);
+                }
                 getViewpagerView();
                 showArrow(mCurrentPosition);
                 showPagerHint(position);
-                mLoadedSucceed = false;
+                mLoadedSucceed = true;
             }
         }
     }
@@ -794,6 +799,13 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         } else {
             changeTvSize();
         }
+        float calc = calcByWH(mImageWidth, mImageHeight, mSizeType);
+        Log.i("ImagePlayerActivity", "calc " + calc);
+        mImageBrowser.onZoomScale(calc);
+    }
+
+    //获取图片实际宽高
+    private void getImageSize() {
         List<ImageBean> mImageList = mPhotoPagerAdapter.mImageList;
         for (int i = 0; i < mImageList.size(); i++) {
             ImageBean imageBean = mImageList.get(i);
@@ -804,9 +816,6 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
                 break;
             }
         }
-        float calc = calcByWH(mImageWidth, mImageHeight, mSizeType);
-        Log.i("ImagePlayerActivity", "calc " + calc);
-        mImageBrowser.onZoomScale(calc);
     }
 
     //播放幻灯片
@@ -855,16 +864,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
     }
 
     private void showImageInfo() {
-        List<ImageBean> mImageList = mPhotoPagerAdapter.mImageList;
-        for (int i = 0; i < mImageList.size(); i++) {
-            ImageBean imageBean = mImageList.get(i);
-            int position = imageBean.getPosition();
-            if (position == mCurrentPosition) {
-                mImageWidth = imageBean.getWidth();
-                mImageHeight = imageBean.getHeight();
-                break;
-            }
-        }
+        getImageSize();
         mInfoName.setText(getString(R.string.image_name) + "：" + getData().get(mCurrentPosition).mName);
         mInfoSize.setText(getString(R.string.image_volume) + "：" + FileUtil.convertStorage(getData().get(mCurrentPosition).fileSize));
         mInfoUrl.setText(getString(R.string.image_size) + "：" + mImageWidth + "*" + mImageHeight);
@@ -901,6 +901,9 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         //实际大小
         if (!isFullSize) {
             mSizeType = true;
+            if(width == 0 || height == 0){
+                return 1.0f;
+            }
             if (currentW > screenWidth || currentH > screenHeight) {
                 if (currentW > screenWidth && currentH > screenHeight) {
                     //取最大的进行缩放
@@ -926,6 +929,9 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
             //等比例全屏
             //图片宽高大于屏幕时
             mSizeType = false;
+            if(width == 0 || height == 0){
+                return 1.0f;
+            }
             if (currentW > screenWidth || currentH > screenHeight) {
                 //图片实际宽高都大于屏幕宽高
                 if (currentW > screenWidth && currentH > screenHeight) {
@@ -1057,9 +1063,9 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
     protected void onStop() {
         super.onStop();
         isAutoPlay = mAutoPlay;
-        stopAutoPlay();
-        openVolume();
-        mAuto.setImageResource(R.drawable.photo_info3);
+        if(mAutoPlay){
+            stopAutoPlayImage();
+        }
         //保存当前播放的路径
         String path = mDataList.get(mCurrentPosition).isSharing ? mDataList.get(mCurrentPosition).sharePath : mDataList.get(mCurrentPosition).mUri;
         SharedPreferenceUtil.saveMediaPath(path);

@@ -175,6 +175,16 @@
         android:textColor="#7fffffff"
         android:textSize="@dimen/fontsize_36" />
 
+    <TextView
+        android:id="@+id/tv_loading_fail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/image_loading_fail"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontsize_36"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/media__image_info_total"
         android:layout_width="@dimen/px854"
@@ -268,14 +278,5 @@
         android:layout_toLeftOf="@id/media__image_tv__position"
         android:background="@drawable/media_music"
         android:visibility="gone" />
-    <!--修复MASERATI-63USB幻灯片播放破损图片出现很抱歉，文件管理已停止运行，添加文字提示-->
-    <TextView
-        android:id="@+id/tv_loading_fail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/image_loading_fail"
-        android:textColor="@color/white"
-        android:textSize="@dimen/fontsize_36"
-        android:visibility="gone" />
+
 </RelativeLayout>

@@ -256,6 +256,9 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
         }
+        if (mMenuDialog != null && mMenuDialog.isShowing()) {
+            mMenuDialog.dismiss();
+        }
         super.onStop();
     }
 
