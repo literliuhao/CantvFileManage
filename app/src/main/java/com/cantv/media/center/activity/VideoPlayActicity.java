@@ -1027,6 +1027,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     protected void onStop() {
         releaseWakeLock();  //释放屏保
         storeDuration();    //保存进度
+        //修复os-5051,5010.4211,列表视频名称出现重复问题
+        if (mMenuDialog != null && mMenuDialog.isShowing()) {
+            mMenuDialog.dismiss();
+        }
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
 //        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
 //            MyApplication.onFinishActivity();
