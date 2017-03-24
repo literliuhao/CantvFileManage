@@ -63,7 +63,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     private TextView mNetNameTv;
     private TextView mNetIpTv;
-    private HorizontalScrollView mScrollView;
+    private LinearLayout mScrollView;
     private LinearLayout mDeviceItemGroup;
     private DeviceShareItemView mAddDeviceView;
     private DeviceAddDialog mAddDeviceDialog;
@@ -176,7 +176,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mFocusScaleUtils = new FocusScaleUtils(300, 300, 1.05f, null, null);
         mNetNameTv = (TextView) findViewById(R.id.tv_net_name);
         mNetIpTv = (TextView) findViewById(R.id.tv_net_ip);
-        mScrollView = (HorizontalScrollView) findViewById(R.id.hsv_device_list);
+        mScrollView = (LinearLayout) findViewById(R.id.hsv_device_list);
         mDeviceItemGroup = (LinearLayout) findViewById(R.id.ll_device_list);
         mAddDeviceView = (DeviceShareItemView) mDeviceItemGroup.getChildAt(0);
         mAddDeviceView.setBackgroundResource(getRandomBgRes());
@@ -241,14 +241,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
     }
 
     private void addDeviceItemView(final DeviceInfo info) {
-        if (info == null) {
-            return;
-        }
+        if (null == info) return;
 
         boolean b = SharedPreferenceUtil.saveLinkHost(info.getIp());
-        if (b) {
-            Toast.makeText(MyApplication.getContext(), "IP保存成功", Toast.LENGTH_SHORT).show();
-        }
+        if (b) ToastUtils.showMessage(MyApplication.getContext(), "IP保存成功");
 
         final DeviceShareItemView view = new DeviceShareItemView(this);
         view.setViewType(DeviceShareItemView.TYPE_DEVICE);
@@ -279,18 +275,10 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         mDeviceItemGroup.addView(view, 0, layoutParams);
         mDeviceInfos.add(info);
         mDeviceViews.add(view);
-        mDeviceItemGroup.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //修复OS-3929偶现文件管理器共享内添加设备后出现焦点变形（出现一次）
-                mAddDeviceView.setFocusable(true);
-                mAddDeviceView.requestFocus();
-                onFocusChange(mAddDeviceView, true);
-                mFocusUtils.hideFocusForStartMove(1000);
-            }
-        }, 1200);
-
-
+        mAddDeviceView.setFocusable(true);
+        mAddDeviceView.requestFocus();
+        //在addDeviceItemView 删除延时操作
+        //修复OS-2252	【Launcher V5.1.11 偶现：复现率 1/10】选导航栏应用，进入文件管理，点击进入文件共享，当已有设备连接时，焦点异常。
     }
 
     private int getRandomBgRes() {
@@ -299,16 +287,15 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
 
     @Override
     public void onFocusChange(final View v, final boolean hasFocus) {
-
         if (null == mFocusScaleUtils) {
             return;
         }
         if (hasFocus) {
-            if (v == mDeviceItemGroup.getChildAt(0)) {
-                mScrollView.smoothScrollTo(0, 0);
-            } else if (v == mDeviceItemGroup.getChildAt(mDeviceItemGroup.getChildCount() - 1)) {
-                mScrollView.smoothScrollTo(v.getLeft() + getResources().getDimensionPixelSize(R.dimen.px15), 0);
-            }
+//            if (v == mDeviceItemGroup.getChildAt(0)) {
+//                mScrollView.smoothScrollTo(0, 0);
+//            } else if (v == mDeviceItemGroup.getChildAt(mDeviceItemGroup.getChildCount() - 1)) {
+//                mScrollView.smoothScrollTo(v.getLeft() + getResources().getDimensionPixelSize(R.dimen.px15), 0);
+//            }
             mFocusScaleUtils.scaleToLarge(v);
             mFocusUtils.startMoveFocus(v, true, 1.065F, -1f, 0.5f);
         } else {
@@ -605,6 +592,16 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
                     for (String ip : resultIPs) {
                         addDeviceItemView(new DeviceInfo(ip));
                     }
+                    //OS-2252	【Launcher V5.1.11 偶现：复现率 1/10】选导航栏应用，进入文件管理，点击进入文件共享，当已有设备连接时，焦点异常。
+                    mDeviceItemGroup.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            onFocusChange(mAddDeviceView, true);
+                            mFocusUtils.showFocus();
+//                            mFocusUtils.hideFocusForStartMove(1000);
+                        }
+                    }, 200);
+                    //OS-2252	【Launcher V5.1.11 偶现：复现率 1/10】选导航栏应用，进入文件管理，点击进入文件共享，当已有设备连接时，焦点异常。
                 } else {
                     if (!isFirst) {
                         ToastUtils.showMessage(MyApplication.mContext, getString(R.string.devices_not_found), Toast.LENGTH_SHORT);
