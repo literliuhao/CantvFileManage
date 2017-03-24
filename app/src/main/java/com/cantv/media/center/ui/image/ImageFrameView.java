@@ -180,6 +180,7 @@ public class ImageFrameView extends FrameLayout {
                 return;
             }
             mImageSavePath = result.getPath();
+            getLocalImageSize(mImageSavePath);
             loadNetImage(mImageUrl);
         }
     }
@@ -338,9 +339,9 @@ public class ImageFrameView extends FrameLayout {
                 mImageView.setVisibility(View.VISIBLE);
                 if (null != mLoadingImgListener) {
                     mLoadingImgListener.loadSuccess(true);
-                    mLoadingImgListener.bitmapSize(mImgWidth, mImgHeight);
+                    mLoadingImgListener.bitmapSize(callbackW, callbackH);
                     mLoadingImgListener.loadResourceReady(true);
-                    if (mImgHeight <= (int) mActivity.screenHeight && mImgWidth <= (int) mActivity.screenWidth) {
+                    if (callbackH < (int) mActivity.screenHeight && callbackW < (int) mActivity.screenWidth) {
                         mLoadingImgListener.isFullScreen(false);
                     } else {
                         mLoadingImgListener.isFullScreen(true);

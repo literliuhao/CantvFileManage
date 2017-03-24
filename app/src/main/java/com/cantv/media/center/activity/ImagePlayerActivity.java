@@ -275,6 +275,8 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 //修复MASERATI-63USB幻灯片播放破损图片出现很抱歉，文件管理已停止运行，添加文字提示
                 if (!loadSuccess) {
                     mLoadingFail.setVisibility(View.VISIBLE);
+                    mLoadSuccessed = true;
+                    mLoadReady = true;
                     //修复幻灯片播放破损图停止问题
                     if (mAutoPlay) {
                         mAutoPlay = false;
@@ -356,6 +358,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         //实际大小
         if (!isFullSize) {
             mSizeType = true;
+            if(width == 0 || height == 0){
+                return 1.0f;
+            }
             if (currentW > screenWidth || currentH > screenHeight) {
                 if (currentW > screenWidth && currentH > screenHeight) {
                     //取最大的进行缩放
@@ -381,6 +386,9 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
             //等比例全屏
             //图片宽高大于屏幕时
             mSizeType = false;
+            if(width == 0 || height == 0){
+                return 1.0f;
+            }
             if (currentW > screenWidth || currentH > screenHeight) {
                 //图片实际宽高都大于屏幕宽高
                 if (currentW > screenWidth && currentH > screenHeight) {
@@ -478,7 +486,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 String mName = getData().get(mCurImageIndex).mName;
                 if (mName.endsWith(".gif")) {
                     scaleImage();
-                } else if (mFullScreen) {
+                } else if (mWidth > screenWidth || mHeight > screenHeight) {
                     openLargeImageActivity();
                 } else {
                     scaleImage();

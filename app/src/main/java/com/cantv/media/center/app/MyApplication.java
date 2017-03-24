@@ -5,7 +5,10 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import com.cantv.media.BuildConfig;
+import com.cantv.media.R;
 import com.cantv.media.center.ui.upgrade.MyUpgradeListener;
+import com.cantv.media.center.utils.MediaUtils;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
@@ -36,6 +39,18 @@ public class MyApplication extends Application {
 //            return;
 //        }
 //        refWatcher = LeakCanary.install(this);
+        initUmeng();
+    }
+
+    //初始化友盟统计
+    private void initUmeng() {
+        if (null != BuildConfig.CANTV) {
+            if (BuildConfig.CANTV.equals("can")) {
+                MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","canos000"));
+            }else {
+                MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","hezuo000"));
+            }
+        }
         MobclickAgent.enableEncrypt(true);
     }
 
