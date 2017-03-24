@@ -33,6 +33,7 @@ import com.cantv.media.R;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.UsbMounted;
+import com.cantv.media.center.ui.dialog.LoadingDialog;
 import com.cantv.media.center.ui.image.ImageBrowser;
 import com.cantv.media.center.ui.image.ImageFrameView;
 import com.cantv.media.center.ui.image.ImageFrameView.NotifyParentUpdate;
@@ -127,6 +128,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     private final String PRIVATE_KEY = "19!20!19!20";
     private int mKeytone;
     private boolean isAutoPlay;//是否在开启幻灯片
+    private LoadingDialog mLoadingDialog;
 
     private Handler mHandler = new Handler() {
 
@@ -236,6 +238,12 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     protected MediaControllerBar getMediaControllerBar() {
         return null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        dismissProgressBar();
     }
 
     private void showImage(int index, Runnable onfinish) {
@@ -487,6 +495,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
                 if (mName.endsWith(".gif")) {
                     scaleImage();
                 } else if (mWidth > screenWidth || mHeight > screenHeight) {
+                    showProgressBar();
                     openLargeImageActivity();
                 } else {
                     scaleImage();
@@ -627,7 +636,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         Intent intent = new Intent();
         intent.setAction("com.cantv.action.LARGE_ACTIVITY");
         intent.putExtra("path", mImageSavePath);
-        ImagePlayerActivity.this.startActivity(intent);
+        ImagePlayerActivity.this.startActivityForResult(intent,0);
     }
 
     private PowerManager.WakeLock getScreenLock() {
@@ -1065,5 +1074,21 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+    }
+
+    private void showProgressBar() {
+        if(null == mLoadingDialog){
+            mLoadingDialog = new LoadingDialog(this);
+        }
+        if (mLoadingDialog.isShowing()) {
+            return;
+        }
+        mLoadingDialog.show();
+    }
+
+    private void dismissProgressBar() {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
     }
 }
