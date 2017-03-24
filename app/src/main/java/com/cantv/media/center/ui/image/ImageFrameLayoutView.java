@@ -458,7 +458,7 @@ public class ImageFrameLayoutView extends FrameLayout {
 
     //传递尺寸
     private void getImageListener(int width, int height, int position) {
-        if (height <= (int) mActivity.screenHeight && width <= (int) mActivity.screenWidth) {
+        if (height < (int) mActivity.screenHeight && width < (int) mActivity.screenWidth) {
             mLoadingImgListener.getImageSize(width, height, false, position);
         } else {
             mLoadingImgListener.getImageSize(width, height, true, position);

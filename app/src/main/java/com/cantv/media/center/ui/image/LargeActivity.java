@@ -13,10 +13,6 @@ import java.io.File;
 public class LargeActivity extends Activity {
     private LargeImageView mLargeImageView;
     public final int UP = 19, DOWN = 20, LEFT = 21, RIGHT = 22;
-//    private String filePath = "/sdcard/DCIM/sample5_zoom-19.1M.jpg";
-//    private String filePath = "/sdcard/DCIM/IMG_4991.JPG";
-//    private String filePath = "/storage/emulated/0/DCIM/IMG_4991.JPG";
-//    private String filePath = "/storage/emulated/0/DCIM/sample5_zoom-19.1M.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

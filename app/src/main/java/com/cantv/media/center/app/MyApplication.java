@@ -39,6 +39,18 @@ public class MyApplication extends Application {
             return;
         }
         refWatcher = LeakCanary.install(this);
+        initUmeng();
+    }
+
+    //初始化友盟统计
+    private void initUmeng() {
+        if (null != BuildConfig.CANTV) {
+            if (BuildConfig.CANTV.equals("can")) {
+                MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","canos000"));
+            }else {
+                MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","hezuo000"));
+            }
+        }
         MobclickAgent.enableEncrypt(true);
     }
 

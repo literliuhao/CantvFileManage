@@ -22,6 +22,7 @@ public class ActivityDialog extends Activity {
     private FocusScaleUtils mFocusScaleUtils;
     private Context mContext;
     private FocusUtils mFocusUtils;
+
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
