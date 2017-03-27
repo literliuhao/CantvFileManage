@@ -30,6 +30,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @SuppressLint("ResourceAsColor")
 public class ImageFrameView extends FrameLayout {
@@ -144,6 +147,31 @@ public class ImageFrameView extends FrameLayout {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             mSaveImageUrlTask = new SaveImageUrlTask(mContext);
             mSaveImageUrlTask.execute(imageUri);
+            //设置超时时间
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if(null != mSaveImageUrlTask){
+                            mSaveImageUrlTask.get(30, TimeUnit.SECONDS);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        mImageView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadImageFail();
+                            }
+                        });
+                        e.printStackTrace();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
     }
 
@@ -179,6 +207,10 @@ public class ImageFrameView extends FrameLayout {
             }
             mImageSavePath = result.getPath();
             getLocalImageSize(mImageSavePath);
+            if(callbackW < 0 || callbackH < 0){
+                loadImageFail();
+                return;
+            }
             loadNetImage(mImageUrl);
         }
     }
