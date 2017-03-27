@@ -346,6 +346,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         dismissProgressBar();
+        toHideView();
     }
 
     @Override
@@ -842,6 +843,20 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         startAutoPlay();
         ToastUtils.showMessage(ImageActivity.this, getString(R.string.image_start_play));
         mAuto.setImageResource(R.drawable.photo_info33);
+        changeMenuImageColor(true);
+    }
+
+    //修改菜单按钮颜色，属性
+    private void changeMenuImageColor(boolean isAutoPlay) {
+        mRotation.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mSize.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mInfo.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        tvRotation.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        tvSize.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        tvInfo.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mRotation.setClickable(isAutoPlay ? false : true);
+        mSize.setClickable(isAutoPlay ? false : true);
+        mInfo.setClickable(isAutoPlay ? false : true);
     }
 
     private void stopAutoPlayImage() {
@@ -849,6 +864,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         openVolume();
         ToastUtils.showMessage(ImageActivity.this, getString(R.string.image_end_play));
         mAuto.setImageResource(R.drawable.photo_info3);
+        changeMenuImageColor(false);
     }
 
     //图片信息显示
@@ -994,7 +1010,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
     }
 
     private void dismissProgressBar() {
-        if (mLoadingDialog != null) {
+        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();
         }
     }
@@ -1085,6 +1101,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
             stopAutoPlay();
             openVolume();
         }
+        dismissProgressBar();
         EventBus.getDefault().unregister(this);
     }
 }

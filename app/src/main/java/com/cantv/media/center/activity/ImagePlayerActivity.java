@@ -244,6 +244,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         dismissProgressBar();
+        toHideView();
     }
 
     private void showImage(int index, Runnable onfinish) {
@@ -623,6 +624,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         openVolume();
         ToastUtils.showMessage(ImagePlayerActivity.this, getString(R.string.image_end_play));
         mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+        changeMenuImageColor(false);
     }
 
     private void startAutoPlayImage() {
@@ -630,6 +632,20 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         startAutoPlay();
         ToastUtils.showMessage(ImagePlayerActivity.this, getString(R.string.image_start_play));
         mAutoRunImageView.setImageResource(R.drawable.photo_info33);
+        changeMenuImageColor(true);
+    }
+
+    //修改菜单按钮颜色，属性
+    private void changeMenuImageColor(boolean isAutoPlay) {
+        mRotation.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mSize.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mInfo.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mTvRotation.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mTvSize.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mTvInfo.setAlpha(isAutoPlay ? 0.5f : 1.0f);
+        mRotation.setClickable(isAutoPlay ? false : true);
+        mSize.setClickable(isAutoPlay ? false : true);
+        mInfo.setClickable(isAutoPlay ? false : true);
     }
 
     private void openLargeImageActivity() {
@@ -912,10 +928,7 @@ public class ImagePlayerActivity extends MediaPlayerActivity implements NotifyPa
         if (mAutoPlay) {
             if (!mShowing) {
                 if (keyCode == event.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    stopAutoPlay();
-                    openVolume();
-                    Toast.makeText(ImagePlayerActivity.this, getString(R.string.image_end_play), Toast.LENGTH_SHORT).show();
-                    mAutoRunImageView.setImageResource(R.drawable.photo_info3);
+                    stopAutoPlayImage();
                     return true;
                 }
             }
