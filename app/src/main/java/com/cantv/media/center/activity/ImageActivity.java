@@ -559,7 +559,6 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
     @Override
     public void loadingImageFail(boolean loadFail, int position) {
         Log.i(TAG, "loadingImageFail: " + position);
-        mCurrentPosition = mPhotoPagerAdapter.getCurrentPosition();
     }
 
     @Override

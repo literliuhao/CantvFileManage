@@ -647,10 +647,6 @@ public class GridViewActivity extends Activity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                //修复OS-4992在文件管理器中更改文视图，删除任意一个文件夹，弹出提示文件管理器停止运行
-                if(null == FileUtil.mCurFileNameList || FileUtil.mCurFileNameList.size() == 0){
-                    return;
-                }
                 for (final Media f : FileUtil.mCurFileNameList) {
                     runOnUiThread(new Runnable() {
                         @Override

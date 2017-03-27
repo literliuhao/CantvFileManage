@@ -50,6 +50,8 @@ public class MyApplication extends Application {
             }else {
                 MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","hezuo000"));
             }
+        }else {
+            MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(mContext,"58b78c842ae85b7d99002686","canos000"));
         }
         MobclickAgent.enableEncrypt(true);
     }
