@@ -84,7 +84,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private List<MenuItem> mMenuList;
     private int mSelectedMenuPosi;
-    private boolean showLyric = true;
+//    private boolean showLyric = true;
 
     private LyricInfo mLyricInfo;
 
@@ -101,6 +101,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private List<MenuItem> mCurrentSubMenuList;
     private int mCurrentSubMenuPos;//当前二级菜单位置
     private int mDuration;
+    private boolean isShowOutLrc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,9 +173,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     boolean progressChanged = mProgressBar.setProgress(currentPosition);
                     if (progressChanged) {
                         mCurrProgressTv.setText(formatTime(currentPosition));
-                        if (showLyric) {
-                            mLyricView.setCurrTime(currentPosition);
-                        }
+                        mLyricView.setCurrTime(currentPosition);
                     }
                 }
                 sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
@@ -501,20 +500,22 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         // select load lyric or no
                         //修复MASERATI-222文件夹内有带歌词与不带歌词音乐,USB播放不带歌词音乐打开载入歌词，此时在播放列表切换任意带歌词音乐，播放时无显示歌词
                         if (position == 0) {
-                            // show lyricView
-                            showLyric = true;
-                            showOrHideLrc();
-                            mLyricView.setLyricInfo(mLyricInfo);
+//                            showOrHideLrc();
+//                            mLyricView.setLyricInfo(mLyricInfo);
+                            isShowOutLrc = false;
                             mLyricView.setCurrTime(getProxyPlayer().getCurrentPosition());
+                            switchLrcTH();
                             // enable adjust lyric
                             adjuestLyricMenuData.setEnabled(true);
                         } else if (position == 1) {
-                            // hide lyricView
-                            showLyric = false;
-                            showOrHideLrc();
-                            mLyricView.setLyricInfo(null);
+                            isShowOutLrc = true;
+//                            showOrHideLrc();
+//                            mLyricView.setLyricInfo(null);
                             // disable adjust lyric
-                            adjuestLyricMenuData.setEnabled(false);
+//                            adjuestLyricMenuData.setEnabled(false);
+                            mLyricView.setCurrTime(getProxyPlayer().getCurrentPosition());
+                            switchLrcTH();
+                            adjuestLyricMenuData.setEnabled(true);
                         }
                         // change adjust lyric menuItem enable
                         View adjustLyricMenu = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 3);
@@ -674,11 +675,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MenuItem loadLyricMenuItem = new MenuItem(getString(R.string.load_lyric));
         loadLyricMenuItem.setType(MenuItem.TYPE_SELECTOR);
         List<MenuItem> loadLyricSubMenuItems = new ArrayList<>();
-        MenuItem menuItem2 = new MenuItem(getString(R.string.str_open), MenuItem.TYPE_SELECTOR);
+        MenuItem menuItem2 = new MenuItem(getString(R.string.lrc_in), MenuItem.TYPE_SELECTOR);
         menuItem2.setParent(loadLyricMenuItem);
         menuItem2.setSelected(true);
         loadLyricSubMenuItems.add(menuItem2);
-        loadLyricSubMenuItems.add(new MenuItem(getString(R.string.str_close), MenuItem.TYPE_SELECTOR));
+        loadLyricSubMenuItems.add(new MenuItem(getString(R.string.lrc_out), MenuItem.TYPE_SELECTOR));
         loadLyricMenuItem.setChildren(loadLyricSubMenuItems);
         menuList.add(loadLyricMenuItem);
 
@@ -727,7 +728,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     private void showOrHideLrc() {
-        if (showLyric && null != mLyricInfo) {
+        if (null != mLyricInfo) {
             mLyricView.setVisibility(View.VISIBLE);
             mNoLyricLayout.setVisibility(View.INVISIBLE);
         } else {
@@ -854,25 +855,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             }
         }
 
-        if (!mUri.contains(":")) {
-            mLyricInfo = Audio.getAudioLyric(mUri);  //这个比较耗时
-        }
-        if (mLyricInfo == null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showOrHideLrc();
-                }
-            });
-        } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showOrHideLrc();
-                    mLyricView.setLyricInfo(mLyricInfo);
-                }
-            });
-        }
+        switchLrc();
+
     }
 
     @Override
@@ -920,4 +904,42 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             finish();
         }
     }
+
+
+    public void switchLrcTH() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                switchLrc();
+            }
+        }).start();
+    }
+
+    /**
+     * loadUI方法里使用这个,其他使用switchLrcTH
+     */
+    public void switchLrc() {
+        if (!mUri.contains(":")) {
+            mLyricInfo = Audio.getInOrOutLrc(mUri, isShowOutLrc);  //这个比较耗时
+        } else {
+            return;
+        }
+        if (mLyricInfo == null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showOrHideLrc();
+                }
+            });
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showOrHideLrc();
+                    mLyricView.setLyricInfo(mLyricInfo);
+                }
+            });
+        }
+    }
+
 }

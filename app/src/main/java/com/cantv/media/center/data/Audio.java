@@ -171,4 +171,38 @@ public class Audio extends Media {
         return null;
     }
 
+    /**
+     *
+     * @param uri 歌词地址
+     * @param isOutLrc  是否是外置歌词
+     * @return
+     */
+    public static LyricInfo getInOrOutLrc(String uri, boolean isOutLrc) {
+        if (!TextUtils.isEmpty(uri)) {
+            if (isOutLrc) {
+                return parsingLrc(uri);
+            } else {
+                try {
+                    Mp3File mp3File = new Mp3File(uri);
+                    if (mp3File.hasId3v2Tag()) {
+//                    String[] lrcs = mp3File.getId3v2Tag().getLyrics().split("\\n");
+                        ID3v2 id3v2Tag = mp3File.getId3v2Tag();
+                        String lyrics1 = id3v2Tag.getLyrics();  //可能报空指针异常
+                        if (!TextUtils.isEmpty(lyrics1)) {
+                            return LyricParser.parseFromStream(lyrics1);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedTagException e) {
+                    e.printStackTrace();
+                } catch (InvalidDataException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+
+    }
+
 }

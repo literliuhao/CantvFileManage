@@ -165,4 +165,6 @@
 
     <string name="file_copy">复制</string>
     <string name="file_paste">粘贴</string>
+    <string name="lrc_in">内嵌歌词</string>
+    <string name="lrc_out">外挂歌词</string>
 </resources>

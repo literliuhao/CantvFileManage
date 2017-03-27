@@ -7,6 +7,8 @@ import android.os.Environment;
 
 import com.cantv.media.BuildConfig;
 import com.cantv.media.center.ui.upgrade.MyUpgradeListener;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
@@ -31,12 +33,12 @@ public class MyApplication extends Application {
         initBugly();
 //        activityList = new ArrayList<>();
         mHomeActivityList = new ArrayList<>();
-//        if (LeakCanary.isInAnalyzerProcess(this)) {
-//            // This process is dedicated to LeakCanary for heap analysis.
-//            // You should not init your app in this process.
-//            return;
-//        }
-//        refWatcher = LeakCanary.install(this);
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        refWatcher = LeakCanary.install(this);
         initUmeng();
     }
 
@@ -107,11 +109,11 @@ public class MyApplication extends Application {
         }
     }
 
-//    private RefWatcher refWatcher;
-//    public static RefWatcher getRefWatcher(Context context) {
-//        MyApplication application = (MyApplication) context.getApplicationContext();
-//        return application.refWatcher;
-//    }
+    private RefWatcher refWatcher;
+    public static RefWatcher getRefWatcher(Context context) {
+        MyApplication application = (MyApplication) context.getApplicationContext();
+        return application.refWatcher;
+    }
 
 
     /**
