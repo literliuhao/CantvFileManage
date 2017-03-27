@@ -122,6 +122,13 @@ public class GridViewActivity extends Activity {
     protected void onResume() {
         super.onResume();
         isStartAc = false;
+
+        if (null != mGridView) {
+            if (!(mGridView.mListAdapter.getData().size() > 0)) {
+                initData();
+            }
+        }
+
         StatisticsUtil.registerResume(this);
     }
 
@@ -696,7 +703,7 @@ public class GridViewActivity extends Activity {
         if (usbMounted.mIsRemoved) {
             Log.i("Mount", "gridView unmounted...");
             //修复OS-4985进入文件管理，打开任意外接设备的文件夹，按菜单键选择删除，在删除提示框界面断开外接设备，删除提示框仍显示，选择确定后，界面弹出外接设备文件
-            if(mConfirmDialog != null && mConfirmDialog.isShowing()){
+            if (mConfirmDialog != null && mConfirmDialog.isShowing()) {
                 mConfirmDialog.dismiss();
             }
             updateSDMounted(usbMounted.mUsbPath);
