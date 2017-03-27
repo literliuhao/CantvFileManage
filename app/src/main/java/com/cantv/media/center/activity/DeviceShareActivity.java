@@ -19,7 +19,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -39,8 +38,8 @@ import com.cantv.media.center.ui.dialog.LoadingDialog;
 import com.cantv.media.center.ui.share.DeviceShareItemView;
 import com.cantv.media.center.utils.NetworkUtils;
 import com.cantv.media.center.utils.SharedPreferenceUtil;
-import com.cantv.media.center.utils.ToastUtils;
 import com.cantv.media.center.utils.StatisticsUtil;
+import com.cantv.media.center.utils.ToastUtils;
 import com.cantv.media.center.utils.cybergarage.FileItem;
 import com.cantv.media.center.utils.cybergarage.FileServer;
 import com.cantv.media.center.utils.cybergarage.ScanSambaTask;
@@ -387,7 +386,7 @@ public class DeviceShareActivity extends Activity implements OnFocusChangeListen
         @Override
         protected List<String> doInBackground(Void... params) {
             ArrayList<String> strings = new ArrayList<>();
-            for (String ip : mIPList) {
+            for (final String ip : mIPList) {
                 if (null == ip && ip.trim().equals("")) {
                     continue;
                 }

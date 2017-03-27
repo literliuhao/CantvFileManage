@@ -72,7 +72,7 @@ public class NetworkUtils {
         try {
             String ip = host;// ping 的地址，可以换成任何一种可靠的外网
 //            Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
-            Process p = Runtime.getRuntime().exec("ping -c 1 -w 100 " + ip);
+            Process p = Runtime.getRuntime().exec("ping -c 1 -w 30" + ip);  //超时时间30秒,ping 1次
             // 读取ping的内容，可以不加
 //            InputStream input = p.getInputStream();
 //            BufferedReader in = new BufferedReader(new InputStreamReader(input));
