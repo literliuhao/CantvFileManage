@@ -26,6 +26,7 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
     private FocusScaleUtils mFocusScaleUtils;
     private FocusUtils mFocusUtils;
     private final String SETTING = "android.intent.action.LINK_NETWORK_TOAST";
+    private PowerManager.WakeLock mWakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +52,15 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
 
     private void acquireWakeLock() {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
-        wl.acquire();
+        mWakeLock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "bright");
+        mWakeLock.acquire();
+    }
+
+    private void releaseWakeLock() {
+        if (mWakeLock != null && mWakeLock.isHeld()) {
+            mWakeLock.release();
+            mWakeLock = null;
+        }
     }
 
     private void startSetting() {
@@ -84,20 +92,13 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
 
     @Override
     public void onFinish() {
-//        if (mWakeLock == null) {
-//            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//            mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getClass().getCanonicalName());
-//        }
-//        mWakeLock.release();
+        releaseWakeLock();
         this.finish();
     }
 
     @Override
     public void onClick(View v) {
         try {
-//            if (!SystemCateUtil.getServerData().equals("1")) {
-//                startSetting();
-//            } else {
             switch (v.getId()) {
                 case R.id.dialog_image:
                     startGridView("image", R.string.str_photo);
@@ -112,7 +113,6 @@ public class DialogActivity extends Activity implements View.OnFocusChangeListen
                     startGridView("device1", R.string.str_external);
                     break;
             }
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
