@@ -27,11 +27,15 @@ import java.util.List;
 import static android.media.MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class ProxyPlayer {
+public class ProxyPlayer implements OnPreparedListener {
     private LitePlayer mLitePlayer;
     private PlayerStatusInfo mStatusInfo;
     private OnVideoSizeChangedListener mListener = null;
-    public Boolean mRetryPlaye = true;
+    public Boolean mRetryPlay = true;
+
+    private OnPreparedListener mOnPreparedListener;
+
+    private Runnable mRunnable;
 
     public void start() {
         getLitePlayer().start();
@@ -102,6 +106,11 @@ public class ProxyPlayer {
         getLitePlayer().setOnCompletionListener(listener);
     }
 
+    public void setOnPreparedListener(OnPreparedListener listener){
+        this.mOnPreparedListener = listener;
+        getLitePlayer().setOnPreparedListener(this);
+    }
+
     public void setOnTimedTextListener(OnTimedTextListener listener) {
         getLitePlayer().setOnTimedTextListener(listener);
     }
@@ -117,7 +126,7 @@ public class ProxyPlayer {
     }
 
     public void playMedia(String uri, final Runnable callBack) throws Exception {
-//        getLitePlayer().stop();
+        this.mRunnable = callBack;
         getLitePlayer().reset();
         byte[] bytes = uri.getBytes();
         String s = new String(bytes, "UTF-8");
@@ -128,15 +137,8 @@ public class ProxyPlayer {
             e.printStackTrace();
             Log.w("有异常存在", "文件播放发生异常...!");
         }
-        getLitePlayer().setOnPreparedListener(new OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-                if (callBack != null) {
-                    callBack.run();
-                }
-            }
-        });
+
+        getLitePlayer().setOnPreparedListener(this);
         getLitePlayer().setOnVideoSizeChangedListener(mListener);
     }
 
@@ -180,11 +182,11 @@ public class ProxyPlayer {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.w("异常", "文件播放发生异常!");
-                if (null != mExceptionListener && !mRetryPlaye) {
+                if (null != mExceptionListener && !mRetryPlay) {
                     ToastUtils.showMessage(MyApplication.getContext(), MyApplication.getContext().getResources().getString(R.string.format_not_support));
                     mExceptionListener.ExceHappen();
-                } else if (mRetryPlaye) {
-                    mRetryPlaye = false;
+                } else if (mRetryPlay) {
+                    mRetryPlay = false;
                     if (null != mExceptionListener) {
                         mExceptionListener.RetryPlay();
                     } else {
@@ -282,6 +284,12 @@ public class ProxyPlayer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        if(null != mOnPreparedListener)mOnPreparedListener.onPrepared(mp);
+        if(null != mRunnable)mRunnable.run();
     }
 
     /**

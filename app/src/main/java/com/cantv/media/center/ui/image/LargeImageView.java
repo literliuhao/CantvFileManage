@@ -1,6 +1,5 @@
 package com.cantv.media.center.ui.image;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,11 +10,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ThumbnailUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.cantv.media.R;
-import com.cantv.media.center.ui.dialog.LoadingDialog;
+import com.cantv.media.center.utils.ToastUtils;
 
 import java.io.IOException;
 
@@ -65,10 +65,6 @@ public class LargeImageView extends View {
     private String mImagePath;
 
     private int onMeasureCount = 0;
-
-    private LoadingDialog mLoadingDialog;
-
-    private Activity mActivity;
 
     static {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -223,8 +219,16 @@ public class LargeImageView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         //显示局部的大图
-        mBitmap = mDecoder.decodeRegion(mRectLarge, options);
-        canvas.drawBitmap(mBitmap, 0, 0, null);
+        try {
+            if (null != mDecoder) {
+                mBitmap = mDecoder.decodeRegion(mRectLarge, options);
+                canvas.drawBitmap(mBitmap, 0, 0, null);
+            }else {
+                ToastUtils.showMessage(getContext(),"该图片解析异常");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //缩略图
         canvas.drawBitmap(ThumbnailUtils.extractThumbnail(mBitmapThumb, mThumbW, mThumbH), null, mThumbRect, null);
         //外边框
@@ -244,6 +248,7 @@ public class LargeImageView extends View {
             }
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(mImagePath, options);
+
             mImageWidth = options.outWidth;
             mImageHeight = options.outHeight;
 
@@ -343,7 +348,5 @@ public class LargeImageView extends View {
         invalidate();
     }
 
-
-    
 
 }

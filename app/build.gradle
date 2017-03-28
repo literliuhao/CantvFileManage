@@ -29,8 +29,8 @@ android {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 156
-        versionName "20170310_v1.5.6.1"
+        versionCode 160
+        versionName "20170328_v1.6.0.1"
         buildConfigField("String", "CANTV", "\"can\"")
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
@@ -50,7 +50,7 @@ android {
         }
         other {
             buildConfigField("String", "CANTV", "\"other\"")
-            versionName "20170310_v1.5.6.2"
+            versionName "20170328_v1.6.0.2"
         }
         sign828 {
 
@@ -93,9 +93,9 @@ dependencies {
     compile files('libs/jcifs-1.3.17.jar')
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     compile 'com.tencent.bugly:crashreport_upgrade:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
