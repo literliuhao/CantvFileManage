@@ -92,6 +92,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     private List<MenuItem> playListSubMenuItems;
     private List<MenuItem> mCurrentSubMenuList;
     private int mCurrentSubMenuPos;//当前二级菜单位置
+    public boolean isOnPrepared = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -407,7 +408,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 break;
         }
 
-        if (mCtrBar != null) {
+        if (mCtrBar != null && isOnPrepared) {
             mCtrBar.onKeyDownEvent(keyCode, event);
         }
         return super.onKeyDown(keyCode, event);
@@ -1002,6 +1003,11 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         if (mOpenInSubtitle) {
             mSubTitle.setText(text.getText());
         }
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        isOnPrepared = true;
     }
 
 

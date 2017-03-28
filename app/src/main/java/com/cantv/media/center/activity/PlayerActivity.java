@@ -23,7 +23,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public abstract class PlayerActivity extends Activity implements PlayerCtrlBarContext, PlayerCtrlBarListener, OnCompletionListener, CoverFlowViewListener {
+public abstract class PlayerActivity extends Activity implements PlayerCtrlBarContext, PlayerCtrlBarListener, OnCompletionListener, CoverFlowViewListener, MediaPlayer.OnPreparedListener {
 
     protected int mDefaultPlayIndex;
     protected List<Media> mDataList;
@@ -31,11 +31,12 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     protected int mCurPlayIndex;
     public boolean mAutoPaused;    //自动是否处于暂停状态:默认非暂停,用在界面不可见时
     public boolean mManualPaused;   //手动暂停处理:默认非暂停,用在手动停止
-    private boolean mFirstPlay = true;
+    public boolean mFirstPlay = true;
     private boolean mInitDone = false;
     protected CoverFlowViewListener mCoverFlowViewListener;
     protected int mPlayMode = PlayMode.IN_ORDER;// 默认顺序播放
     public boolean isPressback;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +209,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         if (mPlayer == null) {
             mPlayer = new ProxyPlayer();
             mPlayer.setOnCompletionListener(this);
+            mPlayer.setOnPreparedListener(this);
         }
 
         mPlayer.onExceptionListener(new ProxyPlayer.MediaplayExceptionListener() {

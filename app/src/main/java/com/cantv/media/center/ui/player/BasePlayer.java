@@ -22,7 +22,7 @@ import com.cantv.media.center.ui.player.PlayerController.PlayerCtrlBarListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BasePlayer extends Activity implements OnCompletionListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener, MediaPlayer.OnTimedTextListener {
+public abstract class BasePlayer extends Activity implements OnCompletionListener,MediaPlayer.OnPreparedListener, PlayerCtrlBarContext, PlayerCtrlBarListener, CoverFlowViewListener, MediaPlayer.OnTimedTextListener {
     protected List<Media> mDataList;
     protected int mDefaultPlayIndex;
     private ProxyPlayer mPlayer;
@@ -61,6 +61,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             mPlayer = new ProxyPlayer();
             mPlayer.setOnCompletionListener(this);
             mPlayer.setOnTimedTextListener(this);
+            mPlayer.setOnPreparedListener(this);
         }
 
         mPlayer.onExceptionListener(new ProxyPlayer.MediaplayExceptionListener() {
@@ -75,7 +76,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             public void RetryPlay() {
                 if (!setVideoStop) {
                     if (null != mPlayer) {
-                        mPlayer.mRetryPlaye = false;
+                        mPlayer.mRetryPlay = false;
                     }
                     playMedia(mCurPlayIndex);
                 } else {
@@ -171,7 +172,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
                     mFirstPlay = false;
                     runProgressBar();
                     if (null != mPlayer) {
-                        mPlayer.mRetryPlaye = true;
+                        mPlayer.mRetryPlay = true;
                     }
                 }
             });

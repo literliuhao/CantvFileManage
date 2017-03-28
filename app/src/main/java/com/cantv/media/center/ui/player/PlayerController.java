@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cantv.media.R;
-import com.cantv.media.center.activity.VideoPlayActicity;
+import com.cantv.media.center.activity.VideoPlayActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,7 +104,7 @@ public class PlayerController extends RelativeLayout {
 
                 case STORE_DURATION:
 
-                    ((VideoPlayActicity) mContext).storeDuration();
+                    ((VideoPlayActivity) mContext).storeDuration();
                     handler.sendEmptyMessageDelayed(STORE_DURATION, 60 * 1000);
 
                     break;
@@ -116,8 +116,8 @@ public class PlayerController extends RelativeLayout {
 
                     break;
                 case CHANG_SRT:
-                    ((VideoPlayActicity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
-                    ((VideoPlayActicity) mContext).setSub(mCtrlBarContext.getPlayerCurPosition());
+                    ((VideoPlayActivity) mContext).setSrts(mCtrlBarContext.getPlayerCurPosition());
+                    ((VideoPlayActivity) mContext).setSub(mCtrlBarContext.getPlayerCurPosition());
 
                     handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 1000);
                     break;
@@ -246,7 +246,7 @@ public class PlayerController extends RelativeLayout {
         // 设置当前时间
         refreshTime();
         //如果有字幕，开始获取字幕
-        isSrtExist = ((VideoPlayActicity) mContext).isSrtExist();
+        isSrtExist = ((VideoPlayActivity) mContext).isSrtExist();
         if (isSrtExist) {
             handler.sendEmptyMessageDelayed(PlayerController.CHANG_SRT, 2000);
         }
@@ -340,7 +340,7 @@ public class PlayerController extends RelativeLayout {
                 showController();
                 if (isShowTip) {
                     seekToDuration(0);
-                    ((VideoPlayActicity) mContext).initSrts();
+                    ((VideoPlayActivity) mContext).initSrts();
                     isShowTip = false;
                 }
                 break;
@@ -468,7 +468,7 @@ public class PlayerController extends RelativeLayout {
         mProgressBar.setProgress(mDuration);
     }
 
-    public void onBackPressed(VideoPlayActicity context) {
+    public void onBackPressed(VideoPlayActivity context) {
         if (VISIBLE == getVisibility()) {
             if (INVISIBLE == mProgressBar.getVisibility() && mCtrlBarContext.isPlayerPaused()) {
                 mPlayImage.setVisibility(INVISIBLE);

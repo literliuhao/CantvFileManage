@@ -66,9 +66,7 @@ import static com.cantv.media.R.string.singer;
  */
 @SuppressLint("NewApi")
 public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener {
-
     private final int INTERVAL_CHECK_PROGRESS = 1;
-
     private ImageView mContentBg;
     private CircleProgressBar mProgressBar;
     private CDView mCDView;
@@ -101,6 +99,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private List<MenuItem> mCurrentSubMenuList;
     private int mCurrentSubMenuPos;//当前二级菜单位置
     private int mDuration;
+    public boolean isOnPrepared = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,11 +299,15 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     public void onClick(View v) {
+        if (!isOnPrepared) return;
         switch (v.getId()) {
             case R.id.ib_play_pause:
+                //OS-5062	【OS V1.2.0.1489918440 必现】添加共享设备-登录后退出，将共享设备网络断掉，然后再进入文件共享，界面一直处于加载中，过5分钟左右才加载。
+                //add isOnPrepared
                 if (mDataList == null || mDataList.size() == 0) {
                     break;
                 }
+                //OS-5062	【OS V1.2.0.1489918440 必现】添加共享设备-登录后退出，将共享设备网络断掉，然后再进入文件共享，界面一直处于加载中，过5分钟左右才加载。
                 onPlayerPlayOrPause();
                 if (isPlayerPaused()) {
                     if (mHandler != null) {
@@ -810,6 +813,14 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             }
         }
     }
+
+    //liuhao
+    //OS-4932	【OS V1.2.0.1489506238 文件管理 必现】点击进入共享设备中的图片/音频/视频，未加载出来时按确认键自动退出显示/播放，提示“文件格式不支持或设备已移除”
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        isOnPrepared = true;
+    }
+    //OS-4932	【OS V1.2.0.1489506238 文件管理 必现】点击进入共享设备中的图片/音频/视频，未加载出来时按确认键自动退出显示/播放，提示“文件格式不支持或设备已移除”
 
     /**
      * author: yibh
