@@ -343,34 +343,16 @@ public class MediaGridView extends CustomGridView {
                     } else {
                         //本机
                         if (mSourceType == SourceType.LOCAL) {
-                            FileUtil.getFileList(MediaUtils.getLocalPath(), new FileUtil.OnFileListListener() {
-                                @Override
-                                public void findFileListFinish(List<Media> list) {
-
-                                    mMediaes.addAll(list);
-                                }
-                            });
+                            mMediaes.addAll(FileUtil.getFileList(MediaUtils.getLocalPath()));
                         } else if (mSourceType == SourceType.DEVICE || devicePath != null) {
                             if (null == devicePath && MediaUtils.getCurrPathList().size() > 0) {
                                 devicePath = MediaUtils.getCurrPathList().get(0);
                             }
                             //外接设备
-                            FileUtil.getFileList(devicePath, new FileUtil.OnFileListListener() {
-                                @Override
-                                public void findFileListFinish(List<Media> list) {
-                                    mMediaes.addAll(list);
-                                }
-                            });
+                            mMediaes.addAll(FileUtil.getFileList(devicePath));
                         } else {
                             if (usbRootPaths.size() > 0) { // 为了防止通过点击首页弹出框进来,而此时设备已经被移出而发生错误
-
-                                FileUtil.getFileList(usbRootPaths.get(0), true, new FileUtil.OnFileListListener() {
-                                    @Override
-                                    public void findFileListFinish(List<Media> list) {
-                                        List<Media> fileList = list;
-                                        mMediaes.addAll(fileList);
-                                    }
-                                }, msSourceType);
+                                mMediaes.addAll(FileUtil.getFileList(usbRootPaths.get(0), true, msSourceType));
                             }
                         }
                     }

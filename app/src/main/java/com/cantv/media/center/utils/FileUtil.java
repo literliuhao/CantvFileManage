@@ -279,6 +279,54 @@ public class FileUtil {
         }).start();
     }
 
+    /**
+     * 这个方法放在异步里运行(比如doInback...)
+     *
+     * @param path
+     * @return
+     */
+    public static List<Media> getFileList(final String path) {
+
+        List<Media> tList = new ArrayList<>();
+        ArrayList<String> nameList = new ArrayList<>();
+        if (null == path) {
+            return tList;
+        }
+        try {
+            File file = new File(path);
+            if (!file.exists() || !file.isDirectory()) {
+                return tList;
+            }
+            File[] listfiles = file.listFiles();
+            if (listfiles == null) {
+                return tList;
+            }
+            for (File childFile : listfiles) {
+                // 是常见文件,并且是非隐藏文件
+                if (FileUtil.isShowFile(childFile)) {
+                    Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
+                    //可能存在相同名称的情况(外接设备的问题,极少数出现)
+                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && !nameList.contains(fileInfo.mName)) {
+                        // 当文件是图片类型,并且大于10k,才进行显示
+                        if (fileInfo.mType == SourceType.PICTURE) {
+                            if (fileInfo.fileSize > 1024 * 6) {
+                                tList.add(fileInfo);
+                                nameList.add(fileInfo.mName);
+                            }
+                        } else {
+                            tList.add(fileInfo);
+                            nameList.add(fileInfo.mName);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return tList;
+        }
+        return tList;
+    }
+
 
     public interface OnSmbFileListListener {
         void findSmbFileListFinish(List<Media> list);
@@ -443,6 +491,50 @@ public class FileUtil {
             }
         }).start();
     }
+
+    /**
+     * 异步方法中使用
+     *
+     * @param path
+     * @param addFolder
+     * @param type
+     */
+    public static List<Media> getFileList(final String path, final boolean addFolder, final SourceType... type) {
+
+        List<Media> tList = new ArrayList<>();
+        File file = new File(path);
+        if (!file.exists() || !file.isDirectory()) {
+            return tList;
+        }
+        File[] listfiles = file.listFiles();
+        if (listfiles == null) {
+            return tList;
+        }
+        for (File childFile : listfiles) {
+            // 是常见文件,并且是非隐藏文件
+            if (FileUtil.isShowFile(childFile)) {
+                Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
+                if (null != fileInfo) {
+                    // 是文件夹或这是指定类型的文件,就加入到集合中
+                    SourceType sourceType = type[0];
+                    if ((sourceType == fileInfo.mType) ||
+                            // 过滤掉指定2个无用的文件夹
+                            (addFolder && fileInfo.isDir && !uselessFileList.contains(fileInfo.mName))) {
+                        // 当文件是图片类型,并且大于10k,才进行显示
+                        if (fileInfo.mType == SourceType.PICTURE) {
+                            if (fileInfo.fileSize > 1024 * 6) {
+                                tList.add(fileInfo);
+                            }
+                        } else {
+                            tList.add(fileInfo);
+                        }
+                    }
+                }
+            }
+        }
+        return tList;
+    }
+
 
     /**
      * 返回指定路径指定类型的文件/夹 列表

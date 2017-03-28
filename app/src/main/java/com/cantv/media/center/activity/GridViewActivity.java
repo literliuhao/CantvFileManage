@@ -123,12 +123,6 @@ public class GridViewActivity extends Activity {
         super.onResume();
         isStartAc = false;
 
-        if (null != mGridView) {
-            if (!(mGridView.mListAdapter.getData().size() > 0)) {
-                initData();
-            }
-        }
-
         StatisticsUtil.registerResume(this);
     }
 
