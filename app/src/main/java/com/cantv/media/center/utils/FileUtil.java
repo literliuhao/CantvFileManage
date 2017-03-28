@@ -43,6 +43,7 @@ import jcifs.smb.SmbFile;
 public class FileUtil {
     //保存不需要显示文件的文件名
     private static List<String> uselessFileList = new ArrayList<>();
+    static String screenPath = Environment.getExternalStorageDirectory().getPath() + "/screensaver";
 
     static {
         String[] uselessStr = {"LOST.DIR", "System Volume Information"};
@@ -250,7 +251,9 @@ public class FileUtil {
                         if (FileUtil.isShowFile(childFile)) {
                             Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
                             //可能存在相同名称的情况(外接设备的问题,极少数出现)
-                            if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && !nameList.contains(fileInfo.mName)) {
+                            if (null != fileInfo && !uselessFileList.contains(fileInfo.mName)
+                                    && !nameList.contains(fileInfo.mName)
+                                    && !fileInfo.mUri.equals(screenPath)) {
                                 // 当文件是图片类型,并且大于10k,才进行显示
                                 if (fileInfo.mType == SourceType.PICTURE) {
                                     if (fileInfo.fileSize > 1024 * 6) {
@@ -306,7 +309,9 @@ public class FileUtil {
                 if (FileUtil.isShowFile(childFile)) {
                     Media fileInfo = FileUtil.getFileInfo(childFile, null, false);
                     //可能存在相同名称的情况(外接设备的问题,极少数出现)
-                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName) && !nameList.contains(fileInfo.mName)) {
+                    if (null != fileInfo && !uselessFileList.contains(fileInfo.mName)
+                            && !nameList.contains(fileInfo.mName)
+                            && !fileInfo.mUri.equals(screenPath)) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
                             if (fileInfo.fileSize > 1024 * 6) {
@@ -472,7 +477,9 @@ public class FileUtil {
                             SourceType sourceType = type[0];
                             if ((sourceType == fileInfo.mType) ||
                                     // 过滤掉指定2个无用的文件夹
-                                    (addFolder && fileInfo.isDir && !uselessFileList.contains(fileInfo.mName))) {
+                                    (addFolder && fileInfo.isDir
+                                            && !uselessFileList.contains(fileInfo.mName)
+                                            && !fileInfo.mUri.equals(screenPath))) {
                                 // 当文件是图片类型,并且大于10k,才进行显示
                                 if (fileInfo.mType == SourceType.PICTURE) {
                                     if (fileInfo.fileSize > 1024 * 6) {
@@ -519,7 +526,9 @@ public class FileUtil {
                     SourceType sourceType = type[0];
                     if ((sourceType == fileInfo.mType) ||
                             // 过滤掉指定2个无用的文件夹
-                            (addFolder && fileInfo.isDir && !uselessFileList.contains(fileInfo.mName))) {
+                            (addFolder && fileInfo.isDir
+                                    && !uselessFileList.contains(fileInfo.mName))
+                                    && !fileInfo.mUri.equals(screenPath)) {
                         // 当文件是图片类型,并且大于10k,才进行显示
                         if (fileInfo.mType == SourceType.PICTURE) {
                             if (fileInfo.fileSize > 1024 * 6) {
