@@ -20,7 +20,7 @@ import com.cantv.media.center.activity.AudioPlayerActivity;
 import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.activity.ImageActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;
-import com.cantv.media.center.activity.VideoPlayActicity;
+import com.cantv.media.center.activity.VideoPlayActivity;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.FileCategory;
 import com.cantv.media.center.constants.MediaFormat;
@@ -196,7 +196,7 @@ public class MediaUtils {
         Class mediaClass = ImagePlayerActivity.class;
         mediaClass = (format == MediaFormat.IMAGE) ? ImagePlayerActivity.class : mediaClass;
         mediaClass = (format == MediaFormat.AUDIO) ? AudioPlayerActivity.class : mediaClass;
-        mediaClass = (format == MediaFormat.VIDEO) ? VideoPlayActicity.class : mediaClass;
+        mediaClass = (format == MediaFormat.VIDEO) ? VideoPlayActivity.class : mediaClass;
         if (format == MediaFormat.APP) {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
@@ -331,7 +331,7 @@ public class MediaUtils {
         Intent intent = new Intent();
         Class currClass = null;
         if (sourceType == SourceType.MOIVE) {
-            currClass = VideoPlayActicity.class;
+            currClass = VideoPlayActivity.class;
         } else if (sourceType == SourceType.MUSIC) {
             currClass = AudioPlayerActivity.class;
         } else if (sourceType == SourceType.PICTURE) {

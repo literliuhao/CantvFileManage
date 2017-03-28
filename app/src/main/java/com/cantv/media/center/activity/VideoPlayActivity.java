@@ -64,8 +64,8 @@ import jcifs.smb.SmbFile;
 
 import static com.cantv.media.center.app.MyApplication.mContext;
 
-public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedListener, StDisplayCallBack {
-    private static final String TAG = "VideoPlayActicity";
+public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedListener, StDisplayCallBack {
+    private static final String TAG = "VideoPlayActivity";
     private PowerManager.WakeLock mWakeLock;
     private ExternalSurfaceView mSurfaceView;
     private TextView mSubTitle;
@@ -105,7 +105,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         initView();
         registerTimeReceiver();
 //        MyApplication.addActivity(this);
-        StatisticsUtil.customEvent(VideoPlayActicity.this, "video_player");
+        StatisticsUtil.customEvent(VideoPlayActivity.this, "video_player");
     }
 
     @Override
@@ -183,7 +183,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                                             playDefualt();
                                         }
                                     } else {
-                                        VideoPlayActicity.this.runOnUiThread(new Runnable() {
+                                        VideoPlayActivity.this.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 ToastUtils.showMessage(mContext, "共享已断开,请重新连接!");
@@ -277,7 +277,6 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
     @Override
     protected void runProgressBar() {
-
         String path = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
         Log.w("path", path);
         String srtUrl = checkSrt();
@@ -286,11 +285,11 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         if (list.size() != 0) {
             mRecord = list.get(0);
-            final int positon = list.get(0).getPosition();
-            if (positon > 1000) {
-                if (positon < getPlayerDuration()) {
+            int position = list.get(0).getPosition();
+            if (position > 1000) {
+                if (position < getPlayerDuration()) {
                     //当前时长小于视频总时长时
-                    mCtrBar.showContinuePlay(positon);
+                    mCtrBar.showContinuePlay(position);
                 } else {
                     //当发生当前时长超过视频总时长时(名称替换可能会造成这种结果,或者其他未知意外情况)
                     mCtrBar.seekToDuration(0);
@@ -302,11 +301,10 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
 
         if (isSrtExist) {
             parseSrts(srtUrl);
-//            发个广告广告
         }
 
         if (mMenuDialog != null) {
-            MenuItem audioTrackMenuItem = VideoPlayActicity.this.list.get(1);
+            MenuItem audioTrackMenuItem = VideoPlayActivity.this.list.get(1);
             audioTrackMenuItem.setChildren(createAudioTrackList());
             audioTrackMenuItem.setChildSelected(0);
             View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
@@ -317,7 +315,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             }
             //添加字幕列表
-            MenuItem inSubTitleMenuItem = VideoPlayActicity.this.list.get(3);
+            MenuItem inSubTitleMenuItem = VideoPlayActivity.this.list.get(3);
             inSubTitleMenuItem.setChildren(getInSubtitleList());
             if (getInSubtitleList().size() > 1) {
                 inSubTitleMenuItem.setChildSelected(1);
@@ -332,7 +330,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
                 mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             }
 
-            MenuItem outSubTitleMenuItem = VideoPlayActicity.this.list.get(4);
+            MenuItem outSubTitleMenuItem = VideoPlayActivity.this.list.get(4);
             outSubTitleMenuItem.setChildren(getOutSubtitleList());
             outSubTitleMenuItem.setChildSelected(0);
             View outMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 4);
@@ -351,9 +349,7 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     public String checkSrt() {
         String url = mDataList.get(mCurPlayIndex).isSharing ? mDataList.get(mCurPlayIndex).sharePath : mDataList.get(mCurPlayIndex).mUri;
         final String srt = url.substring(0, url.lastIndexOf(".")) + ".srt";
-
         File file = new File(srt);
-
         if (file.exists() && file.canRead()) {
             isSrtExist = true;
             Log.e("sunyanlong", "isSrtExist=" + isSrtExist);
@@ -365,32 +361,19 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     }
 
     public void parseSrts(final String srtUrl) {
-
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 parser = new SrcParser();
                 parser.parseFromPath(srtUrl);
             }
         }).start();
-
     }
 
     public void parseSub(final String srtUrl) {
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
         Log.w("url ", srtUrl);
         mSubParser = new SubParser();
         mSubParser.onlySubFromPath(srtUrl);
-//        if (null != mCtrBar) {
-//            mCtrBar.subSendMsg();
-//        }
-//            }
-//        }).start();
-
     }
 
     public boolean isSrtExist() {
@@ -400,17 +383,17 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-
             case KeyEvent.KEYCODE_MENU:
                 if (mDataList != null && mDataList.size() != 0) {
                     showMenuDialog();
                 }
                 break;
         }
-
+        //OS-4932	【OS V1.2.0.1489506238 文件管理 必现】点击进入共享设备中的图片/音频/视频，未加载出来时按确认键自动退出显示/播放，提示“文件格式不支持或设备已移除”
         if (mCtrBar != null && isOnPrepared) {
             mCtrBar.onKeyDownEvent(keyCode, event);
         }
+        //OS-4932	【OS V1.2.0.1489506238 文件管理 必现】点击进入共享设备中的图片/音频/视频，未加载出来时按确认键自动退出显示/播放，提示“文件格式不支持或设备已移除”
         return super.onKeyDown(keyCode, event);
 
     }
@@ -739,18 +722,16 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         playMedia(position);
     }
 
-    private void performTypeSelectedEvent(MenuItem mSubSelectedMenu, int positon) {
-
+    private void performTypeSelectedEvent(MenuItem mSubSelectedMenu, int position) {
         //修复切换多个音轨无变化
         if (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_AUDIOTRACKER)) {
-            getProxyPlayer().setMovieAudioTrack(positon);
+            getProxyPlayer().setMovieAudioTrack(position);
             return;
         }
-//        && (mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_SUBTITLE) || mSubSelectedMenu.getTitle().contains(MenuConstant.SUBMENU_INSUB))
         if (mSelectedPosi == 3) {
-            mInsubTitleIndex = positon;
+            mInsubTitleIndex = position;
             //添加内嵌字幕控制
-            if (positon == 0) {
+            if (position == 0) {
                 //关闭内嵌字幕
                 openOrCloseSubTitle(false, -1, null, -1);
             } else {
@@ -761,9 +742,9 @@ public class VideoPlayActicity extends BasePlayer implements OnVideoSizeChangedL
         }
 
         if (mSelectedPosi == 4) {
-            mOutsubTitleIndex = positon;
+            mOutsubTitleIndex = position;
             //添加外挂字幕控制
-            if (positon == 0) {
+            if (position == 0) {
                 //关闭外挂字幕
                 openOrCloseSubTitle(null, -1, false, -1);
             } else {
