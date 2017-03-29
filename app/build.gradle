@@ -1,42 +1,37 @@
 apply plugin: 'com.android.application'
+apply plugin: 'cn.can.apk.generator'
 
-//ext.appReleaseDir = ""
-//def loadProperties() {
-//    def proFile = file("../local.properties")
-//    Properties p = new Properties()
-//    proFile.withInputStream { stream->
-//        p.load(stream)
-//    }
-//    appReleaseDir = p.appReleaseDir
-//}
-//
-//loadProperties()
+apkGenerator {
+    outputFileName "CanFileManager/{date}/CanFileManager-v{versionString}.{flavorCode}-{flavor}-{buildType}-{date}{hour}"
+    outputFilePath "@appReleaseDir"
+    signingConfPath "@sign_config_path"
+    versionNamePattern "v{versionString}.{flavorCode}-{buildType}-{date}"
+    signingMapping = ['sign828': "sign_828.properties", 'sign628': "sign_628.properties", 'default': "sign_can.properties"]
+}
 
 android {
     compileSdkVersion 22
     buildToolsVersion '23.0.3'
 
-    signingConfigs {
-        config {
-            keyAlias 'CANTV'
-            keyPassword 'cantv2016'
-            storeFile file('/home/devuser/keystore/can.jks')
-            storePassword 'cantv2016'
-        }
-    }
+//    signingConfigs {
+//        config {
+//            keyAlias 'CANTV'
+//            keyPassword 'cantv2016'
+//            storeFile file('/home/devuser/keystore/can.jks')
+//            storePassword 'cantv2016'
+//        }
+//    }
 
     defaultConfig {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 160
-        versionName "20170328_v1.6.0.1"
         buildConfigField("String", "CANTV", "\"can\"")
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
             targetCompatibility JavaVersion.VERSION_1_7
         }
-        signingConfig signingConfigs.config
     }
 
     buildTypes {
@@ -46,18 +41,12 @@ android {
         }
     }
     productFlavors {
-        can {
-        }
+        can {}
         other {
             buildConfigField("String", "CANTV", "\"other\"")
-            versionName "20170328_v1.6.0.2"
         }
-        sign828 {
-
-        }
-        sign628 {
-
-        }
+        sign828 {}
+        sign628 {}
     }
 
     lintOptions {
@@ -65,23 +54,23 @@ android {
     }
 }
 
-ext.SIGN_CONFIG_FILE = ["sign828": 'sign_828.properties', "sign628": 'sign_628.properties'] // 签名配置文件
-apply from: 'sign.gradle' // 自动签名配置，勿删
-android.applicationVariants.all { variant ->
-    //修改生成的apk名字
-    variant.outputs.each { output ->
-        def oldFile = output.outputFile
-        if (variant.buildType.name in ['release']) {
-            def releaseApkName = "CantvFileManager_${variant.productFlavors[0].name}_v${variant.versionCode}.apk";
-            if (project.hasProperty("appReleaseDir")) {
-                File releasePath = new File(project.property("appReleaseDir"), "CantvFileManager/${getDate()}");
-                output.outputFile = new File(releasePath, releaseApkName);
-            } else {
-                output.outputFile = new File(oldFile.parent, releaseApkName)
-            }
-        }
-    }
-}
+//ext.SIGN_CONFIG_FILE = ["sign828": 'sign_828.properties', "sign628": 'sign_628.properties'] // 签名配置文件
+//apply from: 'sign.gradle' // 自动签名配置，勿删
+//android.applicationVariants.all { variant ->
+//    //修改生成的apk名字
+//    variant.outputs.each { output ->
+//        def oldFile = output.outputFile
+//        if (variant.buildType.name in ['release']) {
+//            def releaseApkName = "CantvFileManager_${variant.productFlavors[0].name}_v${variant.versionCode}.apk";
+//            if (project.hasProperty("appReleaseDir")) {
+//                File releasePath = new File(project.property("appReleaseDir"), "CantvFileManager/${getDate()}");
+//                output.outputFile = new File(releasePath, releaseApkName);
+//            } else {
+//                output.outputFile = new File(oldFile.parent, releaseApkName)
+//            }
+//        }
+//    }
+//}
 
 dependencies {
     compile 'com.android.support:support-v4:21.0.3'
@@ -103,15 +92,14 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.0'
 }
 
-
-def getDate() {
-    return formatDateTime('yyyyMMdd');
-}
-
-def getDateTime() {
-    return formatDateTime('yyyyMMddHHmmss')
-}
-
-def formatDateTime(String format) {
-    return new Date().format(format)
-}
+//def getDate() {
+//    return formatDateTime('yyyyMMdd');
+//}
+//
+//def getDateTime() {
+//    return formatDateTime('yyyyMMddHHmmss')
+//}
+//
+//def formatDateTime(String format) {
+//    return new Date().format(format)
+//}

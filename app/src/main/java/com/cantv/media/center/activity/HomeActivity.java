@@ -238,7 +238,13 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             }
         }
 
-        mVersion.setText(FileUtil.getVersionName(this));
+        String[] versionArray = FileUtil.getVersionName(this).split("-");
+        String versionName = null;
+        if(null != versionArray && versionArray.length >= 2){
+            versionName = versionArray[0] + "_l" +versionArray[2];
+        }
+
+        mVersion.setText(versionName);
         alertDialog = new AlertDialog.Builder(mContext).create();
     }
 
