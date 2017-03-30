@@ -786,7 +786,7 @@ public class FileUtil {
         }
         File file = new File(f.mUri);
         boolean directory = file.isDirectory();
-        if (directory && (null != file) && (null != file.listFiles())) {    //
+        if (directory && (null != file) && (null != file.listFiles())) {    //null != file.listFiles()是防止删除$RECYCLE.BIN目录出现程序崩溃
             for (File child : file.listFiles()) {
                 if (FileUtil.isNormalFile(child.getAbsolutePath())) {
                     deleteFile(FileUtil.getFileInfo(child, null, true));
