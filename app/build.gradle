@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'cn.can.apk.generator'
 
 apkGenerator {
-    outputFileName "CanFileManager/{date}/CanFileManager-v{versionString}.{flavorCode}-{flavor}-{buildType}-{date}{hour}"
+    outputFileName "CantvFileManager/{date}/CantvFileManager-v{versionString}.{flavorCode}-{flavor}-{buildType}-{date}{hour}"
     outputFilePath "@appReleaseDir"
     signingConfPath "@sign_config_path"
     versionNamePattern "v{versionString}.{flavorCode}-{buildType}-{date}"
