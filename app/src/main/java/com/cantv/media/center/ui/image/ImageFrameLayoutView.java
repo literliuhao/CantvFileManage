@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -52,6 +53,7 @@ public class ImageFrameLayoutView extends FrameLayout {
     private boolean mIsShare;
     private OnLoadingImageListener mLoadingImgListener;
     private long mDeviceTotalMemory;
+    private boolean isBluetooth;
 
     public ImageFrameLayoutView(Context context) {
         super(context);
@@ -99,6 +101,9 @@ public class ImageFrameLayoutView extends FrameLayout {
 
     private void loadImage(final String imageUri, boolean isSharing, String imageName, final int position) {
         Log.i("playImage", imageUri);
+        //修复OS-4134手机通过蓝牙传输图片至电视，未传输完成前在终端打开该图片，仅显示已传输的部分，传输完成并刷新后仍只显示此前传输的部分
+        String path = "/storage/emulated/0/bluetooth";
+        isBluetooth = imageUri.contains(path);
         if (!isSharing) {
             getImageFile(imageUri);
             getLocalImageSize(imageUri);
@@ -268,7 +273,7 @@ public class ImageFrameLayoutView extends FrameLayout {
      * @param position
      */
     private void loadLocalImage(final String imageUri, final int position) {
-        Glide.with(mActivity).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(mDeviceTotalMemory > 1800 ? DiskCacheStrategy.ALL : DiskCacheStrategy.SOURCE).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
+        Glide.with(mActivity).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(getStrategy()).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
             @Override
             public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
                 loadImageFail(position);
@@ -293,7 +298,7 @@ public class ImageFrameLayoutView extends FrameLayout {
      * @param position
      */
     private void loadLocalImageNoThumbnail(final String imageUri, final int position) {
-        Glide.with(mActivity).load(imageUri).asBitmap().diskCacheStrategy(mDeviceTotalMemory > 1800 ? DiskCacheStrategy.ALL : DiskCacheStrategy.SOURCE).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
+        Glide.with(mActivity).load(imageUri).asBitmap().diskCacheStrategy(getStrategy()).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
             @Override
             public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
                 loadImageFail(position);
@@ -390,7 +395,7 @@ public class ImageFrameLayoutView extends FrameLayout {
      * @param position
      */
     private void loadLocalGifNoThumbnail(final String imageUri, final int position) {
-        Glide.with(mActivity).load(imageUri).crossFade(0).diskCacheStrategy(mDeviceTotalMemory > 1800 ? DiskCacheStrategy.ALL : DiskCacheStrategy.SOURCE).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
+        Glide.with(mActivity).load(imageUri).crossFade(0).diskCacheStrategy(getStrategy()).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
                 loadImageFail(position);
@@ -404,6 +409,11 @@ public class ImageFrameLayoutView extends FrameLayout {
                 return false;
             }
         }).into(mImageView);
+    }
+
+    @NonNull
+    private DiskCacheStrategy getStrategy() {
+        return isBluetooth ? DiskCacheStrategy.NONE : (mDeviceTotalMemory > 1800 ? DiskCacheStrategy.ALL : DiskCacheStrategy.SOURCE);
     }
 
     /**

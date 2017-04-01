@@ -380,7 +380,15 @@ public class GridViewActivity extends Activity {
         } else {
 
         }
+        //修复OS-4790进入文件管理器外接设备中，第一次按菜单键呼出菜单栏后，焦点光标从空白处移动到菜单栏上
+        mMenuDialog.showSubMenuFocus(false);
         mMenuDialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMenuDialog.showSubMenuFocus(true);
+            }
+        }, 500);
     }
 
     private LoadingDialog mLoadingDialog;

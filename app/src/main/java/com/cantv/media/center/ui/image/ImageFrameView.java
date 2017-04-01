@@ -60,6 +60,8 @@ public class ImageFrameView extends FrameLayout {
     private String mImageUrl;
     public String mImageSavePath;
     private SaveImageUrlTask mSaveImageUrlTask;
+    private String mImageName;
+    private long mDeviceTotalMemory;//运存
 
     public ImageFrameView(Context context) {
         super(context);
@@ -124,25 +126,14 @@ public class ImageFrameView extends FrameLayout {
     public void loadImage(final String imageUri, boolean isSharing, String imageName) {
         Log.i("playImage", imageUri);
         mImageUrl = imageUri;
+        mImageName = imageName;
+        mDeviceTotalMemory = getDeviceTotalMemory();
         if (!isSharing) {
             //修复OS-3831偶现在本地文件中用图片播放幻灯片，在播放中拔出U盘，提示文件管理器已停止运行
             getImageFile(imageUri);
             getLocalImageSize(imageUri);
-            convertW = callbackW;
-            convertH = callbackH;
-            //判断机型运行内存，重新赋值MAX_LENGTH,MAX_WIDTH
-            Log.i(TAG, "deviceTotalMemory: " + getDeviceTotalMemory());
-            MAX_WIDTH = (int) mActivity.screenWidth;
-            MAX_HEIGHT = (int) mActivity.screenHeight;
-            sizeArray = convertImage(convertW, convertH);
-            //是否加载gif，是否带有模糊效果
-            if (imageName.endsWith(".gif") && getDeviceTotalMemory() > 1800) {
-                loadLocalGifNoThumbnail(imageUri);
-            } else if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
-                loadLocalImageNoThumbnail(imageUri);
-            } else {
-                loadLocalImage(imageUri);
-            }
+            getImageScaleSize();
+            loadingImage(imageUri, imageName);
         } else {
             //修复OS-3296进入文件共享，播放4K图片，出现文件管理停止运行，按确定键返回到文件管理，焦点异常，再进入文件共享焦点异常。
             mSaveImageUrlTask = new SaveImageUrlTask(mContext);
@@ -153,7 +144,7 @@ public class ImageFrameView extends FrameLayout {
                 public void run() {
                     try {
                         if(null != mSaveImageUrlTask){
-                            mSaveImageUrlTask.get(30, TimeUnit.SECONDS);
+                            mSaveImageUrlTask.get(60, TimeUnit.SECONDS);
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -173,6 +164,29 @@ public class ImageFrameView extends FrameLayout {
                 }
             }).start();
         }
+    }
+
+    //进行图片加载
+    private void loadingImage(String imageUri, String imageName) {
+        //是否加载gif，是否带有模糊效果
+        if (imageName.endsWith(".gif") && mDeviceTotalMemory > 1800) {
+            loadLocalGifNoThumbnail(imageUri);
+        } else if (callbackW <= (int) mActivity.screenWidth && convertH <= (int) mActivity.screenHeight) {
+            loadLocalImageNoThumbnail(imageUri);
+        } else {
+            loadLocalImage(imageUri);
+        }
+    }
+
+    //获取压缩后图片尺寸
+    private void getImageScaleSize() {
+        convertW = callbackW;
+        convertH = callbackH;
+        //判断机型运行内存，重新赋值MAX_LENGTH,MAX_WIDTH
+        Log.i(TAG, "deviceTotalMemory: " + getDeviceTotalMemory());
+        MAX_WIDTH = (int) mActivity.screenWidth;
+        MAX_HEIGHT = (int) mActivity.screenHeight;
+        sizeArray = convertImage(convertW, convertH);
     }
 
     private class SaveImageUrlTask extends AsyncTask<String, Void, File> {
@@ -211,7 +225,10 @@ public class ImageFrameView extends FrameLayout {
                 loadImageFail();
                 return;
             }
-            loadNetImage(mImageUrl);
+            //loadNetImage(mImageUrl);
+            getImageScaleSize();
+            loadingImage(mImageUrl, mImageName);
+
         }
     }
 
@@ -267,8 +284,10 @@ public class ImageFrameView extends FrameLayout {
             width = sizeArray[0];
             height = sizeArray[1];
         } else {
-            width = mImgWidth;
-            height = mImgHeight;
+//            width = mImgWidth;
+//            height = mImgHeight;
+            width = sizeArray[0];
+            height = sizeArray[1];
         }
         if (width == 0 || height == 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -405,7 +424,7 @@ public class ImageFrameView extends FrameLayout {
      * @param imageUri
      */
     private void loadLocalImage(final String imageUri) {
-        Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
+        Glide.with(mContext).load(imageUri).asBitmap().thumbnail(0.1f).diskCacheStrategy(mDeviceTotalMemory > 1800 ? DiskCacheStrategy.ALL : DiskCacheStrategy.SOURCE).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
             @Override
             public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
                 loadImageFail();
@@ -415,6 +434,7 @@ public class ImageFrameView extends FrameLayout {
 
             @Override
             public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                mImageView.setVisibility(View.VISIBLE);
                 loadResourceReady += 1;
                 Log.i(TAG, "onResourceReady: " + bitmap.getWidth() + "*" + bitmap.getHeight());
                 loadImageSuccess(callbackW, callbackH, bitmap);
@@ -429,7 +449,7 @@ public class ImageFrameView extends FrameLayout {
      * @param imageUri
      */
     private void loadLocalImageNoThumbnail(final String imageUri) {
-        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
+        Glide.with(mContext).load(imageUri).asBitmap().diskCacheStrategy(mDeviceTotalMemory > 1800 ? DiskCacheStrategy.ALL : DiskCacheStrategy.SOURCE).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, Bitmap>() {
             @Override
             public boolean onException(Exception e, String s, Target<Bitmap> target, boolean b) {
                 loadImageFail();
@@ -439,6 +459,7 @@ public class ImageFrameView extends FrameLayout {
 
             @Override
             public boolean onResourceReady(Bitmap bitmap, String s, Target<Bitmap> target, boolean b, boolean b1) {
+                mImageView.setVisibility(View.VISIBLE);
                 loadImageSuccessNoThumb(callbackW, callbackH);
                 return false;
             }
@@ -525,7 +546,7 @@ public class ImageFrameView extends FrameLayout {
      * @param imageUri
      */
     private void loadLocalGifNoThumbnail(final String imageUri) {
-        Glide.with(mContext).load(imageUri).crossFade(0).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
+        Glide.with(mContext).load(imageUri).crossFade(0).diskCacheStrategy(mDeviceTotalMemory > 1800 ? DiskCacheStrategy.ALL : DiskCacheStrategy.SOURCE).skipMemoryCache(true).override(sizeArray[0], sizeArray[1]).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
                 loadImageFail();
@@ -535,6 +556,7 @@ public class ImageFrameView extends FrameLayout {
 
             @Override
             public boolean onResourceReady(GlideDrawable glideDrawable, String s, Target<GlideDrawable> target, boolean b, boolean b1) {
+                mImageView.setVisibility(View.VISIBLE);
                 loadImageSuccessNoThumb(callbackW, callbackH);
                 return false;
             }

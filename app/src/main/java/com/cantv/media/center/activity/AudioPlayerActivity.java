@@ -96,8 +96,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private LoadingMuUITask muUITask;
     private int currentMode = 5;
     private List<MenuItem> playListSubMenuItems;
-    private List<MenuItem> mCurrentSubMenuList;
-    private int mCurrentSubMenuPos;//当前二级菜单位置
+    //private List<MenuItem> mCurrentSubMenuList;
+    //private int mCurrentSubMenuPos;//当前二级菜单位置
     private int mDuration;
     private boolean isShowOutLrc;
     public boolean isOnPrepared = false;
@@ -473,7 +473,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
                 @Override
                 public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
-                    mCurrentSubMenuPos = position;
+                    //mCurrentSubMenuPos = position;
                     if (mCurPlayIndex == position) {
                         view.setSelected(true);
                     } else {
@@ -573,7 +573,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
                 @Override
                 public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
-                    if (mSelectedMenuPosi == 0) {
+                    //去掉二级菜单列表循环选择，修复OS-4989在本地播放列表中，光标在顶端按上，光标会消失一下然后移动到最下面
+                    /*if (mSelectedMenuPosi == 0) {
                         mCurrentSubMenuList = playListSubMenuItems;
                     } else {
                         return false;
@@ -606,7 +607,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         } else {
                             return false;
                         }
-                    }
+                    }*/
                     return false;
                 }
             });
@@ -648,7 +649,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     private List<MenuItem> createMenuData() {
         List<MenuItem> menuList = new ArrayList<>();
-        mCurrentSubMenuList = new ArrayList<>();
+        //mCurrentSubMenuList = new ArrayList<>();
 
         MenuItem playListMenuItem = new MenuItem(getString(R.string.play_list));
         playListMenuItem.setType(MenuItem.TYPE_LIST);

@@ -90,8 +90,8 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
     private ImageView mSubtitle_bt;
     private SubParser mSubParser;
     private List<MenuItem> playListSubMenuItems;
-    private List<MenuItem> mCurrentSubMenuList;
-    private int mCurrentSubMenuPos;//当前二级菜单位置
+    //private List<MenuItem> mCurrentSubMenuList;
+    //private int mCurrentSubMenuPos;//当前二级菜单位置
     public boolean isOnPrepared = false;
 
     @Override
@@ -553,7 +553,7 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
                 @Override
                 public void onSubMenuItemFocusChanged(LinearLayout rightViewGroup, View view, int position, boolean hasFocus) {
                     //修复OS-4061播放共享设备中视频，按菜单键，播放列表中，将焦点移动到名称较长的视频上，视频名称没有实现滚动显示
-                    mCurrentSubMenuPos = position;
+                    //mCurrentSubMenuPos = position;
                     if (mCurPlayIndex == position) {
                         view.setSelected(true);
                     } else {
@@ -626,8 +626,9 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
                 @Override
                 public boolean onSubMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
                     //修复OS-3900浏览音频视频和图片文件时，点击菜单按钮，在显示的文件列表页，不支持循环选择
+                    //去掉二级菜单列表循环选择，修复OS-4989在本地播放列表中，光标在顶端按上，光标会消失一下然后移动到最下面
                     Log.i(TAG, "onKeyDown: " + TAG);
-                    if (mSelectedPosi == 0) {
+                    /*if (mSelectedPosi == 0) {
                         mCurrentSubMenuList = playListSubMenuItems;
                     } else {
                         return false;
@@ -660,7 +661,7 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
                         } else {
                             return false;
                         }
-                    }
+                    }*/
                     return false;
                 }
             });
@@ -802,7 +803,7 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
 
     private List<MenuItem> createMenuData() {
         List<MenuItem> menuList = new ArrayList<>();
-        mCurrentSubMenuList = new ArrayList<>();
+        //mCurrentSubMenuList = new ArrayList<>();
         // 播放列表
         MenuItem playListMenuItem = new MenuItem("播放列表");
         playListMenuItem.setType(MenuItem.TYPE_LIST);
