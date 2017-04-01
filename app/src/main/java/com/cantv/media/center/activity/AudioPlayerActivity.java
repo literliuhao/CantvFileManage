@@ -107,7 +107,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         super.onCreate(savedInstanceState);
         setupLayout();
         EventBus.getDefault().register(this);
-//        MyApplication.addActivity(this);
+        MyApplication.addActivity(this);
         initHandler();
         initData();
         playDefualt();
@@ -272,7 +272,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mCDView = null;
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-//        MyApplication.removeActivity(this);
+        MyApplication.removeActivity(this);
     }
 
     @SuppressWarnings("deprecation")

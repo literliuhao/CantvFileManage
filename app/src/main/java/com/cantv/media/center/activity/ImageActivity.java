@@ -23,6 +23,7 @@ import com.cantv.liteplayer.core.focus.FocusUtils;
 import com.cantv.media.R;
 import com.cantv.media.center.Listener.OnLoadingImageListener;
 import com.cantv.media.center.adapter.PhotoPagerAdapter;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.ImageBean;
 import com.cantv.media.center.data.Media;
@@ -187,6 +188,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         autoRunnable();
         toHideRunnable();
         getKeyToneSetting();
+        MyApplication.addActivity(this);
         StatisticsUtil.customEvent(ImageActivity.this, "picture_player");
     }
 
@@ -339,7 +341,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         Intent intent = new Intent();
         intent.setAction("com.cantv.action.LARGE_ACTIVITY");
         intent.putExtra("path", mDataList.get(mCurrentPosition).mUri);
-        ImageActivity.this.startActivityForResult(intent,0);
+        ImageActivity.this.startActivityForResult(intent, 0);
     }
 
     @Override
@@ -923,7 +925,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
         //实际大小
         if (!isFullSize) {
             mSizeType = true;
-            if(width == 0 || height == 0){
+            if (width == 0 || height == 0) {
                 return 1.0f;
             }
             if (currentW > screenWidth || currentH > screenHeight) {
@@ -951,7 +953,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
             //等比例全屏
             //图片宽高大于屏幕时
             mSizeType = false;
-            if(width == 0 || height == 0){
+            if (width == 0 || height == 0) {
                 return 1.0f;
             }
             if (currentW > screenWidth || currentH > screenHeight) {
@@ -1085,7 +1087,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
     protected void onStop() {
         super.onStop();
         isAutoPlay = mAutoPlay;
-        if(mAutoPlay){
+        if (mAutoPlay) {
             stopAutoPlayImage();
         }
         //保存当前播放的路径
@@ -1101,6 +1103,7 @@ public class ImageActivity extends MediaPlayerActivity implements ViewPager.OnPa
             openVolume();
         }
         dismissProgressBar();
+        MyApplication.removeActivity(this);
         EventBus.getDefault().unregister(this);
     }
 }
