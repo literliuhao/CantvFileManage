@@ -97,7 +97,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_home);
-//        MyApplication.onFinishActivity();
+        MyApplication.onFinishActivity();
         MyApplication.addHomeActivity(this);
         EventBus.getDefault().register(this);
         mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
@@ -238,7 +238,13 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             }
         }
 
-        mVersion.setText(FileUtil.getVersionName(this));
+        String[] versionArray = FileUtil.getVersionName(this).split("-");
+        String versionName = null;
+        if(null != versionArray && versionArray.length >= 2){
+            versionName = versionArray[0] + "_" +versionArray[2];
+        }
+
+        mVersion.setText(versionName);
         alertDialog = new AlertDialog.Builder(mContext).create();
     }
 

@@ -104,7 +104,7 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
         }
         initView();
         registerTimeReceiver();
-//        MyApplication.addActivity(this);
+        MyApplication.addActivity(this);
         StatisticsUtil.customEvent(VideoPlayActivity.this, "video_player");
     }
 
@@ -963,7 +963,7 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
             unregisterReceiver(mTimeReceiver);
         }
         EventBus.getDefault().unregister(this);
-//        MyApplication.removeActivity(this);
+        MyApplication.removeActivity(this);
     }
 
     private void registerTimeReceiver() {
