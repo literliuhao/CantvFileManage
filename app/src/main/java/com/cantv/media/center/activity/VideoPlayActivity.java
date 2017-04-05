@@ -186,7 +186,7 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
                                         VideoPlayActivity.this.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                ToastUtils.showMessage(mContext, "网络不稳定或已断开!");
+                                                ToastUtils.showMessage(mContext, "网络不稳定或共享设备已断开,请再次尝试");
                                                 finish();
                                             }
                                         });

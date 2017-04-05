@@ -584,6 +584,12 @@ public class MediaGridView extends CustomGridView {
                     public void run() {
 
                         String newPath = path + copyFilePath.substring(copyFilePath.lastIndexOf("/"));
+                        File file = new File(newPath);
+                        if (file.exists()) {
+                            yPasteListener.onPasteFailed();
+                            ToastUtils.showMessage(mContext, "文件已经存在,无法粘贴");
+                            return;
+                        }
                         boolean isFuccessed = CopyPasUtils.nioTransferCopy(copyFilePath, newPath);
 //                boolean isFuccessed = CopyPasUtils.moveFile(copyFilePath, item.mUri);
                         if (isFuccessed) {
@@ -628,6 +634,12 @@ public class MediaGridView extends CustomGridView {
                     public void run() {
 
                         String newPath = path.substring(0, path.lastIndexOf("/")) + copyFilePath.substring(copyFilePath.lastIndexOf("/"));
+                        File file = new File(newPath);
+                        if (file.exists()) {
+                            yPasteListener.onPasteFailed();
+                            ToastUtils.showMessage(mContext, "文件已经存在,无法粘贴");
+                            return;
+                        }
                         boolean isFuccessed = CopyPasUtils.nioTransferCopy(copyFilePath, newPath);
                         if (isFuccessed) {
                             ToastUtils.showMessage(mContext, "粘贴成功");
