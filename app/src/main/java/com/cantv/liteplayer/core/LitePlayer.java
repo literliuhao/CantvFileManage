@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.media.MediaPlayer;
 import android.media.TimedText;
 import android.os.Build;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
@@ -12,7 +13,10 @@ import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 @SuppressLint("NewApi")
@@ -20,6 +24,7 @@ public class LitePlayer extends MediaPlayer {
     private PlayerAssistant mAssitant;
     private PlayerStatusInfo mStatusInfo;
     private float mVideoWidthHeightRate = 0.5625f;
+    private String mType;
 
     public LitePlayer() {
         mAssitant = new PlayerAssistant();
@@ -102,8 +107,35 @@ public class LitePlayer extends MediaPlayer {
                     mAssitant.loadSubTitlesAndAudioTrack(LitePlayer.this);
                 } catch (Exception e) {
                 }
-                if (listener != null) {
-                    listener.onPrepared(mp);
+                try {
+                    Class<?> player = Class.forName("android.media.MediaPlayer");
+                    Method method = player.getDeclaredMethod("getMetadata", boolean.class, boolean.class);
+                    method.setAccessible(true);
+                    Object metadataRes = method.invoke(mp, false, false);
+                    Class<?> metaClass = Class.forName("android.media.Metadata");
+                    Method methodKeyset = metaClass.getDeclaredMethod("keySet");
+                    Object ketSetRes = methodKeyset.invoke(metadataRes);
+                    Set<Integer> hashmap = (Set<Integer>) ketSetRes;
+                    for (Integer i : hashmap) {
+                        if (i == 26 /*AUDIO_CODEC*/) {
+                            Method getString = metaClass.getDeclaredMethod("getString", int.class);
+                            mType = getString.invoke(metadataRes, i).toString();
+                            System.out.println("*************:" + mType.toString());
+                            Log.w("DolbyType", mType.toString());
+                        }
+                    }
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (listener != null) {
+                        listener.onPrepared(mp);
+                    }
                 }
             }
         });
@@ -133,5 +165,13 @@ public class LitePlayer extends MediaPlayer {
         }
     }
 
+    /**
+     * 用来判断是否是Dolby音效
+     *
+     * @return
+     */
+    public String getDolbyType() {
+        return mType;
+    }
 
 }

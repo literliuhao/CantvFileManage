@@ -172,6 +172,15 @@ public class ProxyPlayer implements OnPreparedListener {
         });
     }
 
+    /**
+     * 得到是"ac3"就是Dolby音效
+     *
+     * @return
+     */
+    public String getDolbyType() {
+        return getLitePlayer().getDolbyType();
+    }
+
     private LitePlayer getLitePlayer() {
         if (mLitePlayer == null) {
             mLitePlayer = new LitePlayer();

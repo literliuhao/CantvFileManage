@@ -93,6 +93,7 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
     //private List<MenuItem> mCurrentSubMenuList;
     //private int mCurrentSubMenuPos;//当前二级菜单位置
     public boolean isOnPrepared = false;
+    private ImageView mDolbyImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +148,8 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
     private void initView() {
         getProxyPlayer().setSubTitleDisplayCallBack(this);
         mSubTitle = (TextView) findViewById(R.id.media__video_view__subtitle1);
+        mDolbyImg = (ImageView) findViewById(R.id.dolby_img);
+
         mSubtitle_bt = (ImageView) findViewById(R.id.subtitle_bt);  //sub字幕
         mSurfaceView = (ExternalSurfaceView) findViewById(R.id.media__video_view__surface);
         mBackgroundView = (ImageView) findViewById(R.id.media__video_view__background);
@@ -228,6 +231,22 @@ public class VideoPlayActivity extends BasePlayer implements OnVideoSizeChangedL
                 }
             }
         });
+    }
+
+
+    @Override
+    protected void showDolbyView(boolean isShow) {
+        if (isShow) {
+            mDolbyImg.setVisibility(View.VISIBLE);
+            mDolbyImg.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mDolbyImg.setVisibility(View.INVISIBLE);
+                }
+            }, 15000);
+        } else {
+            mDolbyImg.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

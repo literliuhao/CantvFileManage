@@ -11,7 +11,7 @@ apkGenerator {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '23.0.3'
 
 //    signingConfigs {
 //        config {

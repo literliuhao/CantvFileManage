@@ -71,4 +71,22 @@
         android:layout_gravity="bottom" />
     -->
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/dolby_img"
+            android:layout_width="@dimen/px110"
+            android:layout_height="@dimen/px144"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/px100"
+            android:layout_marginRight="@dimen/px110"
+            android:src="@drawable/dolby"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+
 </FrameLayout>
