@@ -167,7 +167,7 @@ public abstract class BasePlayer extends Activity implements OnCompletionListene
             getProxyPlayer().playMedia(url, new Runnable() {
                 @Override
                 public void run() {
-                    if (!TextUtils.isEmpty(getProxyPlayer().getDolbyType()) && "ac3".equals(getProxyPlayer().getDolbyType().toLowerCase())) {
+                    if (!TextUtils.isEmpty(getProxyPlayer().getDolbyType()) && getProxyPlayer().isDolby()) {
                         showDolbyView(true);
                     } else {
                         showDolbyView(false);

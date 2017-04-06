@@ -101,6 +101,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     private int mDuration;
     private boolean isShowOutLrc;
     public boolean isOnPrepared = false;
+    private ImageView mDolbyImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +132,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayModeView = (ImageView) findViewById(R.id.iv_bg_play_mode);
         mPlayModeIconIv = (ImageView) findViewById(R.id.iv_play_mode);
         mPlayModeTv = (TextView) findViewById(R.id.tv_play_mode);
+        mDolbyImg = (ImageView) findViewById(R.id.dolby_img);
+
 
         mPlayPauseBtn.setOnClickListener(this);
         mPreviousBtn.setOnClickListener(this);
@@ -951,6 +954,21 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     mLyricView.setLyricInfo(mLyricInfo);
                 }
             });
+        }
+    }
+
+    @Override
+    protected void showDolbyView(boolean isShow) {
+        if (isShow) {
+            mDolbyImg.setVisibility(View.VISIBLE);
+            mDolbyImg.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mDolbyImg.setVisibility(View.INVISIBLE);
+                }
+            }, 15000);
+        } else {
+            mDolbyImg.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -181,6 +181,20 @@ public class ProxyPlayer implements OnPreparedListener {
         return getLitePlayer().getDolbyType();
     }
 
+    /**
+     * 判断是否是dolby音效
+     *"aac".equalsIgnoreCase(getDolbyType()) ||
+     * @return
+     */
+    public boolean isDolby() {
+        if ("eac3".equalsIgnoreCase(getDolbyType()) || "ac3".equals(getDolbyType().toLowerCase())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     private LitePlayer getLitePlayer() {
         if (mLitePlayer == null) {
             mLitePlayer = new LitePlayer();

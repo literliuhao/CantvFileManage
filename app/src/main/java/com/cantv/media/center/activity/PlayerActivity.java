@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
-import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.Listener.PlayMode;
+import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.data.Constant;
 import com.cantv.media.center.data.Media;
 import com.cantv.media.center.ui.player.PlayerControllerBar.CoverFlowViewListener;
@@ -251,11 +252,18 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
                 index = index % mDataList.size();
             }
             mCurPlayIndex = index;
-//            Log.w("path", mDataList.get(index).getmUri());
+            Log.w("path", mDataList.get(index).getmUri());
+            showDolbyView(false);
+            runBeforePlay(mFirstPlay);
             getProxyPlayer().playMedia(mDataList.get(index).isSharing ? mDataList.get(index).sharePath : mDataList.get(index).mUri, new Runnable() {
                 @Override
                 public void run() {
                     getProxyPlayer().start();
+                    if (!TextUtils.isEmpty(getProxyPlayer().getDolbyType()) && getProxyPlayer().isDolby()) {
+                        showDolbyView(true);
+                    } else {
+                        showDolbyView(false);
+                    }
                     runAfterPlay(mFirstPlay);
                     mPlayer.setOnCompletionListener(PlayerActivity.this);
                     mFirstPlay = false;
@@ -269,6 +277,8 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             finish();
         }
     }
+
+    protected abstract void showDolbyView(boolean isShow);
 
     protected abstract void runAfterPlay(boolean isFirst);
 
