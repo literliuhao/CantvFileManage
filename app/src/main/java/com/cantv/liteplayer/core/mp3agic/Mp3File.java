@@ -34,7 +34,7 @@ public class Mp3File extends FileWrapper {
 	private ID3v2 id3v2Tag;
 	private byte[] customTag;
 	private boolean scanFile;
-	
+
 	protected Mp3File() {
 	}
 
@@ -45,12 +45,12 @@ public class Mp3File extends FileWrapper {
 	public Mp3File(String filename, int bufferLength) throws IOException, UnsupportedTagException, InvalidDataException {
 		this(filename, bufferLength, true);
 	}
-	
+
 	public Mp3File(String filename, boolean scanFile) throws IOException, UnsupportedTagException, InvalidDataException {
 		this(filename, DEFAULT_BUFFER_LENGTH, scanFile);
 	}
-	
-	public Mp3File(String filename, int bufferLength, boolean scanFile) throws IOException, UnsupportedTagException, InvalidDataException {		
+
+	public Mp3File(String filename, int bufferLength, boolean scanFile) throws IOException, UnsupportedTagException, InvalidDataException {
 		super(filename);
 		init(bufferLength, scanFile);
 	}
@@ -58,11 +58,11 @@ public class Mp3File extends FileWrapper {
 	public Mp3File(File file) throws IOException, UnsupportedTagException, InvalidDataException {
 		this(file, DEFAULT_BUFFER_LENGTH, true);
 	}
-	
+
 	public Mp3File(File file, int bufferLength) throws IOException, UnsupportedTagException, InvalidDataException {
 		this(file, bufferLength, true);
 	}
-	
+
 	public Mp3File(File file, int bufferLength, boolean scanFile) throws IOException, UnsupportedTagException, InvalidDataException {
 		super(file);
 		init(bufferLength, scanFile);
@@ -70,12 +70,12 @@ public class Mp3File extends FileWrapper {
 
 	private void init(int bufferLength, boolean scanFile) throws IOException, UnsupportedTagException, InvalidDataException {
 		if (bufferLength < MINIMUM_BUFFER_LENGTH + 1) throw new IllegalArgumentException("Buffer too small");
-		
+
 		this.bufferLength = bufferLength;
 		this.scanFile = scanFile;
-		
+
 		RandomAccessFile randomAccessFile = new RandomAccessFile(file.getPath(), "r");
-		
+
 		try {
 			initId3v1Tag(randomAccessFile);
 			scanFile(randomAccessFile);
@@ -90,7 +90,7 @@ public class Mp3File extends FileWrapper {
 			randomAccessFile.close();
 		}
 	}
-	
+
 	protected int preScanFile(RandomAccessFile file) {
 		byte[] bytes = new byte[AbstractID3v2Tag.HEADER_LENGTH];
 		try {
@@ -188,7 +188,7 @@ public class Mp3File extends FileWrapper {
 		}
 		return offset;
 	}
-	
+
 	private int scanBlock(byte[] bytes, int bytesRead, int absoluteOffset, int offset) throws InvalidDataException {
 		while (offset < bytesRead - MINIMUM_BUFFER_LENGTH) {
 			MpegFrame frame = new MpegFrame(bytes[offset], bytes[offset + 1], bytes[offset + 2], bytes[offset + 3]);
@@ -227,14 +227,14 @@ public class Mp3File extends FileWrapper {
 		}
 		return false;
 	}
-	
+
 	private void sanityCheckFrame(MpegFrame frame, int offset) throws InvalidDataException {
 		if (sampleRate != frame.getSampleRate()) throw new InvalidDataException("Inconsistent frame header");
 		if (! layer.equals(frame.getLayer())) throw new InvalidDataException("Inconsistent frame header");
 		if (! version.equals(frame.getVersion())) throw new InvalidDataException("Inconsistent frame header");
 		if (offset + frame.getLengthInBytes() > getLength()) throw new InvalidDataException("Frame would extend beyond end of file");
 	}
-	
+
 	private void addBitrate(int bitrate) {
 		Integer key = Integer.valueOf(bitrate);
 		MutableInteger count = bitrates.get(key);
@@ -245,7 +245,7 @@ public class Mp3File extends FileWrapper {
 		}
 		this.bitrate = ((this.bitrate * (frameCount - 1)) + bitrate) / frameCount;
 	}
-	
+
 	private void initId3v1Tag(RandomAccessFile file) throws IOException {
 		byte[] bytes = new byte[ID3v1Tag.TAG_LENGTH];
 		file.seek(getLength() - ID3v1Tag.TAG_LENGTH);
@@ -257,7 +257,7 @@ public class Mp3File extends FileWrapper {
 			id3v1Tag = null;
 		}
 	}
-	
+
 	private void initId3v2Tag(RandomAccessFile file) throws IOException, UnsupportedTagException, InvalidDataException {
 		if (xingOffset == 0 || startOffset == 0) {
 			id3v2Tag = null;
@@ -276,7 +276,7 @@ public class Mp3File extends FileWrapper {
 			}
 		}
 	}
-	
+
 	private void initCustomTag(RandomAccessFile file) throws IOException {
 		int bufferLength = (int)(getLength() - (endOffset + 1));
 		if (hasId3v1Tag()) bufferLength -= ID3v1Tag.TAG_LENGTH;
@@ -298,28 +298,28 @@ public class Mp3File extends FileWrapper {
 	public int getStartOffset() {
 		return startOffset;
 	}
-	
+
 	public int getEndOffset() {
 		return endOffset;
 	}
 
 	public long getLengthInMilliseconds() {
-		double d = 8 * (endOffset - startOffset); 
-		return (long)((d / bitrate) + 0.5); 
+		double d = 8 * (endOffset - startOffset);
+		return (long)((d / bitrate) + 0.5);
 	}
-	
+
 	public long getLengthInSeconds() {
-		return ((getLengthInMilliseconds() + 500) / 1000); 
+		return ((getLengthInMilliseconds() + 500) / 1000);
 	}
-	
+
 	public boolean isVbr() {
 		return bitrates.size() > 1;
 	}
-	
+
 	public int getBitrate() {
 		return (int)(bitrate + 0.5);
 	}
-	
+
 	public Map<Integer, MutableInteger> getBitrates() {
 		return bitrates;
 	}
@@ -355,7 +355,7 @@ public class Mp3File extends FileWrapper {
 	public String getVersion() {
 		return version;
 	}
-	
+
 	public boolean hasXingFrame() {
 		return (xingOffset >= 0);
 	}
@@ -363,11 +363,11 @@ public class Mp3File extends FileWrapper {
 	public int getXingOffset() {
 		return xingOffset;
 	}
-	
+
 	public int getXingBitrate() {
 		return xingBitrate;
 	}
-	
+
 	public boolean hasId3v1Tag() {
 		return id3v1Tag != null;
 	}
@@ -379,11 +379,11 @@ public class Mp3File extends FileWrapper {
 	public void setId3v1Tag(ID3v1 id3v1Tag) {
 		this.id3v1Tag = id3v1Tag;
 	}
-	
+
 	public void removeId3v1Tag() {
 		this.id3v1Tag = null;
 	}
-	
+
 	public boolean hasId3v2Tag() {
 		return (id3v2Tag != null && getId3v2Tag().getTitle() != null);
 	}
@@ -395,11 +395,11 @@ public class Mp3File extends FileWrapper {
 	public void setId3v2Tag(ID3v2 id3v2Tag) {
 		this.id3v2Tag = id3v2Tag;
 	}
-	
+
 	public void removeId3v2Tag() {
 		this.id3v2Tag = null;
 	}
-	
+
 	public boolean hasCustomTag() {
 		return customTag != null;
 	}
@@ -411,11 +411,11 @@ public class Mp3File extends FileWrapper {
 	public void setCustomTag(byte[] customTag) {
 		this.customTag = customTag;
 	}
-	
+
 	public void removeCustomTag() {
 		this.customTag = null;
 	}
-	
+
 	public void save(String newFilename) throws IOException, NotSupportedException {
 		if (file.compareTo(new File(newFilename)) == 0) {
 			//throw new IllegalArgumentException("Save filename same as source filename");
