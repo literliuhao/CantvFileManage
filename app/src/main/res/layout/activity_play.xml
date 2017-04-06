@@ -11,7 +11,7 @@
         android:layout_gravity="center">
     </SurfaceView>
 
-    <com.cantv.media.center.ui.player.ExternalSurfaceView
+    <com.cantv.media.center.player.ExternalSurfaceView
         android:id="@+id/media__video_view__surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,13 +58,13 @@
         -->
     </LinearLayout>
 
-    <com.cantv.media.center.ui.player.PlayerController
+    <com.cantv.media.center.player.PlayerController
         android:id="@+id/media__video_view__ctrlbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <!--
-         <com.cantv.media.center.ui.player.PlayerControllerBar
+         <com.cantv.media.center.player.PlayerControllerBar
         android:id="@+id/media__video_view__ctrlbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

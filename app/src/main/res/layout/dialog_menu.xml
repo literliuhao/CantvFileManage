@@ -9,7 +9,7 @@
     android:paddingLeft="20dp"
      >
 
-    <com.cantv.media.center.ui.dialog.DoubleColumnMenu
+    <com.cantv.media.center.dialog.DoubleColumnMenu
         android:id="@+id/dcm"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -23,6 +23,6 @@
         zby:subMenuWidth="@dimen/px340"
         zby:subMenuPaddingTop="@dimen/px160"
         zby:subMenuPaddingBottom="@dimen/px20"
-        ></com.cantv.media.center.ui.dialog.DoubleColumnMenu>
+        ></com.cantv.media.center.dialog.DoubleColumnMenu>
 
 </LinearLayout>

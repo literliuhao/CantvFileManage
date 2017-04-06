@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <com.cantv.media.center.ui.image.ImageViewPager
+    <com.cantv.media.center.image.ImageViewPager
         android:id="@+id/image_viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.cantv.media.center.ui.image.ImageViewPager>
+    </com.cantv.media.center.image.ImageViewPager>
 
     <LinearLayout
         android:id="@+id/mediaimagebar"
@@ -186,7 +186,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <com.cantv.media.center.ui.player.YFocusTextView
+        <com.cantv.media.center.player.YFocusTextView
             android:id="@+id/info_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

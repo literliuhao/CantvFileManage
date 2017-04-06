@@ -38,7 +38,7 @@
         android:label="@string/str_filemanager"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         <activity
-            android:name="com.cantv.media.center.activity.HomeActivity"
+            android:name="com.cantv.media.center.index.HomeActivity"
             android:label="@string/str_filemanager">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -46,9 +46,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.cantv.media.center.activity.ListViewActivity"/>
+        <activity android:name=".center.directory.ui.ListViewActivity"/>
         <activity
-            android:name="com.cantv.media.center.activity.GridViewActivity"
+            android:name=".center.directory.ui.GridViewActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.cantv.action.LOCAL_PLAYER"/>
@@ -59,7 +59,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cantv.media.center.activity.VideoPlayActivity"
+            android:name=".center.player.VideoPlayActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="com.cantv.action.LOCAL_PLAYER"/>
@@ -70,7 +70,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cantv.media.center.ui.audio.AudioPlayerActivity"
+            android:name=".center.audio.AudioPlayerActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>
@@ -82,7 +82,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cantv.media.center.activity.ImagePlayerActivity"
+            android:name=".center.image.ImagePlayerActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.TranslucentDecor">
             <intent-filter>
@@ -94,20 +94,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cantv.media.center.activity.DeviceShareActivity"
+            android:name=".center.share.DeviceShareActivity"
             android:label="@string/app_name"/>
 
-        <activity android:name="com.cantv.media.center.activity.ActivityDialog">
+        <activity android:name=".center.index.dialog.ActivityDialog">
             <intent-filter>
                 <action android:name="com.cantv.activity.SHOW_DIALOG"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cantv.media.center.ui.dialog.DialogActivity"
+            android:name=".center.index.dialog.DialogActivity"
             android:launchMode="singleInstance"
             android:theme="@style/dialog_transparent"/>
 
-        <receiver android:name="com.cantv.media.center.receiver.MediaBroadcastReceiver">
+        <receiver android:name=".center.index.receiver.MediaBroadcastReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.MEDIA_MOUNTED"/>
                 <action android:name="android.intent.action.MEDIA_UNMOUNTED"/>
@@ -118,7 +118,7 @@
             </intent-filter>
         </receiver>
         <meta-data
-            android:name="com.cantv.media.center.Listener.SimpleGlideModule"
+            android:name="com.cantv.media.center.image.SimpleGlideModule"
             android:value="GlideModule"/>
 
         <!--必须配置-->
@@ -135,7 +135,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
-        <activity android:name="com.cantv.media.center.ui.image.LargeActivity">
+        <activity android:name=".center.image.LargeActivity">
             <intent-filter>
                 <action android:name="com.cantv.action.LARGE_ACTIVITY"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -146,7 +146,7 @@
             android:name="channelID"
             android:value="cantv"/>
         <activity
-            android:name=".center.activity.ImageActivity"
+            android:name=".center.image.ImageActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.TranslucentDecor">
             <intent-filter>
                 <action android:name="com.cantv.action.LOCAL_PLAYER"/>

@@ -1,6 +1,6 @@
 package com.cantv.media.center.data;
 
-import com.cantv.media.center.utils.cybergarage.FileItem;
+import com.cantv.media.center.share.cybergarage.FileItem;
 
 public class DeviceInfo {
 

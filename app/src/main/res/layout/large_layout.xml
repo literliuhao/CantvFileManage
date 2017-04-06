@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.cantv.media.center.ui.image.LargeImageView
+    <com.cantv.media.center.image.LargeImageView
         android:id="@+id/iv_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

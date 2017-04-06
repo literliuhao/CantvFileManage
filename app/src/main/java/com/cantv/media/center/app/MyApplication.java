@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.cantv.media.BuildConfig;
-import com.cantv.media.center.ui.upgrade.MyUpgradeListener;
+import com.cantv.media.center.upgrade.MyUpgradeListener;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;

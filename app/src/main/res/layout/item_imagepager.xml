@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.cantv.media.center.ui.image.ImageBrowser
+    <com.cantv.media.center.image.ImageBrowser
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
