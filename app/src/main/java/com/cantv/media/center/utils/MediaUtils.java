@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.cantv.liteplayer.core.interfaces.ICallBack;
 import com.cantv.media.R;
-import com.cantv.media.center.activity.AudioPlayerActivity;
+import com.cantv.media.center.ui.audio.AudioPlayerActivity;
 import com.cantv.media.center.activity.GridViewActivity;
 import com.cantv.media.center.activity.ImageActivity;
 import com.cantv.media.center.activity.ImagePlayerActivity;

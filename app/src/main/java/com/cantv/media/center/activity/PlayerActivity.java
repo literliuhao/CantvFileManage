@@ -35,7 +35,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     private boolean mInitDone = false;
     protected CoverFlowViewListener mCoverFlowViewListener;
     protected int mPlayMode = PlayMode.IN_ORDER;// 默认顺序播放
-    public boolean isPressback;
+    public boolean isPressBack;
 
 
     @Override
@@ -163,16 +163,16 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
 
     @Override
     public void onPlayRewind() {
-        int seekDuraiton = Math.max(getPlayerDuration() / 64, 10000);
-        int a = Math.max(0, getPlayerCurPosition() - seekDuraiton);
-        onPlaySeekTo(Math.max(0, getPlayerCurPosition() - seekDuraiton));
+        int seekDuration = Math.max(getPlayerDuration() / 64, 10000);
+        int a = Math.max(0, getPlayerCurPosition() - seekDuration);
+        onPlaySeekTo(Math.max(0, getPlayerCurPosition() - seekDuration));
     }
 
     @Override
     public void onPlayForwad() {
-        int seekDuraiton = Math.max(getPlayerDuration() / 64, 10000);
-        int toposition = getPlayerCurPosition() + seekDuraiton;
-        onPlaySeekTo(Math.min(getPlayerDuration(), toposition));
+        int seekDuration = Math.max(getPlayerDuration() / 64, 10000);
+        int toPosition = getPlayerCurPosition() + seekDuration;
+        onPlaySeekTo(Math.min(getPlayerDuration(), toPosition));
 
     }
 
@@ -217,7 +217,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             public void ExceHappen() {
                 getProxyPlayer().release();
                 Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
-                isPressback = true;
+                isPressBack = true;
                 finish();
             }
 
@@ -225,7 +225,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
             public void RetryPlay() {
                 getProxyPlayer().release();
                 Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
-                isPressback = true;
+                isPressBack = true;
                 finish();
             }
         });
@@ -233,7 +233,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         return mPlayer;
     }
 
-    protected void playDefualt() {
+    protected void playDefault() {
         mInitDone = true;
         playMedia(mDefaultPlayIndex);
     }
@@ -265,7 +265,7 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(MyApplication.getContext(), R.string.format_not_support, Toast.LENGTH_SHORT).show();
-            isPressback = true;
+            isPressBack = true;
             finish();
         }
     }
@@ -282,7 +282,6 @@ public abstract class PlayerActivity extends Activity implements PlayerCtrlBarCo
     public void setmPaused(boolean mPaused) {
         this.mAutoPaused = mPaused;
     }
-
 
     public boolean ismManualPaused() {
         return mManualPaused;
