@@ -27,8 +27,7 @@ public class BitmapUtil {
      * @throws IOException
      */
     public static Bitmap revitionImageSize(String path) throws IOException {
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(
-                new File(path)));
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(new File(path)));
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(in, null, options);
@@ -40,10 +39,8 @@ public class BitmapUtil {
         // inSampleSize表示缩略图大小为原始图片大小的几分之一
         // options.outWidth >> i(右移运算符)表示：outWidth/(2^i)
         while (true) {
-            if ((options.outWidth >> i <= 2000)
-                    && (options.outHeight >> i <= 2000)) {
-                in = new BufferedInputStream(
-                        new FileInputStream(new File(path)));
+            if ((options.outWidth >> i <= 2000) && (options.outHeight >> i <= 2000)) {
+                in = new BufferedInputStream(new FileInputStream(new File(path)));
                 options.inSampleSize = (int) Math.pow(2.0D, i); // 幂运算 i为几次方
                 options.inJustDecodeBounds = false;
                 bitmap = BitmapFactory.decodeStream(in, null, options);
@@ -74,7 +71,12 @@ public class BitmapUtil {
         int length = source.getWidth() < source.getHeight() ? source.getWidth() : source.getHeight();
         Paint paint = new Paint();
         paint.setAntiAlias(true);
-        Bitmap target = Bitmap.createBitmap(length, length, Bitmap.Config.ARGB_4444);
+        Bitmap target = null;
+        try {
+            target = Bitmap.createBitmap(length, length, Bitmap.Config.ARGB_4444);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Canvas canvas = new Canvas(target);
         canvas.drawCircle(length / 2, length / 2, length / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));

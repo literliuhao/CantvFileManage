@@ -1,4 +1,4 @@
-package com.cantv.media.center.activity;
+package com.cantv.media.center.ui.audio;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.cantv.liteplayer.core.ProxyPlayer;
 import com.cantv.media.R;
 import com.cantv.media.center.Listener.PlayMode;
+import com.cantv.media.center.activity.PlayerActivity;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.constants.SourceType;
 import com.cantv.media.center.data.Audio;
@@ -34,9 +35,6 @@ import com.cantv.media.center.data.Media;
 import com.cantv.media.center.data.MenuItem;
 import com.cantv.media.center.data.PlayModeMenuItem;
 import com.cantv.media.center.data.UsbMounted;
-import com.cantv.media.center.ui.audio.CDView;
-import com.cantv.media.center.ui.audio.CircleProgressBar;
-import com.cantv.media.center.ui.audio.LyricView;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnItemClickListener;
 import com.cantv.media.center.ui.dialog.DoubleColumnMenu.OnKeyEventListener;
@@ -66,23 +64,21 @@ import static com.cantv.media.R.string.singer;
  */
 @SuppressLint("NewApi")
 public class AudioPlayerActivity extends PlayerActivity implements android.view.View.OnClickListener {
-    private final int INTERVAL_CHECK_PROGRESS = 1;
-    private ImageView mContentBg;
-    private CircleProgressBar mProgressBar;
     private CDView mCDView;
-    private TextView mCurrProgressTv, mDurationTv, mPlayModeTv, mTitleTv, mSingerTv;
-    private RelativeLayout mNoLyricLayout;
+    private ImageView mContentBg;
     private LyricView mLyricView;
-    private ImageButton mPlayPauseBtn, mPreviousBtn, mNextBtn;
+    private RelativeLayout mNoLyricLayout;
+    private CircleProgressBar mProgressBar;
     private ImageView mPlayModeIconIv, mPlayModeView;
+    private ImageButton mPlayPauseBtn, mPreviousBtn, mNextBtn;
+    private TextView mCurrProgressTv, mDurationTv, mPlayModeTv, mTitleTv, mSingerTv;
 
-    private PowerManager.WakeLock mWakeLock;
     private Handler mHandler;
     private MenuDialog mMenuDialog;
+    private PowerManager.WakeLock mWakeLock;
 
     private List<MenuItem> mMenuList;
-    private int mSelectedMenuPosi;
-//    private boolean showLyric = true;
+    private int mSelectedPosition;
 
     private LyricInfo mLyricInfo;
 
@@ -111,7 +107,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         MyApplication.addActivity(this);
         initHandler();
         initData();
-        playDefualt();
+        playDefault();
         StatisticsUtil.customEvent(AudioPlayerActivity.this, "music_player");
     }
 
@@ -165,7 +161,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayModeView.setNextFocusDownId(playModeViewId);
     }
 
-
     @SuppressLint("HandlerLeak")
     public void initHandler() {
         mHandler = new Handler() {
@@ -178,16 +173,15 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         mLyricView.setCurrTime(currentPosition);
                     }
                 }
-                sendMessageDelayed(obtainMessage(), INTERVAL_CHECK_PROGRESS);
+                sendMessageDelayed(obtainMessage(), 1000);
             }
-
         };
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (mHandler == null) {
+        if (null == mHandler) {
             initHandler();
         }
         mHandler.removeCallbacksAndMessages(null);
@@ -199,33 +193,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         StatisticsUtil.registerResume(this);
         holdWakeLock();
         if (mDataList.size() < 1) {
-//            Toast.makeText(this, " 当前播放路径 " + SharedPreferenceUtil.getMediaPath(), Toast.LENGTH_SHORT).show();
-            String mediaPath = SharedPreferenceUtil.getMediaPath();
-            mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
-
-            FileUtil.getFileList(mediaPath, false, new FileUtil.OnFileListListener() {
-                @Override
-                public void findFileListFinish(List<Media> list) {
-                    List<Media> fileList = list;
-                    FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
-                    if (fileList.size() > 0) {
-                        mDataList.clear();
-                        mDataList.addAll(fileList);
-                    }
-                    for (int i = 0; i < fileList.size(); i++) {
-                        String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
-                        if (SharedPreferenceUtil.getMediaPath().equals(path)) {
-                            mCurPlayIndex = i;
-                            mDefaultPlayIndex = i;
-                            break;
-                        }
-                    }
-                    if (mDataList.size() > 0) {
-                        playDefualt();
-                    }
-                }
-            }, SourceType.MUSIC);
-
+            //以下代码作用：防止清理内存后再次进入音乐播放时菜单列表显示为空
+            loadFilePath();
         }
 
         if (!ismManualPaused()) {
@@ -233,6 +202,33 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mPlayPauseBtn.setImageResource(R.drawable.selector_bg_pause_btn);
         }
         super.onResume();
+    }
+
+    private void loadFilePath() {
+        String mediaPath = SharedPreferenceUtil.getMediaPath();
+        mediaPath = mediaPath.subSequence(0, mediaPath.lastIndexOf("/")).toString();
+        FileUtil.getFileList(mediaPath, false, new FileUtil.OnFileListListener() {
+            @Override
+            public void findFileListFinish(List<Media> list) {
+                List<Media> fileList = list;
+                FileUtil.sortList(fileList, FileComparator.SORT_TYPE_DEFAULT, true);
+                if (fileList.size() > 0) {
+                    mDataList.clear();
+                    mDataList.addAll(fileList);
+                }
+                for (int i = 0; i < fileList.size(); i++) {
+                    String path = fileList.get(i).isSharing ? fileList.get(i).sharePath : fileList.get(i).mUri;
+                    if (SharedPreferenceUtil.getMediaPath().equals(path)) {
+                        mCurPlayIndex = i;
+                        mDefaultPlayIndex = i;
+                        break;
+                    }
+                }
+                if (mDataList.size() > 0) {
+                    playDefault();
+                }
+            }
+        }, SourceType.MUSIC);
     }
 
     @Override
@@ -243,21 +239,21 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @Override
     public void onBackPressed() {
-        isPressback = true;
+        isPressBack = true;
         super.onBackPressed();
     }
 
     @Override
     protected void onStop() {
         //为了处理从不同的入口进入文件管理器,出现的类型错乱,如：从视频入口进入，按home键,再从图片进入,显示的还是视频类型
-//        if (!isPressback && !(MyApplication.mHomeActivityList.size() > 0)) {
+//        if (!isPressBack && !(MyApplication.mHomeActivityList.size() > 0)) {
 //            MyApplication.onFinishActivity();
 //        }
         releaseWakeLock();
-        if (mHandler != null) {
+        if (null != mHandler) {
             mHandler.removeCallbacksAndMessages(null);
         }
-        if (mMenuDialog != null && mMenuDialog.isShowing()) {
+        if (null != mMenuDialog && mMenuDialog.isShowing()) {
             mMenuDialog.dismiss();
         }
         super.onStop();
@@ -280,7 +276,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
     @SuppressWarnings("deprecation")
     private void holdWakeLock() {
-        if (mWakeLock == null) {
+        if (null == mWakeLock) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getClass().getCanonicalName());
             mWakeLock.acquire();
@@ -288,7 +284,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     private void releaseWakeLock() {
-        if (mWakeLock != null && mWakeLock.isHeld()) {
+        if (null != mWakeLock && mWakeLock.isHeld()) {
             mWakeLock.release();
             mWakeLock = null;
         }
@@ -306,13 +302,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             case R.id.ib_play_pause:
                 //OS-5062	【OS V1.2.0.1489918440 必现】添加共享设备-登录后退出，将共享设备网络断掉，然后再进入文件共享，界面一直处于加载中，过5分钟左右才加载。
                 //add isOnPrepared
-                if (mDataList == null || mDataList.size() == 0) {
+                if (null == mDataList || mDataList.size() == 0) {
                     break;
                 }
                 //OS-5062	【OS V1.2.0.1489918440 必现】添加共享设备-登录后退出，将共享设备网络断掉，然后再进入文件共享，界面一直处于加载中，过5分钟左右才加载。
                 onPlayerPlayOrPause();
                 if (isPlayerPaused()) {
-                    if (mHandler != null) {
+                    if (null != mHandler) {
                         mHandler.removeCallbacksAndMessages(null);
                     }
 
@@ -320,7 +316,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                     mCDView.pause();
                     mPlayPauseBtn.setImageResource(R.drawable.selector_bg_play_btn);
                 } else {
-                    if (mHandler != null) {
+                    if (null != mHandler) {
                         mHandler.sendEmptyMessage(0);
                     }
 
@@ -365,7 +361,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             if (!TextUtils.isEmpty(singer)) {
                 mSingerTv.setText(getString(R.string.singer) + singer);
             }
-            if (null != muUITask) {    //先取消之前
+            //先取消之前
+            if (null != muUITask) {
                 muUITask.cancel(true);
                 muUITask = null;
             }
@@ -384,8 +381,8 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         ProxyPlayer player = getProxyPlayer();
         mDuration = player.getDuration();
         mProgressBar.setMax(mDuration);
-        setmPaused(false);  //暂停时,在列表中播放别的曲目,这个参数可能不准确
-        mHandler.sendEmptyMessage(0);   //避免没有进度
+        setmPaused(false);//暂停时,在列表中播放别的曲目,这个参数可能不准确
+        mHandler.sendEmptyMessage(0);//避免没有进度
         mDurationTv.setText(" / " + formatTime(mDuration));
 
         //保存当前播放的路径
@@ -397,11 +394,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
-                if (mMenuDialog == null || !mMenuDialog.isShowing()) {
+                if (null == mMenuDialog || !mMenuDialog.isShowing()) {
                     showMenuDialog();
                 }
                 break;
-
             //上一曲
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 //                if (mCurPlayIndex == 0) {
@@ -410,57 +406,52 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 onPlayPrev();
 //                }
                 break;
-
             //下一曲
             case KeyEvent.KEYCODE_MEDIA_NEXT:
                 // 当前是最后一个文件,并且是顺序播放模式,点击下一个不会进入下一个
 //                if (mDataList.size() - 1 == mCurPlayIndex) {
 //                    Toast.makeText(AudioPlayerActivity.this, R.string.next_music, Toast.LENGTH_LONG).show();
 //                } else {
-                onPlayNext();   //
+                onPlayNext();
 //                }
-
                 break;
-
             //暂停/开始
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                 mPlayPauseBtn.callOnClick();
                 break;
-
         }
 
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (mMenuDialog == null || !mMenuDialog.isShowing()) {
+            if (null == mMenuDialog || !mMenuDialog.isShowing()) {
                 showMenuDialog();
             }
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
     private void showMenuDialog() {
-        if (mDataList == null || mDataList.size() == 0) {
+        if (null == mDataList || mDataList.size() == 0) {
             return;
         }
-        if (mMenuDialog == null) {
+        if (null == mMenuDialog) {
             mMenuDialog = new MenuDialog(this);
-            if (mMenuList == null) {
+            if (null == mMenuList) {
                 mMenuList = createMenuData();
             }
             mMenuDialog.setMenuList(mMenuList);
             mMenuDialog.setOnItemFocusChangeListener(new DoubleColumnMenu.OnItemFocusChangeListener() {
                 @Override
                 public void onMenuItemFocusChanged(LinearLayout leftViewGroup, View view, int position, boolean hasFocus) {
-                    if (mSelectedMenuPosi == position) {
+                    if (mSelectedPosition == position) {
                         return;
                     }
-                    mMenuList.get(mSelectedMenuPosi).setSelected(false);
+                    mMenuList.get(mSelectedPosition).setSelected(false);
 
-                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
+                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosition);
 
-                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, mMenuList.get(mSelectedMenuPosi));
+                    mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, mMenuList.get(mSelectedPosition));
 
-                    mSelectedMenuPosi = position;
+                    mSelectedPosition = position;
                     MenuItem menuItem = mMenuList.get(position);
                     menuItem.setSelected(true);
                     mMenuDialog.getMenuAdapter().updateMenuItem(view, menuItem);
@@ -488,20 +479,20 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
 
                 @Override
                 public void onSubMenuItemClick(LinearLayout parent, View view, int position) {
-                    MenuItem menuItemData = mMenuList.get(mSelectedMenuPosi);
+                    MenuItem menuItemData = mMenuList.get(mSelectedPosition);
                     int lastSelectPosi = menuItemData.setChildSelected(position);
-                    if (mSelectedMenuPosi == 0) {
+                    if (mSelectedPosition == 0) {
                         // select playList item
                         if (mCurPlayIndex == position) {
                             return;
                         }
                         playMedia(position);
 
-                    } else if (mSelectedMenuPosi == 1) {
+                    } else if (mSelectedPosition == 1) {
                         // select playMode
                         changePlayModeByIndex(lastSelectPosi, position, menuItemData);
                         return;
-                    } else if (mSelectedMenuPosi == 2) {
+                    } else if (mSelectedPosition == 2) {
                         MenuItem adjuestLyricMenuData = mMenuList.get(3);
                         // select load lyric or no
                         //修复MASERATI-222文件夹内有带歌词与不带歌词音乐,USB播放不带歌词音乐打开载入歌词，此时在播放列表切换任意带歌词音乐，播放时无显示歌词
@@ -525,11 +516,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         }
                         // change adjust lyric menuItem enable
                         View adjustLyricMenu = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 3);
-                        if (adjustLyricMenu != null) {
+                        if (null != adjustLyricMenu) {
                             mMenuDialog.getMenuAdapter().updateMenuItem(adjustLyricMenu, adjuestLyricMenuData);
                         }
 
-                    } else if (mSelectedMenuPosi == 3) {
+                    } else if (mSelectedPosition == 3) {
                         // select adjust lyric
                         if (position == 0) {
                             mLyricView.adjustTimeOffset(200);
@@ -540,22 +531,22 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                         }*/
                     }
                     View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + lastSelectPosi);
-                    if (oldSubMenuItemView != null) {
+                    if (null != oldSubMenuItemView) {
                         mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(lastSelectPosi));
                     }
                     View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + position);
-                    if (subMenuItemView != null) {
+                    if (null != subMenuItemView) {
                         mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView, menuItemData.getSelectedChild());
                     }
-                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedMenuPosi);
-                    if (menuItemView != null) {
+                    View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + mSelectedPosition);
+                    if (null != menuItemView) {
                         mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
                     }
                 }
 
                 @Override
                 public boolean onMenuItemClick(LinearLayout parent, View view, int position) {
-                    if (mSelectedMenuPosi == position) {
+                    if (mSelectedPosition == position) {
                         return false;
                     }
                     return false;
@@ -567,7 +558,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 public boolean onMenuItemKeyEvent(int position, View v, int keyCode, KeyEvent event) {
                     // if current choice is playList, selected subMenuItem
                     // should be auto-focused after left-key
-                    if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN && mSelectedMenuPosi == 0) {
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && event.getAction() == KeyEvent.ACTION_DOWN && mSelectedPosition == 0) {
                         mMenuDialog.getMenu().openSubMenu(true, mMenuList.get(0).getSelectedChildIndex());
                         return true;
                     }
@@ -615,11 +606,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 }
             });
         }
-        if (mSelectedMenuPosi == 0) {
+        if (mSelectedPosition == 0) {
             mMenuList.get(0).setChildSelected(mCurPlayIndex);
             mMenuDialog.getMenuAdapter().notifySubMenuDataSetChanged();
             mMenuDialog.getMenu().focusSubMenuItem2(mMenuList.get(0).getSelectedChildIndex());
-        } else if (mSelectedMenuPosi == 1) {
+        } else if (mSelectedPosition == 1) {
             //修复OS-2736进入外接设备，播放本地音乐，在播放器左下角的播放模式中切换播放模式后，打开菜单播放模式选项后没有实时更新。
             if (currentMode != 5) {
                 mMenuList.get(1).setChildSelected(currentMode);
@@ -628,10 +619,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         }
         //修复OS-3286进入本地播放的视频或音频时，第一次按菜单键呼出菜单栏时，焦点光标从最上方的空白处移动到正在播放的节目上
         mMenuDialog.showSubMenuFocus(false);
-        if (mSelectedMenuPosi != 1) {
+        if (mSelectedPosition != 1) {
             MenuItem menuItemData = mMenuList.get(1);
             View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
-            if (menuItemView != null) {
+            if (null != menuItemView) {
                 mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
             }
         }
@@ -645,7 +636,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     public void hideMenuDialog() {
-        if (mMenuDialog != null) {
+        if (null != mMenuDialog) {
             mMenuDialog.dismiss();
         }
     }
@@ -742,7 +733,6 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             mNoLyricLayout.setVisibility(View.VISIBLE);
             mLyricView.setVisibility(View.INVISIBLE);
         }
-
     }
 
     private void resetUI() {
@@ -784,7 +774,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
     }
 
     private void cycleChangePlayMode() {
-        if (mMenuList == null) {
+        if (null == mMenuList) {
             mMenuList = createMenuData();
         }
         MenuItem playModeMenu = mMenuList.get(1);
@@ -803,29 +793,32 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         mPlayModeIconIv.setImageResource(playModeItem.getDrawableResId());
         currentMode = nextPosi;
         Log.i("", "selectedChildPosi = " + selectedChildPosi + ", nextPosi = " + nextPosi);
-        if (mMenuDialog != null && mSelectedMenuPosi == 1) {
+        if (null != mMenuDialog && mSelectedPosition == 1) {
             View oldSubMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + selectedChildPosi);
-            if (oldSubMenuItemView != null) {
+            if (null != oldSubMenuItemView) {
                 mMenuDialog.getMenuAdapter().updateSubMenuItem(oldSubMenuItemView, menuItemData.getChildAt(selectedChildPosi));
             }
             View subMenuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_SUB_MENU_VIEW + nextPosi);
-            if (subMenuItemView != null) {
+            if (null != subMenuItemView) {
                 mMenuDialog.getMenuAdapter().updateSubMenuItem(subMenuItemView, playModeItem);
             }
             View menuItemView = mMenuDialog.getMenu().findViewWithTag(MenuAdapter.TAG_MENU_VIEW + 1);
-            if (menuItemView != null) {
+            if (null != menuItemView) {
                 mMenuDialog.getMenuAdapter().updateMenuItem(menuItemView, menuItemData);
             }
         }
     }
 
-    //liuhao
+    /**
+     * liuhao
+     *
+     * @param mp
+     */
     //OS-4932	【OS V1.2.0.1489506238 文件管理 必现】点击进入共享设备中的图片/音频/视频，未加载出来时按确认键自动退出显示/播放，提示“文件格式不支持或设备已移除”
     @Override
     public void onPrepared(MediaPlayer mp) {
         isOnPrepared = true;
     }
-    //OS-4932	【OS V1.2.0.1489506238 文件管理 必现】点击进入共享设备中的图片/音频/视频，未加载出来时按确认键自动退出显示/播放，提示“文件格式不支持或设备已移除”
 
     /**
      * author: yibh
@@ -833,13 +826,11 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
      * 加载音频文件内的背景图,使用异步加载,在未加载出来时退出界面,取消加载.
      */
     class LoadingMuUITask extends AsyncTask {
-
         @Override
         protected Object doInBackground(Object[] params) {
             loadUI();
             return null;
         }
-
     }
 
     /**
@@ -850,7 +841,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             //有些机器可能出现内存溢出
             final Bitmap icon = Audio.getAudioPicture(mUri, 800, 800);
 
-            if (icon != null) {
+            if (null != icon) {
                 //耗时操作,在主线程中执行
 //            final Drawable drawable = BitmapUtils.blurBitmap(icon, AudioPlayerActivity.this);
                 final Bitmap bitmap = FastBlurUtil.toBlur(icon, 6);
@@ -869,15 +860,13 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
                 });
             }
         }
-
         switchLrc();
-
     }
 
     @Override
     public void onCompletion(MediaPlayer arg0) {
         //修复OS-2387 影片播放完毕自动切换到下一个影片时，菜单显示播放影片依为前一个。
-        if (mMenuDialog != null) {
+        if (null != mMenuDialog) {
             if (mMenuDialog.isShowing()) {
                 mMenuDialog.dismiss();
             }
@@ -891,7 +880,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             return;
         }
         Log.i("Mount", "audio ...");
-        if (mDataList == null || mDataList.size() == 0) {
+        if (null == mDataList || mDataList.size() == 0) {
             return;
             //是共享就不用继续下去
         } else if (null != mDataList && mDataList.size() > 0 && mDataList.get(0).isSharing) {
@@ -915,11 +904,10 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
             }
         }
         if (isFinish) {
-            isPressback = true;
+            isPressBack = true;
             finish();
         }
     }
-
 
     public void switchLrcTH() {
         new Thread(new Runnable() {
@@ -939,7 +927,7 @@ public class AudioPlayerActivity extends PlayerActivity implements android.view.
         } else {
             return;
         }
-        if (mLyricInfo == null) {
+        if (null == mLyricInfo) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

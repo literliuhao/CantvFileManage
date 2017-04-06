@@ -32,6 +32,7 @@ import com.cantv.media.center.ui.directory.MediaGridView;
 import com.cantv.media.center.utils.FileUtil;
 import com.cantv.media.center.utils.MediaUtils;
 import com.cantv.media.center.utils.StatisticsUtil;
+import com.tencent.bugly.beta.Beta;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -100,6 +101,9 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
         MyApplication.onFinishActivity();
         MyApplication.addHomeActivity(this);
         EventBus.getDefault().register(this);
+
+        Beta.checkUpgrade();
+
         mVideoIV = (FrameLayout) findViewById(R.id.imageview_video_layout);
         mImageIV = (FrameLayout) findViewById(R.id.imageview_image_layout);
         mAudioIV = (FrameLayout) findViewById(R.id.imageview_audio_layout);
