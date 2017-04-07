@@ -26,7 +26,7 @@ android {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 160
+        versionCode 161
         buildConfigField("String", "CANTV", "\"can\"")
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
