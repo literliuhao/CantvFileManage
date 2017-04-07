@@ -45,6 +45,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.cantv.media.ACTION_INDEX"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <activity android:name=".center.directory.ui.ListViewActivity"/>
         <activity
