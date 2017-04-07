@@ -16,13 +16,17 @@ import android.view.SurfaceHolder;
 import com.cantv.liteplayer.core.audiotrack.AudioTrack;
 import com.cantv.liteplayer.core.subtitle.StDisplayCallBack;
 import com.cantv.liteplayer.core.subtitle.SubTitle;
+import com.cantv.media.BuildConfig;
 import com.cantv.media.R;
 import com.cantv.media.center.app.MyApplication;
 import com.cantv.media.center.utils.StringUtil;
 import com.cantv.media.center.utils.ToastUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static android.media.MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT;
 
@@ -36,6 +40,7 @@ public class ProxyPlayer implements OnPreparedListener {
     private OnPreparedListener mOnPreparedListener;
 
     private Runnable mRunnable;
+    private String mType;
 
     public void start() {
         getLitePlayer().start();
@@ -106,7 +111,7 @@ public class ProxyPlayer implements OnPreparedListener {
         getLitePlayer().setOnCompletionListener(listener);
     }
 
-    public void setOnPreparedListener(OnPreparedListener listener){
+    public void setOnPreparedListener(OnPreparedListener listener) {
         this.mOnPreparedListener = listener;
         getLitePlayer().setOnPreparedListener(this);
     }
@@ -172,18 +177,20 @@ public class ProxyPlayer implements OnPreparedListener {
         });
     }
 
+
     /**
      * 得到是"ac3"就是Dolby音效
      *
      * @return
      */
     public String getDolbyType() {
-        return getLitePlayer().getDolbyType();
+        return mType;
     }
 
     /**
      * 判断是否是dolby音效
-     *"aac".equalsIgnoreCase(getDolbyType()) ||
+     * "aac".equalsIgnoreCase(getDolbyType()) ||
+     *
      * @return
      */
     public boolean isDolby() {
@@ -311,8 +318,41 @@ public class ProxyPlayer implements OnPreparedListener {
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        if(null != mOnPreparedListener)mOnPreparedListener.onPrepared(mp);
-        if(null != mRunnable)mRunnable.run();
+
+        if (null != BuildConfig.CANTV) {
+            if ("can".equals(BuildConfig.CANTV)) {
+                try {
+                    Class<?> player = Class.forName("android.media.MediaPlayer");
+                    Method method = player.getDeclaredMethod("getMetadata", boolean.class, boolean.class);
+                    method.setAccessible(true);
+                    Object metadataRes = method.invoke(mp, false, false);
+                    Class<?> metaClass = Class.forName("android.media.Metadata");
+                    Method methodKeyset = metaClass.getDeclaredMethod("keySet");
+                    Object ketSetRes = methodKeyset.invoke(metadataRes);
+                    Set<Integer> hashmap = (Set<Integer>) ketSetRes;
+                    for (Integer i : hashmap) {
+                        if (i == 26 /*AUDIO_CODEC*/) {
+                            Method getString = metaClass.getDeclaredMethod("getString", int.class);
+                            mType = getString.invoke(metadataRes, i).toString();
+                            System.out.println("*************:" + mType.toString());
+                            Log.w("DolbyType", mType.toString());
+                        }
+                    }
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        if (null != mOnPreparedListener) mOnPreparedListener.onPrepared(mp);
+        if (null != mRunnable) mRunnable.run();
     }
 
     /**
