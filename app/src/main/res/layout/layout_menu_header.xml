@@ -20,7 +20,7 @@
         android:layout_marginStart="@dimen/px8"
         android:text="@string/menu"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/fontsize_36"
+        android:textSize="@dimen/px36"
         />
 
 </LinearLayout>

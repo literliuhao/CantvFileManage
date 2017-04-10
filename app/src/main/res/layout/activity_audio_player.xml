@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
                     android:textColor="@color/per80_white"
-                    android:textSize="@dimen/fontsize_36"/>
+                    android:textSize="@dimen/px36"/>
 
                 <TextView
                     android:id="@+id/tv_duration"
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
                     android:textColor="@color/per50_white"
-                    android:textSize="@dimen/fontsize_36"/>
+                    android:textSize="@dimen/px36"/>
             </LinearLayout>
         </RelativeLayout>
 
@@ -93,7 +93,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:singleLine="true"
                     android:textColor="@color/per80_white"
-                    android:textSize="@dimen/fontsize_48"/>
+                    android:textSize="@dimen/px48"/>
 
                 <TextView
                     android:id="@+id/tv_singer"
@@ -104,7 +104,7 @@
                     android:layout_marginTop="@dimen/px32"
                     android:includeFontPadding="false"
                     android:textColor="@color/per50_white"
-                    android:textSize="@dimen/fontsize_36"/>
+                    android:textSize="@dimen/px36"/>
 
                 <com.cantv.media.center.audio.LyricView
                     android:id="@+id/lv_lyric"
@@ -119,8 +119,8 @@
                     zby:textAlign="CENTER"
                     zby:textColor="@color/per80_white"
                     zby:textColorFocused="@color/yellow_fdf352"
-                    zby:textSize="@dimen/fontsize_36"
-                    zby:textSizeFocused="@dimen/fontsize_42"/>
+                    zby:textSize="@dimen/px36"
+                    zby:textSizeFocused="@dimen/px42"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -150,7 +150,7 @@
                     android:lineSpacingExtra="@dimen/px24"
                     android:text="@string/tips_no_lyric"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/fontsize_36"/>
+                    android:textSize="@dimen/px36"/>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
@@ -230,7 +230,7 @@
                 android:focusable="false"
                 android:text="@string/play_in_order"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_32"/>
+                android:textSize="@dimen/px32"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -258,7 +258,7 @@
                 android:includeFontPadding="false"
                 android:text="@string/tips_click_menu_key"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_32"/>
+                android:textSize="@dimen/px32"/>
         </LinearLayout>
     </RelativeLayout>
 

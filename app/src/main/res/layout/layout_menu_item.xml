@@ -29,7 +29,7 @@
             android:includeFontPadding="false"
             android:layout_centerHorizontal="true"
             android:textColor="@color/selector_bg_menu_item_txt"
-            android:textSize="@dimen/fontsize_36" />
+            android:textSize="@dimen/px36" />
 
         <TextView
             android:id="@+id/tv_subTitle"
@@ -40,7 +40,7 @@
             android:includeFontPadding="false"
             android:layout_centerHorizontal="true"
             android:textColor="@color/per50_white"
-            android:textSize="@dimen/fontsize_24"
+            android:textSize="@dimen/px24"
             android:visibility="gone" />
     </RelativeLayout>
 

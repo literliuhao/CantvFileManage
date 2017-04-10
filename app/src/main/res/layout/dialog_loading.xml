@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_loading"
         android:layout_marginTop="@dimen/px55"
-        android:textSize="@dimen/fontsize_36"
+        android:textSize="@dimen/px36"
         android:textColor="@color/per80_white"
         android:text="@string/loading_tips"
         />

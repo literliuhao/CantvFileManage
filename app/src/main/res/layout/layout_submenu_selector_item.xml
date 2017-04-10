@@ -14,7 +14,7 @@
         android:layout_centerInParent="true"
         android:duplicateParentState="true"
         android:textColor="@color/selector_submenu_select_item_bg"
-        android:textSize="@dimen/fontsize_32"/>
+        android:textSize="@dimen/px32"/>
 
     <ImageView
         android:id="@+id/iv_selector"

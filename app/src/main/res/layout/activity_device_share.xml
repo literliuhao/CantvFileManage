@@ -13,7 +13,7 @@
         android:includeFontPadding="false"
         android:text="@string/str_share_file"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/fontsize_56" />
+        android:textSize="@dimen/px56" />
 
     <TextView
         android:id="@+id/tv_net_name"
@@ -24,7 +24,7 @@
         android:layout_toEndOf="@id/tv_title"
         android:includeFontPadding="false"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/fontsize_36" />
+        android:textSize="@dimen/px36" />
 
     <TextView
         android:id="@+id/tv_net_ip"
@@ -35,7 +35,7 @@
         android:layout_toEndOf="@id/tv_net_name"
         android:includeFontPadding="false"
         android:textColor="@color/per50_white"
-        android:textSize="@dimen/fontsize_36" />
+        android:textSize="@dimen/px36" />
 
     <LinearLayout
         android:id="@+id/hsv_device_list"

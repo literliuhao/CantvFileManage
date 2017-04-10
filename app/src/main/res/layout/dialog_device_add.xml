@@ -41,7 +41,7 @@
             android:paddingStart="@dimen/px32"
             android:singleLine="true"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36"
+            android:textSize="@dimen/px36"
             />
 
         <TextView
@@ -53,7 +53,7 @@
             android:gravity="center_vertical"
             android:text="@string/ip_addr"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36"/>
+            android:textSize="@dimen/px36"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
                 android:background="@drawable/share_button_shape"
                 android:text="@string/str_confirm"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36"/>
+                android:textSize="@dimen/px36"/>
 
             <Button
                 android:id="@+id/btn_cancel"
@@ -81,7 +81,7 @@
                 android:background="@drawable/share_button_shape"
                 android:text="@string/str_cancel"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36"/>
+                android:textSize="@dimen/px36"/>
         </LinearLayout>
     </RelativeLayout>
 

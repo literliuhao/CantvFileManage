@@ -42,7 +42,7 @@
             android:paddingStart="@dimen/px32"
             android:singleLine="true"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36"/>
+            android:textSize="@dimen/px36"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
             android:gravity="center_vertical"
             android:text="@string/str_username"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36"/>
+            android:textSize="@dimen/px36"/>
 
         <EditText
             android:id="@+id/et_pwd"
@@ -69,7 +69,7 @@
             android:paddingStart="@dimen/px32"
             android:singleLine="true"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36"/>
+            android:textSize="@dimen/px36"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
             android:gravity="center_vertical"
             android:text="@string/str_pwd"
             android:textColor="@color/per80_white"
-            android:textSize="@dimen/fontsize_36"/>
+            android:textSize="@dimen/px36"/>
 
         <CheckBox
             android:id="@+id/cb_show_pwd"
@@ -94,7 +94,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/px24"
             android:text="@string/show_pwd"
-            android:textSize="@dimen/fontsize_27"/>
+            android:textSize="@dimen/px27"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                 android:background="@drawable/share_button_shape"
                 android:text="@string/str_confirm"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36"/>
+                android:textSize="@dimen/px36"/>
 
             <Button
                 android:id="@+id/btn_cancel"
@@ -122,7 +122,7 @@
                 android:background="@drawable/share_button_shape"
                 android:text="@string/str_cancel"
                 android:textColor="@color/per80_white"
-                android:textSize="@dimen/fontsize_36"/>
+                android:textSize="@dimen/px36"/>
         </LinearLayout>
     </RelativeLayout>
 

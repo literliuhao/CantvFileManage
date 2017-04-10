@@ -45,7 +45,7 @@
                 android:layout_marginTop="@dimen/px24"
                 android:text="@string/image_menu_rotation"
                 android:textColor="@android:color/background_light"
-                android:textSize="@dimen/fontsize_32" />
+                android:textSize="@dimen/px32" />
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +74,7 @@
                 android:layout_marginTop="@dimen/px24"
                 android:text="@string/image_menu_scale"
                 android:textColor="@android:color/background_light"
-                android:textSize="@dimen/fontsize_32" />
+                android:textSize="@dimen/px32" />
         </LinearLayout>
 
         <LinearLayout
@@ -104,7 +104,7 @@
                 android:layout_marginTop="@dimen/px24"
                 android:text="@string/image_menu_movie"
                 android:textColor="@android:color/background_light"
-                android:textSize="@dimen/fontsize_32" />
+                android:textSize="@dimen/px32" />
         </LinearLayout>
 
         <LinearLayout
@@ -133,7 +133,7 @@
                 android:layout_marginTop="@dimen/px24"
                 android:text="@string/image_menu_info"
                 android:textColor="@android:color/background_light"
-                android:textSize="@dimen/fontsize_32" />
+                android:textSize="@dimen/px32" />
         </LinearLayout>
     </LinearLayout>
 
@@ -165,7 +165,7 @@
         android:layout_marginRight="@dimen/px128"
         android:layout_marginTop="@dimen/px72"
         android:textColor="#3fffffff"
-        android:textSize="@dimen/fontsize_36" />
+        android:textSize="@dimen/px36" />
 
     <TextView
         android:id="@+id/tv_current"
@@ -174,7 +174,7 @@
         android:layout_marginTop="@dimen/px72"
         android:layout_toLeftOf="@id/tv_total"
         android:textColor="#7fffffff"
-        android:textSize="@dimen/fontsize_36" />
+        android:textSize="@dimen/px36" />
 
     <LinearLayout
         android:id="@+id/ll_imageinfo"
@@ -197,7 +197,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:textColor="#7fffffff"
-            android:textSize="@dimen/fontsize_32" />
+            android:textSize="@dimen/px32" />
 
         <TextView
             android:id="@+id/info_size"
@@ -206,7 +206,7 @@
             android:layout_marginLeft="@dimen/px10"
             android:layout_weight="1"
             android:textColor="#7fffffff"
-            android:textSize="@dimen/fontsize_32" />
+            android:textSize="@dimen/px32" />
 
         <TextView
             android:id="@+id/info_url"
@@ -215,7 +215,7 @@
             android:layout_marginLeft="@dimen/px10"
             android:layout_weight="1"
             android:textColor="#7fffffff"
-            android:textSize="@dimen/fontsize_32" />
+            android:textSize="@dimen/px32" />
 
         <TextView
             android:id="@+id/info_time"
@@ -227,7 +227,7 @@
             android:ellipsize="marquee"
             android:singleLine="true"
             android:textColor="#7fffffff"
-            android:textSize="@dimen/fontsize_32" />
+            android:textSize="@dimen/px32" />
     </LinearLayout>
 
     <RelativeLayout
@@ -266,7 +266,7 @@
         android:layout_centerInParent="true"
         android:text="@string/image_loading_fail"
         android:textColor="@color/white"
-        android:textSize="@dimen/fontsize_36"
+        android:textSize="@dimen/px36"
         android:visibility="gone" />
     <!--<Button
         android:id="@+id/fd"

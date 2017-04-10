@@ -23,6 +23,6 @@
         android:layout_marginTop="@dimen/px60"
         android:focusable="false"
         android:textColor="@color/per80_white"
-        android:textSize="@dimen/fontsize_32" />
+        android:textSize="@dimen/px32" />
 
 </RelativeLayout>

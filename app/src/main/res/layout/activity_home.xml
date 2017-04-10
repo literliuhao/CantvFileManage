@@ -45,7 +45,7 @@
                 android:id="@+id/layout_top_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pxn16"
+                android:layout_marginLeft="@dimen/px_minus_16"
                 android:layout_toRightOf="@id/layout_top_video">
 
                 <include layout="@layout/layout_image"/>
@@ -55,7 +55,7 @@
                 android:id="@+id/layout_top_audio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pxn16"
+                android:layout_marginLeft="@dimen/px_minus_16"
                 android:layout_toRightOf="@id/layout_top_image">
 
                 <include layout="@layout/layout_audio"/>
@@ -65,7 +65,7 @@
                 android:id="@+id/layout_top_app"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pxn16"
+                android:layout_marginLeft="@dimen/px_minus_16"
                 android:layout_toRightOf="@id/layout_top_audio">
 
                 <include layout="@layout/layout_app"/>
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/pxn16">
+            android:layout_marginTop="@dimen/px_minus_16">
 
             <RelativeLayout
                 android:id="@+id/layout_bottom"
@@ -105,7 +105,7 @@
                     android:id="@+id/layout_bottom_external_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/pxn16"
+                    android:layout_marginLeft="@dimen/px_minus_16"
                     android:layout_toRightOf="@id/layout_bottom_external_1">
 
                     <include layout="@layout/layout_external_2"/>
@@ -117,7 +117,7 @@
                 android:id="@+id/layout_bottom_layout_internal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pxn16"
+                android:layout_marginLeft="@dimen/px_minus_16"
                 android:layout_toRightOf="@id/layout_bottom">
 
                 <include layout="@layout/layout_internal"/>

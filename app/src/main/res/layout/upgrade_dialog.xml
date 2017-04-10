@@ -113,7 +113,7 @@
                 android:singleLine="true"
                 android:text="下次再说"
                 android:textColor="@color/white_opa80"
-                android:textSize="@dimen/textlightsize"/>
+                android:textSize="@dimen/px30"/>
 
             <Button
                 android:id="@+id/positiveButton"
@@ -124,7 +124,7 @@
                 android:singleLine="true"
                 android:text="立即升级"
                 android:textColor="@color/white_opa80"
-                android:textSize="@dimen/textlightsize"/>
+                android:textSize="@dimen/px30"/>
 
         </LinearLayout>
 

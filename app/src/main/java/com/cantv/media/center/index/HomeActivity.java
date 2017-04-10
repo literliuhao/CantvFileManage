@@ -233,7 +233,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
                 closeTimer();
                 Intent intent = new Intent(mContext, DeviceShareActivity.class);
                 startActivity(intent);
-                StatisticsUtil.customEvent(HomeActivity.this,"share_page");
+                StatisticsUtil.customEvent(HomeActivity.this, "share_page");
             }
         });
 
@@ -246,9 +246,11 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 
         String[] versionArray = FileUtil.getVersionName(this).split("-");
         String versionName = null;
-        if(null != versionArray && versionArray.length >= 2){
-            versionName = versionArray[0] + "_" +versionArray[2];
+        if (null != versionArray && versionArray.length >= 2) {
+            versionName = versionArray[0] + "_" + versionArray[2];
         }
+
+        Log.i("HomeActivity", getResources().getDimension(R.dimen.px100) + "");
 
         mVersion.setText(versionName);
         alertDialog = new AlertDialog.Builder(mContext).create();
@@ -479,7 +481,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
     protected void onResume() {
         super.onResume();
         StatisticsUtil.registerResume(this);
-        StatisticsUtil.customEvent(HomeActivity.this,"home_page");
+        StatisticsUtil.customEvent(HomeActivity.this, "home_page");
         sendUSBRefreshMsg();
     }
 

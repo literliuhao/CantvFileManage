@@ -20,7 +20,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/px85"
             android:layout_marginTop="@dimen/px75"
-            android:textSize="@dimen/fontsize_48"/>
+            android:textSize="@dimen/px48"/>
 
         <com.cantv.media.center.player.YFocusTextView
             android:id="@+id/tv_name"
@@ -34,7 +34,7 @@
             android:ems="16"
             android:singleLine="true"
             android:textColor="@color/trancolor_80_color"
-            android:textSize="@dimen/fontsize_48"/>
+            android:textSize="@dimen/px48"/>
 
     </RelativeLayout>
 
@@ -45,7 +45,7 @@
         android:layout_alignBottom="@id/relative_layout"
         android:layout_marginLeft="@dimen/px90"
         android:layout_marginTop="@dimen/px50"
-        android:textSize="@dimen/fontsize_48"
+        android:textSize="@dimen/px48"
         android:visibility="invisible"/>
 
     <LinearLayout
@@ -67,7 +67,7 @@
             android:shadowDy="4"
             android:shadowRadius="10"
             android:textColor="#ffffff"
-            android:textSize="@dimen/fontsize_56"/>
+            android:textSize="@dimen/px56"/>
 
         <LinearLayout
             android:id="@+id/ll_continue_tips"
@@ -90,7 +90,7 @@
                 android:layout_marginLeft="@dimen/px15"
                 android:text="按下键可以从头播放"
                 android:textColor="#eeffffff"
-                android:textSize="@dimen/fontsize_46"/>
+                android:textSize="@dimen/px46"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -125,7 +125,7 @@
             zby:progressbar_height="@dimen/px22"
             zby:second_progress_color="#50019dd4"
             zby:text_color="#CCffffff"
-            zby:text_size="@dimen/fontsize_36"
+            zby:text_size="@dimen/px36"
             zby:timelabel_bg="@drawable/bg_seek_time_label"
             zby:timelabel_margin_bottom="@dimen/px10"
             zby:timelabel_padding_bottom="@dimen/px10"
@@ -151,7 +151,7 @@
             android:gravity="center_vertical"
             android:text="@string/play_tips"
             android:textColor="@color/trancolor_50_color"
-            android:textSize="@dimen/fontsize_36"/>
+            android:textSize="@dimen/px36"/>
 
         <TextView
             android:id="@+id/player_txt_time"
@@ -163,6 +163,6 @@
             android:layout_marginEnd="@dimen/px75"
             android:gravity="center_vertical"
             android:textColor="@color/trancolor_50_color"
-            android:textSize="@dimen/fontsize_36"/>
+            android:textSize="@dimen/px36"/>
     </RelativeLayout>
 </RelativeLayout>

@@ -2001,7 +2001,7 @@
     <dimen name="px1998">1998.0px</dimen>
     <dimen name="px1999">1999.0px</dimen>
     <dimen name="px2000">2000.0px</dimen>
-    <dimen name="pxn16">-16px</dimen>
+
     <dimen name="px_minus_100">-100.0px</dimen>
     <dimen name="px_minus_99">-99.0px</dimen>
     <dimen name="px_minus_98">-98.0px</dimen>
@@ -2102,25 +2102,4 @@
     <dimen name="px_minus_3">-3.0px</dimen>
     <dimen name="px_minus_2">-2.0px</dimen>
     <dimen name="px_minus_1">-1.0px</dimen>
-    <dimen name="fontsize_21">14sp</dimen>
-    <dimen name="fontsize_24">16sp</dimen>
-    <dimen name="fontsize_27">18sp</dimen>
-    <dimen name="fontsize_30">20sp</dimen>
-    <dimen name="fontsize_32">21sp</dimen>
-    <dimen name="fontsize_33">22sp</dimen>
-    <dimen name="fontsize_34">23sp</dimen>
-    <dimen name="fontsize_36">24sp</dimen>
-    <dimen name="fontsize_39">26sp</dimen>
-    <dimen name="fontsize_40">26.7sp</dimen>
-    <dimen name="fontsize_42">28sp</dimen>
-    <dimen name="fontsize_44">29sp</dimen>
-    <dimen name="fontsize_46">30sp</dimen>
-    <dimen name="fontsize_48">32sp</dimen>
-    <dimen name="fontsize_52">35sp</dimen>
-    <dimen name="fontsize_56">37sp</dimen>
-    <dimen name="fontsize_60">40sp</dimen>
-    <dimen name="fontsize_66">42sp</dimen>
-
-
-    <dimen name="textlightsize">30sp</dimen>
 </resources>

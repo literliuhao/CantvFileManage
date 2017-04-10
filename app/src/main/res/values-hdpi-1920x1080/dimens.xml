@@ -2001,8 +2001,6 @@
     <dimen name="px1999">1999.0px</dimen>
     <dimen name="px2000">2000.0px</dimen>
 
-    <dimen name="pxn16">-16px</dimen>
-
     <dimen name="px_minus_100">-100.0px</dimen>
     <dimen name="px_minus_99">-99.0px</dimen>
     <dimen name="px_minus_98">-98.0px</dimen>
@@ -2103,53 +2101,4 @@
     <dimen name="px_minus_3">-3.0px</dimen>
     <dimen name="px_minus_2">-2.0px</dimen>
     <dimen name="px_minus_1">-1.0px</dimen>
-
-    <dimen name="fontsize_21">21.0px</dimen>
-    <dimen name="fontsize_22">22.0px</dimen>
-    <dimen name="fontsize_23">23.0px</dimen>
-    <dimen name="fontsize_24">24.0px</dimen>
-    <dimen name="fontsize_25">25.0px</dimen>
-    <dimen name="fontsize_26">26.0px</dimen>
-    <dimen name="fontsize_27">27.0px</dimen>
-    <dimen name="fontsize_28">28.0px</dimen>
-    <dimen name="fontsize_29">29.0px</dimen>
-    <dimen name="fontsize_30">30.0px</dimen>
-    <dimen name="fontsize_31">31.0px</dimen>
-    <dimen name="fontsize_32">32.0px</dimen>
-    <dimen name="fontsize_33">33.0px</dimen>
-    <dimen name="fontsize_34">34.0px</dimen>
-    <dimen name="fontsize_35">35.0px</dimen>
-    <dimen name="fontsize_36">36.0px</dimen>
-    <dimen name="fontsize_37">37.0px</dimen>
-    <dimen name="fontsize_38">38.0px</dimen>
-    <dimen name="fontsize_39">39.0px</dimen>
-    <dimen name="fontsize_40">40.0px</dimen>
-    <dimen name="fontsize_41">41.0px</dimen>
-    <dimen name="fontsize_42">42.0px</dimen>
-    <dimen name="fontsize_43">43.0px</dimen>
-    <dimen name="fontsize_44">44.0px</dimen>
-    <dimen name="fontsize_45">45.0px</dimen>
-    <dimen name="fontsize_46">46.0px</dimen>
-    <dimen name="fontsize_47">47.0px</dimen>
-    <dimen name="fontsize_48">48.0px</dimen>
-    <dimen name="fontsize_49">49.0px</dimen>
-    <dimen name="fontsize_50">50.0px</dimen>
-    <dimen name="fontsize_51">51.0px</dimen>
-    <dimen name="fontsize_52">52.0px</dimen>
-    <dimen name="fontsize_53">53.0px</dimen>
-    <dimen name="fontsize_54">54.0px</dimen>
-    <dimen name="fontsize_55">55.0px</dimen>
-    <dimen name="fontsize_56">56.0px</dimen>
-    <dimen name="fontsize_57">57.0px</dimen>
-    <dimen name="fontsize_58">58.0px</dimen>
-    <dimen name="fontsize_59">59.0px</dimen>
-    <dimen name="fontsize_60">60.0px</dimen>
-    <dimen name="fontsize_61">61.0px</dimen>
-    <dimen name="fontsize_62">62.0px</dimen>
-    <dimen name="fontsize_63">63.0px</dimen>
-    <dimen name="fontsize_64">64.0px</dimen>
-    <dimen name="fontsize_65">65.0px</dimen>
-    <dimen name="fontsize_66">66.0px</dimen>
-
-
 </resources>

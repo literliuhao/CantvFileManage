@@ -11,4 +11,4 @@
     android:paddingStart="@dimen/px32"
     android:singleLine="true"
     android:textColor="@color/selector_submenu_list_item_bg"
-    android:textSize="@dimen/fontsize_32" />
+    android:textSize="@dimen/px32" />
