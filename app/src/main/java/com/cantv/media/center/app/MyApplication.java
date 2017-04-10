@@ -39,7 +39,6 @@ public class MyApplication extends Application {
 //        refWatcher = LeakCanary.install(this);
         initUmeng();
     }
-
     //初始化友盟统计
     private void initUmeng() {
         if (null != BuildConfig.CANTV) {
