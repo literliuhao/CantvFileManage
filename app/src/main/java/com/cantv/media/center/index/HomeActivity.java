@@ -250,8 +250,6 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
             versionName = versionArray[0] + "_" + versionArray[2];
         }
 
-        Log.i("HomeActivity", getResources().getDimension(R.dimen.px100) + "");
-
         mVersion.setText(versionName);
         alertDialog = new AlertDialog.Builder(mContext).create();
     }
@@ -493,6 +491,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        
         if (hasFocus) {
             if (v.getId() == mExternalIV.getId()) {
                 mFocusScaleUtils.scaleToLargeWH(v, 1.03F, 1.06f);
