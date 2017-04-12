@@ -491,7 +491,7 @@ public class HomeActivity extends Activity implements OnFocusChangeListener {
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        
+
         if (hasFocus) {
             if (v.getId() == mExternalIV.getId()) {
                 mFocusScaleUtils.scaleToLargeWH(v, 1.03F, 1.06f);

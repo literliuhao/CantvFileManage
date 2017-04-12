@@ -13,20 +13,11 @@ android {
     compileSdkVersion 22
     buildToolsVersion '25.0.0'
 
-//    signingConfigs {
-//        config {
-//            keyAlias 'CANTV'
-//            keyPassword 'cantv2016'
-//            storeFile file('/home/devuser/keystore/can.jks')
-//            storePassword 'cantv2016'
-//        }
-//    }
-
     defaultConfig {
         applicationId "com.cantv.media"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 161
+        versionCode 162
         buildConfigField("String", "CANTV", "\"can\"")
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_7
