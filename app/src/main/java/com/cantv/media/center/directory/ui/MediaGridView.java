@@ -581,8 +581,9 @@ public class MediaGridView extends CustomGridView {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-
-                        String newPath = path + copyFilePath.substring(copyFilePath.lastIndexOf("/"));
+                        //粘贴到文件夹同等级目录
+                        String newPath = path.substring(0, path.lastIndexOf("/")) + copyFilePath.substring(copyFilePath.lastIndexOf("/"));
+                        Log.w("文件夹对应地址...", newPath);
                         File file = new File(newPath);
                         if (file.exists()) {
                             yPasteListener.onPasteFailed();
@@ -597,7 +598,7 @@ public class MediaGridView extends CustomGridView {
                             if (null != yPasteListener) {
                                 yPasteListener.onPasteSucceed();
                                 if (!(mCurrMediaList.size() > 0)) {
-                                    yPasteListener.onRefreshList(path);
+                                    yPasteListener.onRefreshList(path.substring(0, path.lastIndexOf("/")));
                                 }
                             }
                         } else {
