@@ -36,8 +36,8 @@ android {
         other {
             buildConfigField("String", "CANTV", "\"other\"")
         }
-        sign828 {}
-        sign628 {}
+//        sign828 {}
+//        sign628 {}
     }
 
     lintOptions {
