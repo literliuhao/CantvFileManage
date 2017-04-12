@@ -583,7 +583,6 @@ public class MediaGridView extends CustomGridView {
                     public void run() {
                         //粘贴到文件夹同等级目录
                         String newPath = path.substring(0, path.lastIndexOf("/")) + copyFilePath.substring(copyFilePath.lastIndexOf("/"));
-                        Log.w("文件夹对应地址...", newPath);
                         File file = new File(newPath);
                         if (file.exists()) {
                             yPasteListener.onPasteFailed();
