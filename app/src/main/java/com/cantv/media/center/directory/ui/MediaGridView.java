@@ -574,7 +574,6 @@ public class MediaGridView extends CustomGridView {
 
             final String copyFilePath = SharedPreferenceUtil.getCopyFilePath();
             if (!TextUtils.isEmpty(copyFilePath)) {
-//                        File.separator
                 if (null != yPasteListener) {
                     yPasteListener.onStartPaste();
                 }
@@ -590,7 +589,6 @@ public class MediaGridView extends CustomGridView {
                             return;
                         }
                         boolean isFuccessed = CopyPasUtils.nioTransferCopy(copyFilePath, newPath);
-//                boolean isFuccessed = CopyPasUtils.moveFile(copyFilePath, item.mUri);
                         if (isFuccessed) {
                             ToastUtils.showMessage(mContext, "粘贴成功");
                             SharedPreferenceUtil.saveCopyFilePath("");  //相当于清空粘贴板
