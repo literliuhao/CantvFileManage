@@ -1,4 +1,2 @@
 100 can
-106 sign628
-108 sign828
 200 other
