@@ -32,7 +32,11 @@ public class FocusUtils {
         this.context = context;
         this.initFocusView(actLayout, bitmapRes, bitmapResTwo, isInitMoveHideFocus);
     }
+, params);
+        }
 
+        this.focusView.setFocusLayout(-50.0F, -50.0F, -50.0F, -50.0F);
+    }
     private void initFocusView(View actLayout, int bitmapRes, int bitmapResTwo, boolean isInitMoveHideFocus) {
         this.focusView = new FocusViewForBitmap(this.context);
         this.focusView.initFocusBitmapRes(bitmapRes, bitmapResTwo, isInitMoveHideFocus);
@@ -40,11 +44,7 @@ public class FocusUtils {
         this.focusView.setFocusable(false);
         this.focusView.setClickable(false);
         if (actLayout instanceof ViewGroup) {
-            ((ViewGroup) actLayout).addView(this.focusView, params);
-        }
-
-        this.focusView.setFocusLayout(-50.0F, -50.0F, -50.0F, -50.0F);
-    }
+            ((ViewGroup) actLayout).addView(this.focusView
 
     public void setFocusLayout(float l, float t, float r, float b) {
         this.focusView.setFocusLayout(l, t, r, b);
